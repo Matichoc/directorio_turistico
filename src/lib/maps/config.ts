@@ -18,3 +18,6 @@ export function getMapStyleUrl(): string {
 
 export const PETORCA_CENTER = { latitude: -32.25, longitude: -70.93 } as const;
 export const PETORCA_DEFAULT_ZOOM = 10;
+/** Zoom para un mapa con un solo marcador (ficha de lugar): a nivel calle,
+ * no de toda la provincia — si no, se ve "genérico" sin mostrar el lugar. */
+export const PLACE_DETAIL_ZOOM = 15;

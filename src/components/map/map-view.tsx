@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Map, { Marker, NavigationControl, Popup } from "react-map-gl/maplibre";
+import { useRef, useState } from "react";
+import Map, {
+  Marker,
+  NavigationControl,
+  Popup,
+  type MapRef,
+} from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 // `maplibre-gl` está fijado a la serie 5.x en package.json a propósito: la
@@ -17,6 +22,7 @@ import {
   getMapStyleUrl,
   PETORCA_CENTER,
   PETORCA_DEFAULT_ZOOM,
+  PLACE_DETAIL_ZOOM,
 } from "@/lib/maps/config";
 
 export interface MapMarkerData {
@@ -33,20 +39,42 @@ export interface MapViewProps {
 }
 
 export function MapView({ className, markers = [] }: MapViewProps) {
+  const mapRef = useRef<MapRef>(null);
   const [selected, setSelected] = useState<MapMarkerData | null>(null);
 
   const center = markers[0]
     ? { latitude: markers[0].latitude, longitude: markers[0].longitude }
     : PETORCA_CENTER;
+  const initialZoom =
+    markers.length === 1 ? PLACE_DETAIL_ZOOM : PETORCA_DEFAULT_ZOOM;
+
+  function handleLoad() {
+    // Con 2+ marcadores, encuadra el mapa a su extensión real en vez de
+    // dejar el zoom fijo de toda la provincia — así cada vista muestra
+    // dónde están realmente los lugares en vez de un mapa "genérico".
+    if (markers.length < 2 || !mapRef.current) return;
+
+    const lats = markers.map((marker) => marker.latitude);
+    const lons = markers.map((marker) => marker.longitude);
+    mapRef.current.fitBounds(
+      [
+        [Math.min(...lons), Math.min(...lats)],
+        [Math.max(...lons), Math.max(...lats)],
+      ],
+      { padding: 56, maxZoom: 14, duration: 0 },
+    );
+  }
 
   return (
     <div className={className}>
       <Map
+        ref={mapRef}
+        onLoad={handleLoad}
         mapStyle={getMapStyleUrl()}
         initialViewState={{
           latitude: center.latitude,
           longitude: center.longitude,
-          zoom: PETORCA_DEFAULT_ZOOM,
+          zoom: initialZoom,
         }}
         style={{ width: "100%", height: "100%" }}
       >

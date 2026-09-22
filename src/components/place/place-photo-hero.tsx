@@ -1,18 +1,23 @@
 import { useTranslations } from "next-intl";
-import { CategoryIcon } from "@/components/ui/category-icon";
+import { PhotoOrIcon } from "@/components/place/photo-or-icon";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 
 /**
- * Mientras no haya fotos reales cargadas (`place_images` sin poblar, ver
- * docs/PLAN.md Riesgos), esta cabecera decorativa por categoría reemplaza un
- * hueco vacío o un texto plano. No pretende ser una foto real.
+ * Cabecera de la ficha de lugar: muestra la foto real si existe (Wikimedia
+ * Commons con licencia libre, cargada por `scripts/seed.ts`) con su crédito;
+ * si no hay foto, cae a un gradiente por categoría con ícono en vez de un
+ * hueco vacío (ver docs/PLAN.md Riesgos).
  */
 export function PlacePhotoHero({
   categorySlug,
   name,
+  photoUrl,
+  photoAttribution,
 }: {
   categorySlug: string;
   name: string;
+  photoUrl?: string | null;
+  photoAttribution?: string | null;
 }) {
   const t = useTranslations("place");
 
@@ -20,11 +25,15 @@ export function PlacePhotoHero({
     <div
       className={`relative flex h-40 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br ${getCategoryGradient(categorySlug)}`}
     >
-      <CategoryIcon icon={categorySlug} className="h-20 w-20 text-white/25" />
-      <span className="absolute right-2 bottom-2 rounded-full bg-black/25 px-2 py-1 text-[11px] text-white/90 backdrop-blur-sm">
-        {t("photosComingSoon")}
+      <PhotoOrIcon
+        photoUrl={photoUrl}
+        alt={name}
+        categorySlug={categorySlug}
+        iconClassName="h-20 w-20 text-white/25"
+      />
+      <span className="absolute right-2 bottom-2 rounded-full bg-black/40 px-2 py-1 text-[11px] text-white/90 backdrop-blur-sm">
+        {photoUrl ? (photoAttribution ?? t("photoCredit")) : t("photosComingSoon")}
       </span>
-      <span className="sr-only">{name}</span>
     </div>
   );
 }

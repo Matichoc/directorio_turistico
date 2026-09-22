@@ -35,6 +35,7 @@
   "place": {
     "verificationPending": "Pending verification",
     "verified": "Verified",
+    "featured": "Featured",
     "photosComingSoon": "Photo gallery: coming soon",
     "photoCredit": "Photo: Wikimedia Commons",
     "previousPhoto": "Previous photo",

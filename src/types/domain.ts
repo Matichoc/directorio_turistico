@@ -23,6 +23,7 @@ export interface Place {
   phone: string | null;
   website: string | null;
   photos: { url: string; attribution: string | null }[];
+  isFeatured: boolean;
   publicationStatus: PublicationStatus;
   verificationStatus: VerificationStatus;
   tags: string[];
@@ -73,6 +74,7 @@ export interface PlaceCard {
   latitude: number;
   longitude: number;
   verificationStatus: VerificationStatus;
+  isFeatured: boolean;
   photoUrl: string | null;
   tags: string[];
 }

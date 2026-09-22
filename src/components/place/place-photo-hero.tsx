@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { PhotoOrIcon } from "@/components/place/photo-or-icon";
 import { CategoryBadge } from "@/components/place/category-badge";
+import { FeaturedBadge } from "@/components/place/featured-badge";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 
 interface PlacePhoto {
@@ -36,11 +37,13 @@ export function PlacePhotoHero({
   categoryName,
   name,
   photos,
+  isFeatured = false,
 }: {
   categorySlug: string;
   categoryName?: string | null;
   name: string;
   photos: PlacePhoto[];
+  isFeatured?: boolean;
 }) {
   const t = useTranslations("place");
   const [index, setIndex] = useState(0);
@@ -71,6 +74,7 @@ export function PlacePhotoHero({
         categoryName={categoryName}
         className="absolute top-2 left-2"
       />
+      {isFeatured && <FeaturedBadge className="absolute top-2 right-2" />}
 
       {hasMultiple && (
         <>
@@ -90,7 +94,7 @@ export function PlacePhotoHero({
           >
             ›
           </button>
-          <div className="absolute top-2 right-2 flex gap-1">
+          <div className="absolute bottom-2 left-2 flex gap-1">
             {photos.map((photo, photoIndex) => (
               <button
                 key={photo.url}

@@ -1036,6 +1036,12 @@ async function seedPlaces(
           address: "address" in place ? place.address : null,
           phone: "phone" in place ? place.phone : null,
           website: "website" in place ? place.website : null,
+          // Posición publicitaria pagada (gestionada a mano, sin pasarela
+          // de pago) — ver "featuredUntil" en places que la tengan. Cast
+          // explícito porque ningún lugar la usa todavía, así que TS no
+          // puede inferir el tipo del campo desde la unión del array.
+          featured_until:
+            (place as { featuredUntil?: string }).featuredUntil ?? null,
           publication_status: "published",
           verification_status: "verified",
         },

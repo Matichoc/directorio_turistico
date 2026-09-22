@@ -76,6 +76,9 @@ type PlaceRow = {
   address: string | null;
   phone: string | null;
   website: string | null;
+  // Posición publicitaria pagada (gestionada a mano, sin pasarela de pago):
+  // null = no destacado; fecha futura = destacado hasta esa fecha.
+  featured_until: string | null;
   publication_status: PublicationStatus;
   verification_status: VerificationStatus;
   created_at: string;

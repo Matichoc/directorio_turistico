@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PhotoOrIcon } from "@/components/place/photo-or-icon";
 import { CategoryBadge } from "@/components/place/category-badge";
+import { FeaturedBadge } from "@/components/place/featured-badge";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import type { PlaceCard as PlaceCardType } from "@/types/domain";
 
@@ -11,7 +12,11 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
   return (
     <Link
       href={{ pathname: "/lugares/[slug]", params: { slug: place.slug } }}
-      className="border-accent-soft hover:border-accent group flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/[.03]"
+      className={`group flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:bg-white/[.03] ${
+        place.isFeatured
+          ? "border-amber-400 dark:border-amber-500/70"
+          : "border-accent-soft hover:border-accent dark:border-white/10"
+      }`}
     >
       <div
         className={`relative flex aspect-[16/9] items-center justify-center overflow-hidden bg-gradient-to-br ${getCategoryGradient(place.categorySlug)}`}
@@ -29,6 +34,9 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
           categoryName={place.categoryName}
           className="absolute top-2 left-2"
         />
+        {place.isFeatured && (
+          <FeaturedBadge className="absolute top-2 right-2" />
+        )}
       </div>
 
       <div className="flex flex-col gap-2 p-4">

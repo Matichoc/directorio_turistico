@@ -33,6 +33,7 @@ const basePlace: PlaceCardType = {
   latitude: -32.28528,
   longitude: -71.0,
   verificationStatus: "pending",
+  photoUrl: null,
   tags: [],
 };
 

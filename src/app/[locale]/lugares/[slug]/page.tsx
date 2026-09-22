@@ -41,7 +41,12 @@ export default async function PlaceDetailPage({
         )}
       </header>
 
-      <PlacePhotoHero categorySlug={place.categorySlug} name={place.name} />
+      <PlacePhotoHero
+        categorySlug={place.categorySlug}
+        name={place.name}
+        photoUrl={place.photoUrl}
+        photoAttribution={place.photoAttribution}
+      />
 
       <MapView
         className="h-[35vh] w-full overflow-hidden rounded-xl"

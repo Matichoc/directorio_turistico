@@ -8,13 +8,29 @@ import type {
 } from "@/types/database";
 import type { Place, PlaceCard, PlaceFilters } from "@/types/domain";
 
+interface PlaceImageResult {
+  storage_path: string;
+  alt_text: string | null;
+  position: number;
+}
+
+/** Primera foto por `position` (0 o más `place_images` por lugar). */
+function pickPrimaryPhoto(images: PlaceImageResult[] | null | undefined) {
+  const sorted = (images ?? []).slice().sort((a, b) => a.position - b.position);
+  return {
+    photoUrl: sorted[0]?.storage_path ?? null,
+    photoAttribution: sorted[0]?.alt_text ?? null,
+  };
+}
+
 const PLACE_QUERY =
   `id, slug, commune_id, category_id, latitude, longitude, address,
    phone, website, publication_status, verification_status,
    place_translations!inner(name, short_description, description, locale),
    communes!inner(commune_translations!inner(name, locale)),
    categories!inner(slug, category_translations!inner(name, locale)),
-   place_tags(tags(slug))` as const;
+   place_tags(tags(slug)),
+   place_images(storage_path, alt_text, position)` as const;
 
 interface PlaceQueryResult {
   id: string;
@@ -40,6 +56,7 @@ interface PlaceQueryResult {
     category_translations: { name: string; locale: Locale }[];
   } | null;
   place_tags: { tags: { slug: string } | null }[];
+  place_images: PlaceImageResult[];
 }
 
 export async function getPlaceBySlug(
@@ -66,6 +83,7 @@ export async function getPlaceBySlug(
   }
 
   const translation = data.place_translations[0];
+  const photo = pickPrimaryPhoto(data.place_images);
 
   return {
     id: data.id,
@@ -83,6 +101,8 @@ export async function getPlaceBySlug(
     address: data.address,
     phone: data.phone,
     website: data.website,
+    photoUrl: photo.photoUrl,
+    photoAttribution: photo.photoAttribution,
     publicationStatus: data.publication_status,
     verificationStatus: data.verification_status,
     tags: (data.place_tags ?? [])
@@ -95,7 +115,8 @@ const PLACES_LIST_QUERY = `id, slug, latitude, longitude, verification_status,
    place_translations!inner(name, short_description, locale),
    communes!inner(slug, commune_translations!inner(name, locale)),
    categories!inner(slug, category_translations!inner(name, locale)),
-   place_tags(tags(slug))` as const;
+   place_tags(tags(slug)),
+   place_images(storage_path, alt_text, position)` as const;
 
 interface PlaceListQueryResult {
   id: string;
@@ -117,6 +138,27 @@ interface PlaceListQueryResult {
     category_translations: { name: string; locale: Locale }[];
   } | null;
   place_tags: { tags: { slug: string } | null }[];
+  place_images: PlaceImageResult[];
+}
+
+function mapPlaceCard(place: PlaceListQueryResult): PlaceCard {
+  const translation = place.place_translations[0];
+  return {
+    id: place.id,
+    slug: place.slug,
+    name: translation?.name ?? place.slug,
+    shortDescription: translation?.short_description ?? null,
+    communeName: place.communes?.commune_translations[0]?.name ?? "",
+    categoryName: place.categories?.category_translations[0]?.name ?? "",
+    categorySlug: place.categories?.slug ?? "",
+    latitude: place.latitude,
+    longitude: place.longitude,
+    verificationStatus: place.verification_status,
+    photoUrl: pickPrimaryPhoto(place.place_images).photoUrl,
+    tags: (place.place_tags ?? [])
+      .map((placeTag) => placeTag.tags?.slug)
+      .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),
+  };
 }
 
 /**
@@ -158,24 +200,7 @@ export async function listPlaces(
   const query = filters.query?.trim().toLowerCase();
 
   return data
-    .map((place): PlaceCard => {
-      const translation = place.place_translations[0];
-      return {
-        id: place.id,
-        slug: place.slug,
-        name: translation?.name ?? place.slug,
-        shortDescription: translation?.short_description ?? null,
-        communeName: place.communes?.commune_translations[0]?.name ?? "",
-        categoryName: place.categories?.category_translations[0]?.name ?? "",
-        categorySlug: place.categories?.slug ?? "",
-        latitude: place.latitude,
-        longitude: place.longitude,
-        verificationStatus: place.verification_status,
-        tags: (place.place_tags ?? [])
-          .map((placeTag) => placeTag.tags?.slug)
-          .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),
-      };
-    })
+    .map(mapPlaceCard)
     .filter((place) => {
       if (filters.tagSlug && !place.tags.includes(filters.tagSlug)) {
         return false;
@@ -219,22 +244,5 @@ export async function getPlacesByIds(
     return [];
   }
 
-  return data.map((place): PlaceCard => {
-    const translation = place.place_translations[0];
-    return {
-      id: place.id,
-      slug: place.slug,
-      name: translation?.name ?? place.slug,
-      shortDescription: translation?.short_description ?? null,
-      communeName: place.communes?.commune_translations[0]?.name ?? "",
-      categoryName: place.categories?.category_translations[0]?.name ?? "",
-      categorySlug: place.categories?.slug ?? "",
-      latitude: place.latitude,
-      longitude: place.longitude,
-      verificationStatus: place.verification_status,
-      tags: (place.place_tags ?? [])
-        .map((placeTag) => placeTag.tags?.slug)
-        .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),
-    };
-  });
+  return data.map(mapPlaceCard);
 }

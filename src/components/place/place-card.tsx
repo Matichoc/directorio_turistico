@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { CategoryIcon } from "@/components/ui/category-icon";
+import { PhotoOrIcon } from "@/components/place/photo-or-icon";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import type { PlaceCard as PlaceCardType } from "@/types/domain";
 
@@ -15,7 +15,12 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
       <div
         className={`flex h-16 items-center justify-center bg-gradient-to-br ${getCategoryGradient(place.categorySlug)}`}
       >
-        <CategoryIcon icon={place.categorySlug} className="h-7 w-7 text-white/70" />
+        <PhotoOrIcon
+          photoUrl={place.photoUrl}
+          alt={place.name}
+          categorySlug={place.categorySlug}
+          iconClassName="h-7 w-7 text-white/70"
+        />
       </div>
 
       <div className="flex flex-col gap-2 p-4">

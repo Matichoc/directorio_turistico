@@ -19,6 +19,16 @@ import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../src/types/database";
 
+/**
+ * URL hotlinkeable a un archivo de Wikimedia Commons vía `Special:FilePath`
+ * (redirige al CDN real sin necesitar el hash del nombre de archivo). Solo
+ * se usa para fotos con licencia libre verificadas manualmente (nombre de
+ * archivo + licencia), no hay descubrimiento automático.
+ */
+function wikimediaFilePath(filename: string, width = 800): string {
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`;
+}
+
 config({ path: ".env.local" });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -128,12 +138,19 @@ const places = [
     slug: "museo-de-la-ligua",
     communeSlug: "la-ligua",
     categorySlug: "cultura",
-    latitude: -32.4525,
-    longitude: -71.2306,
+    // Pedro Polanco N° 698, a un costado de la Plaza de Armas (no en el
+    // mismo punto): coordenadas aproximadas, nudge manual respecto del
+    // centro de La Ligua para no apilar el pin sobre el de la plaza.
+    latitude: -32.4517,
+    longitude: -71.2302,
+    photo: {
+      filename: "Fotografía del frontis del Museo de La Ligua.jpg",
+      attribution: "Foto: Jorge Salinas Valero / Wikimedia Commons (CC BY-SA 4.0)",
+    },
     es: {
       name: "Museo de La Ligua",
       short:
-        "Exhibiciones sobre el mundo prehispánico del territorio y sobre La Quintrala; entrada liberada, junto a la Plaza de Armas.",
+        "Exhibiciones sobre el mundo prehispánico del territorio y sobre La Quintrala; entrada liberada, junto a la Plaza de Armas (Pedro Polanco 698).",
     },
     en: {
       name: "La Ligua Museum",
@@ -151,6 +168,10 @@ const places = [
     categorySlug: "cultura",
     latitude: -32.4525,
     longitude: -71.2306,
+    photo: {
+      filename: "Chile, La Ligua, Plaza de La Ligua (35059234930).jpg",
+      attribution: "Foto: Wikimedia Commons (CC BY-SA 2.0)",
+    },
     es: {
       name: "Plaza de Armas de La Ligua",
       short:
@@ -191,8 +212,13 @@ const places = [
     slug: "iglesia-la-merced-petorca",
     communeSlug: "petorca",
     categorySlug: "cultura",
+    // Centro/Plaza de Petorca — coordenadas aproximadas.
     latitude: -32.25139,
     longitude: -70.93139,
+    photo: {
+      filename: "Iglesia de la Merced, Petorca.jpg",
+      attribution: "Foto: Wikimedia Commons (ver licencia en la fuente)",
+    },
     es: {
       name: "Iglesia La Merced de Petorca",
       short:
@@ -212,21 +238,24 @@ const places = [
     slug: "casa-natal-manuel-montt",
     communeSlug: "petorca",
     categorySlug: "cultura",
-    latitude: -32.25139,
-    longitude: -70.93139,
+    // Manuel Montt 845, a un costado de la plaza (no en el mismo punto):
+    // coordenadas aproximadas, nudge manual respecto del centro de Petorca
+    // para no apilar el pin sobre el de la iglesia.
+    latitude: -32.2505,
+    longitude: -70.9299,
     es: {
       name: "Casa natal de Manuel Montt",
       short:
-        "Monumento histórico: la casa donde nació en 1809 el expresidente Manuel Montt, quien gobernó Chile entre 1851 y 1861 (Manuel Montt 835).",
+        "Monumento histórico: la casa donde nació en 1809 el expresidente Manuel Montt, quien gobernó Chile entre 1851 y 1861 (Manuel Montt 845).",
     },
     en: {
       name: "Manuel Montt's Birthplace",
       short:
-        "Historic monument: the house where former president Manuel Montt was born in 1809; he governed Chile from 1851 to 1861 (Manuel Montt 835).",
+        "Historic monument: the house where former president Manuel Montt was born in 1809; he governed Chile from 1851 to 1861 (Manuel Montt 845).",
     },
     source: {
-      url: "https://www.sitrural.cl/wp-content/uploads/2024/11/Petorca_turismo.pdf",
-      label: "Sitrural — Atractivos turísticos comuna de Petorca",
+      url: "https://www.monumentos.gob.cl/monumentos/monumentos-historicos/casa-donde-nacio-presidente-manuel-montt",
+      label: "Consejo de Monumentos Nacionales — Casa donde nació el presidente Manuel Montt",
     },
   },
   {
@@ -254,8 +283,11 @@ const places = [
     slug: "chocolateria-matichoc",
     communeSlug: "la-ligua",
     categorySlug: "gastronomia",
-    latitude: -32.4525,
-    longitude: -71.2306,
+    // Guayacán 1409 — calle distinta a la de la Plaza de Armas/Museo, así
+    // que se usa un nudge manual en otra dirección respecto del centro de
+    // La Ligua (coordenadas aproximadas, no geocodificación exacta).
+    latitude: -32.4553,
+    longitude: -71.2265,
     address: "Guayacán 1409, La Ligua",
     phone: "+56975645591",
     website: "https://www.matichoc.cl",
@@ -299,8 +331,12 @@ const places = [
     slug: "ruta-de-los-tuneles",
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
-    latitude: -32.348017,
-    longitude: -71.071565,
+    // El trazado sigue la vía férrea más allá de Pedegua, hacia la
+    // cordillera (dirección del túnel Las Palmas) — se ubica el pin a unos
+    // km de distancia del pueblo, no en el mismo punto. Coordenadas
+    // aproximadas (no hay geocodificación exacta de los túneles).
+    latitude: -32.335,
+    longitude: -71.05,
     es: {
       name: "Ruta de los Túneles",
       short:
@@ -521,9 +557,22 @@ async function seedPlaces(
     );
 
     await addSource("place", data.id, place.source.url, place.source.label);
+
+    await supabase.from("place_images").delete().eq("place_id", data.id);
+    if ("photo" in place) {
+      await supabase.from("place_images").insert({
+        place_id: data.id,
+        storage_path: wikimediaFilePath(place.photo.filename),
+        alt_text: place.photo.attribution,
+        position: 0,
+      });
+    }
   }
 
-  console.log(`✔ ${places.length} lugares (verificados)`);
+  const withPhotos = places.filter((place) => "photo" in place).length;
+  console.log(
+    `✔ ${places.length} lugares (verificados, ${withPhotos} con foto real)`,
+  );
   return placeIds;
 }
 

@@ -47,6 +47,11 @@ const nextConfig: NextConfig = {
         pathname: "/fotos/**",
         search: "",
       },
+      {
+        // Assets de marca (logo de Matichoc, ver public/brand/).
+        pathname: "/brand/**",
+        search: "",
+      },
     ],
   },
 };

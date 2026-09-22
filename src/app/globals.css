@@ -6,7 +6,12 @@
   --accent: #b3401f;
   --accent-foreground: #fff7ed;
   --accent-soft: #f6e2d5;
-  --sponsor: #1f2937;
+  /* Colores reales de la marca Matichoc (ver matichoc/matiweb, css/styles.css)
+     — el banner de auspicio usa su propia identidad, no la paleta del sitio. */
+  --sponsor: #fff8f0;
+  --sponsor-foreground: #4b2e2e;
+  --sponsor-accent: #d4216c;
+  --sponsor-accent-foreground: #fff8f0;
 }
 
 @theme inline {
@@ -16,6 +21,9 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-soft: var(--accent-soft);
   --color-sponsor: var(--sponsor);
+  --color-sponsor-foreground: var(--sponsor-foreground);
+  --color-sponsor-accent: var(--sponsor-accent);
+  --color-sponsor-accent-foreground: var(--sponsor-accent-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --animate-pin-pop: pin-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
@@ -79,7 +87,13 @@
     --accent: #e07a4c;
     --accent-foreground: #1c0f0a;
     --accent-soft: #3a2418;
-    --sponsor: #111827;
+    /* Mismo color que usa matiweb para su propio header/footer (marrón
+       oscuro), en vez del crema — se ve fuera de lugar un parche claro en
+       una página oscura. */
+    --sponsor: #4b2e2e;
+    --sponsor-foreground: #fff8f0;
+    --sponsor-accent: #f2589f;
+    --sponsor-accent-foreground: #fff8f0;
   }
 }
 

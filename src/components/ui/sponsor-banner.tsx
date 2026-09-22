@@ -1,12 +1,17 @@
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 const DEFAULT_SPONSOR_URL = "https://www.matichoc.cl";
 
 /**
- * Auspiciador. Matichoc no es la marca del sitio, es un auspiciador — se
- * muestra como banner visual pero discreto, no como identidad de la app.
- * El link de Instagram solo se muestra si `NEXT_PUBLIC_SPONSOR_INSTAGRAM_URL`
- * está configurado: no inventamos una cuenta que no podamos verificar.
+ * Auspiciador. Matichoc no es la marca del sitio, así que este bloque usa
+ * a propósito la identidad visual real de Matichoc (colores y logo de
+ * matichoc/matiweb) en vez de la paleta del sitio — busca destacar como
+ * auspicio, no camuflarse. El logo siempre se muestra (antes era una
+ * inicial genérica en un círculo, pedido explícito del usuario de que
+ * "el logo salga sí o sí"). El link de Instagram solo se muestra si
+ * `NEXT_PUBLIC_SPONSOR_INSTAGRAM_URL` está configurado: no inventamos una
+ * cuenta que no podamos verificar.
  */
 export function SponsorBanner() {
   const t = useTranslations("common");
@@ -14,20 +19,21 @@ export function SponsorBanner() {
   const instagramUrl = process.env.NEXT_PUBLIC_SPONSOR_INSTAGRAM_URL;
 
   return (
-    <div className="bg-sponsor border-t border-black/10 px-4 py-3 dark:border-white/10">
-      <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
+    <div className="bg-sponsor border-sponsor-accent border-t-4 px-4 py-3">
+      <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span
-            aria-hidden="true"
-            className="from-accent to-accent-soft text-accent-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-sm font-bold"
-          >
-            M
-          </span>
+          <Image
+            src="/brand/matichoc-logo.png"
+            alt="Matichoc"
+            width={900}
+            height={588}
+            className="h-11 w-auto shrink-0 sm:h-14"
+          />
           <div className="flex flex-col leading-tight">
-            <span className="text-[11px] tracking-wide text-white/60 uppercase">
-              {t("sponsoredBy")} Matichoc
+            <span className="text-sponsor-accent text-[11px] font-bold tracking-wide uppercase">
+              {t("sponsoredBy")}
             </span>
-            <span className="text-xs text-white/80">
+            <span className="text-sponsor-foreground/80 text-xs">
               {t("sponsor.tagline")}
             </span>
           </div>
@@ -39,7 +45,7 @@ export function SponsorBanner() {
               href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer sponsored"
-              className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-medium text-white/80 hover:text-white"
+              className="border-sponsor-accent/40 text-sponsor-accent hover:bg-sponsor-accent/10 rounded-full border px-3 py-1.5 text-xs font-medium"
             >
               {t("sponsor.instagram")}
             </a>
@@ -48,7 +54,7 @@ export function SponsorBanner() {
             href={siteUrl}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className="bg-accent text-accent-foreground rounded-full px-3 py-1.5 text-xs font-medium hover:opacity-90"
+            className="bg-sponsor-accent text-sponsor-accent-foreground rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm transition-transform hover:scale-105"
           >
             {t("sponsor.cta")}
           </a>

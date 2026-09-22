@@ -119,6 +119,18 @@ function photoToRow(
   };
 }
 
+/**
+ * Texto de búsqueda alternativo para lugares donde el nombre del catálogo
+ * no tiene ficha propia en Google Maps (confirmado por el usuario tras
+ * revisar el "sin resultado" de una corrida real) — usa en su lugar el
+ * nombre de un lugar/rasgo cercano que sí tiene ficha en Google.
+ */
+const SEARCH_QUERY_OVERRIDES: Record<string, string> = {
+  "papudo-pullally": "Laguna de Pullally, Papudo, Chile",
+  "papudo-parque": "Playa Grande, Papudo, Chile",
+  "cabildo-san-lorenzo": "Puente San Lorenzo, Cabildo, Chile",
+};
+
 const PLACES_QUERY =
   "id, slug, latitude, longitude, place_translations!inner(name, locale)" as const;
 
@@ -191,7 +203,9 @@ async function main() {
 
   for (const { place, protectedCount, slotsAvailable } of pending) {
     const name = place.place_translations[0]?.name ?? place.slug;
-    const query = `${name}, Provincia de Petorca, Chile`;
+    const query =
+      SEARCH_QUERY_OVERRIDES[place.slug] ??
+      `${name}, Provincia de Petorca, Chile`;
 
     try {
       const photos = (

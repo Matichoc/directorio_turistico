@@ -1,39 +1,44 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { CategoryIcon } from "@/components/ui/category-icon";
 
 /**
  * Muestra la foto real del lugar si `photoUrl` carga bien; si no hay foto o
  * falla la carga (URL rota, hotlink caído), cae al ícono de categoría — el
  * llamador solo necesita poner el fondo con gradiente detrás.
+ *
+ * Usa `next/image` (no `<img>` plano): sin esto el navegador bajaba la
+ * foto a tamaño completo (a veces varios MB, fotos de celular) y la
+ * achicaba con CSS — pesado y desproporcionado en pantallas chicas.
+ * `next/image` sirve un tamaño acorde al viewport (`sizes`) y optimiza el
+ * formato automáticamente.
  */
 export function PhotoOrIcon({
   photoUrl,
   alt,
   categorySlug,
   iconClassName,
-  imgClassName = "h-full w-full object-cover",
+  imgClassName = "object-cover",
+  sizes = "100vw",
 }: {
   photoUrl?: string | null;
   alt: string;
   categorySlug?: string | null;
   iconClassName?: string;
   imgClassName?: string;
+  sizes?: string;
 }) {
   const [failed, setFailed] = useState(false);
 
   if (photoUrl && !failed) {
-    // `<img>` a propósito: son fotos externas hotlinkeadas desde Wikimedia
-    // Commons (`Special:FilePath`, ver scripts/seed.ts) con `onError` como
-    // respaldo — configurar next/image para un dominio externo variable no
-    // vale la pena para el puñado de fotos que hay hoy.
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <Image
         src={photoUrl}
         alt={alt}
-        loading="lazy"
+        fill
+        sizes={sizes}
         onError={() => setFailed(true)}
         className={imgClassName}
       />

@@ -51,6 +51,7 @@ export default async function PlaceDetailPage({
             name: place.name,
             latitude: place.latitude,
             longitude: place.longitude,
+            categorySlug: place.categorySlug,
           },
         ]}
       />

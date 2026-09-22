@@ -16,11 +16,12 @@
       "nature": "Nature",
       "gastronomy": "Food",
       "culture": "Culture",
-      "adventure": "Adventure"
+      "beach": "Beach"
     }
   },
   "explore": {
     "title": "Explore",
+    "searchPlaceholder": "Search a place or town",
     "mapView": "Map",
     "listView": "List",
     "noResults": "We couldn't find places matching these filters.",
@@ -34,18 +35,27 @@
     "verificationPending": "Pending verification",
     "openInMaps": "Open on map",
     "share": "Share",
+    "linkCopied": "Link copied",
     "hours": "Hours",
-    "addToTrip": "Add to my trip"
+    "address": "Address",
+    "phone": "Phone",
+    "website": "Website",
+    "tags": "Features",
+    "addToTrip": "Add to my trip",
+    "backToExplore": "Back to explore"
   },
   "route": {
     "stops": "Stops",
     "duration": "Estimated duration",
-    "addToTrip": "Add full route"
+    "addToTrip": "Add full route",
+    "viewAll": "View all routes",
+    "noResults": "No published routes yet."
   },
   "common": {
     "loading": "Loading…",
     "error": "Something went wrong. Please try again.",
     "language": "Language",
-    "sponsoredBy": "Sponsored by"
+    "sponsoredBy": "Sponsored by",
+    "retry": "Retry"
   }
 }

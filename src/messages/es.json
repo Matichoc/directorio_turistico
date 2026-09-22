@@ -16,11 +16,12 @@
       "nature": "Naturaleza",
       "gastronomy": "Gastronomía",
       "culture": "Cultura",
-      "adventure": "Aventura"
+      "beach": "Playa"
     }
   },
   "explore": {
     "title": "Explorar",
+    "searchPlaceholder": "Busca un lugar o localidad",
     "mapView": "Mapa",
     "listView": "Listado",
     "noResults": "No encontramos lugares con estos filtros.",
@@ -34,18 +35,27 @@
     "verificationPending": "Pendiente de verificación",
     "openInMaps": "Abrir en el mapa",
     "share": "Compartir",
+    "linkCopied": "Enlace copiado",
     "hours": "Horario",
-    "addToTrip": "Agregar a mi recorrido"
+    "address": "Dirección",
+    "phone": "Teléfono",
+    "website": "Sitio web",
+    "tags": "Características",
+    "addToTrip": "Agregar a mi recorrido",
+    "backToExplore": "Volver a explorar"
   },
   "route": {
     "stops": "Paradas",
     "duration": "Duración estimada",
-    "addToTrip": "Agregar ruta completa"
+    "addToTrip": "Agregar ruta completa",
+    "viewAll": "Ver todas las rutas",
+    "noResults": "Todavía no hay rutas publicadas."
   },
   "common": {
     "loading": "Cargando…",
     "error": "Ocurrió un error. Intenta nuevamente.",
     "language": "Idioma",
-    "sponsoredBy": "Auspiciado por"
+    "sponsoredBy": "Auspiciado por",
+    "retry": "Reintentar"
   }
 }

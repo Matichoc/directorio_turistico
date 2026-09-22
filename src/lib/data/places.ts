@@ -6,12 +6,14 @@ import type {
   PublicationStatus,
   VerificationStatus,
 } from "@/types/database";
-import type { Place } from "@/types/domain";
+import type { Place, PlaceCard, PlaceFilters } from "@/types/domain";
 
 const PLACE_QUERY =
   `id, slug, commune_id, category_id, latitude, longitude, address,
    phone, website, publication_status, verification_status,
    place_translations!inner(name, short_description, description, locale),
+   communes!inner(commune_translations!inner(name, locale)),
+   categories!inner(category_translations!inner(name, locale)),
    place_tags(tags(slug))` as const;
 
 interface PlaceQueryResult {
@@ -32,6 +34,10 @@ interface PlaceQueryResult {
     description: string | null;
     locale: Locale;
   }[];
+  communes: { commune_translations: { name: string; locale: Locale }[] } | null;
+  categories: {
+    category_translations: { name: string; locale: Locale }[];
+  } | null;
   place_tags: { tags: { slug: string } | null }[];
 }
 
@@ -49,6 +55,8 @@ export async function getPlaceBySlug(
     .select<typeof PLACE_QUERY, PlaceQueryResult>(PLACE_QUERY)
     .eq("slug", slug)
     .eq("place_translations.locale", locale)
+    .eq("communes.commune_translations.locale", locale)
+    .eq("categories.category_translations.locale", locale)
     .eq("publication_status", "published")
     .maybeSingle();
 
@@ -65,7 +73,9 @@ export async function getPlaceBySlug(
     description: translation?.description ?? null,
     shortDescription: translation?.short_description ?? null,
     communeId: data.commune_id,
+    communeName: data.communes?.commune_translations[0]?.name ?? "",
     categoryId: data.category_id,
+    categoryName: data.categories?.category_translations[0]?.name ?? "",
     latitude: data.latitude,
     longitude: data.longitude,
     address: data.address,
@@ -77,4 +87,105 @@ export async function getPlaceBySlug(
       .map((placeTag) => placeTag.tags?.slug)
       .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),
   };
+}
+
+const PLACES_LIST_QUERY = `id, slug, latitude, longitude, verification_status,
+   place_translations!inner(name, short_description, locale),
+   communes!inner(slug, commune_translations!inner(name, locale)),
+   categories!inner(slug, category_translations!inner(name, locale)),
+   place_tags(tags(slug))` as const;
+
+interface PlaceListQueryResult {
+  id: string;
+  slug: string;
+  latitude: number;
+  longitude: number;
+  verification_status: VerificationStatus;
+  place_translations: {
+    name: string;
+    short_description: string | null;
+    locale: Locale;
+  }[];
+  communes: {
+    slug: string;
+    commune_translations: { name: string; locale: Locale }[];
+  } | null;
+  categories: {
+    slug: string;
+    category_translations: { name: string; locale: Locale }[];
+  } | null;
+  place_tags: { tags: { slug: string } | null }[];
+}
+
+/**
+ * Lista lugares publicados. El filtro por `tagSlug` y `query` (nombre) se
+ * aplica en memoria después de traer los resultados: a la escala actual del
+ * catálogo (decenas de lugares) es más simple que armar un `!inner` dinámico
+ * en PostgREST. Si el catálogo crece mucho, mover ambos a la consulta.
+ */
+export async function listPlaces(
+  locale: Locale,
+  filters: PlaceFilters = {},
+): Promise<PlaceCard[]> {
+  if (!isSupabaseConfigured()) {
+    return [];
+  }
+
+  const supabase = await createClient();
+  let builder = supabase
+    .from("places")
+    .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
+    .eq("publication_status", "published")
+    .eq("place_translations.locale", locale)
+    .eq("communes.commune_translations.locale", locale)
+    .eq("categories.category_translations.locale", locale);
+
+  if (filters.communeSlug) {
+    builder = builder.eq("communes.slug", filters.communeSlug);
+  }
+  if (filters.categorySlug) {
+    builder = builder.eq("categories.slug", filters.categorySlug);
+  }
+
+  const { data, error } = await builder;
+
+  if (error || !data) {
+    return [];
+  }
+
+  const query = filters.query?.trim().toLowerCase();
+
+  return data
+    .map((place): PlaceCard => {
+      const translation = place.place_translations[0];
+      return {
+        id: place.id,
+        slug: place.slug,
+        name: translation?.name ?? place.slug,
+        shortDescription: translation?.short_description ?? null,
+        communeName: place.communes?.commune_translations[0]?.name ?? "",
+        categoryName: place.categories?.category_translations[0]?.name ?? "",
+        categorySlug: place.categories?.slug ?? "",
+        latitude: place.latitude,
+        longitude: place.longitude,
+        verificationStatus: place.verification_status,
+        tags: (place.place_tags ?? [])
+          .map((placeTag) => placeTag.tags?.slug)
+          .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),
+      };
+    })
+    .filter((place) => {
+      if (filters.tagSlug && !place.tags.includes(filters.tagSlug)) {
+        return false;
+      }
+      if (query) {
+        const haystack =
+          `${place.name} ${place.communeName} ${place.shortDescription ?? ""}`.toLowerCase();
+        if (!haystack.includes(query)) {
+          return false;
+        }
+      }
+      return true;
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, locale));
 }

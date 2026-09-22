@@ -1,10 +1,10 @@
-# Petorca en Ruta — Plan del proyecto
+# El diablo murió en Petorca y en La Ligua lo enterraron — Plan del proyecto
 
 > Documento vivo. Actualizar al cerrar cada fase o al tomar una decisión técnica relevante.
 
 ## Estado actual
 
-- Fase: **Fase 0 — en progreso** (scaffolding inicial completo)
+- Fase: **Fase 0 — completada** (mergeada a `main`); pendiente de que el usuario cree un proyecto Supabase real y aplique migraciones/seed
 - Última actualización: 2026-09-22
 
 ## 1. Arquitectura
@@ -108,7 +108,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 4. Complejidad del motor de itinerarios (coherencia geográfica, horarios) — requiere pruebas unitarias exhaustivas antes de UI. La Fase 0 entrega una versión base (vecino más cercano) con tests; falta soporte de horarios de apertura.
 5. RLS debe cubrir tablas base y tablas de traducción — cubierto en `0008_rls.sql`, pendiente de probar contra datos reales.
 6. Gobernanza de traducciones IA — decisión pendiente para Fase 4.
-7. Datos demo deben quedar marcados inequívocamente como "pendiente de verificación" — cubierto por `scripts/seed.ts` (`verification_status = 'pending'`, `publication_status = 'draft'`).
+7. Aunque el seed usa lugares/rutas reales (con fuente citada en `sources`), coordenadas, horarios y datos de contacto no están verificados en terreno — deben quedar marcados inequívocamente como "pendiente de verificación" hasta que un admin los confirme. Cubierto por `scripts/seed.ts` (`verification_status = 'pending'`, `publication_status = 'draft'`).
 8. Íconos PWA (`public/icons/icon-192.png`, `icon-512.png`) son placeholders pendientes de diseño final.
 9. Sin proyecto Supabase real conectado todavía: migraciones y seed están escritos pero no aplicados. Requiere que el cliente cree el proyecto y entregue credenciales (o las cree él mismo con `supabase` CLI) antes de Fase 1.
 
@@ -121,7 +121,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 - [x] Configurar clientes Supabase (browser/server/admin)
 - [x] Migraciones iniciales (todas las tablas)
 - [x] Políticas RLS base
-- [x] Seed: 5 comunas, categorías/tags, 3 rutas borrador, lugares demo marcados pendientes
+- [x] Seed: 5 comunas, categorías/tags, 9 lugares reales (con fuente en `sources`) y 3 rutas — incluida "Ruta del Diablo" —, todos pendientes de verificación
 - [x] Configurar next-intl (es/en, middleware de locale)
 - [x] Configurar Vitest + Testing Library + Playwright (esqueleto)
 - [x] Documentar arquitectura y este plan
@@ -143,4 +143,5 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 ## Bitácora de decisiones
 
 - 2026-09-21: Propuesta inicial de arquitectura, esquema y fases 0-1 presentada, pendiente de aprobación.
-- 2026-09-22: Usuario aprueba ejecutar la Fase 0 completa. Sin proyecto Supabase real disponible (el usuario no tiene uno creado): se escriben migraciones, RLS y seed listos para aplicar, pero no se conecta a ningún proyecto en vivo. Scaffolding de Next.js 16 + next-intl + Supabase clients + itinerary-engine + testing completado.
+- 2026-09-22: Usuario aprueba ejecutar la Fase 0 completa. Sin proyecto Supabase real disponible (el usuario no tiene uno creado): se escriben migraciones, RLS y seed listos para aplicar, pero no se conecta a ningún proyecto en vivo. Scaffolding de Next.js 16 + next-intl + Supabase clients + itinerary-engine + testing completado. PR #1 mergeado a `main`.
+- 2026-09-22: Cambio de marca — el sitio pasa a llamarse "El diablo murió en Petorca y en La Ligua lo enterraron" (dicho popular chileno sobre la rivalidad Petorca/La Ligua, documentado desde 1894). "Petorca en Ruta" queda solo como nombre de trabajo interno del repo/paquete npm. Matichoc deja de ser la marca del sitio: pasa a auspiciador, con un banner discreto (`components/ui/sponsor-banner.tsx`) en vez de branding. Se reemplazan los lugares/rutas demo por 9 lugares y 3 rutas reales de la provincia (Playa de Papudo, Playa Chica, Bahía y mirador de Zapallar, Museo y Plaza de La Ligua, Escalera del Diablo, Iglesia La Merced y casa natal de Manuel Montt en Petorca, Cerro Chache en Cabildo), investigados vía web search con fuente citada en la tabla `sources` para cada uno — incluida una "Ruta del Diablo" que conecta Hierro Viejo, Petorca y La Ligua siguiendo el dicho. Siguen marcados `pending`/`draft`: son datos reales pero no verificados en terreno.

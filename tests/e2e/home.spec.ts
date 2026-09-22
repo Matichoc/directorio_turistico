@@ -6,7 +6,7 @@ test("redirects to the default locale and shows the home page", async ({
   await page.goto("/");
   await expect(page).toHaveURL(/\/es$/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Petorca en Ruta",
+    "El diablo murió en Petorca",
   );
 });
 

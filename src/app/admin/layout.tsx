@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh flex-col md:flex-row">
       <aside className="border-b border-black/10 p-4 md:w-56 md:border-r md:border-b-0 dark:border-white/10">
         <p className="text-foreground/50 mb-4 text-sm font-semibold tracking-wide uppercase">
-          Petorca en Ruta — Admin
+          El Diablo en Petorca — Admin
         </p>
         <nav>
           <ul className="flex flex-row gap-2 overflow-x-auto md:flex-col">

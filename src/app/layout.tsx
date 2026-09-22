@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Petorca en Ruta",
+  title: "El diablo murió en Petorca y en La Ligua lo enterraron",
   description: "Directorio turístico y planificador de rutas para Petorca.",
   manifest: "/manifest.webmanifest",
 };

@@ -869,20 +869,21 @@ const routes = [
   },
   {
     slug: "ruta-costera-papudo-zapallar",
-    // Se suman Los Molles y Pichicuy (tramo costero de La Ligua) a pedido
-    // del usuario.
-    durationMinutes: 240,
+    // Se suman Los Molles, Pichicuy (tramo costero de La Ligua) y Salinas
+    // de Pullally (Papudo) a pedido del usuario.
+    durationMinutes: 270,
     es: {
       name: "Ruta Costera: Papudo y Zapallar",
       description:
-        "Un recorrido por los balnearios tradicionales del litoral norte de la región de Valparaíso: playas de Papudo, la bahía de Zapallar, y el tramo costero de La Ligua en Los Molles y Pichicuy.",
+        "Un recorrido por los balnearios tradicionales del litoral norte de la región de Valparaíso: las Salinas de Pullally y las playas de Papudo, la bahía de Zapallar, y el tramo costero de La Ligua en Los Molles y Pichicuy.",
     },
     en: {
       name: "Coastal Route: Papudo & Zapallar",
       description:
-        "A trip along the traditional resort towns of the region's northern coast: Papudo's beaches, Zapallar bay, and La Ligua's coastal stretch at Los Molles and Pichicuy.",
+        "A trip along the traditional resort towns of the region's northern coast: the Pullally salt flats and Papudo's beaches, Zapallar bay, and La Ligua's coastal stretch at Los Molles and Pichicuy.",
     },
     stopSlugs: [
+      "papudo-pullally",
       "playa-papudo",
       "playa-chica-papudo",
       "bahia-mirador-zapallar",
@@ -896,18 +897,27 @@ const routes = [
   },
   {
     slug: "ruta-patrimonial-la-ligua-cabildo",
-    durationMinutes: 210,
+    // Reemplazada a pedido del usuario: en vez de plaza/museo de La Ligua,
+    // ahora combina La Chorreada (La Ligua) con el interior cordillerano de
+    // Cabildo (Cerro Chache, San Lorenzo, Alicahue, La Vega).
+    durationMinutes: 270,
     es: {
       name: "Ruta Patrimonial: La Ligua y Cabildo",
       description:
-        "Centro histórico de La Ligua (plaza y museo) y la cordillera de la Costa en Cabildo, con el Cerro Chache como telón de fondo.",
+        "De La Chorreada, en La Ligua, al interior cordillerano de Cabildo: Cerro Chache, San Lorenzo, Alicahue y La Vega.",
     },
     en: {
       name: "Heritage Route: La Ligua & Cabildo",
       description:
-        "La Ligua's historic center (square and museum) and Cabildo's coastal cordillera, with Cerro Chache in the background.",
+        "From La Chorreada, in La Ligua, into Cabildo's mountain interior: Cerro Chache, San Lorenzo, Alicahue and La Vega.",
     },
-    stopSlugs: ["plaza-de-armas-la-ligua", "museo-de-la-ligua", "cerro-chache"],
+    stopSlugs: [
+      "la-ligua-la-chorreada",
+      "cerro-chache",
+      "cabildo-san-lorenzo",
+      "cabildo-alicahue",
+      "cabildo-la-vega",
+    ],
     source: {
       url: "https://www.sitrural.cl/wp-content/uploads/2024/11/Cabildo_turismo.pdf",
       label: "Sitrural — Atractivos turísticos comuna de Cabildo",

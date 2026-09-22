@@ -839,22 +839,28 @@ const places = [
 const routes = [
   {
     slug: "ruta-del-diablo",
-    durationMinutes: 240,
+    // Reordenada a pedido del usuario: parte en Pedegua (Cabildo, bien
+    // metido en el campo — "donde el diablo perdió el poncho") y termina en
+    // Chincolco (interior de Petorca), en vez de quedarse solo entre
+    // Petorca y La Ligua. Se sacan Casa natal de Manuel Montt y Museo de La
+    // Ligua de las paradas (el usuario no las mencionó en la ruta nueva).
+    durationMinutes: 300,
     es: {
       name: "Ruta del Diablo",
       description:
-        'Recorre los lugares detrás del dicho "el diablo murió en Petorca y en La Ligua lo enterraron": la Escalera del Diablo en Hierro Viejo, el centro histórico de Petorca y el Museo de La Ligua.',
+        'Recorre los lugares detrás del dicho "el diablo murió en Petorca y en La Ligua lo enterraron", partiendo bien metido en el campo —"donde el diablo perdió el poncho"— en la antigua estación y el puente de Pedegua, hasta la Escalera del Diablo en Hierro Viejo, la Iglesia La Merced de Petorca y los petroglifos de Chincolco.',
     },
     en: {
       name: "Ruta del Diablo",
       description:
-        "Follows the places behind the old saying \"the Devil died in Petorca and was buried in La Ligua\": the Devil's Staircase in Hierro Viejo, Petorca's historic center and the La Ligua Museum.",
+        "Follows the places behind the old saying \"the Devil died in Petorca and was buried in La Ligua\", starting out where the devil lost his poncho — Pedegua's old railway station and bridge — through the Devil's Staircase in Hierro Viejo, La Merced Church in Petorca, and the Chincolco petroglyphs.",
     },
     stopSlugs: [
+      "pedegua",
+      "pedegua-puente",
       "escalera-del-diablo",
       "iglesia-la-merced-petorca",
-      "casa-natal-manuel-montt",
-      "museo-de-la-ligua",
+      "petorca-petroglifos-chincolco",
     ],
     source: {
       url: "https://petorcaminera.wordpress.com/2016/12/13/el-diablo-murio-en-petorca/",
@@ -863,18 +869,26 @@ const routes = [
   },
   {
     slug: "ruta-costera-papudo-zapallar",
-    durationMinutes: 180,
+    // Se suman Los Molles y Pichicuy (tramo costero de La Ligua) a pedido
+    // del usuario.
+    durationMinutes: 240,
     es: {
       name: "Ruta Costera: Papudo y Zapallar",
       description:
-        "Un recorrido por los balnearios tradicionales del litoral norte de la región de Valparaíso: playas de Papudo y la bahía de Zapallar.",
+        "Un recorrido por los balnearios tradicionales del litoral norte de la región de Valparaíso: playas de Papudo, la bahía de Zapallar, y el tramo costero de La Ligua en Los Molles y Pichicuy.",
     },
     en: {
       name: "Coastal Route: Papudo & Zapallar",
       description:
-        "A trip along the traditional resort towns of the region's northern coast: Papudo's beaches and Zapallar bay.",
+        "A trip along the traditional resort towns of the region's northern coast: Papudo's beaches, Zapallar bay, and La Ligua's coastal stretch at Los Molles and Pichicuy.",
     },
-    stopSlugs: ["playa-papudo", "playa-chica-papudo", "bahia-mirador-zapallar"],
+    stopSlugs: [
+      "playa-papudo",
+      "playa-chica-papudo",
+      "bahia-mirador-zapallar",
+      "la-ligua-los-molles",
+      "la-ligua-pichicuy",
+    ],
     source: {
       url: "https://www.minube.com/tips/actualidad/rincones-unicos-que-visitar-en-papudo-mar-y-montana-te-esperan",
       label: "minube — Qué ver en Papudo",

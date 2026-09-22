@@ -10,6 +10,9 @@ import "maplibre-gl/dist/maplibre-gl.css";
 // varios proyectos). No subir a v6 sin antes configurar el worker según la
 // guía de migración de MapLibre para el bundler de Next.js/Turbopack.
 import { Link } from "@/i18n/navigation";
+import { MapPin } from "@/components/map/map-pin";
+import { CategoryIcon } from "@/components/ui/category-icon";
+import { getCategoryPinColor } from "@/lib/ui/category-gradient";
 import {
   getMapStyleUrl,
   PETORCA_CENTER,
@@ -21,6 +24,7 @@ export interface MapMarkerData {
   name: string;
   latitude: number;
   longitude: number;
+  categorySlug?: string | null;
 }
 
 export interface MapViewProps {
@@ -47,7 +51,7 @@ export function MapView({ className, markers = [] }: MapViewProps) {
         style={{ width: "100%", height: "100%" }}
       >
         <NavigationControl position="top-right" />
-        {markers.map((marker) => (
+        {markers.map((marker, index) => (
           <Marker
             key={marker.slug}
             latitude={marker.latitude}
@@ -58,8 +62,13 @@ export function MapView({ className, markers = [] }: MapViewProps) {
               type="button"
               aria-label={marker.name}
               onClick={() => setSelected(marker)}
-              className="bg-accent h-6 w-6 -translate-y-1 rounded-full border-2 border-white shadow-md transition-transform hover:scale-110"
-            />
+            >
+              <MapPin
+                categorySlug={marker.categorySlug}
+                selected={selected?.slug === marker.slug}
+                delayMs={Math.min(index * 60, 600)}
+              />
+            </button>
           </Marker>
         ))}
         {selected && (
@@ -67,17 +76,29 @@ export function MapView({ className, markers = [] }: MapViewProps) {
             latitude={selected.latitude}
             longitude={selected.longitude}
             anchor="top"
+            offset={16}
             onClose={() => setSelected(null)}
             closeOnClick={false}
+            className="[&_.maplibregl-popup-content]:rounded-xl [&_.maplibregl-popup-content]:p-0 [&_.maplibregl-popup-content]:shadow-lg"
           >
             <Link
               href={{
                 pathname: "/lugares/[slug]",
                 params: { slug: selected.slug },
               }}
-              className="text-accent text-sm font-medium underline underline-offset-2"
+              className="flex items-center gap-2 px-3 py-2"
             >
-              {selected.name} →
+              <span
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white"
+                style={{
+                  backgroundColor: getCategoryPinColor(selected.categorySlug),
+                }}
+              >
+                <CategoryIcon icon={selected.categorySlug} className="h-3.5 w-3.5" />
+              </span>
+              <span className="text-foreground text-sm font-medium">
+                {selected.name} →
+              </span>
             </Link>
           </Popup>
         )}

@@ -10,10 +10,15 @@
  * Riesgos).
  *
  * Uso: pnpm db:seed (requiere NEXT_PUBLIC_SUPABASE_URL y
- * SUPABASE_SERVICE_ROLE_KEY en el entorno).
+ * SUPABASE_SERVICE_ROLE_KEY en .env.local — a diferencia de `next dev`,
+ * este script no es Next.js y no carga .env.local solo; por eso lo hacemos
+ * explícitamente abajo).
  */
+import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../src/types/database";
+
+config({ path: ".env.local" });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

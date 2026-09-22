@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getRouteBySlug } from "@/lib/data/routes";
 import { resolveLocale } from "@/i18n/utils";
-import { MapView } from "@/components/map/map-view";
+import { RouteNavigationMap } from "@/components/map/route-navigation-map";
 import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
 import { RouteStopChecklist } from "@/components/route/route-stop-checklist";
 
@@ -41,7 +41,7 @@ export default async function RouteDetailPage({
       )}
 
       {route.stops.length > 0 && (
-        <MapView
+        <RouteNavigationMap
           className="h-[35vh] w-full overflow-hidden rounded-xl"
           markers={route.stops.map((stop) => ({
             slug: stop.placeSlug,

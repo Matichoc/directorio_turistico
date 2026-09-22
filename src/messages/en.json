@@ -63,7 +63,13 @@
     "checklistProgress": "{visited}/{total} stops visited",
     "markVisited": "Mark as visited",
     "markNotVisited": "Mark as not visited",
-    "routeComplete": "Route complete! 🎉"
+    "routeComplete": "Route complete! 🎉",
+    "startNavigation": "Start navigation",
+    "stopNavigation": "Stop navigation",
+    "calculatingRoute": "Calculating route…",
+    "routeUnavailable": "Couldn't calculate the driving route — showing the regular map.",
+    "navigationSummary": "{distance} km · {duration} min by car",
+    "liveLocationHint": "Allow location access when your browser asks, to see your position on the map."
   },
   "trip": {
     "title": "My trip",

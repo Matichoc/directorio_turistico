@@ -63,7 +63,13 @@
     "checklistProgress": "{visited}/{total} paradas visitadas",
     "markVisited": "Marcar como visitada",
     "markNotVisited": "Marcar como no visitada",
-    "routeComplete": "¡Ruta completa! 🎉"
+    "routeComplete": "¡Ruta completa! 🎉",
+    "startNavigation": "Iniciar navegación",
+    "stopNavigation": "Detener navegación",
+    "calculatingRoute": "Calculando ruta…",
+    "routeUnavailable": "No se pudo calcular la ruta por calle — se muestra el mapa normal.",
+    "navigationSummary": "{distance} km · {duration} min en auto",
+    "liveLocationHint": "Activa tu ubicación cuando el navegador te lo pida, para ver tu posición en el mapa."
   },
   "trip": {
     "title": "Mi recorrido",

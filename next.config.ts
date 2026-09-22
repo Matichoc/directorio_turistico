@@ -26,6 +26,12 @@ const nextConfig: NextConfig = {
         pathname: "/wiki/Special:FilePath/**",
       },
     ],
+    // OJO: declarar `localPatterns` convierte a next/image de "permite
+    // cualquier imagen local sin query string" a "solo permite lo listado
+    // acá" — por eso también hay que declarar `/fotos/**` (fotos locales
+    // estáticas, ver public/fotos/), no solo la ruta nueva con query string;
+    // si no, se rompen las fotos locales existentes (bug real detectado en
+    // esta sesión al agregar la primera entrada).
     localPatterns: [
       {
         // Proxy de fotos de Google Places (src/app/api/place-photo/route.ts):
@@ -35,6 +41,11 @@ const nextConfig: NextConfig = {
         // cualquier query string en esta ruta — la propia ruta ya valida
         // el formato de `ref` y limita `w` antes de llamar a Google.
         pathname: "/api/place-photo",
+      },
+      {
+        // Fotos locales estáticas subidas a mano (ver public/fotos/README.md).
+        pathname: "/fotos/**",
+        search: "",
       },
     ],
   },

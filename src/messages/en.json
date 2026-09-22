@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "home": "Home",
+    "explore": "Explore",
+    "routes": "Routes",
+    "myTrip": "My trip",
+    "info": "Info"
+  },
+  "home": {
+    "title": "Petorca en Ruta",
+    "subtitle": "Discover places and plan your trip across the Petorca province.",
+    "searchPlaceholder": "Search a place or town",
+    "featuredRoutes": "Featured routes",
+    "intent": {
+      "title": "What are you looking for today?",
+      "nature": "Nature",
+      "gastronomy": "Food",
+      "culture": "Culture",
+      "adventure": "Adventure"
+    }
+  },
+  "explore": {
+    "title": "Explore",
+    "mapView": "Map",
+    "listView": "List",
+    "noResults": "We couldn't find places matching these filters.",
+    "filters": {
+      "commune": "Commune",
+      "category": "Category",
+      "features": "Features"
+    }
+  },
+  "place": {
+    "verificationPending": "Pending verification",
+    "openInMaps": "Open on map",
+    "share": "Share",
+    "hours": "Hours",
+    "addToTrip": "Add to my trip"
+  },
+  "route": {
+    "stops": "Stops",
+    "duration": "Estimated duration",
+    "addToTrip": "Add full route"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong. Please try again.",
+    "language": "Language"
+  }
+}

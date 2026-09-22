@@ -286,11 +286,10 @@ const places = [
     slug: "chocolateria-matichoc",
     communeSlug: "la-ligua",
     categorySlug: "gastronomia",
-    // Guayacán 1409 — calle distinta a la de la Plaza de Armas/Museo, así
-    // que se usa un nudge manual en otra dirección respecto del centro de
-    // La Ligua (coordenadas aproximadas, no geocodificación exacta).
-    latitude: -32.4553,
-    longitude: -71.2265,
+    // Coordenadas exactas provistas por el usuario (dueño del local, pin
+    // de Google Maps) — reemplazan el nudge aproximado anterior.
+    latitude: -32.456567773339685,
+    longitude: -71.24680276136594,
     address: "Guayacán 1409, La Ligua",
     phone: "+56975645591",
     website: "https://www.matichoc.cl",
@@ -308,12 +307,12 @@ const places = [
     es: {
       name: "Chocolatería Matichoc",
       short:
-        "Taller y tienda de chocolate artesanal fundada en 2011 por Inés Saavedra; auspiciador de este sitio. Coordenadas aproximadas (centro de La Ligua).",
+        "Taller y tienda de chocolate artesanal fundada en 2011 por Inés Saavedra; auspiciador de este sitio.",
     },
     en: {
       name: "Matichoc Chocolate Shop",
       short:
-        "Artisanal chocolate workshop and store founded in 2011 by Inés Saavedra; this site's sponsor. Coordinates are approximate (La Ligua town center).",
+        "Artisanal chocolate workshop and store founded in 2011 by Inés Saavedra; this site's sponsor.",
     },
     source: {
       url: "https://www.matichoc.cl/inicio",

@@ -35,7 +35,7 @@ export default async function HomePage({
 
   return (
     <main className="flex flex-1 flex-col gap-8">
-      <div className="from-accent-soft to-background border-accent-soft flex flex-col gap-6 border-b bg-gradient-to-b px-4 pt-8 pb-10 dark:from-accent-soft/40">
+      <div className="from-accent-soft to-background border-accent-soft dark:from-accent-soft/40 flex flex-col gap-6 border-b bg-gradient-to-b px-4 pt-8 pb-10">
         <header className="flex items-start justify-between gap-4">
           <p className="text-accent text-xs font-semibold tracking-wide uppercase">
             Petorca · La Ligua

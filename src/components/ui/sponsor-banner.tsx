@@ -14,12 +14,12 @@ export function SponsorBanner() {
   const instagramUrl = process.env.NEXT_PUBLIC_SPONSOR_INSTAGRAM_URL;
 
   return (
-    <div className="border-t border-black/10 bg-sponsor px-4 py-3 dark:border-white/10">
+    <div className="bg-sponsor border-t border-black/10 px-4 py-3 dark:border-white/10">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <span
             aria-hidden="true"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-accent-soft text-sm font-bold text-accent-foreground"
+            className="from-accent to-accent-soft text-accent-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-sm font-bold"
           >
             M
           </span>
@@ -48,7 +48,7 @@ export function SponsorBanner() {
             href={siteUrl}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className="rounded-full bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground hover:opacity-90"
+            className="bg-accent text-accent-foreground rounded-full px-3 py-1.5 text-xs font-medium hover:opacity-90"
           >
             {t("sponsor.cta")}
           </a>

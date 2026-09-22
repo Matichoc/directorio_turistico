@@ -29,7 +29,7 @@ export function MapPin({
         style={{ backgroundColor: color, animationDelay: `${delayMs}ms` }}
       />
       <span
-        className={`animate-pin-pop relative block h-8 w-8 rounded-[50%_50%_50%_0] border-2 border-white shadow-lg transition-transform duration-150 -rotate-45 hover:scale-110 ${
+        className={`animate-pin-pop relative block h-8 w-8 -rotate-45 rounded-[50%_50%_50%_0] border-2 border-white shadow-lg transition-transform duration-150 hover:scale-110 ${
           selected ? "scale-110" : ""
         }`}
         style={{ backgroundColor: color, animationDelay: `${delayMs}ms` }}

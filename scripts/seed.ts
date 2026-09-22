@@ -138,14 +138,13 @@ const places = [
     slug: "museo-de-la-ligua",
     communeSlug: "la-ligua",
     categorySlug: "cultura",
-    // Pedro Polanco N° 698, a un costado de la Plaza de Armas (no en el
-    // mismo punto): coordenadas aproximadas, nudge manual respecto del
-    // centro de La Ligua para no apilar el pin sobre el de la plaza.
-    latitude: -32.4517,
-    longitude: -71.2302,
+    // Coordenadas exactas provistas por el usuario (pin de Google Maps).
+    latitude: -32.44298629572092,
+    longitude: -71.23070231942702,
     photo: {
       filename: "Fotografía del frontis del Museo de La Ligua.jpg",
-      attribution: "Foto: Jorge Salinas Valero / Wikimedia Commons (CC BY-SA 4.0)",
+      attribution:
+        "Foto: Jorge Salinas Valero / Wikimedia Commons (CC BY-SA 4.0)",
     },
     es: {
       name: "Museo de La Ligua",
@@ -166,8 +165,9 @@ const places = [
     slug: "plaza-de-armas-la-ligua",
     communeSlug: "la-ligua",
     categorySlug: "cultura",
-    latitude: -32.4525,
-    longitude: -71.2306,
+    // Coordenadas exactas provistas por el usuario (pin de Google Maps).
+    latitude: -32.44937169782485,
+    longitude: -71.23167456175689,
     photo: {
       filename: "Chile, La Ligua, Plaza de La Ligua (35059234930).jpg",
       attribution: "Foto: Wikimedia Commons (CC BY-SA 2.0)",
@@ -191,8 +191,9 @@ const places = [
     slug: "escalera-del-diablo",
     communeSlug: "petorca",
     categorySlug: "naturaleza",
-    latitude: -32.28528,
-    longitude: -71.0,
+    // Coordenadas exactas provistas por el usuario (pin de Google Maps).
+    latitude: -32.28516042143831,
+    longitude: -70.99993433393475,
     es: {
       name: "Escalera del Diablo",
       short:
@@ -212,9 +213,9 @@ const places = [
     slug: "iglesia-la-merced-petorca",
     communeSlug: "petorca",
     categorySlug: "cultura",
-    // Centro/Plaza de Petorca — coordenadas aproximadas.
-    latitude: -32.25139,
-    longitude: -70.93139,
+    // Coordenadas exactas provistas por el usuario (pin de Google Maps).
+    latitude: -32.25155652774576,
+    longitude: -70.93130407092764,
     photo: {
       filename: "Iglesia de la Merced, Petorca.jpg",
       attribution: "Foto: Wikimedia Commons (ver licencia en la fuente)",
@@ -255,7 +256,8 @@ const places = [
     },
     source: {
       url: "https://www.monumentos.gob.cl/monumentos/monumentos-historicos/casa-donde-nacio-presidente-manuel-montt",
-      label: "Consejo de Monumentos Nacionales — Casa donde nació el presidente Manuel Montt",
+      label:
+        "Consejo de Monumentos Nacionales — Casa donde nació el presidente Manuel Montt",
     },
   },
   {
@@ -316,17 +318,18 @@ const places = [
     slug: "pedegua",
     communeSlug: "cabildo",
     categorySlug: "cultura",
-    latitude: -32.348017,
-    longitude: -71.071565,
+    // Coordenadas exactas provistas por el usuario (pin de Google Maps).
+    latitude: -32.35621569224541,
+    longitude: -71.0699530998617,
     es: {
       name: "Pedegua",
       short:
-        "Localidad rural de la comuna de Cabildo, antigua parada del ramal ferroviario hacia Illapel; conserva la fachada y las bodegas restauradas de su estación de trenes. Coordenadas aproximadas, calculadas desde la referencia UTM de la fuente.",
+        "Localidad rural de la comuna de Cabildo, antigua parada del ramal ferroviario hacia Illapel; conserva la fachada y las bodegas restauradas de su estación de trenes.",
     },
     en: {
       name: "Pedegua",
       short:
-        "A rural village in Cabildo commune, once a stop on the railway branch to Illapel; its train station keeps a restored façade and warehouses. Coordinates are approximate, computed from the source's UTM reference.",
+        "A rural village in Cabildo commune, once a stop on the railway branch to Illapel; its train station keeps a restored façade and warehouses.",
     },
     source: {
       url: "https://valparaisoregion.org/destino/cabildo/",
@@ -337,25 +340,498 @@ const places = [
     slug: "ruta-de-los-tuneles",
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
-    // El trazado sigue la vía férrea más allá de Pedegua, hacia la
-    // cordillera (dirección del túnel Las Palmas) — se ubica el pin a unos
-    // km de distancia del pueblo, no en el mismo punto. Coordenadas
-    // aproximadas (no hay geocodificación exacta de los túneles).
-    latitude: -32.335,
-    longitude: -71.05,
+    // Punto de acceso (Pedegua, coordenadas exactas provistas por el
+    // usuario); los túneles individuales (La Grupa, Las Palmas) tienen su
+    // propio pin más adelante en este archivo.
+    latitude: -32.35621569224541,
+    longitude: -71.0699530998617,
     es: {
       name: "Ruta de los Túneles",
       short:
-        'Antiguo trazado del ferrocarril Cabildo–Pedegua: cinco túneles y dos puentes ferroviarios en un entorno natural, incluido el histórico túnel Las Palmas (966 m, inaugurado en 1914). Se recorre en bicicleta o vehículo todo terreno. Coordenadas aproximadas (acceso desde Pedegua).',
+        "Antiguo trazado del ferrocarril Cabildo–Pedegua: cinco túneles y dos puentes ferroviarios en un entorno natural, incluidos los túneles La Grupa y Las Palmas (966 m, inaugurado en 1914). Se recorre en bicicleta o vehículo todo terreno; el acceso es desde Pedegua.",
     },
     en: {
       name: "Ruta de los Túneles (Tunnel Route)",
       short:
-        "The old Cabildo–Pedegua railway line: five tunnels and two bridges through a natural landscape, including the historic Las Palmas tunnel (966 m, opened in 1914). Usually ridden by bike or off-road vehicle. Coordinates are approximate (access from Pedegua).",
+        "The old Cabildo–Pedegua railway line: five tunnels and two bridges through a natural landscape, including the La Grupa and Las Palmas tunnels (966 m, opened in 1914). Usually ridden by bike or off-road vehicle; access is from Pedegua.",
     },
     source: {
       url: "https://www.geovirtual2.cl/Ferrocarril-Chile-Coquimbo/Ferrocarril-Puente-Pedegua-Chile-01.htm",
-      label: "GeoVirtual — Ferrocarriles del Norte de Chile: puente y túneles de Pedegua",
+      label:
+        "GeoVirtual — Ferrocarriles del Norte de Chile: puente y túneles de Pedegua",
+    },
+  },
+  // A partir de acá: lugares agregados a pedido del usuario (2026-09-22),
+  // con coordenadas exactas que él mismo tomó de Google Maps — no son
+  // nudges ni aproximaciones nuestras. Carpetas de fotos ya creadas en
+  // public/fotos/<slug>/ a la espera de que el usuario suba imágenes.
+  {
+    slug: "la-ligua-valle-hermoso",
+    communeSlug: "la-ligua",
+    categorySlug: "cultura",
+    latitude: -32.44181733434206,
+    longitude: -71.20140631536381,
+    es: {
+      name: "Valle Hermoso",
+      short:
+        'Barrio artesanal conocido como "la cuna del tejido": cerca de 150 tiendas y talleres donde se ve a los artesanos tejer en telares tradicionales con lana de oveja, alpaca y vicuña; en verano se celebra la Fiesta del Tejido.',
+    },
+    en: {
+      name: "Valle Hermoso",
+      short:
+        'A craft district known as "the cradle of weaving": around 150 shops and workshops where artisans weave on traditional looms with sheep, alpaca and vicuña wool; the Weaving Festival is held here every summer.',
+    },
+    source: {
+      url: "https://www.sercotec.cl/barrios-comerciales/barrio-comercial-valle-hermoso-la-ligua/",
+      label: "Sercotec — Barrio Comercial Valle Hermoso, La Ligua",
+    },
+  },
+  {
+    slug: "la-ligua-area-de-dulces",
+    communeSlug: "la-ligua",
+    categorySlug: "gastronomia",
+    latitude: -32.47741266666833,
+    longitude: -71.26927646175562,
+    es: {
+      name: "Área de los Dulces de La Ligua",
+      short:
+        "Puestos y locales junto a la Ruta 5 Norte donde se vende la tradición repostera de La Ligua (alfajores, empolvados, cocadas, palitas) — con Sello de Origen desde 2014 y declarada Patrimonio Cultural Inmaterial de Chile en 2019.",
+    },
+    en: {
+      name: "La Ligua Sweets District",
+      short:
+        "Roadside stalls and shops along Route 5 North selling La Ligua's traditional sweets (alfajores, empolvados, cocadas, palitas) — a protected Denomination of Origin since 2014, declared Chile's Intangible Cultural Heritage in 2019.",
+    },
+    source: {
+      url: "https://www.patrimoniocultural.gob.cl/noticias/tradicion-de-los-dulces-de-la-ligua-ingresa-al-registro-de-patrimonio-cultural-inmaterial",
+      label:
+        "Servicio Nacional del Patrimonio Cultural — Tradición de los dulces de La Ligua",
+    },
+  },
+  {
+    slug: "la-ligua-la-chorreada",
+    communeSlug: "la-ligua",
+    categorySlug: "naturaleza",
+    latitude: -32.53980136909335,
+    longitude: -71.13524334383668,
+    es: {
+      name: "La Chorreada",
+      short:
+        'Sector rural de la comuna de La Ligua conocido localmente como "La Chorreada". Contenido pendiente de más fuentes — si conoces el lugar y quieres ayudarnos a describirlo mejor, cuéntanos.',
+    },
+    en: {
+      name: "La Chorreada",
+      short:
+        'A rural sector of La Ligua commune known locally as "La Chorreada". Description pending better sources — if you know this spot, let us know so we can describe it properly.',
+    },
+    source: {
+      url: "https://www.instagram.com/explore/locations/586679601/la-chorreada-la-ligua/",
+      label: "Instagram — La Chorreada, La Ligua",
+    },
+  },
+  {
+    slug: "la-ligua-los-molles",
+    communeSlug: "la-ligua",
+    categorySlug: "playa",
+    latitude: -32.236287985456514,
+    longitude: -71.509924044495,
+    es: {
+      name: "Los Molles",
+      short:
+        "Ex caleta de pescadores de los años 60, hoy uno de los mejores destinos de buceo de Chile por sus aguas turquesas; también surf, kayak y senderos por los cerros, cerca de la Reserva Nacional Pingüino de Humboldt.",
+    },
+    en: {
+      name: "Los Molles",
+      short:
+        "A former 1960s fishing cove, now one of Chile's best diving destinations for its turquoise water; also surfing, kayaking and hillside trails, near the Humboldt Penguin National Reserve.",
+    },
+    source: {
+      url: "https://es.wikipedia.org/wiki/Los_Molles_(Chile)",
+      label: "Wikipedia — Los Molles (Chile)",
+    },
+  },
+  {
+    slug: "la-ligua-pichicuy",
+    communeSlug: "la-ligua",
+    categorySlug: "playa",
+    latitude: -32.34395655230688,
+    longitude: -71.46046803135772,
+    es: {
+      name: "Pichicuy",
+      short:
+        'Balneario de nombre mapudungún ("pichi kuykuy", puentecito), con un humedal protegido junto a la playa y la ola internacional "La Marmola" (hasta 13 m), que atrae surfistas de todo el mundo.',
+    },
+    en: {
+      name: "Pichicuy",
+      short:
+        'A resort town with a Mapudungun name ("pichi kuykuy", little bridge), a protected wetland next to the beach, and the international wave "La Marmola" (up to 13 m), which draws surfers worldwide.',
+    },
+    source: {
+      url: "https://es.wikipedia.org/wiki/Pichicuy",
+      label: "Wikipedia — Pichicuy",
+    },
+  },
+  {
+    slug: "papudo-pullally",
+    communeSlug: "papudo",
+    categorySlug: "naturaleza",
+    latitude: -32.43467097116685,
+    longitude: -71.31775915116937,
+    es: {
+      name: "Salinas de Pullally",
+      short:
+        "Humedal entre las desembocaduras de los ríos Petorca y La Ligua, declarado Santuario de la Naturaleza en 2020; alberga 137 especies de aves (más de un cuarto de las descritas en Chile), varias migratorias.",
+    },
+    en: {
+      name: "Salinas de Pullally",
+      short:
+        "A wetland between the mouths of the Petorca and La Ligua rivers, declared a Nature Sanctuary in 2020; home to 137 bird species (over a quarter of those recorded in Chile), several of them migratory.",
+    },
+    source: {
+      url: "https://es.wikipedia.org/wiki/Humedal_Salinas_de_Pullally_y_Dunas_de_Longotoma",
+      label: "Wikipedia — Humedal Salinas de Pullally y Dunas de Longotoma",
+    },
+  },
+  {
+    slug: "papudo-playa-los-lilenes",
+    communeSlug: "papudo",
+    categorySlug: "playa",
+    latitude: -32.49109919617068,
+    longitude: -71.4326761566141,
+    es: {
+      name: "Playa Los Lilenes",
+      short:
+        "Playa escondida y tranquila al norte de Papudo, a la que se llega por un sendero costero de unos 800 m (o a caballo); pocas visitas, ideal para nadar y descansar rodeado de naturaleza.",
+    },
+    en: {
+      name: "Los Lilenes Beach",
+      short:
+        "A quiet, hidden beach north of Papudo, reached via an ~800 m coastal path (or on horseback); few visitors, great for swimming and relaxing surrounded by nature.",
+    },
+    source: {
+      url: "https://tres60.travel/el-lilen-la-playa-escondida-de-chile-que-combina-naturaleza-y-tranquilidad/",
+      label: "tres60.travel — El Lilén, la playa escondida de Chile",
+    },
+  },
+  {
+    slug: "papudo-parque",
+    communeSlug: "papudo",
+    categorySlug: "naturaleza",
+    latitude: -32.50461851619594,
+    longitude: -71.44310276706875,
+    es: {
+      name: "Costanera de Papudo",
+      short:
+        'Paseo peatonal "La Terraza", desde la gruta de la Virgen de Lourdes hasta Av. Glorias Navales, bordeando Playa Chica y Playa Grande; tiendas de artesanía, restaurantes, juegos infantiles y club de yates.',
+    },
+    en: {
+      name: "Papudo Waterfront",
+      short:
+        '"La Terraza" pedestrian promenade, from the Virgin of Lourdes grotto to Glorias Navales avenue, running along Playa Chica and Playa Grande; craft shops, restaurants, a playground and a yacht club.',
+    },
+    source: {
+      url: "https://www.playasdechile.com/playas-en-papudo/",
+      label: "PlayasDeChile.com — Playas en Papudo",
+    },
+  },
+  {
+    slug: "papudo-plaza",
+    communeSlug: "papudo",
+    categorySlug: "cultura",
+    latitude: -32.50745877114493,
+    longitude: -71.44604956690678,
+    es: {
+      name: "Plaza de Papudo",
+      short:
+        "Plaza central del pueblo, punto de encuentro de la comunidad y sede de ferias artesanales; rodeada de tiendas y restaurantes, con áreas verdes para sentarse.",
+    },
+    en: {
+      name: "Papudo Main Square",
+      short:
+        "The town's central square, a community gathering point and home to craft fairs; surrounded by shops and restaurants, with green spaces to sit.",
+    },
+    source: {
+      url: "http://www.vregion.cl/petorca/papudo/",
+      label: "Valparaíso Región — Destino Papudo",
+    },
+  },
+  {
+    slug: "papudo-paseo-conquistador",
+    communeSlug: "papudo",
+    categorySlug: "naturaleza",
+    latitude: -32.502264751938554,
+    longitude: -71.45353903033985,
+    es: {
+      name: "Paseo El Conquistador",
+      short:
+        "Sendero peatonal costero (abierto en 1986) que lleva a la Cueva de los Murciélagos y a la Cueva del Pirata Drake — según la leyenda, Francis Drake descansó ahí cinco días en 1578 — hasta Playa Los Changos.",
+    },
+    en: {
+      name: "El Conquistador Walk",
+      short:
+        "A coastal walking path (opened in 1986) leading to the Bat Cave and Pirate Drake's Cave — legend says Francis Drake rested there for five days in 1578 — ending at Los Changos beach.",
+    },
+    source: {
+      url: "https://conociendochile.com/c-region-de-valparaiso/papudo/",
+      label: "ConociendoChile — Papudo",
+    },
+  },
+  {
+    slug: "zapallar-laguna",
+    communeSlug: "zapallar",
+    categorySlug: "naturaleza",
+    latitude: -32.628327059623025,
+    longitude: -71.43007578194081,
+    es: {
+      name: "Laguna de Zapallar",
+      short:
+        "Humedal en la desembocadura de los esteros Catapilco y La Canela, santuario de aves acuáticas (tagua, zarapito, gansos); playa de casi 1 km y senderos junto al agua.",
+    },
+    en: {
+      name: "Zapallar Lagoon",
+      short:
+        "A wetland at the mouth of the Catapilco and La Canela streams, a sanctuary for waterbirds (coots, curlews, geese); a beach almost 1 km long and trails along the water.",
+    },
+    source: {
+      url: "https://laderasur.com/articulo/maitencillo-y-laguna-de-zapallar-tres-panoramas-imperdibles-por-cielo-mar-y-tierra/",
+      label: "Ladera Sur — Maitencillo y Laguna de Zapallar",
+    },
+  },
+  {
+    slug: "zapallar-cachagua",
+    communeSlug: "zapallar",
+    categorySlug: "naturaleza",
+    latitude: -32.5781610253271,
+    longitude: -71.45509798046939,
+    es: {
+      name: "Cachagua — Isla de los Pingüinos y Playa Las Cujas",
+      short:
+        "Isla Cachagua (4,5 ha, santuario de la naturaleza desde 1989) alberga hasta 2.000 pingüinos de Humboldt, uno de los 5 sitios de nidificación más importantes de Chile; junto a ella, la playa Las Cujas, parte del sendero costero Zapallar–Cachagua.",
+    },
+    en: {
+      name: "Cachagua — Penguin Island & Las Cujas Beach",
+      short:
+        "Cachagua Island (4.5 ha, a nature sanctuary since 1989) hosts up to 2,000 Humboldt penguins, one of Chile's 5 most important nesting sites; next to it, Las Cujas beach, part of the Zapallar–Cachagua coastal trail.",
+    },
+    source: {
+      url: "https://www.munizapallar.cl/lugares-de-interes",
+      label: "Municipalidad de Zapallar — Lugares de Interés",
+    },
+  },
+  {
+    slug: "zapallar-catapilco",
+    communeSlug: "zapallar",
+    categorySlug: "naturaleza",
+    latitude: -32.63166740422701,
+    longitude: -71.28061639377215,
+    es: {
+      name: "Catapilco y Palos Quemados",
+      short:
+        "Sector cordillerano de Zapallar con la laguna de Catapilco y la cascada de Palos Quemados; ahí hubo estaciones del tren que a inicios del siglo XX llevaba veraneantes hasta Zapallar.",
+    },
+    en: {
+      name: "Catapilco & Palos Quemados",
+      short:
+        "A foothill sector of Zapallar with the Catapilco lagoon and the Palos Quemados waterfall; it once had train stations that carried summer visitors to Zapallar in the early 20th century.",
+    },
+    source: {
+      url: "https://es.wikipedia.org/wiki/Estaci%C3%B3n_Catapilco",
+      label: "Wikipedia — Estación Catapilco",
+    },
+  },
+  {
+    slug: "cabildo-plaza",
+    communeSlug: "cabildo",
+    categorySlug: "cultura",
+    latitude: -32.426628719411156,
+    longitude: -71.06650764657454,
+    es: {
+      name: "Plaza de Cabildo",
+      short:
+        "Plaza central de Cabildo, punto de encuentro de la ciudad y punto de partida para recorrer los atractivos naturales y patrimoniales de la comuna.",
+    },
+    en: {
+      name: "Cabildo Main Square",
+      short:
+        "Cabildo's central square, the town's gathering point and a starting point for exploring the commune's natural and heritage sites.",
+    },
+    source: {
+      url: "https://www.sitrural.cl/wp-content/uploads/2024/11/Cabildo_turismo.pdf",
+      label: "Sitrural — Atractivos turísticos comuna de Cabildo",
+    },
+  },
+  {
+    slug: "cabildo-alicahue",
+    communeSlug: "cabildo",
+    categorySlug: "cultura",
+    latitude: -32.35112074114886,
+    longitude: -70.78204457980051,
+    es: {
+      name: "Alicahue",
+      short:
+        "Valle cordillerano a 34 km de Cabildo, centro turístico de la comuna desde donde parten circuitos a la laguna, el Camino del Inca y petroglifos; en el sector se ubica la legendaria casa de La Quintrala.",
+    },
+    en: {
+      name: "Alicahue",
+      short:
+        "A mountain valley 34 km from Cabildo, the commune's tourism hub with routes to the lagoon, the Inca Road and petroglyphs; the legendary house of La Quintrala sits in this area.",
+    },
+    source: {
+      url: "https://alicahue.cl/",
+      label: "Alicahue.cl — Valle Patrimonial y Turístico",
+    },
+  },
+  {
+    slug: "cabildo-san-lorenzo",
+    communeSlug: "cabildo",
+    categorySlug: "cultura",
+    latitude: -32.44020057056321,
+    longitude: -71.00677988405883,
+    es: {
+      name: "San Lorenzo",
+      short:
+        "Localidad rural a 10 km de Cabildo hacia la cordillera (~2.800 habitantes); su parroquia, dedicada al patrono de mineros y campesinos, se independizó en 1633 con apoyo de Catalina de los Ríos (La Quintrala).",
+    },
+    en: {
+      name: "San Lorenzo",
+      short:
+        "A rural village 10 km from Cabildo toward the mountains (~2,800 residents); its parish, dedicated to the patron saint of miners and peasants, became independent in 1633 with the backing of Catalina de los Ríos (La Quintrala).",
+    },
+    source: {
+      url: "https://revista.cenizas.cl/san-lorenzo-riqueza-patrimonial-y-religiosa-en-la-comuna-de-cabildo/",
+      label: "Revista Cenizas — San Lorenzo, riqueza patrimonial y religiosa",
+    },
+  },
+  {
+    slug: "cabildo-la-vega",
+    communeSlug: "cabildo",
+    categorySlug: "naturaleza",
+    latitude: -32.44805056182343,
+    longitude: -70.94619536681728,
+    es: {
+      name: "La Vega",
+      short:
+        "Sector a 39 km de Cabildo, de acceso no pavimentado desde Alicahue; una cascada alimentada por la laguna El Chepical riega los cultivos del lugar, que tiene capilla, cabañas y zona de camping.",
+    },
+    en: {
+      name: "La Vega",
+      short:
+        "A sector 39 km from Cabildo, reached by an unpaved road from Alicahue; a waterfall fed by the El Chepical lagoon irrigates local crops, and the area has a chapel, cabins and a campsite.",
+    },
+    source: {
+      url: "https://www.sitrural.cl/wp-content/uploads/2020/03/Cabildo_turismo.pdf",
+      label: "Sitrural — Atractivos turísticos comuna de Cabildo",
+    },
+  },
+  {
+    slug: "cabildo-tunel-la-grupa",
+    communeSlug: "cabildo",
+    categorySlug: "naturaleza",
+    latitude: -32.41055413711995,
+    longitude: -71.0758728174616,
+    es: {
+      name: "Túnel La Grupa",
+      short:
+        "Túnel de 1.277 m construido en 1907 para conectar por ferrocarril las estaciones de Pedegua y Cabildo; tras el cierre del ramal en los años 70 se pavimentó como parte de la ruta E-35 (Cabildo–Petorca), con semáforo de una vía.",
+    },
+    en: {
+      name: "Túnel La Grupa",
+      short:
+        "A 1,277 m tunnel built in 1907 to link the Pedegua and Cabildo railway stations; after the branch line closed in the 1970s it was paved as part of route E-35 (Cabildo–Petorca), with a single-lane traffic light.",
+    },
+    source: {
+      url: "https://es.wikipedia.org/wiki/T%C3%BAnel_La_Grupa",
+      label: "Wikipedia — Túnel La Grupa",
+    },
+  },
+  {
+    slug: "pedegua-puente",
+    communeSlug: "cabildo",
+    categorySlug: "naturaleza",
+    latitude: -32.348696990370975,
+    longitude: -71.07050661121622,
+    es: {
+      name: "Puente Pedegua",
+      short:
+        "Puente ferroviario histórico junto a Pedegua, parte del antiguo ramal Cabildo–Illapel; uno de los dos puentes que se cruzan en la Ruta de los Túneles.",
+    },
+    en: {
+      name: "Pedegua Bridge",
+      short:
+        "A historic railway bridge near Pedegua, part of the old Cabildo–Illapel branch line; one of the two bridges crossed on the Ruta de los Túneles.",
+    },
+    source: {
+      url: "https://www.geovirtual2.cl/Ferrocarril-Chile-Coquimbo/Ferrocarril-Puente-Pedegua-Chile-01.htm",
+      label: "GeoVirtual — Ferrocarriles del Norte de Chile: Puente Pedegua",
+    },
+  },
+  {
+    slug: "petorca-tunel-las-palmas",
+    // Nota: geográficamente el túnel queda del lado de la Región de
+    // Coquimbo (comuna de Los Vilos), no en la provincia de Petorca — pero
+    // es parte del mismo corredor ferroviario histórico que Pedegua/La
+    // Grupa y el usuario lo pidió como parte de esta ruta, así que se
+    // incluye bajo la comuna de Cabildo (la más cercana de nuestro
+    // catálogo) en vez de agregar una comuna nueva para un solo lugar.
+    communeSlug: "cabildo",
+    categorySlug: "naturaleza",
+    latitude: -32.165013387998314,
+    longitude: -71.15352300594377,
+    es: {
+      name: "Túnel Las Palmas",
+      short:
+        "Túnel ferroviario de 966 m inaugurado en 1914 (parte de la red Longitudinal Norte); declarado Monumento Histórico en 2011 junto a otros túneles y puentes del mismo trazado.",
+    },
+    en: {
+      name: "Túnel Las Palmas",
+      short:
+        "A 966 m railway tunnel opened in 1914 (part of the Northern Longitudinal network); declared a National Historic Monument in 2011 together with other tunnels and bridges on the same line.",
+    },
+    source: {
+      url: "https://www.monumentos.gob.cl/monumentos/monumentos-historicos/tunel-las-palmas",
+      label: "Consejo de Monumentos Nacionales — Túnel Las Palmas",
+    },
+  },
+  {
+    slug: "petorca-plaza",
+    communeSlug: "petorca",
+    categorySlug: "cultura",
+    latitude: -32.25155652774576,
+    longitude: -70.93130407092764,
+    es: {
+      name: "Plaza de Petorca",
+      short:
+        'Plaza central de Petorca, con un círculo donde está el monumento a Manuel Montt; ahí mismo se ubica la Iglesia La Merced. Una remodelación reciente la hizo conocida como "la plaza más cara de Chile".',
+    },
+    en: {
+      name: "Petorca Main Square",
+      short:
+        "Petorca's central square, with a circle holding the monument to Manuel Montt; the La Merced Church stands right on it. A recent remodel made it known as \"Chile's most expensive plaza\".",
+    },
+    source: {
+      url: "https://www.infopetorca.cl/2019/07/la-plaza-mas-cara-de-chile-en-petorca.html",
+      label: "InfoPetorca — La plaza más cara de Chile en Petorca",
+    },
+  },
+  {
+    slug: "petorca-petroglifos-chincolco",
+    communeSlug: "petorca",
+    categorySlug: "cultura",
+    latitude: -32.16465513411942,
+    longitude: -70.7752963617689,
+    es: {
+      name: "Petroglifos de Chincolco",
+      short:
+        "Grabados rupestres en piedra asociados a las culturas El Molle, Las Ánimas, diaguita, mapuche e incluso incaica, con motivos geométricos, humanos, animales y serpientes; sin protección oficial, algunos dañados por vandalismo en 2021.",
+    },
+    en: {
+      name: "Chincolco Petroglyphs",
+      short:
+        "Rock carvings linked to the El Molle, Las Ánimas, Diaguita, Mapuche and even Inca cultures, with geometric, human, animal and serpent motifs; unprotected, some damaged by vandalism in 2021.",
+    },
+    source: {
+      url: "https://repositorio.uchile.cl/handle/2250/201561",
+      label: "Repositorio Universidad de Chile — Petroglifos de Chincolco",
     },
   },
 ] as const;

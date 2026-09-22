@@ -6,7 +6,7 @@
  * navegador).
  *
  * Solo administra las filas que él mismo creó (storage_path empieza con
- * `GOOGLE_PROXY_PREFIX`): las deja en 0 hasta llenar el cupo, y en cada
+ * `GOOGLE_PLACE_PHOTO_PREFIX`): las deja en 0 hasta llenar el cupo, y en cada
  * corrida las reemplaza por una búsqueda fresca (por si Google devuelve
  * fotos distintas) en vez de ir acumulando. Nunca toca ni cuenta como
  * "cupo lleno" una foto curada a mano (Wikimedia, `/fotos/...` local) — esa
@@ -21,6 +21,7 @@
 import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../src/types/database";
+import { GOOGLE_PLACE_PHOTO_PREFIX } from "./lib/google-photo-prefix";
 
 config({ path: ".env.local" });
 
@@ -47,7 +48,6 @@ const supabase = createClient<Database>(supabaseUrl, serviceRoleKey, {
 
 const TARGET_PHOTOS_PER_PLACE = 5;
 const PROXY_WIDTH = 1200;
-const GOOGLE_PROXY_PREFIX = "/api/place-photo?ref=";
 const SEARCH_RADIUS_METERS = 1500;
 const DELAY_BETWEEN_REQUESTS_MS = 250;
 
@@ -111,7 +111,7 @@ function photoToRow(
   const attributionName = photo.authorAttributions?.[0]?.displayName;
   return {
     place_id: placeId,
-    storage_path: `${GOOGLE_PROXY_PREFIX}${encodeURIComponent(photo.name)}&w=${PROXY_WIDTH}`,
+    storage_path: `${GOOGLE_PLACE_PHOTO_PREFIX}${encodeURIComponent(photo.name)}&w=${PROXY_WIDTH}`,
     alt_text: attributionName
       ? `Foto: ${attributionName} (Google Maps)`
       : "Foto: Google Maps",
@@ -172,7 +172,7 @@ async function main() {
       protectedCount: 0,
       googleCount: 0,
     };
-    if (image.storage_path.startsWith(GOOGLE_PROXY_PREFIX)) {
+    if (image.storage_path.startsWith(GOOGLE_PLACE_PHOTO_PREFIX)) {
       entry.googleCount += 1;
     } else {
       entry.protectedCount += 1;
@@ -222,7 +222,7 @@ async function main() {
         .from("place_images")
         .delete()
         .eq("place_id", place.id)
-        .like("storage_path", `${GOOGLE_PROXY_PREFIX}%`);
+        .like("storage_path", `${GOOGLE_PLACE_PHOTO_PREFIX}%`);
 
       const rows = photos.map((photo, index) =>
         photoToRow(photo, place.id, protectedCount + index),

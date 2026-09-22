@@ -18,6 +18,7 @@
 import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../src/types/database";
+import { GOOGLE_PLACE_PHOTO_PREFIX } from "./lib/google-photo-prefix";
 
 /**
  * URL hotlinkeable a un archivo de Wikimedia Commons vía `Special:FilePath`
@@ -1077,7 +1078,15 @@ async function seedPlaces(
 
     await addSource("place", data.id, place.source.url, place.source.label);
 
-    await supabase.from("place_images").delete().eq("place_id", data.id);
+    // Solo borra fotos curadas a mano (no las que administra
+    // fetch-google-photos.ts) — sin este filtro, cada `pnpm db:seed`
+    // borraba también las fotos de Google (bug real: el usuario reportó
+    // que las fotos de Google "desaparecían" después de re-seedear).
+    await supabase
+      .from("place_images")
+      .delete()
+      .eq("place_id", data.id)
+      .not("storage_path", "like", `${GOOGLE_PLACE_PHOTO_PREFIX}%`);
     if ("photo" in place) {
       const storagePath =
         "filename" in place.photo

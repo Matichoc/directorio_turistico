@@ -13,7 +13,9 @@ export interface Place {
   description: string | null;
   shortDescription: string | null;
   communeId: string;
+  communeName: string;
   categoryId: string;
+  categoryName: string;
   latitude: number;
   longitude: number;
   address: string | null;
@@ -27,6 +29,7 @@ export interface Place {
 export interface RouteStop {
   id: string;
   placeId: string;
+  placeSlug: string;
   placeName: string;
   position: number;
   notes: string | null;
@@ -40,4 +43,47 @@ export interface Route {
   estimatedDurationMinutes: number | null;
   publicationStatus: PublicationStatus;
   stops: RouteStop[];
+}
+
+export interface Commune {
+  id: string;
+  slug: string;
+  name: string;
+}
+
+export interface Category {
+  id: string;
+  slug: string;
+  name: string;
+  icon: string | null;
+}
+
+export interface PlaceCard {
+  id: string;
+  slug: string;
+  name: string;
+  shortDescription: string | null;
+  communeName: string;
+  categoryName: string;
+  categorySlug: string;
+  latitude: number;
+  longitude: number;
+  verificationStatus: VerificationStatus;
+  tags: string[];
+}
+
+export interface RouteCard {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  estimatedDurationMinutes: number | null;
+  stopsCount: number;
+}
+
+export interface PlaceFilters {
+  communeSlug?: string;
+  categorySlug?: string;
+  tagSlug?: string;
+  query?: string;
 }

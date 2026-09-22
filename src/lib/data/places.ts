@@ -14,13 +14,12 @@ interface PlaceImageResult {
   position: number;
 }
 
-/** Primera foto por `position` (0 o más `place_images` por lugar). */
-function pickPrimaryPhoto(images: PlaceImageResult[] | null | undefined) {
-  const sorted = (images ?? []).slice().sort((a, b) => a.position - b.position);
-  return {
-    photoUrl: sorted[0]?.storage_path ?? null,
-    photoAttribution: sorted[0]?.alt_text ?? null,
-  };
+/** Fotos ordenadas por `position` (0 o más `place_images` por lugar). */
+function sortPhotos(images: PlaceImageResult[] | null | undefined) {
+  return (images ?? [])
+    .slice()
+    .sort((a, b) => a.position - b.position)
+    .map((image) => ({ url: image.storage_path, attribution: image.alt_text }));
 }
 
 const PLACE_QUERY =
@@ -83,7 +82,6 @@ export async function getPlaceBySlug(
   }
 
   const translation = data.place_translations[0];
-  const photo = pickPrimaryPhoto(data.place_images);
 
   return {
     id: data.id,
@@ -101,8 +99,7 @@ export async function getPlaceBySlug(
     address: data.address,
     phone: data.phone,
     website: data.website,
-    photoUrl: photo.photoUrl,
-    photoAttribution: photo.photoAttribution,
+    photos: sortPhotos(data.place_images),
     publicationStatus: data.publication_status,
     verificationStatus: data.verification_status,
     tags: (data.place_tags ?? [])
@@ -154,7 +151,7 @@ function mapPlaceCard(place: PlaceListQueryResult): PlaceCard {
     latitude: place.latitude,
     longitude: place.longitude,
     verificationStatus: place.verification_status,
-    photoUrl: pickPrimaryPhoto(place.place_images).photoUrl,
+    photoUrl: sortPhotos(place.place_images)[0]?.url ?? null,
     tags: (place.place_tags ?? [])
       .map((placeTag) => placeTag.tags?.slug)
       .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),

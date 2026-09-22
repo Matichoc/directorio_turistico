@@ -22,8 +22,7 @@ export interface Place {
   address: string | null;
   phone: string | null;
   website: string | null;
-  photoUrl: string | null;
-  photoAttribution: string | null;
+  photos: { url: string; attribution: string | null }[];
   publicationStatus: PublicationStatus;
   verificationStatus: VerificationStatus;
   tags: string[];

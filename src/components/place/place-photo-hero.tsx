@@ -1,13 +1,22 @@
+"use client";
+
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { PhotoOrIcon } from "@/components/place/photo-or-icon";
 import { CategoryBadge } from "@/components/place/category-badge";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 
+interface PlacePhoto {
+  url: string;
+  attribution: string | null;
+}
+
 /**
- * Cabecera de la ficha de lugar: muestra la foto real si existe (Wikimedia
- * Commons con licencia libre, cargada por `scripts/seed.ts`) con su crédito;
- * si no hay foto, cae a un gradiente por categoría con ícono en vez de un
- * hueco vacío (ver docs/PLAN.md Riesgos).
+ * Cabecera de la ficha de lugar: carrusel de fotos reales si existen
+ * (Wikimedia Commons, Google Places o locales — ver `scripts/seed.ts` y
+ * `scripts/fetch-google-photos.ts`) con flechas/puntos para navegar entre
+ * ellas y su crédito; si no hay ninguna, cae a un gradiente por categoría
+ * con ícono en vez de un hueco vacío (ver docs/PLAN.md Riesgos).
  *
  * Alto fijo (`h-48 sm:h-64`) en vez de `aspect-ratio`: con aspect-ratio el
  * alto crece junto con el ancho de pantalla (100vw), así que en monitores
@@ -16,42 +25,91 @@ import { getCategoryGradient } from "@/lib/ui/category-gradient";
  * Con alto fijo el recorte (`object-cover`) hace más trabajo, por eso se
  * mantiene `object-[center_65%]` (sesgado hacia abajo) para fotos en
  * formato retrato/arquitectura donde el centro exacto muestra puro cielo.
+ *
+ * `key={current?.url}` en `PhotoOrIcon`: sin esto, el estado interno de
+ * "la imagen falló" (`useState` de un `onError`) queda pegado entre fotos
+ * — una foto rota dejaría el ícono de categoría fijo aunque el usuario
+ * navegue a otra foto que sí carga bien.
  */
 export function PlacePhotoHero({
   categorySlug,
   categoryName,
   name,
-  photoUrl,
-  photoAttribution,
+  photos,
 }: {
   categorySlug: string;
   categoryName?: string | null;
   name: string;
-  photoUrl?: string | null;
-  photoAttribution?: string | null;
+  photos: PlacePhoto[];
 }) {
   const t = useTranslations("place");
+  const [index, setIndex] = useState(0);
+
+  const current = photos[index] ?? null;
+  const hasMultiple = photos.length > 1;
+
+  function goTo(nextIndex: number) {
+    setIndex((nextIndex + photos.length) % photos.length);
+  }
 
   return (
     <div
       className={`relative flex h-48 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br sm:h-64 ${getCategoryGradient(categorySlug)}`}
     >
       <PhotoOrIcon
-        photoUrl={photoUrl}
+        key={current?.url ?? "placeholder"}
+        photoUrl={current?.url}
         alt={name}
         categorySlug={categorySlug}
         iconClassName="h-20 w-20 text-white/25"
         imgClassName="object-cover object-[center_65%]"
         sizes="100vw"
       />
+
       <CategoryBadge
         categorySlug={categorySlug}
         categoryName={categoryName}
         className="absolute top-2 left-2"
       />
+
+      {hasMultiple && (
+        <>
+          <button
+            type="button"
+            onClick={() => goTo(index - 1)}
+            aria-label={t("previousPhoto")}
+            className="absolute top-1/2 left-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-lg text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => goTo(index + 1)}
+            aria-label={t("nextPhoto")}
+            className="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-lg text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+          >
+            ›
+          </button>
+          <div className="absolute top-2 right-2 flex gap-1">
+            {photos.map((photo, photoIndex) => (
+              <button
+                key={photo.url}
+                type="button"
+                onClick={() => setIndex(photoIndex)}
+                aria-label={t("goToPhoto", { number: photoIndex + 1 })}
+                aria-current={photoIndex === index}
+                className={`h-1.5 rounded-full transition-all ${
+                  photoIndex === index ? "w-4 bg-white" : "w-1.5 bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
       <span className="absolute right-2 bottom-2 rounded-full bg-black/40 px-2 py-1 text-[11px] text-white/90 backdrop-blur-sm">
-        {photoUrl
-          ? (photoAttribution ?? t("photoCredit"))
+        {current
+          ? (current.attribution ?? t("photoCredit"))
           : t("photosComingSoon")}
       </span>
     </div>

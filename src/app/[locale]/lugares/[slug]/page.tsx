@@ -45,8 +45,7 @@ export default async function PlaceDetailPage({
         categorySlug={place.categorySlug}
         categoryName={place.categoryName}
         name={place.name}
-        photoUrl={place.photoUrl}
-        photoAttribution={place.photoAttribution}
+        photos={place.photos}
       />
 
       <MapView

@@ -13,13 +13,14 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
       className="border-accent-soft hover:border-accent group flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/[.03]"
     >
       <div
-        className={`flex h-16 items-center justify-center bg-gradient-to-br ${getCategoryGradient(place.categorySlug)}`}
+        className={`flex aspect-[16/9] items-center justify-center bg-gradient-to-br ${getCategoryGradient(place.categorySlug)}`}
       >
         <PhotoOrIcon
           photoUrl={place.photoUrl}
           alt={place.name}
           categorySlug={place.categorySlug}
           iconClassName="h-7 w-7 text-white/70"
+          imgClassName="h-full w-full object-cover object-[center_65%]"
         />
       </div>
 

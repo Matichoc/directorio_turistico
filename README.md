@@ -33,12 +33,12 @@ pnpm db:seed   # 5 comunas, categorías, 9 lugares reales y 3 rutas (incluida "R
 ```
 
 El seed carga lugares y rutas reales de la provincia de Petorca (investigados
-en fuentes públicas — cada uno queda con su fuente en la tabla `sources`),
-pero de todas formas todo el contenido se marca explícitamente como
-pendiente de verificación (`verification_status = 'pending'`,
-`publication_status = 'draft'`): coordenadas, horarios y datos de contacto no
-están verificados en terreno. No debe usarse en producción sin pasar por el
-flujo de verificación.
+en fuentes públicas — cada uno queda con su fuente en la tabla `sources`) y
+los publica (`publication_status = 'published'`) para que se vean en el
+sitio. Aun así quedan `verification_status = 'pending'`: coordenadas,
+horarios y datos de contacto no están verificados en terreno, y cada ficha
+muestra el badge "pendiente de verificación" hasta que un admin los
+confirme.
 
 ## Scripts
 

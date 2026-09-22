@@ -2,10 +2,12 @@
  * Seed de datos para desarrollo: lugares y rutas reales de la provincia de
  * Petorca, investigados en fuentes públicas (cada `place`/`route` trae un
  * campo `source` con `url`/`label`, que `addSource()` guarda en la tabla
- * `sources`). Aun así todo el contenido se marca `verification_status = 'pending'` y
- * `publication_status = 'draft'`: coordenadas, horarios y datos de contacto
- * no están verificados en terreno y deben confirmarse antes de publicar
- * (ver `docs/PLAN.md`, Riesgos).
+ * `sources`). Se publican (`publication_status = 'published'`) para que se
+ * vean en el sitio, pero quedan `verification_status = 'pending'`:
+ * coordenadas, horarios y datos de contacto no están verificados en terreno
+ * y la ficha de cada lugar/ruta muestra el badge "pendiente de
+ * verificación" hasta que un admin los confirme (ver `docs/PLAN.md`,
+ * Riesgos).
  *
  * Uso: pnpm db:seed (requiere NEXT_PUBLIC_SUPABASE_URL y
  * SUPABASE_SERVICE_ROLE_KEY en el entorno).
@@ -412,7 +414,7 @@ async function seedPlaces(
           category_id: categoryIds[place.categorySlug],
           latitude: place.latitude,
           longitude: place.longitude,
-          publication_status: "draft",
+          publication_status: "published",
           verification_status: "pending",
         },
         { onConflict: "slug" },
@@ -458,7 +460,7 @@ async function seedRoutes(placeIds: Record<string, string>) {
         {
           slug: route.slug,
           estimated_duration_minutes: route.durationMinutes,
-          publication_status: "draft",
+          publication_status: "published",
           verification_status: "pending",
         },
         { onConflict: "slug" },

@@ -16,6 +16,7 @@ export interface Place {
   communeName: string;
   categoryId: string;
   categoryName: string;
+  categorySlug: string;
   latitude: number;
   longitude: number;
   address: string | null;

@@ -3,6 +3,12 @@
 import { useState } from "react";
 import Map, { Marker, NavigationControl, Popup } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+
+// `maplibre-gl` está fijado a la serie 5.x en package.json a propósito: la
+// v6 cambió cómo se cargan los workers/tiles y el mapa queda en blanco sin
+// ningún error en consola con `react-map-gl` (bug conocido y reportado en
+// varios proyectos). No subir a v6 sin antes configurar el worker según la
+// guía de migración de MapLibre para el bundler de Next.js/Turbopack.
 import { Link } from "@/i18n/navigation";
 import {
   getMapStyleUrl,

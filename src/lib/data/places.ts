@@ -13,7 +13,7 @@ const PLACE_QUERY =
    phone, website, publication_status, verification_status,
    place_translations!inner(name, short_description, description, locale),
    communes!inner(commune_translations!inner(name, locale)),
-   categories!inner(category_translations!inner(name, locale)),
+   categories!inner(slug, category_translations!inner(name, locale)),
    place_tags(tags(slug))` as const;
 
 interface PlaceQueryResult {
@@ -36,6 +36,7 @@ interface PlaceQueryResult {
   }[];
   communes: { commune_translations: { name: string; locale: Locale }[] } | null;
   categories: {
+    slug: string;
     category_translations: { name: string; locale: Locale }[];
   } | null;
   place_tags: { tags: { slug: string } | null }[];
@@ -76,6 +77,7 @@ export async function getPlaceBySlug(
     communeName: data.communes?.commune_translations[0]?.name ?? "",
     categoryId: data.category_id,
     categoryName: data.categories?.category_translations[0]?.name ?? "",
+    categorySlug: data.categories?.slug ?? "",
     latitude: data.latitude,
     longitude: data.longitude,
     address: data.address,

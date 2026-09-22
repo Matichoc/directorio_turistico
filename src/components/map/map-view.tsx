@@ -122,7 +122,10 @@ export function MapView({ className, markers = [] }: MapViewProps) {
                   backgroundColor: getCategoryPinColor(selected.categorySlug),
                 }}
               >
-                <CategoryIcon icon={selected.categorySlug} className="h-3.5 w-3.5" />
+                <CategoryIcon
+                  icon={selected.categorySlug}
+                  className="h-3.5 w-3.5"
+                />
               </span>
               <span className="text-foreground text-sm font-medium">
                 {selected.name} →

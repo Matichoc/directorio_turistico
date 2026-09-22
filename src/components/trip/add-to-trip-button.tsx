@@ -37,7 +37,7 @@ export function AddToTripButton({ placeId }: { placeId: string }) {
       }}
       className={`rounded-full px-4 py-2 text-sm font-medium ${
         added
-          ? "border border-accent text-accent"
+          ? "border-accent text-accent border"
           : "bg-accent text-accent-foreground"
       }`}
     >

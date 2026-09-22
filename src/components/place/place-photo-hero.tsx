@@ -40,7 +40,9 @@ export function PlacePhotoHero({
         imgClassName="h-full w-full object-cover object-[center_65%]"
       />
       <span className="absolute right-2 bottom-2 rounded-full bg-black/40 px-2 py-1 text-[11px] text-white/90 backdrop-blur-sm">
-        {photoUrl ? (photoAttribution ?? t("photoCredit")) : t("photosComingSoon")}
+        {photoUrl
+          ? (photoAttribution ?? t("photoCredit"))
+          : t("photosComingSoon")}
       </span>
     </div>
   );

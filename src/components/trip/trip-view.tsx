@@ -139,17 +139,13 @@ export function TripView({ locale }: { locale: Locale }) {
           <dd className="font-semibold">{itinerary.stops.length}</dd>
         </div>
         <div>
-          <dt className="text-foreground/50 text-xs">
-            {t("summaryDuration")}
-          </dt>
+          <dt className="text-foreground/50 text-xs">{t("summaryDuration")}</dt>
           <dd className="font-semibold">
             {formatDuration(itinerary.totalDurationMinutes)}
           </dd>
         </div>
         <div>
-          <dt className="text-foreground/50 text-xs">
-            {t("summaryDistance")}
-          </dt>
+          <dt className="text-foreground/50 text-xs">{t("summaryDistance")}</dt>
           <dd className="font-semibold">
             {itinerary.totalDistanceKm.toFixed(1)} km
           </dd>

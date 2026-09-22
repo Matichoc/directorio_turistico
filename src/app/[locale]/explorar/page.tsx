@@ -69,6 +69,10 @@ export default async function ExplorePage({
         tags={tags}
       />
 
+      <p className="text-foreground/50 text-sm">
+        {t("resultsCount", { count: places.length })}
+      </p>
+
       {places.length === 0 ? (
         <EmptyState>{t("noResults")}</EmptyState>
       ) : view === "mapa" ? (

@@ -3,6 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getRouteBySlug } from "@/lib/data/routes";
 import { resolveLocale } from "@/i18n/utils";
 import { Link } from "@/i18n/navigation";
+import { MapView } from "@/components/map/map-view";
+import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
 
 export default async function RouteDetailPage({
   params,
@@ -38,6 +40,18 @@ export default async function RouteDetailPage({
         <p className="text-foreground/70">{route.description}</p>
       )}
 
+      {route.stops.length > 0 && (
+        <MapView
+          className="h-[35vh] w-full overflow-hidden rounded-xl"
+          markers={route.stops.map((stop) => ({
+            slug: stop.placeSlug,
+            name: stop.placeName,
+            latitude: stop.latitude,
+            longitude: stop.longitude,
+          }))}
+        />
+      )}
+
       <div>
         <h2 className="text-foreground/50 mb-2 text-sm font-medium">
           {t("stops")} ({route.stops.length})
@@ -61,6 +75,15 @@ export default async function RouteDetailPage({
           ))}
         </ol>
       </div>
+
+      {route.stops.length > 0 && (
+        <div className="pt-2">
+          <AddRouteToTripButton
+            routeId={route.id}
+            placeIds={route.stops.map((stop) => stop.placeId)}
+          />
+        </div>
+      )}
     </main>
   );
 }

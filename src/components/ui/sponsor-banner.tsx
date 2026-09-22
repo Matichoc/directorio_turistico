@@ -1,25 +1,59 @@
 import { useTranslations } from "next-intl";
 
+const DEFAULT_SPONSOR_URL = "https://www.matichoc.cl";
+
 /**
- * Placeholder de auspiciador. Matichoc no es la marca del sitio, es un
- * auspiciador — se muestra como banner discreto, no como identidad de la
- * app. Reemplazar el link por el definitivo cuando Matichoc lo entregue
- * (por ahora usa NEXT_PUBLIC_SPONSOR_URL o "#").
+ * Auspiciador. Matichoc no es la marca del sitio, es un auspiciador — se
+ * muestra como banner visual pero discreto, no como identidad de la app.
+ * El link de Instagram solo se muestra si `NEXT_PUBLIC_SPONSOR_INSTAGRAM_URL`
+ * está configurado: no inventamos una cuenta que no podamos verificar.
  */
 export function SponsorBanner() {
   const t = useTranslations("common");
+  const siteUrl = process.env.NEXT_PUBLIC_SPONSOR_URL || DEFAULT_SPONSOR_URL;
+  const instagramUrl = process.env.NEXT_PUBLIC_SPONSOR_INSTAGRAM_URL;
 
   return (
-    <div className="text-foreground/60 border-t border-black/10 bg-black/[.02] px-4 py-2 text-center text-xs dark:border-white/10 dark:bg-white/[.03]">
-      {t("sponsoredBy")}{" "}
-      <a
-        href={process.env.NEXT_PUBLIC_SPONSOR_URL || "#"}
-        target="_blank"
-        rel="noopener noreferrer sponsored"
-        className="text-foreground/80 hover:text-foreground font-medium underline underline-offset-2"
-      >
-        Matichoc
-      </a>
+    <div className="border-t border-black/10 bg-sponsor px-4 py-3 dark:border-white/10">
+      <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden="true"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-accent-soft text-sm font-bold text-accent-foreground"
+          >
+            M
+          </span>
+          <div className="flex flex-col leading-tight">
+            <span className="text-[11px] tracking-wide text-white/60 uppercase">
+              {t("sponsoredBy")} Matichoc
+            </span>
+            <span className="text-xs text-white/80">
+              {t("sponsor.tagline")}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {instagramUrl && (
+            <a
+              href={instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-medium text-white/80 hover:text-white"
+            >
+              {t("sponsor.instagram")}
+            </a>
+          )}
+          <a
+            href={siteUrl}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            className="rounded-full bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground hover:opacity-90"
+          >
+            {t("sponsor.cta")}
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

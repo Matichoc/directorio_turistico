@@ -63,7 +63,7 @@ export function ExploreFilters({
           name="q"
           defaultValue={value.q}
           placeholder={t("searchPlaceholder")}
-          className="w-full rounded-full border border-black/10 px-4 py-2 text-sm dark:border-white/20"
+          className="focus:border-accent focus:ring-accent-soft w-full rounded-full border border-black/10 px-4 py-2 text-sm outline-none focus:ring-2 dark:border-white/20"
         />
       </label>
 

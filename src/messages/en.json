@@ -24,6 +24,7 @@
     "searchPlaceholder": "Search a place or town",
     "mapView": "Map",
     "listView": "List",
+    "resultsCount": "{count, plural, =0 {No results} one {# place} other {# places}}",
     "noResults": "We couldn't find places matching these filters.",
     "filters": {
       "commune": "Commune",
@@ -33,7 +34,8 @@
   },
   "place": {
     "verificationPending": "Pending verification",
-    "openInMaps": "Open on map",
+    "verified": "Verified",
+    "photosComingSoon": "Photo gallery: coming soon",
     "share": "Share",
     "linkCopied": "Link copied",
     "hours": "Hours",
@@ -42,20 +44,44 @@
     "website": "Website",
     "tags": "Features",
     "addToTrip": "Add to my trip",
+    "removeFromTrip": "Remove from my trip",
     "backToExplore": "Back to explore"
   },
   "route": {
     "stops": "Stops",
     "duration": "Estimated duration",
     "addToTrip": "Add full route",
+    "addedToTrip": "Route added to your trip",
     "viewAll": "View all routes",
-    "noResults": "No published routes yet."
+    "noResults": "No published routes yet.",
+    "viewOnMap": "View route on map"
+  },
+  "trip": {
+    "title": "My trip",
+    "subtitle": "Build your itinerary by adding places and routes from the site; it's saved only on this device.",
+    "empty": "You haven't added any places to your trip yet.",
+    "emptyCta": "Explore places",
+    "loading": "Building your itinerary…",
+    "loadError": "We couldn't load the places in your trip.",
+    "summaryStops": "Stops",
+    "summaryDuration": "Estimated duration",
+    "summaryDistance": "Estimated distance",
+    "travelFromPrevious": "Travel from the previous stop",
+    "remove": "Remove",
+    "clearAll": "Clear trip",
+    "mapTitle": "Trip map",
+    "skippedNotice": "Some places were left out by distance or order; you could split the trip across two days."
   },
   "common": {
     "loading": "Loading…",
     "error": "Something went wrong. Please try again.",
     "language": "Language",
     "sponsoredBy": "Sponsored by",
-    "retry": "Retry"
+    "retry": "Retry",
+    "sponsor": {
+      "tagline": "Artisanal chocolate made in La Ligua",
+      "cta": "Visit website",
+      "instagram": "Instagram"
+    }
   }
 }

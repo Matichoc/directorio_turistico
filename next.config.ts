@@ -26,6 +26,17 @@ const nextConfig: NextConfig = {
         pathname: "/wiki/Special:FilePath/**",
       },
     ],
+    localPatterns: [
+      {
+        // Proxy de fotos de Google Places (src/app/api/place-photo/route.ts):
+        // usa `?ref=...&w=...`, y Next 16 bloquea por defecto imágenes
+        // locales con query string (protección anti-enumeración) a menos
+        // que se declaren explícitamente acá. Sin `search` se permite
+        // cualquier query string en esta ruta — la propia ruta ya valida
+        // el formato de `ref` y limita `w` antes de llamar a Google.
+        pathname: "/api/place-photo",
+      },
+    ],
   },
 };
 

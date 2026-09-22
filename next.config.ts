@@ -18,6 +18,13 @@ const nextConfig: NextConfig = {
         hostname: "*.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        // Fotos de Wikimedia Commons hotlinkeadas vía Special:FilePath —
+        // ver wikimediaFilePath() en scripts/seed.ts.
+        protocol: "https",
+        hostname: "commons.wikimedia.org",
+        pathname: "/wiki/Special:FilePath/**",
+      },
     ],
   },
 };

@@ -5,6 +5,7 @@ import { resolveLocale } from "@/i18n/utils";
 import { ShareButton } from "@/components/place/share-button";
 import { AddToTripButton } from "@/components/trip/add-to-trip-button";
 import { MapView } from "@/components/map/map-view";
+import { PlacePhotoHero } from "@/components/place/place-photo-hero";
 
 export default async function PlaceDetailPage({
   params,
@@ -40,22 +41,19 @@ export default async function PlaceDetailPage({
         )}
       </header>
 
-      <div className="flex flex-col gap-1">
-        <MapView
-          className="h-[35vh] w-full overflow-hidden rounded-xl"
-          markers={[
-            {
-              slug: place.slug,
-              name: place.name,
-              latitude: place.latitude,
-              longitude: place.longitude,
-            },
-          ]}
-        />
-        <p className="text-foreground/40 text-center text-xs">
-          {t("photosComingSoon")}
-        </p>
-      </div>
+      <PlacePhotoHero categorySlug={place.categorySlug} name={place.name} />
+
+      <MapView
+        className="h-[35vh] w-full overflow-hidden rounded-xl"
+        markers={[
+          {
+            slug: place.slug,
+            name: place.name,
+            latitude: place.latitude,
+            longitude: place.longitude,
+          },
+        ]}
+      />
 
       {place.description && (
         <p className="text-foreground/70">{place.description}</p>

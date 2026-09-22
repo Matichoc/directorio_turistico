@@ -293,6 +293,11 @@ const places = [
     address: "Guayacán 1409, La Ligua",
     phone: "+56975645591",
     website: "https://www.matichoc.cl",
+    // Destacado vitalicio (dueño del negocio = dueño del sitio, sin fecha
+    // de término real) — no hay un valor "para siempre" en un campo de
+    // fecha, así que se usa una fecha lejana como marcador práctico en vez
+    // de agregar una columna/flag separado solo para este caso.
+    featuredUntil: "2099-12-31T23:59:59Z",
     // Foto real de producto (repo matichoc/matiweb) copiada a
     // public/fotos/chocolateria-matichoc/ — ver ese directorio para más.
     photo: {
@@ -1037,11 +1042,8 @@ async function seedPlaces(
           phone: "phone" in place ? place.phone : null,
           website: "website" in place ? place.website : null,
           // Posición publicitaria pagada (gestionada a mano, sin pasarela
-          // de pago) — ver "featuredUntil" en places que la tengan. Cast
-          // explícito porque ningún lugar la usa todavía, así que TS no
-          // puede inferir el tipo del campo desde la unión del array.
-          featured_until:
-            (place as { featuredUntil?: string }).featuredUntil ?? null,
+          // de pago) — ver "featuredUntil" en places que la tengan.
+          featured_until: "featuredUntil" in place ? place.featuredUntil : null,
           publication_status: "published",
           verification_status: "verified",
         },

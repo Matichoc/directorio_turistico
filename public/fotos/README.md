@@ -35,7 +35,7 @@ coordenadas reales que pasaste). Solo falta la foto.
 | `papudo-playa-los-lilenes` | Playa Los Lilenes (Papudo) |
 | `papudo-parque` | Costanera de Papudo |
 | `papudo-plaza` | Plaza de Papudo |
-| `papudo-paseo-conquistador` | Paseo El Conquistador (Papudo) |
+| `zapallar-punta-pite` | Punta Pite (Zapallar) |
 | `zapallar-laguna` | Laguna de Zapallar |
 | `zapallar-cachagua` | Cachagua — Isla de los Pingüinos y Playa Las Cujas |
 | `zapallar-catapilco` | Catapilco y Palos Quemados |

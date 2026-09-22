@@ -556,24 +556,29 @@ const places = [
     },
   },
   {
-    slug: "papudo-paseo-conquistador",
-    communeSlug: "papudo",
+    // Reemplaza a "Paseo El Conquistador" a pedido del usuario: Punta Pite
+    // es una atracción más conocida y mejor documentada. Coordenadas
+    // exactas del acceso ("entrada punta pite") provistas por el usuario
+    // desde Google Maps — no se pudieron verificar desde este sandbox
+    // (Wikiloc/Wikiexplora/OpenStreetMap/teresamoller.cl bloqueados).
+    slug: "zapallar-punta-pite",
+    communeSlug: "zapallar",
     categorySlug: "naturaleza",
-    latitude: -32.502264751938554,
-    longitude: -71.45353903033985,
+    latitude: -32.50429284866351,
+    longitude: -71.46707955301645,
     es: {
-      name: "Paseo El Conquistador",
+      name: "Punta Pite",
       short:
-        "Sendero peatonal costero (abierto en 1986) que lleva a la Cueva de los Murciélagos y a la Cueva del Pirata Drake — según la leyenda, Francis Drake descansó ahí cinco días en 1578 — hasta Playa Los Changos.",
+        "Sendero costero de 1,5 km entre Papudo y Zapallar diseñado por la paisajista Teresa Moller (2004-2006): terrazas y escaleras en la misma roca de la costa, piscinas naturales, y avistamiento de pingüinos de Humboldt y delfines.",
     },
     en: {
-      name: "El Conquistador Walk",
+      name: "Punta Pite",
       short:
-        "A coastal walking path (opened in 1986) leading to the Bat Cave and Pirate Drake's Cave — legend says Francis Drake rested there for five days in 1578 — ending at Los Changos beach.",
+        "A 1.5 km coastal trail between Papudo and Zapallar designed by landscape architect Teresa Moller (2004-2006): terraces and stairs carved into the coastal rock, natural pools, and sightings of Humboldt penguins and dolphins.",
     },
     source: {
-      url: "https://conociendochile.com/c-region-de-valparaiso/papudo/",
-      label: "ConociendoChile — Papudo",
+      url: "https://laderasur.com/articulo/proyecto-punta-pite-escuela-de-pedreros/",
+      label: "Ladera Sur — Proyecto Punta Pite",
     },
   },
   {
@@ -1136,12 +1141,41 @@ async function seedRoutes(placeIds: Record<string, string>) {
   console.log(`✔ ${routes.length} rutas (verificadas)`);
 }
 
+/**
+ * Lugares que existieron en una versión anterior del seed y se
+ * reemplazaron por otro (slug distinto, no una edición in-place) — este
+ * script solo hace upsert de lo que está en `places`/`routes`, nunca
+ * borra lo que ya no aparece ahí, así que hay que sacarlos a mano una vez.
+ * Se corre después de `seedRoutes()` para que ninguna parada de ruta
+ * siga apuntando a ellos (route_stops.place_id es ON DELETE RESTRICT).
+ */
+const REMOVED_PLACE_SLUGS = [
+  // Papudo, Paseo El Conquistador — reemplazado por Punta Pite (Zapallar),
+  // atracción más conocida y mejor documentada, a pedido del usuario.
+  "papudo-paseo-conquistador",
+];
+
+async function removePlaces() {
+  if (REMOVED_PLACE_SLUGS.length === 0) return;
+
+  const { error } = await supabase
+    .from("places")
+    .delete()
+    .in("slug", REMOVED_PLACE_SLUGS);
+
+  if (error) throw error;
+  console.log(
+    `✔ ${REMOVED_PLACE_SLUGS.length} lugar(es) obsoleto(s) eliminado(s)`,
+  );
+}
+
 async function main() {
   const communeIds = await seedCommunes();
   const categoryIds = await seedCategories();
   await seedTags();
   const placeIds = await seedPlaces(communeIds, categoryIds);
   await seedRoutes(placeIds);
+  await removePlaces();
   console.log("Seed completo.");
 }
 

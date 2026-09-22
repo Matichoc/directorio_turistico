@@ -129,9 +129,6 @@ const SEARCH_QUERY_OVERRIDES: Record<string, string> = {
   "papudo-pullally": "Laguna de Pullally, Papudo, Chile",
   "papudo-parque": "Playa Grande, Papudo, Chile",
   "cabildo-san-lorenzo": "Puente San Lorenzo, Cabildo, Chile",
-  // Google lo lista como "Paseo del Conquistador" (no "El Conquistador",
-  // el nombre del catálogo) — confirmado por el usuario en Google Maps.
-  "papudo-paseo-conquistador": "Paseo del Conquistador, Papudo, Chile",
 };
 
 const PLACES_QUERY =

@@ -8,13 +8,13 @@ import { getCategoryGradient } from "@/lib/ui/category-gradient";
  * si no hay foto, cae a un gradiente por categoría con ícono en vez de un
  * hueco vacío (ver docs/PLAN.md Riesgos).
  *
- * `aspect-[3/2]` (más alto que ancho relativo) en vez de una altura fija:
- * muchas fotos reales usadas acá son retratos/arquitectura tomados en
- * vertical (p. ej. una torre de iglesia) — con una franja baja y fija
- * `object-cover` recortaba casi todo menos el cielo. Con más alto relativo
- * y `object-[center_65%]` (sesgado hacia abajo, no el centro exacto) se ve
- * más del edificio y menos cielo vacío. No se usa `aspect-[4/3]` (más alto
- * todavía) porque en mobile la foto terminaba dominando la pantalla.
+ * Alto fijo (`h-48 sm:h-64`) en vez de `aspect-ratio`: con aspect-ratio el
+ * alto crece junto con el ancho de pantalla (100vw), así que en monitores
+ * anchos la foto terminaba ocupando casi toda la pantalla ("se ve gigante",
+ * feedback repetido del usuario incluso con una foto real bien encuadrada).
+ * Con alto fijo el recorte (`object-cover`) hace más trabajo, por eso se
+ * mantiene `object-[center_65%]` (sesgado hacia abajo) para fotos en
+ * formato retrato/arquitectura donde el centro exacto muestra puro cielo.
  */
 export function PlacePhotoHero({
   categorySlug,
@@ -31,7 +31,7 @@ export function PlacePhotoHero({
 
   return (
     <div
-      className={`relative flex aspect-[3/2] items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br sm:aspect-video ${getCategoryGradient(categorySlug)}`}
+      className={`relative flex h-48 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br sm:h-64 ${getCategoryGradient(categorySlug)}`}
     >
       <PhotoOrIcon
         photoUrl={photoUrl}

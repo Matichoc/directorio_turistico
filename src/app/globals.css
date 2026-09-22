@@ -3,11 +3,19 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --accent: #b3401f;
+  --accent-foreground: #fff7ed;
+  --accent-soft: #f6e2d5;
+  --sponsor: #1f2937;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-sponsor: var(--sponsor);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -16,6 +24,10 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --accent: #e07a4c;
+    --accent-foreground: #1c0f0a;
+    --accent-soft: #3a2418;
+    --sponsor: #111827;
   }
 }
 

@@ -8,9 +8,9 @@ export function RouteCard({ route }: { route: RouteCardType }) {
   return (
     <Link
       href={{ pathname: "/rutas/[slug]", params: { slug: route.slug } }}
-      className="flex flex-col gap-2 rounded-xl border border-black/10 p-4 transition-colors hover:border-black/30 dark:border-white/10 dark:hover:border-white/30"
+      className="border-accent-soft hover:border-accent flex flex-col gap-2 rounded-2xl border bg-black/[.015] p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/[.03]"
     >
-      <h3 className="font-medium">{route.name}</h3>
+      <h3 className="text-accent font-medium">{route.name}</h3>
       {route.description && (
         <p className="text-foreground/70 line-clamp-2 text-sm">
           {route.description}

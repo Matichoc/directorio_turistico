@@ -31,6 +31,8 @@ export interface RouteStop {
   placeId: string;
   placeSlug: string;
   placeName: string;
+  latitude: number;
+  longitude: number;
   position: number;
   notes: string | null;
 }

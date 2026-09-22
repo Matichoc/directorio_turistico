@@ -189,3 +189,50 @@ export async function listPlaces(
     })
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
+
+/**
+ * Trae lugares publicados por `id` (para el carrito de recorrido, que
+ * guarda ids en `localStorage` — ver `lib/trip/storage.ts`). El orden de
+ * salida no sigue el de `ids`: quien llama reordena si lo necesita.
+ */
+export async function getPlacesByIds(
+  ids: string[],
+  locale: Locale,
+): Promise<PlaceCard[]> {
+  if (!isSupabaseConfigured() || ids.length === 0) {
+    return [];
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("places")
+    .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
+    .in("id", ids)
+    .eq("publication_status", "published")
+    .eq("place_translations.locale", locale)
+    .eq("communes.commune_translations.locale", locale)
+    .eq("categories.category_translations.locale", locale);
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((place): PlaceCard => {
+    const translation = place.place_translations[0];
+    return {
+      id: place.id,
+      slug: place.slug,
+      name: translation?.name ?? place.slug,
+      shortDescription: translation?.short_description ?? null,
+      communeName: place.communes?.commune_translations[0]?.name ?? "",
+      categoryName: place.categories?.category_translations[0]?.name ?? "",
+      categorySlug: place.categories?.slug ?? "",
+      latitude: place.latitude,
+      longitude: place.longitude,
+      verificationStatus: place.verification_status,
+      tags: (place.place_tags ?? [])
+        .map((placeTag) => placeTag.tags?.slug)
+        .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),
+    };
+  });
+}

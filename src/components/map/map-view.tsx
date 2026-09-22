@@ -52,7 +52,7 @@ export function MapView({ className, markers = [] }: MapViewProps) {
               type="button"
               aria-label={marker.name}
               onClick={() => setSelected(marker)}
-              className="h-6 w-6 -translate-y-1 rounded-full border-2 border-white bg-red-600 shadow"
+              className="bg-accent h-6 w-6 -translate-y-1 rounded-full border-2 border-white shadow-md transition-transform hover:scale-110"
             />
           </Marker>
         ))}
@@ -69,7 +69,7 @@ export function MapView({ className, markers = [] }: MapViewProps) {
                 pathname: "/lugares/[slug]",
                 params: { slug: selected.slug },
               }}
-              className="text-foreground text-sm font-medium underline"
+              className="text-accent text-sm font-medium underline underline-offset-2"
             >
               {selected.name} →
             </Link>

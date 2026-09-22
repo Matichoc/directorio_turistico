@@ -32,7 +32,7 @@ export function ViewToggle({ current }: { current: "lista" | "mapa" }) {
         onClick={() => setView("lista")}
         className={`rounded-full px-3 py-1 ${
           current === "lista"
-            ? "bg-foreground text-background"
+            ? "bg-accent text-accent-foreground"
             : "text-foreground/60"
         }`}
       >
@@ -44,7 +44,7 @@ export function ViewToggle({ current }: { current: "lista" | "mapa" }) {
         onClick={() => setView("mapa")}
         className={`rounded-full px-3 py-1 ${
           current === "mapa"
-            ? "bg-foreground text-background"
+            ? "bg-accent text-accent-foreground"
             : "text-foreground/60"
         }`}
       >

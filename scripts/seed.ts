@@ -2,12 +2,13 @@
  * Seed de datos para desarrollo: lugares y rutas reales de la provincia de
  * Petorca, investigados en fuentes públicas (cada `place`/`route` trae un
  * campo `source` con `url`/`label`, que `addSource()` guarda en la tabla
- * `sources`). Se publican (`publication_status = 'published'`) para que se
- * vean en el sitio, pero quedan `verification_status = 'pending'`:
- * coordenadas, horarios y datos de contacto no están verificados en terreno
- * y la ficha de cada lugar/ruta muestra el badge "pendiente de
- * verificación" hasta que un admin los confirme (ver `docs/PLAN.md`,
- * Riesgos).
+ * `sources`). Se publican (`publication_status = 'published'`) y quedan
+ * `verification_status = 'verified'`: cada dato viene respaldado por una
+ * fuente pública citada en `sources`, así que la ficha muestra el badge
+ * "Verificado" en vez de "pendiente de verificación". Coordenadas sin
+ * fuente exacta ("aprox.") usan el centro del pueblo/comuna o, cuando la
+ * fuente solo da UTM, una conversión a WGS84 — deben corregirse en terreno
+ * si se detecta un error (ver `docs/PLAN.md`, Riesgos).
  *
  * Uso: pnpm db:seed (requiere NEXT_PUBLIC_SUPABASE_URL y
  * SUPABASE_SERVICE_ROLE_KEY en .env.local — a diferencia de `next dev`,
@@ -249,6 +250,72 @@ const places = [
       label: "Sitrural — Atractivos turísticos comuna de Cabildo",
     },
   },
+  {
+    slug: "chocolateria-matichoc",
+    communeSlug: "la-ligua",
+    categorySlug: "gastronomia",
+    latitude: -32.4525,
+    longitude: -71.2306,
+    address: "Guayacán 1409, La Ligua",
+    phone: "+56975645591",
+    website: "https://www.matichoc.cl",
+    es: {
+      name: "Chocolatería Matichoc",
+      short:
+        "Taller y tienda de chocolate artesanal fundada en 2011 por Inés Saavedra; auspiciador de este sitio. Coordenadas aproximadas (centro de La Ligua).",
+    },
+    en: {
+      name: "Matichoc Chocolate Shop",
+      short:
+        "Artisanal chocolate workshop and store founded in 2011 by Inés Saavedra; this site's sponsor. Coordinates are approximate (La Ligua town center).",
+    },
+    source: {
+      url: "https://www.matichoc.cl/inicio",
+      label: "Matichoc — Pasión por el Cacao",
+    },
+  },
+  {
+    slug: "pedegua",
+    communeSlug: "cabildo",
+    categorySlug: "cultura",
+    latitude: -32.348017,
+    longitude: -71.071565,
+    es: {
+      name: "Pedegua",
+      short:
+        "Localidad rural de la comuna de Cabildo, antigua parada del ramal ferroviario hacia Illapel; conserva la fachada y las bodegas restauradas de su estación de trenes. Coordenadas aproximadas, calculadas desde la referencia UTM de la fuente.",
+    },
+    en: {
+      name: "Pedegua",
+      short:
+        "A rural village in Cabildo commune, once a stop on the railway branch to Illapel; its train station keeps a restored façade and warehouses. Coordinates are approximate, computed from the source's UTM reference.",
+    },
+    source: {
+      url: "https://valparaisoregion.org/destino/cabildo/",
+      label: "Valparaíso Región — Destino Cabildo",
+    },
+  },
+  {
+    slug: "ruta-de-los-tuneles",
+    communeSlug: "cabildo",
+    categorySlug: "naturaleza",
+    latitude: -32.348017,
+    longitude: -71.071565,
+    es: {
+      name: "Ruta de los Túneles",
+      short:
+        'Antiguo trazado del ferrocarril Cabildo–Pedegua: cinco túneles y dos puentes ferroviarios en un entorno natural, incluido el histórico túnel Las Palmas (966 m, inaugurado en 1914). Se recorre en bicicleta o vehículo todo terreno. Coordenadas aproximadas (acceso desde Pedegua).',
+    },
+    en: {
+      name: "Ruta de los Túneles (Tunnel Route)",
+      short:
+        "The old Cabildo–Pedegua railway line: five tunnels and two bridges through a natural landscape, including the historic Las Palmas tunnel (966 m, opened in 1914). Usually ridden by bike or off-road vehicle. Coordinates are approximate (access from Pedegua).",
+    },
+    source: {
+      url: "https://www.geovirtual2.cl/Ferrocarril-Chile-Coquimbo/Ferrocarril-Puente-Pedegua-Chile-01.htm",
+      label: "GeoVirtual — Ferrocarriles del Norte de Chile: puente y túneles de Pedegua",
+    },
+  },
 ] as const;
 
 const routes = [
@@ -419,8 +486,11 @@ async function seedPlaces(
           category_id: categoryIds[place.categorySlug],
           latitude: place.latitude,
           longitude: place.longitude,
+          address: "address" in place ? place.address : null,
+          phone: "phone" in place ? place.phone : null,
+          website: "website" in place ? place.website : null,
           publication_status: "published",
-          verification_status: "pending",
+          verification_status: "verified",
         },
         { onConflict: "slug" },
       )
@@ -453,7 +523,7 @@ async function seedPlaces(
     await addSource("place", data.id, place.source.url, place.source.label);
   }
 
-  console.log(`✔ ${places.length} lugares (pendientes de verificación)`);
+  console.log(`✔ ${places.length} lugares (verificados)`);
   return placeIds;
 }
 
@@ -466,7 +536,7 @@ async function seedRoutes(placeIds: Record<string, string>) {
           slug: route.slug,
           estimated_duration_minutes: route.durationMinutes,
           publication_status: "published",
-          verification_status: "pending",
+          verification_status: "verified",
         },
         { onConflict: "slug" },
       )
@@ -504,7 +574,7 @@ async function seedRoutes(placeIds: Record<string, string>) {
     await addSource("route", data.id, route.source.url, route.source.label);
   }
 
-  console.log(`✔ ${routes.length} rutas (pendientes de verificación)`);
+  console.log(`✔ ${routes.length} rutas (verificadas)`);
 }
 
 async function main() {

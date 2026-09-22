@@ -24,6 +24,7 @@
     "searchPlaceholder": "Busca un lugar o localidad",
     "mapView": "Mapa",
     "listView": "Listado",
+    "resultsCount": "{count, plural, =0 {Sin resultados} one {# lugar} other {# lugares}}",
     "noResults": "No encontramos lugares con estos filtros.",
     "filters": {
       "commune": "Comuna",
@@ -33,7 +34,8 @@
   },
   "place": {
     "verificationPending": "Pendiente de verificación",
-    "openInMaps": "Abrir en el mapa",
+    "verified": "Verificado",
+    "photosComingSoon": "Galería de fotos: próximamente",
     "share": "Compartir",
     "linkCopied": "Enlace copiado",
     "hours": "Horario",
@@ -42,20 +44,44 @@
     "website": "Sitio web",
     "tags": "Características",
     "addToTrip": "Agregar a mi recorrido",
+    "removeFromTrip": "Quitar de mi recorrido",
     "backToExplore": "Volver a explorar"
   },
   "route": {
     "stops": "Paradas",
     "duration": "Duración estimada",
     "addToTrip": "Agregar ruta completa",
+    "addedToTrip": "Ruta agregada a tu recorrido",
     "viewAll": "Ver todas las rutas",
-    "noResults": "Todavía no hay rutas publicadas."
+    "noResults": "Todavía no hay rutas publicadas.",
+    "viewOnMap": "Ver ruta en el mapa"
+  },
+  "trip": {
+    "title": "Mi recorrido",
+    "subtitle": "Arma tu itinerario agregando lugares y rutas desde el sitio; se guarda solo en este dispositivo.",
+    "empty": "Todavía no agregaste lugares a tu recorrido.",
+    "emptyCta": "Explorar lugares",
+    "loading": "Armando tu itinerario…",
+    "loadError": "No pudimos cargar los lugares de tu recorrido.",
+    "summaryStops": "Paradas",
+    "summaryDuration": "Duración estimada",
+    "summaryDistance": "Distancia estimada",
+    "travelFromPrevious": "Traslado desde la parada anterior",
+    "remove": "Quitar",
+    "clearAll": "Vaciar recorrido",
+    "mapTitle": "Mapa del recorrido",
+    "skippedNotice": "Algunos lugares quedaron fuera por distancia u orden; podrías dividir el recorrido en dos días."
   },
   "common": {
     "loading": "Cargando…",
     "error": "Ocurrió un error. Intenta nuevamente.",
     "language": "Idioma",
     "sponsoredBy": "Auspiciado por",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "sponsor": {
+      "tagline": "Chocolate artesanal hecho en La Ligua",
+      "cta": "Visitar sitio web",
+      "instagram": "Instagram"
+    }
   }
 }

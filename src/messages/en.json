@@ -7,8 +7,8 @@
     "info": "Info"
   },
   "home": {
-    "title": "Petorca en Ruta",
-    "subtitle": "Discover places and plan your trip across the Petorca province.",
+    "title": "El diablo murió en Petorca y en La Ligua lo enterraron",
+    "subtitle": "An old local saying about Petorca and La Ligua — discover places and plan your trip across the Petorca province.",
     "searchPlaceholder": "Search a place or town",
     "featuredRoutes": "Featured routes",
     "intent": {
@@ -45,6 +45,7 @@
   "common": {
     "loading": "Loading…",
     "error": "Something went wrong. Please try again.",
-    "language": "Language"
+    "language": "Language",
+    "sponsoredBy": "Sponsored by"
   }
 }

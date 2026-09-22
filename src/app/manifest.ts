@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Petorca en Ruta",
-    short_name: "Petorca en Ruta",
+    name: "El diablo murió en Petorca y en La Ligua lo enterraron",
+    short_name: "El Diablo en Petorca",
     description: "Directorio turístico y planificador de rutas para Petorca.",
     start_url: "/",
     display: "standalone",

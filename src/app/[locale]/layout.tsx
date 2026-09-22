@@ -4,6 +4,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { BottomNav } from "@/components/ui/bottom-nav";
+import { SponsorBanner } from "@/components/ui/sponsor-banner";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -26,7 +27,10 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider>
-      <div className="flex min-h-dvh flex-1 flex-col pb-16">{children}</div>
+      <div className="flex min-h-dvh flex-1 flex-col pb-16">
+        {children}
+        <SponsorBanner />
+      </div>
       <BottomNav />
     </NextIntlClientProvider>
   );

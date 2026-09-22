@@ -8,7 +8,7 @@ export function RouteCard({ route }: { route: RouteCardType }) {
   return (
     <Link
       href={{ pathname: "/rutas/[slug]", params: { slug: route.slug } }}
-      className="border-accent-soft hover:border-accent flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/[.03]"
+      className="border-accent-soft hover:border-accent flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_2px_var(--accent-soft)] dark:border-white/10 dark:bg-white/[.03]"
     >
       <div className="from-accent to-accent-soft flex h-16 items-center justify-center bg-gradient-to-br">
         <svg

@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PhotoOrIcon } from "@/components/place/photo-or-icon";
+import { CategoryBadge } from "@/components/place/category-badge";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import type { PlaceCard as PlaceCardType } from "@/types/domain";
 
@@ -22,6 +23,11 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
           iconClassName="h-7 w-7 text-white/70"
           imgClassName="object-cover object-[center_65%]"
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+        />
+        <CategoryBadge
+          categorySlug={place.categorySlug}
+          categoryName={place.categoryName}
+          className="absolute top-2 left-2"
         />
       </div>
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { CategoryIcon } from "@/components/ui/category-icon";
+import { getCategoryIcon } from "@/lib/ui/category-gradient";
 
 /**
  * Muestra la foto real del lugar si `photoUrl` carga bien; si no hay foto o
@@ -45,5 +46,10 @@ export function PhotoOrIcon({
     );
   }
 
-  return <CategoryIcon icon={categorySlug} className={iconClassName} />;
+  return (
+    <CategoryIcon
+      icon={getCategoryIcon(categorySlug)}
+      className={iconClassName}
+    />
+  );
 }

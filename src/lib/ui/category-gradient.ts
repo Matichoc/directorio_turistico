@@ -24,3 +24,25 @@ const DEFAULT_PIN_COLOR = "#b3401f"; // acento del sitio (terracota)
 export function getCategoryPinColor(categorySlug: string | null | undefined) {
   return (categorySlug && PIN_COLORS[categorySlug]) || DEFAULT_PIN_COLOR;
 }
+
+/**
+ * Nombre de ícono (para `<CategoryIcon icon={...}>`) por slug de
+ * categoría — coincide con `categories.icon` de `scripts/seed.ts`. Bug
+ * real corregido acá: varios llamadores le pasaban el slug directo a
+ * `CategoryIcon` (que espera un nombre de ícono, no un slug), así que
+ * siempre caían al ícono por defecto salvo coincidencia casual.
+ */
+const CATEGORY_ICONS: Record<string, string> = {
+  naturaleza: "mountain",
+  gastronomia: "utensils",
+  cultura: "landmark",
+  playa: "waves",
+};
+
+const DEFAULT_CATEGORY_ICON = CATEGORY_ICONS.cultura;
+
+export function getCategoryIcon(categorySlug: string | null | undefined) {
+  return (
+    (categorySlug && CATEGORY_ICONS[categorySlug]) || DEFAULT_CATEGORY_ICON
+  );
+}

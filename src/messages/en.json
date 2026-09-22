@@ -55,7 +55,11 @@
     "addedToTrip": "Route added to your trip",
     "viewAll": "View all routes",
     "noResults": "No published routes yet.",
-    "viewOnMap": "View route on map"
+    "viewOnMap": "View route on map",
+    "checklistProgress": "{visited}/{total} stops visited",
+    "markVisited": "Mark as visited",
+    "markNotVisited": "Mark as not visited",
+    "routeComplete": "Route complete! 🎉"
   },
   "trip": {
     "title": "My trip",

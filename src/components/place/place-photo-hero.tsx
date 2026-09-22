@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { PhotoOrIcon } from "@/components/place/photo-or-icon";
+import { CategoryBadge } from "@/components/place/category-badge";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 
 /**
@@ -18,11 +19,13 @@ import { getCategoryGradient } from "@/lib/ui/category-gradient";
  */
 export function PlacePhotoHero({
   categorySlug,
+  categoryName,
   name,
   photoUrl,
   photoAttribution,
 }: {
   categorySlug: string;
+  categoryName?: string | null;
   name: string;
   photoUrl?: string | null;
   photoAttribution?: string | null;
@@ -40,6 +43,11 @@ export function PlacePhotoHero({
         iconClassName="h-20 w-20 text-white/25"
         imgClassName="object-cover object-[center_65%]"
         sizes="100vw"
+      />
+      <CategoryBadge
+        categorySlug={categorySlug}
+        categoryName={categoryName}
+        className="absolute top-2 left-2"
       />
       <span className="absolute right-2 bottom-2 rounded-full bg-black/40 px-2 py-1 text-[11px] text-white/90 backdrop-blur-sm">
         {photoUrl

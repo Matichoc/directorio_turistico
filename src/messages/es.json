@@ -55,7 +55,11 @@
     "addedToTrip": "Ruta agregada a tu recorrido",
     "viewAll": "Ver todas las rutas",
     "noResults": "Todavía no hay rutas publicadas.",
-    "viewOnMap": "Ver ruta en el mapa"
+    "viewOnMap": "Ver ruta en el mapa",
+    "checklistProgress": "{visited}/{total} paradas visitadas",
+    "markVisited": "Marcar como visitada",
+    "markNotVisited": "Marcar como no visitada",
+    "routeComplete": "¡Ruta completa! 🎉"
   },
   "trip": {
     "title": "Mi recorrido",

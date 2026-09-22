@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getRouteBySlug } from "@/lib/data/routes";
 import { resolveLocale } from "@/i18n/utils";
-import { Link } from "@/i18n/navigation";
 import { MapView } from "@/components/map/map-view";
 import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
+import { RouteStopChecklist } from "@/components/route/route-stop-checklist";
 
 export default async function RouteDetailPage({
   params,
@@ -52,29 +52,7 @@ export default async function RouteDetailPage({
         />
       )}
 
-      <div>
-        <h2 className="text-foreground/50 mb-2 text-sm font-medium">
-          {t("stops")} ({route.stops.length})
-        </h2>
-        <ol className="flex flex-col gap-2">
-          {route.stops.map((stop, index) => (
-            <li key={stop.id}>
-              <Link
-                href={{
-                  pathname: "/lugares/[slug]",
-                  params: { slug: stop.placeSlug },
-                }}
-                className="flex items-center gap-3 rounded-lg border border-black/10 px-3 py-2 text-sm hover:border-black/30 dark:border-white/10 dark:hover:border-white/30"
-              >
-                <span className="bg-foreground text-background flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs">
-                  {index + 1}
-                </span>
-                {stop.placeName}
-              </Link>
-            </li>
-          ))}
-        </ol>
-      </div>
+      <RouteStopChecklist routeId={route.id} stops={route.stops} />
 
       {route.stops.length > 0 && (
         <div className="pt-2">

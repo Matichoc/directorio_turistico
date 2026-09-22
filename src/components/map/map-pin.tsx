@@ -1,5 +1,8 @@
 import { CategoryIcon } from "@/components/ui/category-icon";
-import { getCategoryPinColor } from "@/lib/ui/category-gradient";
+import {
+  getCategoryIcon,
+  getCategoryPinColor,
+} from "@/lib/ui/category-gradient";
 
 /**
  * Pin temático por categoría (forma de gota, ícono blanco al centro, halo
@@ -35,7 +38,10 @@ export function MapPin({
         style={{ backgroundColor: color, animationDelay: `${delayMs}ms` }}
       >
         <span className="flex h-full w-full rotate-45 items-center justify-center">
-          <CategoryIcon icon={categorySlug} className="h-4 w-4 text-white" />
+          <CategoryIcon
+            icon={getCategoryIcon(categorySlug)}
+            className="h-4 w-4 text-white"
+          />
         </span>
       </span>
     </span>

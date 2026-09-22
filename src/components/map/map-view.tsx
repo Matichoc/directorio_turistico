@@ -17,7 +17,10 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { Link } from "@/i18n/navigation";
 import { MapPin } from "@/components/map/map-pin";
 import { CategoryIcon } from "@/components/ui/category-icon";
-import { getCategoryPinColor } from "@/lib/ui/category-gradient";
+import {
+  getCategoryIcon,
+  getCategoryPinColor,
+} from "@/lib/ui/category-gradient";
 import {
   getMapStyleUrl,
   PETORCA_CENTER,
@@ -123,7 +126,7 @@ export function MapView({ className, markers = [] }: MapViewProps) {
                 }}
               >
                 <CategoryIcon
-                  icon={selected.categorySlug}
+                  icon={getCategoryIcon(selected.categorySlug)}
                   className="h-3.5 w-3.5"
                 />
               </span>

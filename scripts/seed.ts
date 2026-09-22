@@ -291,6 +291,12 @@ const places = [
     address: "Guayacán 1409, La Ligua",
     phone: "+56975645591",
     website: "https://www.matichoc.cl",
+    // Foto real de producto (repo matichoc/matiweb) copiada a
+    // public/fotos/chocolateria-matichoc/ — ver ese directorio para más.
+    photo: {
+      path: "/fotos/chocolateria-matichoc/tableta.jpg",
+      attribution: "Foto: Matichoc",
+    },
     es: {
       name: "Chocolatería Matichoc",
       short:
@@ -560,9 +566,13 @@ async function seedPlaces(
 
     await supabase.from("place_images").delete().eq("place_id", data.id);
     if ("photo" in place) {
+      const storagePath =
+        "filename" in place.photo
+          ? wikimediaFilePath(place.photo.filename)
+          : place.photo.path;
       await supabase.from("place_images").insert({
         place_id: data.id,
-        storage_path: wikimediaFilePath(place.photo.filename),
+        storage_path: storagePath,
         alt_text: place.photo.attribution,
         position: 0,
       });

@@ -3,6 +3,8 @@ import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { HomeSearchForm } from "@/components/home/home-search-form";
 import { RouteCard } from "@/components/route/route-card";
 import { CategoryIcon } from "@/components/ui/category-icon";
+import { SparkleField } from "@/components/ui/sparkle-field";
+import { DevilMascot } from "@/components/ui/devil-mascot";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
@@ -35,18 +37,25 @@ export default async function HomePage({
 
   return (
     <main className="flex flex-1 flex-col gap-8">
-      <div className="from-accent-soft to-background border-accent-soft dark:from-accent-soft/40 flex flex-col gap-6 border-b bg-gradient-to-b px-4 pt-8 pb-10">
-        <header className="flex items-start justify-between gap-4">
-          <p className="text-accent text-xs font-semibold tracking-wide uppercase">
+      <div className="to-background relative flex flex-col gap-6 overflow-hidden border-b border-black/10 bg-gradient-to-b from-[#1b0e1f] via-[#2a1420] px-4 pt-8 pb-10 text-white dark:border-white/10">
+        <div
+          className="animate-glow-pulse bg-accent/50 pointer-events-none absolute -top-20 -right-16 h-64 w-64 rounded-full blur-3xl"
+          aria-hidden="true"
+        />
+        <SparkleField />
+        <DevilMascot className="animate-devil-peek pointer-events-none absolute -right-1 bottom-2 h-20 w-20 text-white/15" />
+
+        <header className="relative flex items-start justify-between gap-4">
+          <p className="text-xs font-semibold tracking-wide text-amber-300 uppercase">
             Petorca · La Ligua
           </p>
           <LocaleSwitcher />
         </header>
 
-        <h1 className="text-3xl leading-tight font-semibold text-balance">
+        <h1 className="relative text-3xl leading-tight font-semibold text-balance">
           {t("title")}
         </h1>
-        <p className="text-foreground/70 max-w-prose">{t("subtitle")}</p>
+        <p className="relative max-w-prose text-white/70">{t("subtitle")}</p>
 
         <HomeSearchForm />
       </div>

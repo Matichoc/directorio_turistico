@@ -5,6 +5,7 @@ import { resolveLocale } from "@/i18n/utils";
 import { RouteNavigationMap } from "@/components/map/route-navigation-map";
 import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
 import { RouteStopChecklist } from "@/components/route/route-stop-checklist";
+import { DevilMascot } from "@/components/ui/devil-mascot";
 
 export default async function RouteDetailPage({
   params,
@@ -27,12 +28,15 @@ export default async function RouteDetailPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
-      <header className="flex flex-col gap-2">
+      <header className="relative flex flex-col gap-2">
         <h1 className="text-2xl font-semibold">{route.name}</h1>
         {hours && (
           <p className="text-foreground/60 text-sm">
             {t("duration")}: {hours}h
           </p>
+        )}
+        {route.slug === "ruta-del-diablo" && (
+          <DevilMascot className="animate-devil-peek text-accent pointer-events-none absolute top-0 right-0 h-10 w-10 opacity-70" />
         )}
       </header>
 

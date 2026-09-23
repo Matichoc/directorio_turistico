@@ -30,6 +30,9 @@
   --animate-stop-in: stop-in 0.35s ease-out backwards;
   --animate-check-pop: check-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   --animate-route-glow: route-glow 1.8s ease-in-out infinite;
+  --animate-sparkle-twinkle: sparkle-twinkle 2.6s ease-in-out infinite;
+  --animate-glow-pulse: glow-pulse 4s ease-in-out infinite;
+  --animate-devil-peek: devil-peek 3.2s ease-in-out infinite;
 }
 
 /* Pines del mapa (components/map/map-pin.tsx): aparición con rebote. */
@@ -77,6 +80,43 @@
   }
   50% {
     box-shadow: 0 0 0 6px var(--accent-soft);
+  }
+}
+
+/* Chispas del hero ("nada de brillos/destellos", pidió el usuario): parpadeo. */
+@keyframes sparkle-twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Halo que "respira" detrás del hero — sensación galaxia/tecnología. */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
+}
+
+/* Mascota del diablo (folklore del sitio): se asoma y se mece de curioso. */
+@keyframes devil-peek {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(4deg);
   }
 }
 

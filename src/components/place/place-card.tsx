@@ -12,10 +12,10 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
   return (
     <Link
       href={{ pathname: "/lugares/[slug]", params: { slug: place.slug } }}
-      className={`group flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:bg-white/[.03] ${
+      className={`group flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 dark:bg-white/[.03] ${
         place.isFeatured
-          ? "border-amber-400 dark:border-amber-500/70"
-          : "border-accent-soft hover:border-accent dark:border-white/10"
+          ? "border-amber-400 hover:shadow-[0_0_20px_2px_rgba(245,158,11,0.35)] dark:border-amber-500/70"
+          : "border-accent-soft hover:border-accent hover:shadow-[0_0_20px_2px_var(--accent-soft)] dark:border-white/10"
       }`}
     >
       <div

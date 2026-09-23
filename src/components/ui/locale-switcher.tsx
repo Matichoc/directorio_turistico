@@ -24,7 +24,7 @@ export function LocaleSwitcher() {
             { locale: event.target.value },
           );
         }}
-        className="rounded border border-black/10 bg-transparent px-2 py-1 dark:border-white/20"
+        className="rounded border border-white/30 bg-transparent px-2 py-1 text-white"
       >
         {routing.locales.map((code) => (
           <option key={code} value={code}>

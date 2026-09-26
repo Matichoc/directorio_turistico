@@ -316,6 +316,10 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 
   `pnpm typecheck`/`lint`/`test` (14)/`build`/`format:check` verdes.
 
+- 2026-09-26: El usuario corrige dos asignaciones de comuna que quedaron mal desde el seed original: **Pedegua** y **Túnel Las Palmas** pertenecen a la comuna de **Petorca**, no a Cabildo. Se corrige `communeSlug` de ambos lugares en `scripts/seed.ts`, junto con el texto de `short`/`description` de Pedegua (que mencionaba "comuna de Cabildo" y su población — 19.388 — ahora dice Petorca, 9.826, el mismo checksum de población usado en la ronda de descripciones) y un comentario interno desactualizado en "Ruta del Diablo". Queda pendiente confirmar con el usuario si "Puente Pedegua" (lugar aparte, coordenadas ~1 km de Pedegua) también debería pasar a Petorca — no se asumió por cercanía, se le pregunta directo.
+
+  `pnpm typecheck`/`lint`/`test` (14)/`build`/`format:check` verdes.
+
 - 2026-09-26: **Se resuelve del todo el bug de navegación por calle** — causa raíz real, no de código: `GOOGLE_PLACES_API_KEY` estaba **vacía** en Vercel (el usuario la agregó recién). Con la key puesta, apareció un error nuevo — este sí de código nuestro: `400 INVALID_ARGUMENT: Invalid value at 'polyline_encoding' ..., "GEO_JSON_LINE_STRING"`. El valor correcto del enum `PolylineEncoding` de Google Routes API v2 es `GEO_JSON_LINESTRING` (sin guión bajo entre "LINE" y "STRING") — `/api/directions/route.ts` tenía un typo real (`GEO_JSON_LINE_STRING`) desde que se escribió este endpoint. Se corrige. El camino hasta acá: mensaje de error visible en pantalla (PR anterior) → "API no habilitada" → "API key restringida" (ninguna de las dos era la causa real) → key vacía en Vercel → este typo. Cada capa de diagnóstico fue necesaria para llegar a la de abajo.
 
   `pnpm typecheck`/`lint`/`test` (14)/`build`/`format:check` verdes.

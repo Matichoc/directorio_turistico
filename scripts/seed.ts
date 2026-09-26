@@ -375,7 +375,9 @@ const places = [
   },
   {
     slug: "pedegua",
-    communeSlug: "cabildo",
+    // Corregido a pedido del usuario: Pedegua pertenece a la comuna de
+    // Petorca, no a Cabildo (quedó mal asignado desde el seed original).
+    communeSlug: "petorca",
     categorySlug: "cultura",
     icon: "casco-minero",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
@@ -384,16 +386,16 @@ const places = [
     es: {
       name: "Pedegua",
       short:
-        "Localidad rural de la comuna de Cabildo, antigua parada del ramal ferroviario hacia Illapel; conserva la fachada y las bodegas restauradas de su estación de trenes.",
+        "Localidad rural de la comuna de Petorca, antigua parada del ramal ferroviario hacia Illapel; conserva la fachada y las bodegas restauradas de su estación de trenes.",
       description:
-        "Localidad rural de Cabildo (19.388 habitantes, Censo 2017), antigua parada del ramal ferroviario hacia Illapel; conserva la fachada y bodegas restauradas de su estación. El actor Etienne Bobenrieth recorrió sus historias y leyendas en el programa Sabingo (Chilevisión), en un capítulo dedicado a Pedegua, Chincolco e Hierro Viejo.",
+        "Localidad rural de Petorca (9.826 habitantes, Censo 2017), antigua parada del ramal ferroviario hacia Illapel; conserva la fachada y bodegas restauradas de su estación. El actor Etienne Bobenrieth recorrió sus historias y leyendas en el programa Sabingo (Chilevisión), en un capítulo dedicado a Pedegua, Chincolco e Hierro Viejo.",
     },
     en: {
       name: "Pedegua",
       short:
-        "A rural village in Cabildo commune, once a stop on the railway branch to Illapel; its train station keeps a restored façade and warehouses.",
+        "A rural village in Petorca commune, once a stop on the railway branch to Illapel; its train station keeps a restored façade and warehouses.",
       description:
-        "A rural village in Cabildo commune (19,388 residents, 2017 census), a former stop on the railway branch to Illapel; it keeps its station's restored façade and warehouses. Actor Etienne Bobenrieth explored its stories and legends on Chilean TV show Sabingo (Chilevisión), in an episode covering Pedegua, Chincolco and Hierro Viejo.",
+        "A rural village in Petorca commune (9,826 residents, 2017 census), a former stop on the railway branch to Illapel; it keeps its station's restored façade and warehouses. Actor Etienne Bobenrieth explored its stories and legends on Chilean TV show Sabingo (Chilevisión), in an episode covering Pedegua, Chincolco and Hierro Viejo.",
     },
     source: {
       url: "https://valparaisoregion.org/destino/cabildo/",
@@ -948,10 +950,9 @@ const places = [
     // Nota: geográficamente el túnel queda del lado de la Región de
     // Coquimbo (comuna de Los Vilos), no en la provincia de Petorca — pero
     // es parte del mismo corredor ferroviario histórico que Pedegua/La
-    // Grupa y el usuario lo pidió como parte de esta ruta, así que se
-    // incluye bajo la comuna de Cabildo (la más cercana de nuestro
-    // catálogo) en vez de agregar una comuna nueva para un solo lugar.
-    communeSlug: "cabildo",
+    // Grupa. Corregido a pedido del usuario: se cataloga bajo la comuna de
+    // Petorca (antes había quedado mal asignado a Cabildo).
+    communeSlug: "petorca",
     categorySlug: "naturaleza",
     icon: "casco-minero",
     latitude: -32.165013387998314,
@@ -1026,7 +1027,7 @@ const places = [
 const routes = [
   {
     slug: "ruta-del-diablo",
-    // Reordenada a pedido del usuario: parte en Pedegua (Cabildo, bien
+    // Reordenada a pedido del usuario: parte en Pedegua (Petorca, bien
     // metido en el campo — "donde el diablo perdió el poncho") y termina en
     // Chincolco (interior de Petorca), en vez de quedarse solo entre
     // Petorca y La Ligua. Se sacan Casa natal de Manuel Montt y Museo de La

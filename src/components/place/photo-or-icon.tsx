@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { CategoryIcon } from "@/components/ui/category-icon";
-import { getCategoryIcon } from "@/lib/ui/category-gradient";
+import { getPlaceIcon } from "@/lib/ui/category-gradient";
 
 /**
  * Muestra la foto real del lugar si `photoUrl` carga bien; si no hay foto o
@@ -20,6 +20,7 @@ export function PhotoOrIcon({
   photoUrl,
   alt,
   categorySlug,
+  slug,
   iconClassName,
   imgClassName = "object-cover",
   sizes = "100vw",
@@ -27,6 +28,8 @@ export function PhotoOrIcon({
   photoUrl?: string | null;
   alt: string;
   categorySlug?: string | null;
+  /** Slug del lugar — habilita el ícono "de la zona" (ver getPlaceIcon). */
+  slug?: string | null;
   iconClassName?: string;
   imgClassName?: string;
   sizes?: string;
@@ -48,7 +51,7 @@ export function PhotoOrIcon({
 
   return (
     <CategoryIcon
-      icon={getCategoryIcon(categorySlug)}
+      icon={getPlaceIcon(categorySlug, slug)}
       className={iconClassName}
     />
   );

@@ -20,10 +20,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { Link } from "@/i18n/navigation";
 import { MapPin } from "@/components/map/map-pin";
 import { CategoryIcon } from "@/components/ui/category-icon";
-import {
-  getCategoryIcon,
-  getCategoryPinColor,
-} from "@/lib/ui/category-gradient";
+import { getCategoryPinColor, getPlaceIcon } from "@/lib/ui/category-gradient";
 import {
   getMapStyleUrl,
   PETORCA_CENTER,
@@ -139,6 +136,7 @@ export function MapView({
             >
               <MapPin
                 categorySlug={marker.categorySlug}
+                placeSlug={marker.slug}
                 selected={selected?.slug === marker.slug}
                 delayMs={Math.min(index * 60, 600)}
               />
@@ -169,7 +167,7 @@ export function MapView({
                 }}
               >
                 <CategoryIcon
-                  icon={getCategoryIcon(selected.categorySlug)}
+                  icon={getPlaceIcon(selected.categorySlug, selected.slug)}
                   className="h-3.5 w-3.5"
                 />
               </span>

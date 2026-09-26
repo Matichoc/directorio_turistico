@@ -44,6 +44,7 @@ export default async function PlaceDetailPage({
       <PlacePhotoHero
         categorySlug={place.categorySlug}
         categoryName={place.categoryName}
+        slug={place.slug}
         name={place.name}
         photos={place.photos}
         isFeatured={place.isFeatured}

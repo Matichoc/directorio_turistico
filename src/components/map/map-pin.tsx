@@ -1,8 +1,5 @@
 import { CategoryIcon } from "@/components/ui/category-icon";
-import {
-  getCategoryIcon,
-  getCategoryPinColor,
-} from "@/lib/ui/category-gradient";
+import { getCategoryPinColor, getPlaceIcon } from "@/lib/ui/category-gradient";
 
 /**
  * Pin temático por categoría (forma de gota, ícono blanco al centro, halo
@@ -13,10 +10,12 @@ import {
  */
 export function MapPin({
   categorySlug,
+  placeSlug,
   selected = false,
   delayMs = 0,
 }: {
   categorySlug?: string | null;
+  placeSlug?: string | null;
   selected?: boolean;
   delayMs?: number;
 }) {
@@ -39,7 +38,7 @@ export function MapPin({
       >
         <span className="flex h-full w-full rotate-45 items-center justify-center">
           <CategoryIcon
-            icon={getCategoryIcon(categorySlug)}
+            icon={getPlaceIcon(categorySlug, placeSlug)}
             className="h-4 w-4 text-white"
           />
         </span>

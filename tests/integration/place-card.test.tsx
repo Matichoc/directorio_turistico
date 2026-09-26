@@ -35,6 +35,7 @@ const basePlace: PlaceCardType = {
   verificationStatus: "pending",
   isFeatured: false,
   photoUrl: null,
+  photoCount: 0,
   tags: [],
 };
 

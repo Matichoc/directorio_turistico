@@ -168,6 +168,7 @@ function mapPlaceCard(place: PlaceListQueryResult): PlaceCard {
     verificationStatus: place.verification_status,
     isFeatured: isCurrentlyFeatured(place.featured_until),
     photoUrl: sortPhotos(place.place_images)[0]?.url ?? null,
+    photoCount: place.place_images?.length ?? 0,
     tags: (place.place_tags ?? [])
       .map((placeTag) => placeTag.tags?.slug)
       .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),

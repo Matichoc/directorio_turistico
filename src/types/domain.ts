@@ -76,6 +76,7 @@ export interface PlaceCard {
   verificationStatus: VerificationStatus;
   isFeatured: boolean;
   photoUrl: string | null;
+  photoCount: number;
   tags: string[];
 }
 

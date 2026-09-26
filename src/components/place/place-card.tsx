@@ -6,6 +6,15 @@ import { FeaturedBadge } from "@/components/place/featured-badge";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import type { PlaceCard as PlaceCardType } from "@/types/domain";
 
+/** Nombres fijos de las 4 tags del catálogo (ver scripts/seed.ts) — sin
+ * traducción por locale todavía, igual que la tabla `tags` en la base. */
+const TAG_LABELS: Record<string, string> = {
+  familiar: "Familiar",
+  "pet-friendly": "Pet friendly",
+  accesible: "Accesible",
+  leyenda: "Leyenda local",
+};
+
 export function PlaceCard({ place }: { place: PlaceCardType }) {
   const t = useTranslations("place");
 
@@ -25,6 +34,7 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
           photoUrl={place.photoUrl}
           alt={place.name}
           categorySlug={place.categorySlug}
+          slug={place.slug}
           iconClassName="h-7 w-7 text-white/70"
           imgClassName="object-cover object-[center_65%]"
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
@@ -36,6 +46,24 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
         />
         {place.isFeatured && (
           <FeaturedBadge className="absolute top-2 right-2" />
+        )}
+        {place.photoCount > 1 && (
+          <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-full bg-black/50 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-3 w-3"
+              aria-hidden="true"
+            >
+              <path d="M4 8h3l2-2h6l2 2h3v11H4z" />
+              <circle cx="12" cy="13" r="3.5" />
+            </svg>
+            {place.photoCount}
+          </span>
         )}
       </div>
 
@@ -60,6 +88,18 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
           <p className="text-foreground/70 line-clamp-2 text-sm">
             {place.shortDescription}
           </p>
+        )}
+        {place.tags.length > 0 && (
+          <ul className="flex flex-wrap gap-1.5">
+            {place.tags.map((tag) => (
+              <li
+                key={tag}
+                className="border-accent-soft text-foreground/70 rounded-full border px-2 py-0.5 text-[11px] dark:border-white/15"
+              >
+                {TAG_LABELS[tag] ?? tag}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </Link>

@@ -79,6 +79,9 @@
     "routeUnavailable": "Couldn't calculate the driving route — showing the regular map.",
     "navigationSummary": "{distance} km · {duration} min by car",
     "liveLocationHint": "Allow location access when your browser asks, to see your position on the map.",
+    "previousStop": "Previous stop",
+    "nextStop": "Next stop",
+    "stopPosition": "Stop {current}/{total}",
     "yourToken": "Your token:",
     "avatarIcons": {
       "diablo": "The Devil",

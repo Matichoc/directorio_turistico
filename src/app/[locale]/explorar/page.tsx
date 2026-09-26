@@ -7,6 +7,7 @@ import { listCategories } from "@/lib/data/categories";
 import { listTags } from "@/lib/data/tags";
 import { PlaceCard } from "@/components/place/place-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHero } from "@/components/ui/page-hero";
 import { ExploreFilters } from "@/components/explore/explore-filters";
 import { ViewToggle } from "@/components/explore/view-toggle";
 import { MapView } from "@/components/map/map-view";
@@ -52,8 +53,9 @@ export default async function ExplorePage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold">{t("title")}</h1>
+      <PageHero title={t("title")} />
+
+      <div className="flex justify-end">
         <ViewToggle current={view} />
       </div>
 

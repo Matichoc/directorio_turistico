@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
+import { PageHero } from "@/components/ui/page-hero";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -19,10 +20,7 @@ export default async function InfoPage({
 
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-8">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">{t("info")}</h1>
-        <p className="text-foreground/70">{info("about")}</p>
-      </header>
+      <PageHero title={t("info")} subtitle={info("about")} />
 
       <section className="flex flex-col gap-1">
         <h2 className="text-foreground/50 text-sm font-medium">

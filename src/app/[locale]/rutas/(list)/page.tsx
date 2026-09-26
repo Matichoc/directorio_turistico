@@ -4,6 +4,7 @@ import { resolveLocale } from "@/i18n/utils";
 import { listRoutes } from "@/lib/data/routes";
 import { RouteCard } from "@/components/route/route-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHero } from "@/components/ui/page-hero";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -24,7 +25,7 @@ export default async function RoutesPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
-      <h1 className="text-2xl font-semibold">{tHome("featuredRoutes")}</h1>
+      <PageHero title={tHome("featuredRoutes")} />
       {routes.length === 0 ? (
         <EmptyState>{t("noResults")}</EmptyState>
       ) : (

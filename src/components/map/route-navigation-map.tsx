@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { MapView, type MapMarkerData } from "@/components/map/map-view";
+import { AvatarPicker } from "@/components/map/avatar-picker";
 import { fetchDirections, type DirectionsResult } from "@/lib/maps/directions";
 
 /**
@@ -79,6 +80,8 @@ export function RouteNavigationMap({
           </span>
         )}
       </div>
+
+      <AvatarPicker />
 
       {navigationOn && error && (
         <p className="rounded-lg bg-amber-100 px-3 py-2 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">

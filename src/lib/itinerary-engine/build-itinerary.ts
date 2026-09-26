@@ -1,4 +1,8 @@
 import { haversineDistanceKm } from "@/lib/itinerary-engine/geo";
+import {
+  EXACT_ORDER_STOPS_LIMIT,
+  findOptimalOrder,
+} from "@/lib/itinerary-engine/optimize-order";
 import type {
   Itinerary,
   ItineraryBuildInput,
@@ -8,10 +12,52 @@ import type {
 
 const DEFAULT_AVERAGE_SPEED_KMH = 40;
 
+/** Heurística de vecino más cercano — respaldo para más paradas de las que
+ * `findOptimalOrder` puede probar exhaustivamente (ver
+ * `EXACT_ORDER_STOPS_LIMIT`). */
+function nearestNeighborOrder(
+  places: ItineraryPlaceInput[],
+  startIndex: number,
+): number[] {
+  const remaining = new Set(places.map((_, index) => index));
+  remaining.delete(startIndex);
+  const order = [startIndex];
+  let cursor = places[startIndex]!;
+
+  while (remaining.size > 0) {
+    let nearestIndex: number | null = null;
+    let nearestDistanceKm = Number.POSITIVE_INFINITY;
+
+    for (const index of remaining) {
+      const distanceKm = haversineDistanceKm(cursor, places[index]!);
+      if (distanceKm < nearestDistanceKm) {
+        nearestDistanceKm = distanceKm;
+        nearestIndex = index;
+      }
+    }
+
+    if (nearestIndex === null) break;
+    remaining.delete(nearestIndex);
+    order.push(nearestIndex);
+    cursor = places[nearestIndex]!;
+  }
+
+  return order;
+}
+
 /**
- * Ordena los lugares por vecino más cercano a partir de `startIndex` y arma
- * un itinerario respetando los topes de paradas/duración. Determinista dado
- * el mismo input: no usa aleatoriedad ni el reloj.
+ * Arma un itinerario visitando `places` en el orden más corto posible
+ * (distancia en línea recta) a partir de `startIndex`, respetando los
+ * topes de paradas/duración. Determinista dado el mismo input: no usa
+ * aleatoriedad ni el reloj.
+ *
+ * El orden se decide probando TODOS los órdenes posibles
+ * (`findOptimalOrder`, pedido explícito del usuario en vez de conformarse
+ * con una heurística) mientras el número de paradas sea manejable (ver
+ * `EXACT_ORDER_STOPS_LIMIT`); con más paradas que eso, se cae a la
+ * heurística de vecino más cercano que ya tenía este motor, para no
+ * colgar el navegador — el carrito real de "Mi recorrido" rara vez junta
+ * tantos lugares.
  */
 export function buildItinerary(input: ItineraryBuildInput): Itinerary {
   const {
@@ -31,65 +77,56 @@ export function buildItinerary(input: ItineraryBuildInput): Itinerary {
     };
   }
 
-  const remaining = new Set(places.map((_, index) => index));
-  const stops: ItineraryStop[] = [];
-  let totalDurationMinutes = 0;
+  const [firstIndex, ...restIndices] =
+    places.length <= EXACT_ORDER_STOPS_LIMIT
+      ? findOptimalOrder(places, startIndex)
+      : nearestNeighborOrder(places, startIndex);
+
+  const firstPlace: ItineraryPlaceInput = places[firstIndex!]!;
+  const stops: ItineraryStop[] = [
+    {
+      placeId: firstPlace.id,
+      name: firstPlace.name,
+      order: 0,
+      travelFromPreviousMinutes: 0,
+      visitDurationMinutes: firstPlace.visitDurationMinutes,
+      arrivalOffsetMinutes: 0,
+      departureOffsetMinutes: firstPlace.visitDurationMinutes,
+      distanceFromPreviousKm: 0,
+    },
+  ];
+  let totalDurationMinutes = firstPlace.visitDurationMinutes;
   let totalDistanceKm = 0;
-  let cursor: ItineraryPlaceInput = places[startIndex]!;
-  remaining.delete(startIndex);
+  let previous = firstPlace;
 
-  const firstStop: ItineraryStop = {
-    placeId: cursor.id,
-    name: cursor.name,
-    order: 0,
-    travelFromPreviousMinutes: 0,
-    visitDurationMinutes: cursor.visitDurationMinutes,
-    arrivalOffsetMinutes: 0,
-    departureOffsetMinutes: cursor.visitDurationMinutes,
-    distanceFromPreviousKm: 0,
-  };
-  stops.push(firstStop);
-  totalDurationMinutes = cursor.visitDurationMinutes;
+  for (const index of restIndices) {
+    if (stops.length >= maxStops) break;
 
-  while (remaining.size > 0 && stops.length < maxStops) {
-    let nearestIndex: number | null = null;
-    let nearestDistanceKm = Number.POSITIVE_INFINITY;
-
-    for (const index of remaining) {
-      const distanceKm = haversineDistanceKm(cursor, places[index]!);
-      if (distanceKm < nearestDistanceKm) {
-        nearestDistanceKm = distanceKm;
-        nearestIndex = index;
-      }
-    }
-
-    if (nearestIndex === null) break;
-
-    const next = places[nearestIndex]!;
-    const travelMinutes = (nearestDistanceKm / averageSpeedKmh) * 60;
-    const arrivalOffsetMinutes = totalDurationMinutes + travelMinutes;
+    const place = places[index]!;
+    const distanceFromPreviousKm = haversineDistanceKm(previous, place);
+    const travelFromPreviousMinutes =
+      (distanceFromPreviousKm / averageSpeedKmh) * 60;
+    const arrivalOffsetMinutes =
+      totalDurationMinutes + travelFromPreviousMinutes;
     const departureOffsetMinutes =
-      arrivalOffsetMinutes + next.visitDurationMinutes;
+      arrivalOffsetMinutes + place.visitDurationMinutes;
 
-    if (departureOffsetMinutes > maxDurationMinutes) {
-      break;
-    }
+    if (departureOffsetMinutes > maxDurationMinutes) break;
 
-    remaining.delete(nearestIndex);
     stops.push({
-      placeId: next.id,
-      name: next.name,
+      placeId: place.id,
+      name: place.name,
       order: stops.length,
-      travelFromPreviousMinutes: travelMinutes,
-      visitDurationMinutes: next.visitDurationMinutes,
+      travelFromPreviousMinutes,
+      visitDurationMinutes: place.visitDurationMinutes,
       arrivalOffsetMinutes,
       departureOffsetMinutes,
-      distanceFromPreviousKm: nearestDistanceKm,
+      distanceFromPreviousKm,
     });
 
     totalDurationMinutes = departureOffsetMinutes;
-    totalDistanceKm += nearestDistanceKm;
-    cursor = next;
+    totalDistanceKm += distanceFromPreviousKm;
+    previous = place;
   }
 
   const visitedIds = new Set(stops.map((stop) => stop.placeId));

@@ -3,6 +3,10 @@ import { buildItineraryInOrder } from "@/lib/itinerary-engine/build-itinerary-in
 
 export * from "@/lib/itinerary-engine/types";
 export { haversineDistanceKm } from "@/lib/itinerary-engine/geo";
+export {
+  findOptimalOrder,
+  EXACT_ORDER_STOPS_LIMIT,
+} from "@/lib/itinerary-engine/optimize-order";
 
 /**
  * Punto de extensión único hacia el motor de itinerarios. Módulo TS puro,

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { PhotoOrIcon } from "@/components/place/photo-or-icon";
+import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import {
   getVisitedPlaceIds,
   ROUTE_PROGRESS_EVENT,
@@ -14,6 +16,10 @@ interface RouteStop {
   placeId: string;
   placeSlug: string;
   placeName: string;
+  placeShortDescription?: string | null;
+  placePhotoUrl?: string | null;
+  categorySlug?: string | null;
+  placeIcon?: string | null;
   notes?: string | null;
 }
 
@@ -22,12 +28,21 @@ interface RouteStop {
  * lib/route-progress/storage.ts): barra de progreso, halo pulsante en la
  * próxima parada por visitar, y mensaje de felicitación al completar la
  * ruta. Pedido del usuario para que las rutas se sientan más "dinámicas".
+ *
+ * Cada parada lleva una miniatura + descripción breve (pedido del usuario:
+ * "las paradas podrían tener una breve descripción y alguna imagen alusiva
+ * en ese banner"). El link a la ficha del lugar lleva `?ruta=<routeId>`
+ * para que esa página pueda ofrecer "parada anterior/siguiente" en vez de
+ * depender del botón atrás del navegador (poco usado en una web app de
+ * celular, feedback explícito del usuario).
  */
 export function RouteStopChecklist({
   routeId,
+  routeSlug,
   stops,
 }: {
   routeId: string;
+  routeSlug: string;
   stops: RouteStop[];
 }) {
   const t = useTranslations("route");
@@ -99,11 +114,31 @@ export function RouteStopChecklist({
               >
                 {isVisited ? "✓" : index + 1}
               </button>
+              <Link
+                href={{
+                  pathname: "/lugares/[slug]",
+                  params: { slug: stop.placeSlug },
+                  query: { ruta: routeSlug },
+                }}
+                className={`relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br ${getCategoryGradient(stop.categorySlug)}`}
+              >
+                <PhotoOrIcon
+                  photoUrl={stop.placePhotoUrl}
+                  alt={stop.placeName}
+                  categorySlug={stop.categorySlug}
+                  icon={stop.placeIcon}
+                  iconClassName="h-5 w-5 text-white/70"
+                  imgClassName="object-cover object-[center_65%]"
+                  sizes="44px"
+                />
+              </Link>
+
               <div className="flex flex-1 flex-col">
                 <Link
                   href={{
                     pathname: "/lugares/[slug]",
                     params: { slug: stop.placeSlug },
+                    query: { ruta: routeSlug },
                   }}
                   className={`hover:underline ${
                     isVisited ? "text-foreground/50 line-through" : ""
@@ -111,6 +146,11 @@ export function RouteStopChecklist({
                 >
                   {stop.placeName}
                 </Link>
+                {stop.placeShortDescription && (
+                  <span className="text-foreground/60 line-clamp-1 text-xs">
+                    {stop.placeShortDescription}
+                  </span>
+                )}
                 {stop.notes && (
                   <span className="text-foreground/50 text-xs italic">
                     {stop.notes}

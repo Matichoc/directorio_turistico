@@ -19,13 +19,16 @@ interface PlacePhoto {
  * ellas y su crédito; si no hay ninguna, cae a un gradiente por categoría
  * con ícono en vez de un hueco vacío (ver docs/PLAN.md Riesgos).
  *
- * Alto fijo (`h-48 sm:h-64`) en vez de `aspect-ratio`: con aspect-ratio el
- * alto crece junto con el ancho de pantalla (100vw), así que en monitores
- * anchos la foto terminaba ocupando casi toda la pantalla ("se ve gigante",
- * feedback repetido del usuario incluso con una foto real bien encuadrada).
- * Con alto fijo el recorte (`object-cover`) hace más trabajo, por eso se
- * mantiene `object-[center_65%]` (sesgado hacia abajo) para fotos en
- * formato retrato/arquitectura donde el centro exacto muestra puro cielo.
+ * Cuadrada y de tamaño tope fijo (`h-40 w-40 sm:h-52 sm:w-52`, centrada) en
+ * vez de un banner a todo el ancho: con banner a 100vw, en monitores anchos
+ * la foto terminaba ocupando casi toda la pantalla ("se ve gigante",
+ * feedback repetido del usuario incluso con una foto real bien encuadrada),
+ * y cuando no había foto el ícono de categoría quedaba flotando en un
+ * bloque de color enorme y vacío ("mucho espacio usado en una imagen que
+ * no está"). Con tamaño fijo el recorte (`object-cover`) hace más trabajo,
+ * por eso se mantiene `object-[center_65%]` (sesgado hacia abajo) para
+ * fotos en formato retrato/arquitectura donde el centro exacto muestra
+ * puro cielo.
  *
  * `key={current?.url}` en `PhotoOrIcon`: sin esto, el estado interno de
  * "la imagen falló" (`useState` de un `onError`) queda pegado entre fotos
@@ -59,7 +62,7 @@ export function PlacePhotoHero({
 
   return (
     <div
-      className={`relative flex h-48 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br sm:h-64 ${getCategoryGradient(categorySlug)}`}
+      className={`relative mx-auto flex h-40 w-40 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br sm:h-52 sm:w-52 ${getCategoryGradient(categorySlug)}`}
     >
       <PhotoOrIcon
         key={current?.url ?? "placeholder"}
@@ -67,9 +70,9 @@ export function PlacePhotoHero({
         alt={name}
         categorySlug={categorySlug}
         icon={icon}
-        iconClassName="h-20 w-20 text-white/25"
+        iconClassName="h-12 w-12 text-white/25"
         imgClassName="object-cover object-[center_65%]"
-        sizes="100vw"
+        sizes="(min-width: 640px) 208px, 160px"
       />
 
       <CategoryBadge
@@ -85,7 +88,7 @@ export function PlacePhotoHero({
             type="button"
             onClick={() => goTo(index - 1)}
             aria-label={t("previousPhoto")}
-            className="absolute top-1/2 left-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-lg text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+            className="absolute top-1/2 left-1.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-sm text-white backdrop-blur-sm transition-colors hover:bg-black/60"
           >
             ‹
           </button>
@@ -93,7 +96,7 @@ export function PlacePhotoHero({
             type="button"
             onClick={() => goTo(index + 1)}
             aria-label={t("nextPhoto")}
-            className="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-lg text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+            className="absolute top-1/2 right-1.5 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-sm text-white backdrop-blur-sm transition-colors hover:bg-black/60"
           >
             ›
           </button>
@@ -114,7 +117,7 @@ export function PlacePhotoHero({
         </>
       )}
 
-      <span className="absolute right-2 bottom-2 rounded-full bg-black/40 px-2 py-1 text-[11px] text-white/90 backdrop-blur-sm">
+      <span className="absolute right-1.5 bottom-1.5 max-w-[70%] truncate rounded-full bg-black/40 px-1.5 py-0.5 text-[9px] text-white/90 backdrop-blur-sm">
         {current
           ? (current.attribution ?? t("photoCredit"))
           : t("photosComingSoon")}

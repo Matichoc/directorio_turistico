@@ -36,6 +36,8 @@ export interface RouteStop {
   placeId: string;
   placeSlug: string;
   placeName: string;
+  placeShortDescription: string | null;
+  placePhotoUrl: string | null;
   categorySlug: string | null;
   /** Ícono puntual del lugar (ver migración 0010_place_icon.sql). */
   placeIcon: string | null;

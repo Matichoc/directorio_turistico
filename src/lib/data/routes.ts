@@ -9,7 +9,9 @@ const ROUTE_QUERY = `id, slug, estimated_duration_minutes, cover_image,
    route_translations!inner(name, description, locale),
    route_stops(id, place_id, position,
      route_stop_translations(notes, locale),
-     places(slug, latitude, longitude, icon, place_translations(name, locale),
+     places(slug, latitude, longitude, icon,
+       place_translations(name, short_description, locale),
+       place_images(storage_path, position),
        categories(slug)))` as const;
 
 interface RouteQueryResult {
@@ -33,7 +35,12 @@ interface RouteQueryResult {
       latitude: number;
       longitude: number;
       icon: string | null;
-      place_translations: { name: string; locale: Locale }[];
+      place_translations: {
+        name: string;
+        short_description: string | null;
+        locale: Locale;
+      }[];
+      place_images: { storage_path: string; position: number }[];
       categories: { slug: string } | null;
     } | null;
   }[];
@@ -64,22 +71,32 @@ export async function getRouteBySlug(
   const stops: RouteStop[] = (data.route_stops ?? [])
     .slice()
     .sort((a, b) => a.position - b.position)
-    .map((stop) => ({
-      id: stop.id,
-      placeId: stop.place_id,
-      placeSlug: stop.places?.slug ?? "",
-      placeName:
-        stop.places?.place_translations.find((t) => t.locale === locale)
-          ?.name ?? "",
-      categorySlug: stop.places?.categories?.slug ?? null,
-      placeIcon: stop.places?.icon ?? null,
-      latitude: stop.places?.latitude ?? 0,
-      longitude: stop.places?.longitude ?? 0,
-      position: stop.position,
-      notes:
-        stop.route_stop_translations.find((t) => t.locale === locale)?.notes ??
-        null,
-    }));
+    .map((stop) => {
+      const firstPhoto = (stop.places?.place_images ?? [])
+        .slice()
+        .sort((a, b) => a.position - b.position)[0];
+
+      return {
+        id: stop.id,
+        placeId: stop.place_id,
+        placeSlug: stop.places?.slug ?? "",
+        placeName:
+          stop.places?.place_translations.find((t) => t.locale === locale)
+            ?.name ?? "",
+        placeShortDescription:
+          stop.places?.place_translations.find((t) => t.locale === locale)
+            ?.short_description ?? null,
+        placePhotoUrl: firstPhoto?.storage_path ?? null,
+        categorySlug: stop.places?.categories?.slug ?? null,
+        placeIcon: stop.places?.icon ?? null,
+        latitude: stop.places?.latitude ?? 0,
+        longitude: stop.places?.longitude ?? 0,
+        position: stop.position,
+        notes:
+          stop.route_stop_translations.find((t) => t.locale === locale)
+            ?.notes ?? null,
+      };
+    });
 
   return {
     id: data.id,

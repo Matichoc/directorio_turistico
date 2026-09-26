@@ -35,8 +35,12 @@
   "place": {
     "verificationPending": "Pending verification",
     "verified": "Verified",
+    "featured": "Featured",
     "photosComingSoon": "Photo gallery: coming soon",
     "photoCredit": "Photo: Wikimedia Commons",
+    "previousPhoto": "Previous photo",
+    "nextPhoto": "Next photo",
+    "goToPhoto": "Go to photo {number}",
     "share": "Share",
     "linkCopied": "Link copied",
     "hours": "Hours",
@@ -55,7 +59,17 @@
     "addedToTrip": "Route added to your trip",
     "viewAll": "View all routes",
     "noResults": "No published routes yet.",
-    "viewOnMap": "View route on map"
+    "viewOnMap": "View route on map",
+    "checklistProgress": "{visited}/{total} stops visited",
+    "markVisited": "Mark as visited",
+    "markNotVisited": "Mark as not visited",
+    "routeComplete": "Route complete! 🎉",
+    "startNavigation": "Start navigation",
+    "stopNavigation": "Stop navigation",
+    "calculatingRoute": "Calculating route…",
+    "routeUnavailable": "Couldn't calculate the driving route — showing the regular map.",
+    "navigationSummary": "{distance} km · {duration} min by car",
+    "liveLocationHint": "Allow location access when your browser asks, to see your position on the map."
   },
   "trip": {
     "title": "My trip",

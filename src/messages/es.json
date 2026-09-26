@@ -35,8 +35,12 @@
   "place": {
     "verificationPending": "Pendiente de verificación",
     "verified": "Verificado",
+    "featured": "Destacado",
     "photosComingSoon": "Galería de fotos: próximamente",
     "photoCredit": "Foto: Wikimedia Commons",
+    "previousPhoto": "Foto anterior",
+    "nextPhoto": "Foto siguiente",
+    "goToPhoto": "Ir a la foto {number}",
     "share": "Compartir",
     "linkCopied": "Enlace copiado",
     "hours": "Horario",
@@ -55,7 +59,17 @@
     "addedToTrip": "Ruta agregada a tu recorrido",
     "viewAll": "Ver todas las rutas",
     "noResults": "Todavía no hay rutas publicadas.",
-    "viewOnMap": "Ver ruta en el mapa"
+    "viewOnMap": "Ver ruta en el mapa",
+    "checklistProgress": "{visited}/{total} paradas visitadas",
+    "markVisited": "Marcar como visitada",
+    "markNotVisited": "Marcar como no visitada",
+    "routeComplete": "¡Ruta completa! 🎉",
+    "startNavigation": "Iniciar navegación",
+    "stopNavigation": "Detener navegación",
+    "calculatingRoute": "Calculando ruta…",
+    "routeUnavailable": "No se pudo calcular la ruta por calle — se muestra el mapa normal.",
+    "navigationSummary": "{distance} km · {duration} min en auto",
+    "liveLocationHint": "Activa tu ubicación cuando el navegador te lo pida, para ver tu posición en el mapa."
   },
   "trip": {
     "title": "Mi recorrido",

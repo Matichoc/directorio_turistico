@@ -1,49 +1,122 @@
+"use client";
+
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { PhotoOrIcon } from "@/components/place/photo-or-icon";
+import { CategoryBadge } from "@/components/place/category-badge";
+import { FeaturedBadge } from "@/components/place/featured-badge";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 
+interface PlacePhoto {
+  url: string;
+  attribution: string | null;
+}
+
 /**
- * Cabecera de la ficha de lugar: muestra la foto real si existe (Wikimedia
- * Commons con licencia libre, cargada por `scripts/seed.ts`) con su crédito;
- * si no hay foto, cae a un gradiente por categoría con ícono en vez de un
- * hueco vacío (ver docs/PLAN.md Riesgos).
+ * Cabecera de la ficha de lugar: carrusel de fotos reales si existen
+ * (Wikimedia Commons, Google Places o locales — ver `scripts/seed.ts` y
+ * `scripts/fetch-google-photos.ts`) con flechas/puntos para navegar entre
+ * ellas y su crédito; si no hay ninguna, cae a un gradiente por categoría
+ * con ícono en vez de un hueco vacío (ver docs/PLAN.md Riesgos).
  *
- * `aspect-[3/2]` (más alto que ancho relativo) en vez de una altura fija:
- * muchas fotos reales usadas acá son retratos/arquitectura tomados en
- * vertical (p. ej. una torre de iglesia) — con una franja baja y fija
- * `object-cover` recortaba casi todo menos el cielo. Con más alto relativo
- * y `object-[center_65%]` (sesgado hacia abajo, no el centro exacto) se ve
- * más del edificio y menos cielo vacío. No se usa `aspect-[4/3]` (más alto
- * todavía) porque en mobile la foto terminaba dominando la pantalla.
+ * Alto fijo (`h-48 sm:h-64`) en vez de `aspect-ratio`: con aspect-ratio el
+ * alto crece junto con el ancho de pantalla (100vw), así que en monitores
+ * anchos la foto terminaba ocupando casi toda la pantalla ("se ve gigante",
+ * feedback repetido del usuario incluso con una foto real bien encuadrada).
+ * Con alto fijo el recorte (`object-cover`) hace más trabajo, por eso se
+ * mantiene `object-[center_65%]` (sesgado hacia abajo) para fotos en
+ * formato retrato/arquitectura donde el centro exacto muestra puro cielo.
+ *
+ * `key={current?.url}` en `PhotoOrIcon`: sin esto, el estado interno de
+ * "la imagen falló" (`useState` de un `onError`) queda pegado entre fotos
+ * — una foto rota dejaría el ícono de categoría fijo aunque el usuario
+ * navegue a otra foto que sí carga bien.
  */
 export function PlacePhotoHero({
   categorySlug,
+  categoryName,
+  slug,
   name,
-  photoUrl,
-  photoAttribution,
+  photos,
+  isFeatured = false,
 }: {
   categorySlug: string;
+  categoryName?: string | null;
+  slug: string;
   name: string;
-  photoUrl?: string | null;
-  photoAttribution?: string | null;
+  photos: PlacePhoto[];
+  isFeatured?: boolean;
 }) {
   const t = useTranslations("place");
+  const [index, setIndex] = useState(0);
+
+  const current = photos[index] ?? null;
+  const hasMultiple = photos.length > 1;
+
+  function goTo(nextIndex: number) {
+    setIndex((nextIndex + photos.length) % photos.length);
+  }
 
   return (
     <div
-      className={`relative flex aspect-[3/2] items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br sm:aspect-video ${getCategoryGradient(categorySlug)}`}
+      className={`relative flex h-48 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br sm:h-64 ${getCategoryGradient(categorySlug)}`}
     >
       <PhotoOrIcon
-        photoUrl={photoUrl}
+        key={current?.url ?? "placeholder"}
+        photoUrl={current?.url}
         alt={name}
         categorySlug={categorySlug}
+        slug={slug}
         iconClassName="h-20 w-20 text-white/25"
         imgClassName="object-cover object-[center_65%]"
         sizes="100vw"
       />
+
+      <CategoryBadge
+        categorySlug={categorySlug}
+        categoryName={categoryName}
+        className="absolute top-2 left-2"
+      />
+      {isFeatured && <FeaturedBadge className="absolute top-2 right-2" />}
+
+      {hasMultiple && (
+        <>
+          <button
+            type="button"
+            onClick={() => goTo(index - 1)}
+            aria-label={t("previousPhoto")}
+            className="absolute top-1/2 left-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-lg text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => goTo(index + 1)}
+            aria-label={t("nextPhoto")}
+            className="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-lg text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+          >
+            ›
+          </button>
+          <div className="absolute bottom-2 left-2 flex gap-1">
+            {photos.map((photo, photoIndex) => (
+              <button
+                key={photo.url}
+                type="button"
+                onClick={() => setIndex(photoIndex)}
+                aria-label={t("goToPhoto", { number: photoIndex + 1 })}
+                aria-current={photoIndex === index}
+                className={`h-1.5 rounded-full transition-all ${
+                  photoIndex === index ? "w-4 bg-white" : "w-1.5 bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
       <span className="absolute right-2 bottom-2 rounded-full bg-black/40 px-2 py-1 text-[11px] text-white/90 backdrop-blur-sm">
-        {photoUrl
-          ? (photoAttribution ?? t("photoCredit"))
+        {current
+          ? (current.attribution ?? t("photoCredit"))
           : t("photosComingSoon")}
       </span>
     </div>

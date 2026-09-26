@@ -24,3 +24,64 @@ const DEFAULT_PIN_COLOR = "#b3401f"; // acento del sitio (terracota)
 export function getCategoryPinColor(categorySlug: string | null | undefined) {
   return (categorySlug && PIN_COLORS[categorySlug]) || DEFAULT_PIN_COLOR;
 }
+
+/**
+ * Nombre de ícono (para `<CategoryIcon icon={...}>`) por slug de
+ * categoría — coincide con `categories.icon` de `scripts/seed.ts`. Bug
+ * real corregido acá: varios llamadores le pasaban el slug directo a
+ * `CategoryIcon` (que espera un nombre de ícono, no un slug), así que
+ * siempre caían al ícono por defecto salvo coincidencia casual.
+ */
+const CATEGORY_ICONS: Record<string, string> = {
+  naturaleza: "mountain",
+  gastronomia: "utensils",
+  cultura: "landmark",
+  playa: "waves",
+};
+
+const DEFAULT_CATEGORY_ICON = CATEGORY_ICONS.cultura;
+
+export function getCategoryIcon(categorySlug: string | null | undefined) {
+  return (
+    (categorySlug && CATEGORY_ICONS[categorySlug]) || DEFAULT_CATEGORY_ICON
+  );
+}
+
+/**
+ * Ícono "de la zona" por lugar puntual (pedido del usuario: que el mapa y
+ * las fichas se sientan de Petorca/La Ligua, no genéricas) — solo para
+ * lugares cuyo contenido ya sourceado en `scripts/seed.ts` calza de verdad
+ * con el tema, no una asignación decorativa forzada:
+ * - dulce: Área de los Dulces de La Ligua (patrimonio cultural inmaterial).
+ * - tejido: Valle Hermoso, "la cuna del tejido" (barrio artesanal textil).
+ * - diablo: Escalera del Diablo (la leyenda que le da nombre al sitio).
+ * - surf: Los Molles y Pichicuy (ambos con ola/surf documentado).
+ * - casco-minero: San Lorenzo (parroquia patrona de mineros) y la línea
+ *   férrea Cabildo-Pedegua-Petorca (túneles, puente, construida para el
+ *   transporte minero del norte de Chile).
+ * "palta" (aguacate, cultivo emblemático de Petorca) queda en la paleta de
+ * íconos pero sin asignar: ningún lugar del catálogo lo documenta todavía.
+ */
+const PLACE_ICON_OVERRIDES: Record<string, string> = {
+  "la-ligua-area-de-dulces": "dulce",
+  "la-ligua-valle-hermoso": "tejido",
+  "escalera-del-diablo": "diablo",
+  "la-ligua-los-molles": "surf",
+  "la-ligua-pichicuy": "surf",
+  "cabildo-san-lorenzo": "casco-minero",
+  "cabildo-tunel-la-grupa": "casco-minero",
+  "petorca-tunel-las-palmas": "casco-minero",
+  "ruta-de-los-tuneles": "casco-minero",
+  pedegua: "casco-minero",
+  "pedegua-puente": "casco-minero",
+};
+
+export function getPlaceIcon(
+  categorySlug: string | null | undefined,
+  placeSlug: string | null | undefined,
+) {
+  if (placeSlug && PLACE_ICON_OVERRIDES[placeSlug]) {
+    return PLACE_ICON_OVERRIDES[placeSlug];
+  }
+  return getCategoryIcon(categorySlug);
+}

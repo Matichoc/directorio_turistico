@@ -1,29 +1,52 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { RouteCard as RouteCardType } from "@/types/domain";
 
+function RouteIcon({ className = "h-7 w-7" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <circle cx="6" cy="6" r="2.5" />
+      <circle cx="18" cy="18" r="2.5" />
+      <path d="M8.5 6H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.5" />
+    </svg>
+  );
+}
+
 export function RouteCard({ route }: { route: RouteCardType }) {
   const t = useTranslations("route");
+  const [photoFailed, setPhotoFailed] = useState(false);
 
   return (
     <Link
       href={{ pathname: "/rutas/[slug]", params: { slug: route.slug } }}
-      className="border-accent-soft hover:border-accent flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/[.03]"
+      className="border-accent-soft hover:border-accent flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_2px_var(--accent-soft)] dark:border-white/10 dark:bg-white/[.03]"
     >
-      <div className="from-accent to-accent-soft flex h-16 items-center justify-center bg-gradient-to-br">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.75"
-          strokeLinecap="round"
-          className="text-accent-foreground h-7 w-7"
-          aria-hidden="true"
-        >
-          <circle cx="6" cy="6" r="2.5" />
-          <circle cx="18" cy="18" r="2.5" />
-          <path d="M8.5 6H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.5" />
-        </svg>
+      <div className="from-accent to-accent-soft relative flex aspect-[16/9] items-center justify-center overflow-hidden bg-gradient-to-br">
+        {route.photoUrl && !photoFailed ? (
+          <Image
+            key={route.photoUrl}
+            src={route.photoUrl}
+            alt={route.name}
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            onError={() => setPhotoFailed(true)}
+            className="object-cover object-[center_65%]"
+          />
+        ) : (
+          <RouteIcon className="text-accent-foreground h-7 w-7" />
+        )}
       </div>
 
       <div className="flex flex-col gap-2 p-4">

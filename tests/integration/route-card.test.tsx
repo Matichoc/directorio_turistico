@@ -29,6 +29,7 @@ const baseRoute: RouteCardType = {
   description: "Recorre los lugares detrás del dicho.",
   estimatedDurationMinutes: 240,
   stopsCount: 4,
+  photoUrl: null,
 };
 
 describe("RouteCard", () => {

@@ -2,9 +2,10 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getRouteBySlug } from "@/lib/data/routes";
 import { resolveLocale } from "@/i18n/utils";
-import { Link } from "@/i18n/navigation";
-import { MapView } from "@/components/map/map-view";
+import { RouteNavigationMap } from "@/components/map/route-navigation-map";
 import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
+import { RouteStopChecklist } from "@/components/route/route-stop-checklist";
+import { DevilMascot } from "@/components/ui/devil-mascot";
 
 export default async function RouteDetailPage({
   params,
@@ -27,12 +28,15 @@ export default async function RouteDetailPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
-      <header className="flex flex-col gap-2">
+      <header className="relative flex flex-col gap-2">
         <h1 className="text-2xl font-semibold">{route.name}</h1>
         {hours && (
           <p className="text-foreground/60 text-sm">
             {t("duration")}: {hours}h
           </p>
+        )}
+        {route.slug === "ruta-del-diablo" && (
+          <DevilMascot className="animate-devil-peek text-accent pointer-events-none absolute top-0 right-0 h-10 w-10 opacity-70" />
         )}
       </header>
 
@@ -41,7 +45,7 @@ export default async function RouteDetailPage({
       )}
 
       {route.stops.length > 0 && (
-        <MapView
+        <RouteNavigationMap
           className="h-[35vh] w-full overflow-hidden rounded-xl"
           markers={route.stops.map((stop) => ({
             slug: stop.placeSlug,
@@ -52,29 +56,7 @@ export default async function RouteDetailPage({
         />
       )}
 
-      <div>
-        <h2 className="text-foreground/50 mb-2 text-sm font-medium">
-          {t("stops")} ({route.stops.length})
-        </h2>
-        <ol className="flex flex-col gap-2">
-          {route.stops.map((stop, index) => (
-            <li key={stop.id}>
-              <Link
-                href={{
-                  pathname: "/lugares/[slug]",
-                  params: { slug: stop.placeSlug },
-                }}
-                className="flex items-center gap-3 rounded-lg border border-black/10 px-3 py-2 text-sm hover:border-black/30 dark:border-white/10 dark:hover:border-white/30"
-              >
-                <span className="bg-foreground text-background flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs">
-                  {index + 1}
-                </span>
-                {stop.placeName}
-              </Link>
-            </li>
-          ))}
-        </ol>
-      </div>
+      <RouteStopChecklist routeId={route.id} stops={route.stops} />
 
       {route.stops.length > 0 && (
         <div className="pt-2">

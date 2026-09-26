@@ -2,9 +2,12 @@
 
 import { useRef, useState } from "react";
 import Map, {
+  GeolocateControl,
+  Layer,
   Marker,
   NavigationControl,
   Popup,
+  Source,
   type MapRef,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -17,7 +20,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { Link } from "@/i18n/navigation";
 import { MapPin } from "@/components/map/map-pin";
 import { CategoryIcon } from "@/components/ui/category-icon";
-import { getCategoryPinColor } from "@/lib/ui/category-gradient";
+import { getCategoryPinColor, getPlaceIcon } from "@/lib/ui/category-gradient";
 import {
   getMapStyleUrl,
   PETORCA_CENTER,
@@ -36,9 +39,20 @@ export interface MapMarkerData {
 export interface MapViewProps {
   className?: string;
   markers?: MapMarkerData[];
+  /** [lng, lat] de una ruta real por calle (ver lib/maps/directions.ts) —
+   * se dibuja como línea sobre el mapa, para el modo de navegación. */
+  routeLine?: [number, number][] | null;
+  /** Muestra el control de geolocalización de MapLibre (punto azul que
+   * sigue tu posición real) — modo navegación. */
+  showLiveLocation?: boolean;
 }
 
-export function MapView({ className, markers = [] }: MapViewProps) {
+export function MapView({
+  className,
+  markers = [],
+  routeLine,
+  showLiveLocation = false,
+}: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const [selected, setSelected] = useState<MapMarkerData | null>(null);
 
@@ -79,6 +93,35 @@ export function MapView({ className, markers = [] }: MapViewProps) {
         style={{ width: "100%", height: "100%" }}
       >
         <NavigationControl position="top-right" />
+        {showLiveLocation && (
+          <GeolocateControl
+            position="top-right"
+            trackUserLocation
+            positionOptions={{ enableHighAccuracy: true }}
+          />
+        )}
+        {routeLine && routeLine.length > 1 && (
+          <Source
+            id="route-line-source"
+            type="geojson"
+            data={{
+              type: "Feature",
+              properties: {},
+              geometry: { type: "LineString", coordinates: routeLine },
+            }}
+          >
+            <Layer
+              id="route-line-layer"
+              type="line"
+              layout={{ "line-join": "round", "line-cap": "round" }}
+              paint={{
+                "line-color": "#2563eb",
+                "line-width": 5,
+                "line-opacity": 0.85,
+              }}
+            />
+          </Source>
+        )}
         {markers.map((marker, index) => (
           <Marker
             key={marker.slug}
@@ -93,6 +136,7 @@ export function MapView({ className, markers = [] }: MapViewProps) {
             >
               <MapPin
                 categorySlug={marker.categorySlug}
+                placeSlug={marker.slug}
                 selected={selected?.slug === marker.slug}
                 delayMs={Math.min(index * 60, 600)}
               />
@@ -123,7 +167,7 @@ export function MapView({ className, markers = [] }: MapViewProps) {
                 }}
               >
                 <CategoryIcon
-                  icon={selected.categorySlug}
+                  icon={getPlaceIcon(selected.categorySlug, selected.slug)}
                   className="h-3.5 w-3.5"
                 />
               </span>

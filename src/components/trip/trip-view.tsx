@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EmptyState } from "@/components/ui/empty-state";
-import { MapView } from "@/components/map/map-view";
+import { RouteNavigationMap } from "@/components/map/route-navigation-map";
 import { ItineraryEngine, type Itinerary } from "@/lib/itinerary-engine";
 import {
   clearTrip,
@@ -159,7 +159,7 @@ export function TripView({ locale }: { locale: Locale }) {
       )}
 
       {markers.length > 0 && (
-        <MapView
+        <RouteNavigationMap
           className="h-[40vh] w-full overflow-hidden rounded-xl"
           markers={markers}
         />

@@ -18,6 +18,7 @@
 import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../src/types/database";
+import { GOOGLE_PLACE_PHOTO_PREFIX } from "./lib/google-photo-prefix";
 
 /**
  * URL hotlinkeable a un archivo de Wikimedia Commons vía `Special:FilePath`
@@ -285,14 +286,18 @@ const places = [
     slug: "chocolateria-matichoc",
     communeSlug: "la-ligua",
     categorySlug: "gastronomia",
-    // Guayacán 1409 — calle distinta a la de la Plaza de Armas/Museo, así
-    // que se usa un nudge manual en otra dirección respecto del centro de
-    // La Ligua (coordenadas aproximadas, no geocodificación exacta).
-    latitude: -32.4553,
-    longitude: -71.2265,
+    // Coordenadas exactas provistas por el usuario (dueño del local, pin
+    // de Google Maps) — reemplazan el nudge aproximado anterior.
+    latitude: -32.456567773339685,
+    longitude: -71.24680276136594,
     address: "Guayacán 1409, La Ligua",
     phone: "+56975645591",
     website: "https://www.matichoc.cl",
+    // Destacado vitalicio (dueño del negocio = dueño del sitio, sin fecha
+    // de término real) — no hay un valor "para siempre" en un campo de
+    // fecha, así que se usa una fecha lejana como marcador práctico en vez
+    // de agregar una columna/flag separado solo para este caso.
+    featuredUntil: "2099-12-31T23:59:59Z",
     // Foto real de producto (repo matichoc/matiweb) copiada a
     // public/fotos/chocolateria-matichoc/ — ver ese directorio para más.
     photo: {
@@ -302,12 +307,12 @@ const places = [
     es: {
       name: "Chocolatería Matichoc",
       short:
-        "Taller y tienda de chocolate artesanal fundada en 2011 por Inés Saavedra; auspiciador de este sitio. Coordenadas aproximadas (centro de La Ligua).",
+        "Taller y tienda de chocolate artesanal fundada en 2011 por Inés Saavedra; auspiciador de este sitio.",
     },
     en: {
       name: "Matichoc Chocolate Shop",
       short:
-        "Artisanal chocolate workshop and store founded in 2011 by Inés Saavedra; this site's sponsor. Coordinates are approximate (La Ligua town center).",
+        "Artisanal chocolate workshop and store founded in 2011 by Inés Saavedra; this site's sponsor.",
     },
     source: {
       url: "https://www.matichoc.cl/inicio",
@@ -556,24 +561,29 @@ const places = [
     },
   },
   {
-    slug: "papudo-paseo-conquistador",
-    communeSlug: "papudo",
+    // Reemplaza a "Paseo El Conquistador" a pedido del usuario: Punta Pite
+    // es una atracción más conocida y mejor documentada. Coordenadas
+    // exactas del acceso ("entrada punta pite") provistas por el usuario
+    // desde Google Maps — no se pudieron verificar desde este sandbox
+    // (Wikiloc/Wikiexplora/OpenStreetMap/teresamoller.cl bloqueados).
+    slug: "zapallar-punta-pite",
+    communeSlug: "zapallar",
     categorySlug: "naturaleza",
-    latitude: -32.502264751938554,
-    longitude: -71.45353903033985,
+    latitude: -32.50429284866351,
+    longitude: -71.46707955301645,
     es: {
-      name: "Paseo El Conquistador",
+      name: "Punta Pite",
       short:
-        "Sendero peatonal costero (abierto en 1986) que lleva a la Cueva de los Murciélagos y a la Cueva del Pirata Drake — según la leyenda, Francis Drake descansó ahí cinco días en 1578 — hasta Playa Los Changos.",
+        "Sendero costero de 1,5 km entre Papudo y Zapallar diseñado por la paisajista Teresa Moller (2004-2006): terrazas y escaleras en la misma roca de la costa, piscinas naturales, y avistamiento de pingüinos de Humboldt y delfines.",
     },
     en: {
-      name: "El Conquistador Walk",
+      name: "Punta Pite",
       short:
-        "A coastal walking path (opened in 1986) leading to the Bat Cave and Pirate Drake's Cave — legend says Francis Drake rested there for five days in 1578 — ending at Los Changos beach.",
+        "A 1.5 km coastal trail between Papudo and Zapallar designed by landscape architect Teresa Moller (2004-2006): terraces and stairs carved into the coastal rock, natural pools, and sightings of Humboldt penguins and dolphins.",
     },
     source: {
-      url: "https://conociendochile.com/c-region-de-valparaiso/papudo/",
-      label: "ConociendoChile — Papudo",
+      url: "https://laderasur.com/articulo/proyecto-punta-pite-escuela-de-pedreros/",
+      label: "Ladera Sur — Proyecto Punta Pite",
     },
   },
   {
@@ -839,22 +849,28 @@ const places = [
 const routes = [
   {
     slug: "ruta-del-diablo",
-    durationMinutes: 240,
+    // Reordenada a pedido del usuario: parte en Pedegua (Cabildo, bien
+    // metido en el campo — "donde el diablo perdió el poncho") y termina en
+    // Chincolco (interior de Petorca), en vez de quedarse solo entre
+    // Petorca y La Ligua. Se sacan Casa natal de Manuel Montt y Museo de La
+    // Ligua de las paradas (el usuario no las mencionó en la ruta nueva).
+    durationMinutes: 300,
     es: {
       name: "Ruta del Diablo",
       description:
-        'Recorre los lugares detrás del dicho "el diablo murió en Petorca y en La Ligua lo enterraron": la Escalera del Diablo en Hierro Viejo, el centro histórico de Petorca y el Museo de La Ligua.',
+        'Recorre los lugares detrás del dicho "el diablo murió en Petorca y en La Ligua lo enterraron", partiendo bien metido en el campo —"donde el diablo perdió el poncho"— en la antigua estación y el puente de Pedegua, hasta la Escalera del Diablo en Hierro Viejo, la Iglesia La Merced de Petorca y los petroglifos de Chincolco.',
     },
     en: {
       name: "Ruta del Diablo",
       description:
-        "Follows the places behind the old saying \"the Devil died in Petorca and was buried in La Ligua\": the Devil's Staircase in Hierro Viejo, Petorca's historic center and the La Ligua Museum.",
+        "Follows the places behind the old saying \"the Devil died in Petorca and was buried in La Ligua\", starting out where the devil lost his poncho — Pedegua's old railway station and bridge — through the Devil's Staircase in Hierro Viejo, La Merced Church in Petorca, and the Chincolco petroglyphs.",
     },
     stopSlugs: [
+      "pedegua",
+      "pedegua-puente",
       "escalera-del-diablo",
       "iglesia-la-merced-petorca",
-      "casa-natal-manuel-montt",
-      "museo-de-la-ligua",
+      "petorca-petroglifos-chincolco",
     ],
     source: {
       url: "https://petorcaminera.wordpress.com/2016/12/13/el-diablo-murio-en-petorca/",
@@ -863,18 +879,27 @@ const routes = [
   },
   {
     slug: "ruta-costera-papudo-zapallar",
-    durationMinutes: 180,
+    // Se suman Los Molles, Pichicuy (tramo costero de La Ligua) y Salinas
+    // de Pullally (Papudo) a pedido del usuario.
+    durationMinutes: 270,
     es: {
       name: "Ruta Costera: Papudo y Zapallar",
       description:
-        "Un recorrido por los balnearios tradicionales del litoral norte de la región de Valparaíso: playas de Papudo y la bahía de Zapallar.",
+        "Un recorrido por los balnearios tradicionales del litoral norte de la región de Valparaíso: las Salinas de Pullally y las playas de Papudo, la bahía de Zapallar, y el tramo costero de La Ligua en Los Molles y Pichicuy.",
     },
     en: {
       name: "Coastal Route: Papudo & Zapallar",
       description:
-        "A trip along the traditional resort towns of the region's northern coast: Papudo's beaches and Zapallar bay.",
+        "A trip along the traditional resort towns of the region's northern coast: the Pullally salt flats and Papudo's beaches, Zapallar bay, and La Ligua's coastal stretch at Los Molles and Pichicuy.",
     },
-    stopSlugs: ["playa-papudo", "playa-chica-papudo", "bahia-mirador-zapallar"],
+    stopSlugs: [
+      "papudo-pullally",
+      "playa-papudo",
+      "playa-chica-papudo",
+      "bahia-mirador-zapallar",
+      "la-ligua-los-molles",
+      "la-ligua-pichicuy",
+    ],
     source: {
       url: "https://www.minube.com/tips/actualidad/rincones-unicos-que-visitar-en-papudo-mar-y-montana-te-esperan",
       label: "minube — Qué ver en Papudo",
@@ -882,18 +907,27 @@ const routes = [
   },
   {
     slug: "ruta-patrimonial-la-ligua-cabildo",
-    durationMinutes: 210,
+    // Reemplazada a pedido del usuario: en vez de plaza/museo de La Ligua,
+    // ahora combina La Chorreada (La Ligua) con el interior cordillerano de
+    // Cabildo (Cerro Chache, San Lorenzo, Alicahue, La Vega).
+    durationMinutes: 270,
     es: {
       name: "Ruta Patrimonial: La Ligua y Cabildo",
       description:
-        "Centro histórico de La Ligua (plaza y museo) y la cordillera de la Costa en Cabildo, con el Cerro Chache como telón de fondo.",
+        "De La Chorreada, en La Ligua, al interior cordillerano de Cabildo: Cerro Chache, San Lorenzo, Alicahue y La Vega.",
     },
     en: {
       name: "Heritage Route: La Ligua & Cabildo",
       description:
-        "La Ligua's historic center (square and museum) and Cabildo's coastal cordillera, with Cerro Chache in the background.",
+        "From La Chorreada, in La Ligua, into Cabildo's mountain interior: Cerro Chache, San Lorenzo, Alicahue and La Vega.",
     },
-    stopSlugs: ["plaza-de-armas-la-ligua", "museo-de-la-ligua", "cerro-chache"],
+    stopSlugs: [
+      "la-ligua-la-chorreada",
+      "cerro-chache",
+      "cabildo-san-lorenzo",
+      "cabildo-alicahue",
+      "cabildo-la-vega",
+    ],
     source: {
       url: "https://www.sitrural.cl/wp-content/uploads/2024/11/Cabildo_turismo.pdf",
       label: "Sitrural — Atractivos turísticos comuna de Cabildo",
@@ -1007,6 +1041,9 @@ async function seedPlaces(
           address: "address" in place ? place.address : null,
           phone: "phone" in place ? place.phone : null,
           website: "website" in place ? place.website : null,
+          // Posición publicitaria pagada (gestionada a mano, sin pasarela
+          // de pago) — ver "featuredUntil" en places que la tengan.
+          featured_until: "featuredUntil" in place ? place.featuredUntil : null,
           publication_status: "published",
           verification_status: "verified",
         },
@@ -1040,7 +1077,15 @@ async function seedPlaces(
 
     await addSource("place", data.id, place.source.url, place.source.label);
 
-    await supabase.from("place_images").delete().eq("place_id", data.id);
+    // Solo borra fotos curadas a mano (no las que administra
+    // fetch-google-photos.ts) — sin este filtro, cada `pnpm db:seed`
+    // borraba también las fotos de Google (bug real: el usuario reportó
+    // que las fotos de Google "desaparecían" después de re-seedear).
+    await supabase
+      .from("place_images")
+      .delete()
+      .eq("place_id", data.id)
+      .not("storage_path", "like", `${GOOGLE_PLACE_PHOTO_PREFIX}%`);
     if ("photo" in place) {
       const storagePath =
         "filename" in place.photo
@@ -1112,12 +1157,41 @@ async function seedRoutes(placeIds: Record<string, string>) {
   console.log(`✔ ${routes.length} rutas (verificadas)`);
 }
 
+/**
+ * Lugares que existieron en una versión anterior del seed y se
+ * reemplazaron por otro (slug distinto, no una edición in-place) — este
+ * script solo hace upsert de lo que está en `places`/`routes`, nunca
+ * borra lo que ya no aparece ahí, así que hay que sacarlos a mano una vez.
+ * Se corre después de `seedRoutes()` para que ninguna parada de ruta
+ * siga apuntando a ellos (route_stops.place_id es ON DELETE RESTRICT).
+ */
+const REMOVED_PLACE_SLUGS = [
+  // Papudo, Paseo El Conquistador — reemplazado por Punta Pite (Zapallar),
+  // atracción más conocida y mejor documentada, a pedido del usuario.
+  "papudo-paseo-conquistador",
+];
+
+async function removePlaces() {
+  if (REMOVED_PLACE_SLUGS.length === 0) return;
+
+  const { error } = await supabase
+    .from("places")
+    .delete()
+    .in("slug", REMOVED_PLACE_SLUGS);
+
+  if (error) throw error;
+  console.log(
+    `✔ ${REMOVED_PLACE_SLUGS.length} lugar(es) obsoleto(s) eliminado(s)`,
+  );
+}
+
 async function main() {
   const communeIds = await seedCommunes();
   const categoryIds = await seedCategories();
   await seedTags();
   const placeIds = await seedPlaces(communeIds, categoryIds);
   await seedRoutes(placeIds);
+  await removePlaces();
   console.log("Seed completo.");
 }
 

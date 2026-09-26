@@ -5,7 +5,8 @@
 ## Estado actual
 
 - Fase: **Fase 1 — completada** (mergeada a `main`). Proyecto Supabase real ya creado por el usuario, migraciones y seed aplicados y verificados en vivo.
-- Última actualización: 2026-09-22
+- Última actualización: 2026-09-26
+- Lineamientos visuales (colores, radios, animaciones, íconos, patrones de componente) viven en `docs/DESIGN.md` — se carga automático en cada sesión de Claude Code vía `CLAUDE.md`, para que una página o componente nuevo siga la misma línea sin tener que pedirlo cada vez.
 
 ## 1. Arquitectura
 
@@ -220,5 +221,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
   Los dos lugares nuevos: **Puente La Sirena** (`cabildo-puente-la-sirena`, coordenadas exactas del usuario, a menos de 100 m de San Lorenzo) queda con fuente real (el video de YouTube "El carretero del puente la sirena. Cabildo." encontrado en la sesión anterior) y `verification_status: "verified"` como el resto del catálogo. **Castillo del Diablo** (`cabildo-castillo-del-diablo`, coordenadas exactas del usuario, ícono `diablo`) queda sin `source` (nada online la ubica en Cabildo específicamente) y con `verification_status: "pending"` — para esto se agregó soporte en `seedPlaces()` para un `verificationStatus` por lugar (antes hardcodeado "verified" para todos) y se hizo opcional el `addSource()` (antes obligatorio para cada lugar).
 
   De paso se activa un mecanismo que estaba en el esquema desde la Fase 0 pero nunca se usaba: `route_stop_translations.notes` (una nota por parada, por locale). `lib/data/routes.ts` ahora la trae y la mapea a `RouteStop.notes` (antes siempre `null` a mano); `scripts/seed.ts` deja que un stop sea un slug simple o `{ slug, notes: { es, en } }`; `RouteStopChecklist` la muestra en cursiva bajo el nombre de la parada. Usada hoy solo para marcar "La Chorreada" como parada opcional en la nueva Ruta Patrimonial.
+
+- 2026-09-26: El usuario pide "ir sumando lineamientos al repositorio" para que una página nueva siga la misma línea estética, y que un cambio nuevo "se replique entre todas las páginas" en vez de tener que aplicarlo página por página. Se audita lo que ya existe (no se inventa un sistema de diseño desde cero) — `globals.css` (tokens de color + `@keyframes`/`--animate-*`), `lib/ui/category-gradient.ts` (color/gradiente/ícono por categoría), `ICON_PATHS` en `category-icon.tsx`, y los patrones repetidos entre `PlaceCard`/`RouteCard`/badges (radios, glow de hover, posición fija de insignias) — y se documenta en `docs/DESIGN.md` (mismo estilo que `docs/ARCHITECTURE.md`/`docs/DATA-MODEL.md`): tokens, cuándo usar cada animación, la regla de "un solo lugar de verdad por tipo de token" (nunca un color/ícono/keyframe suelto dentro de un componente puntual) y la regla ya aplicada varias veces en esta sesión de no fabricar íconos/tags/leyendas sin contenido real detrás. Se agrega `@docs/DESIGN.md` a `CLAUDE.md` (junto al `@AGENTS.md` que ya había) para que cualquier sesión de Claude Code sobre este repo lo cargue automático, sin que el usuario tenga que pedirlo de nuevo cada vez.
 
   `pnpm typecheck`/`lint`/`test` (14)/`build`/`format:check` verdes. Falta que el usuario corra `supabase db push` + `pnpm db:seed` localmente para aplicar todo (migraciones 0010-0011, las nuevas paradas y notas).

@@ -82,15 +82,34 @@ export async function POST(request: NextRequest) {
   );
 
   if (!upstream.ok) {
-    // Se registra el cuerpo real del error de Google en los logs del
-    // servidor (Vercel → Deployments → Functions/Runtime Logs) — sin esto
-    // no había forma de saber por qué fallaba (llave restringida, cuota,
-    // falta de facturación, etc.) más que adivinar.
     const upstreamError = await upstream.text().catch(() => "");
+    // Se registra el cuerpo real en los logs del servidor (Vercel →
+    // Deployments → Functions/Runtime Logs) — pero además se manda un
+    // resumen al cliente (`detail`, ver abajo) para no depender de que
+    // alguien vaya a buscar ese log: el mensaje de error real de Google
+    // (llave restringida, cuota, falta de facturación, API no habilitada)
+    // ahora se puede ver/copiar directo desde la pantalla del navegador.
     console.error(
       `[/api/directions] Google Routes API respondió ${upstream.status}: ${upstreamError}`,
     );
-    return NextResponse.json({ error: "upstream_error" }, { status: 502 });
+
+    let detail = `HTTP ${upstream.status}`;
+    try {
+      const parsed = JSON.parse(upstreamError) as {
+        error?: { status?: string; message?: string };
+      };
+      if (parsed.error?.status || parsed.error?.message) {
+        detail =
+          `${upstream.status} ${parsed.error.status ?? ""}: ${(parsed.error.message ?? "").slice(0, 300)}`.trim();
+      }
+    } catch {
+      // Cuerpo no era JSON — nos quedamos con el status HTTP nomás.
+    }
+
+    return NextResponse.json(
+      { error: "upstream_error", detail },
+      { status: 502 },
+    );
   }
 
   const data = (await upstream.json()) as GoogleRoutesResponse;

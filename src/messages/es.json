@@ -6,6 +6,12 @@
     "myTrip": "Mi recorrido",
     "info": "Información"
   },
+  "info": {
+    "about": "Un directorio turístico de la provincia de Petorca: lugares, rutas y recorridos reales, hechos por gente de la zona.",
+    "developmentTitle": "Desarrollo",
+    "developmentCredit": "Desarrollo de Cristóbal Roco, CTO de Matichoc.",
+    "sponsorNote": "Auspiciado por Chocolatería Matichoc — chocolate artesanal hecho en La Ligua."
+  },
   "home": {
     "title": "El diablo murió en Petorca y en La Ligua lo enterraron",
     "subtitle": "Descubre lugares y arma tu recorrido por la provincia de Petorca.",

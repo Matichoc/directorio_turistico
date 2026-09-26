@@ -88,7 +88,7 @@ export default async function ExplorePage({
           }))}
         />
       ) : (
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {places.map((place) => (
             <li key={place.id}>
               <PlaceCard place={place} />

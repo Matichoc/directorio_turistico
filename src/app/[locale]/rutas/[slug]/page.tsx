@@ -52,6 +52,8 @@ export default async function RouteDetailPage({
             name: stop.placeName,
             latitude: stop.latitude,
             longitude: stop.longitude,
+            categorySlug: stop.categorySlug,
+            icon: stop.placeIcon,
           }))}
         />
       )}

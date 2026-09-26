@@ -84,6 +84,7 @@ export default async function ExplorePage({
             latitude: place.latitude,
             longitude: place.longitude,
             categorySlug: place.categorySlug,
+            icon: place.icon,
           }))}
         />
       ) : (

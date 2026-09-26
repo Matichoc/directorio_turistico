@@ -17,6 +17,8 @@ export interface Place {
   categoryId: string;
   categoryName: string;
   categorySlug: string;
+  /** Ícono puntual (ver migración 0010_place_icon.sql); null = de categoría. */
+  icon: string | null;
   latitude: number;
   longitude: number;
   address: string | null;
@@ -34,6 +36,9 @@ export interface RouteStop {
   placeId: string;
   placeSlug: string;
   placeName: string;
+  categorySlug: string | null;
+  /** Ícono puntual del lugar (ver migración 0010_place_icon.sql). */
+  placeIcon: string | null;
   latitude: number;
   longitude: number;
   position: number;
@@ -71,6 +76,8 @@ export interface PlaceCard {
   communeName: string;
   categoryName: string;
   categorySlug: string;
+  /** Ícono puntual (ver migración 0010_place_icon.sql); null = de categoría. */
+  icon: string | null;
   latitude: number;
   longitude: number;
   verificationStatus: VerificationStatus;

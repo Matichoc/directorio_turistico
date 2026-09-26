@@ -129,6 +129,7 @@ export function TripView({ locale }: { locale: Locale }) {
       latitude: place.latitude,
       longitude: place.longitude,
       categorySlug: place.categorySlug,
+      icon: place.icon,
     }));
 
   return (

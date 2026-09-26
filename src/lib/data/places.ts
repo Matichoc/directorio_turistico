@@ -35,7 +35,7 @@ function isCurrentlyFeatured(featuredUntil: string | null): boolean {
 
 const PLACE_QUERY =
   `id, slug, commune_id, category_id, latitude, longitude, address,
-   phone, website, featured_until, publication_status, verification_status,
+   phone, website, featured_until, icon, publication_status, verification_status,
    place_translations!inner(name, short_description, description, locale),
    communes!inner(commune_translations!inner(name, locale)),
    categories!inner(slug, category_translations!inner(name, locale)),
@@ -53,6 +53,7 @@ interface PlaceQueryResult {
   phone: string | null;
   website: string | null;
   featured_until: string | null;
+  icon: string | null;
   publication_status: PublicationStatus;
   verification_status: VerificationStatus;
   place_translations: {
@@ -106,6 +107,7 @@ export async function getPlaceBySlug(
     categoryId: data.category_id,
     categoryName: data.categories?.category_translations[0]?.name ?? "",
     categorySlug: data.categories?.slug ?? "",
+    icon: data.icon,
     latitude: data.latitude,
     longitude: data.longitude,
     address: data.address,
@@ -122,7 +124,7 @@ export async function getPlaceBySlug(
 }
 
 const PLACES_LIST_QUERY =
-  `id, slug, latitude, longitude, featured_until, verification_status,
+  `id, slug, latitude, longitude, featured_until, icon, verification_status,
    place_translations!inner(name, short_description, locale),
    communes!inner(slug, commune_translations!inner(name, locale)),
    categories!inner(slug, category_translations!inner(name, locale)),
@@ -135,6 +137,7 @@ interface PlaceListQueryResult {
   latitude: number;
   longitude: number;
   featured_until: string | null;
+  icon: string | null;
   verification_status: VerificationStatus;
   place_translations: {
     name: string;
@@ -163,6 +166,7 @@ function mapPlaceCard(place: PlaceListQueryResult): PlaceCard {
     communeName: place.communes?.commune_translations[0]?.name ?? "",
     categoryName: place.categories?.category_translations[0]?.name ?? "",
     categorySlug: place.categories?.slug ?? "",
+    icon: place.icon,
     latitude: place.latitude,
     longitude: place.longitude,
     verificationStatus: place.verification_status,

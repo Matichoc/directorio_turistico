@@ -30,6 +30,7 @@ const basePlace: PlaceCardType = {
   communeName: "Petorca",
   categoryName: "Naturaleza",
   categorySlug: "naturaleza",
+  icon: null,
   latitude: -32.28528,
   longitude: -71.0,
   verificationStatus: "pending",

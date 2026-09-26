@@ -20,7 +20,7 @@ export function PhotoOrIcon({
   photoUrl,
   alt,
   categorySlug,
-  slug,
+  icon,
   iconClassName,
   imgClassName = "object-cover",
   sizes = "100vw",
@@ -28,8 +28,8 @@ export function PhotoOrIcon({
   photoUrl?: string | null;
   alt: string;
   categorySlug?: string | null;
-  /** Slug del lugar — habilita el ícono "de la zona" (ver getPlaceIcon). */
-  slug?: string | null;
+  /** Ícono puntual del lugar (ver getPlaceIcon); null cae al de categoría. */
+  icon?: string | null;
   iconClassName?: string;
   imgClassName?: string;
   sizes?: string;
@@ -51,7 +51,7 @@ export function PhotoOrIcon({
 
   return (
     <CategoryIcon
-      icon={getPlaceIcon(categorySlug, slug)}
+      icon={getPlaceIcon(categorySlug, icon)}
       className={iconClassName}
     />
   );

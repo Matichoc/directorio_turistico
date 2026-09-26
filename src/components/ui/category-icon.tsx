@@ -5,7 +5,8 @@ const ICON_PATHS: Record<string, string> = {
   landmark: "M4 21h16M5 21V10M19 21V10M3 10l9-6 9 6M9 10v11M15 10v11",
   waves:
     "M2 17c1.5 1.3 3 1.3 4.5 0s3-1.3 4.5 0 3 1.3 4.5 0 3-1.3 4.5 0M2 12c1.5 1.3 3 1.3 4.5 0s3-1.3 4.5 0 3 1.3 4.5 0 3-1.3 4.5 0",
-  // Íconos "de la zona" (pedido del usuario, ver PLACE_ICON_OVERRIDES en
+  // Íconos "de la zona" (pedido del usuario, asignados por lugar vía
+  // `places.icon` — ver migración 0010_place_icon.sql y getPlaceIcon en
   // lib/ui/category-gradient.ts): reemplazan al ícono de categoría en
   // lugares puntuales cuyo contenido calza con el tema, para que el mapa y
   // las fichas se sientan más propias de Petorca/La Ligua.

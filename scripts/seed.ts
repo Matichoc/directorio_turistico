@@ -192,6 +192,7 @@ const places = [
     slug: "escalera-del-diablo",
     communeSlug: "petorca",
     categorySlug: "naturaleza",
+    icon: "diablo",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
     latitude: -32.28516042143831,
     longitude: -70.99993433393475,
@@ -323,6 +324,7 @@ const places = [
     slug: "pedegua",
     communeSlug: "cabildo",
     categorySlug: "cultura",
+    icon: "casco-minero",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
     latitude: -32.35621569224541,
     longitude: -71.0699530998617,
@@ -345,6 +347,7 @@ const places = [
     slug: "ruta-de-los-tuneles",
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
+    icon: "casco-minero",
     // Punto de acceso (Pedegua, coordenadas exactas provistas por el
     // usuario); los túneles individuales (La Grupa, Las Palmas) tienen su
     // propio pin más adelante en este archivo.
@@ -374,6 +377,7 @@ const places = [
     slug: "la-ligua-valle-hermoso",
     communeSlug: "la-ligua",
     categorySlug: "cultura",
+    icon: "tejido",
     latitude: -32.44181733434206,
     longitude: -71.20140631536381,
     es: {
@@ -395,6 +399,7 @@ const places = [
     slug: "la-ligua-area-de-dulces",
     communeSlug: "la-ligua",
     categorySlug: "gastronomia",
+    icon: "dulce",
     latitude: -32.47741266666833,
     longitude: -71.26927646175562,
     es: {
@@ -438,6 +443,7 @@ const places = [
     slug: "la-ligua-los-molles",
     communeSlug: "la-ligua",
     categorySlug: "playa",
+    icon: "surf",
     latitude: -32.236287985456514,
     longitude: -71.509924044495,
     es: {
@@ -459,6 +465,7 @@ const places = [
     slug: "la-ligua-pichicuy",
     communeSlug: "la-ligua",
     categorySlug: "playa",
+    icon: "surf",
     latitude: -32.34395655230688,
     longitude: -71.46046803135772,
     es: {
@@ -695,6 +702,7 @@ const places = [
     slug: "cabildo-san-lorenzo",
     communeSlug: "cabildo",
     categorySlug: "cultura",
+    icon: "casco-minero",
     latitude: -32.44020057056321,
     longitude: -71.00677988405883,
     es: {
@@ -737,6 +745,7 @@ const places = [
     slug: "cabildo-tunel-la-grupa",
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
+    icon: "casco-minero",
     latitude: -32.41055413711995,
     longitude: -71.0758728174616,
     es: {
@@ -758,6 +767,7 @@ const places = [
     slug: "pedegua-puente",
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
+    icon: "casco-minero",
     latitude: -32.348696990370975,
     longitude: -71.07050661121622,
     es: {
@@ -785,6 +795,7 @@ const places = [
     // catálogo) en vez de agregar una comuna nueva para un solo lugar.
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
+    icon: "casco-minero",
     latitude: -32.165013387998314,
     longitude: -71.15352300594377,
     es: {
@@ -1044,6 +1055,10 @@ async function seedPlaces(
           // Posición publicitaria pagada (gestionada a mano, sin pasarela
           // de pago) — ver "featuredUntil" en places que la tengan.
           featured_until: "featuredUntil" in place ? place.featuredUntil : null,
+          // Ícono "de la zona" puntual (ver migración 0010_place_icon.sql):
+          // dato por lugar, no un mapa fijo en el código — null cae al
+          // ícono de la categoría.
+          icon: "icon" in place ? place.icon : null,
           publication_status: "published",
           verification_status: "verified",
         },

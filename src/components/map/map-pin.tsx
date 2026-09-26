@@ -10,12 +10,12 @@ import { getCategoryPinColor, getPlaceIcon } from "@/lib/ui/category-gradient";
  */
 export function MapPin({
   categorySlug,
-  placeSlug,
+  placeIcon,
   selected = false,
   delayMs = 0,
 }: {
   categorySlug?: string | null;
-  placeSlug?: string | null;
+  placeIcon?: string | null;
   selected?: boolean;
   delayMs?: number;
 }) {
@@ -38,7 +38,7 @@ export function MapPin({
       >
         <span className="flex h-full w-full rotate-45 items-center justify-center">
           <CategoryIcon
-            icon={getPlaceIcon(categorySlug, placeSlug)}
+            icon={getPlaceIcon(categorySlug, placeIcon)}
             className="h-4 w-4 text-white"
           />
         </span>

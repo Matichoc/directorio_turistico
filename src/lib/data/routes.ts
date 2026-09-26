@@ -7,7 +7,8 @@ import type { Route, RouteCard, RouteStop } from "@/types/domain";
 const ROUTE_QUERY = `id, slug, estimated_duration_minutes, publication_status,
    route_translations!inner(name, description, locale),
    route_stops(id, place_id, position,
-     places(slug, latitude, longitude, place_translations(name, locale)))` as const;
+     places(slug, latitude, longitude, icon, place_translations(name, locale),
+       categories(slug)))` as const;
 
 interface RouteQueryResult {
   id: string;
@@ -27,7 +28,9 @@ interface RouteQueryResult {
       slug: string;
       latitude: number;
       longitude: number;
+      icon: string | null;
       place_translations: { name: string; locale: Locale }[];
+      categories: { slug: string } | null;
     } | null;
   }[];
 }
@@ -64,6 +67,8 @@ export async function getRouteBySlug(
       placeName:
         stop.places?.place_translations.find((t) => t.locale === locale)
           ?.name ?? "",
+      categorySlug: stop.places?.categories?.slug ?? null,
+      placeIcon: stop.places?.icon ?? null,
       latitude: stop.places?.latitude ?? 0,
       longitude: stop.places?.longitude ?? 0,
       position: stop.position,

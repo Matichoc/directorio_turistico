@@ -34,6 +34,8 @@ export interface MapMarkerData {
   latitude: number;
   longitude: number;
   categorySlug?: string | null;
+  /** Ícono puntual del lugar (ver migración 0010_place_icon.sql). */
+  icon?: string | null;
 }
 
 export interface MapViewProps {
@@ -136,7 +138,7 @@ export function MapView({
             >
               <MapPin
                 categorySlug={marker.categorySlug}
-                placeSlug={marker.slug}
+                placeIcon={marker.icon}
                 selected={selected?.slug === marker.slug}
                 delayMs={Math.min(index * 60, 600)}
               />
@@ -167,7 +169,7 @@ export function MapView({
                 }}
               >
                 <CategoryIcon
-                  icon={getPlaceIcon(selected.categorySlug, selected.slug)}
+                  icon={getPlaceIcon(selected.categorySlug, selected.icon)}
                   className="h-3.5 w-3.5"
                 />
               </span>

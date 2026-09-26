@@ -6,6 +6,12 @@
     "myTrip": "My trip",
     "info": "Info"
   },
+  "info": {
+    "about": "A tourism directory for Petorca province: real places, routes and trips, made by people from the area.",
+    "developmentTitle": "Development",
+    "developmentCredit": "Built by Cristóbal Roco, CTO of Matichoc.",
+    "sponsorNote": "Sponsored by Chocolatería Matichoc — artisan chocolate made in La Ligua."
+  },
   "home": {
     "title": "El diablo murió en Petorca y en La Ligua lo enterraron",
     "subtitle": "An old local saying about Petorca and La Ligua — discover places and plan your trip across the Petorca province.",

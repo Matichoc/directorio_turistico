@@ -1,23 +1,18 @@
-import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PhotoOrIcon } from "@/components/place/photo-or-icon";
-import { CategoryBadge } from "@/components/place/category-badge";
-import { FeaturedBadge } from "@/components/place/featured-badge";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import type { PlaceCard as PlaceCardType } from "@/types/domain";
 
-/** Nombres fijos de las 4 tags del catálogo (ver scripts/seed.ts) — sin
- * traducción por locale todavía, igual que la tabla `tags` en la base. */
-const TAG_LABELS: Record<string, string> = {
-  familiar: "Familiar",
-  "pet-friendly": "Pet friendly",
-  accesible: "Accesible",
-  leyenda: "Leyenda local",
-};
-
+/**
+ * Ficha compacta, tipo ícono de carpeta (pedido del usuario en `/explorar`:
+ * "un tamaño más pequeño de cuadrícula, parecido a recuadros de carpetas"):
+ * miniatura cuadrada + nombre, sin descripción/tags/categoría en texto —
+ * el color del gradiente y el ícono ya distinguen la categoría a simple
+ * vista. La insignia de "pendiente de verificación" se saca del todo (es
+ * el estado por defecto, ruido visual en una grilla chica); "verificado"
+ * queda como un check discreto en vez del pill de texto de antes.
+ */
 export function PlaceCard({ place }: { place: PlaceCardType }) {
-  const t = useTranslations("place");
-
   return (
     <Link
       href={{ pathname: "/lugares/[slug]", params: { slug: place.slug } }}
@@ -28,79 +23,37 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
       }`}
     >
       <div
-        className={`relative flex aspect-[16/9] items-center justify-center overflow-hidden bg-gradient-to-br ${getCategoryGradient(place.categorySlug)}`}
+        className={`relative flex aspect-square items-center justify-center overflow-hidden bg-gradient-to-br ${getCategoryGradient(place.categorySlug)}`}
       >
         <PhotoOrIcon
           photoUrl={place.photoUrl}
           alt={place.name}
           categorySlug={place.categorySlug}
           icon={place.icon}
-          iconClassName="h-7 w-7 text-white/70"
+          iconClassName="h-6 w-6 text-white/70"
           imgClassName="object-cover object-[center_65%]"
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-        />
-        <CategoryBadge
-          categorySlug={place.categorySlug}
-          categoryName={place.categoryName}
-          className="absolute top-2 left-2"
+          sizes="(min-width: 1024px) 16vw, (min-width: 640px) 25vw, 33vw"
         />
         {place.isFeatured && (
-          <FeaturedBadge className="absolute top-2 right-2" />
+          <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[11px] text-white shadow">
+            ★
+          </span>
         )}
-        {place.photoCount > 1 && (
-          <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-full bg-black/50 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-3 w-3"
-              aria-hidden="true"
-            >
-              <path d="M4 8h3l2-2h6l2 2h3v11H4z" />
-              <circle cx="12" cy="13" r="3.5" />
-            </svg>
-            {place.photoCount}
+        {place.verificationStatus === "verified" && (
+          <span
+            title="Verificado"
+            className="absolute bottom-1 left-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white shadow"
+          >
+            ✓
           </span>
         )}
       </div>
 
-      <div className="flex flex-col gap-2 p-4">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-medium">{place.name}</h3>
-          {place.verificationStatus === "verified" ? (
-            <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-              {t("verified")}
-            </span>
-          ) : (
-            <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-              {t("verificationPending")}
-            </span>
-          )}
-        </div>
-        <p className="text-foreground/60 text-sm">
+      <div className="flex flex-col gap-0.5 p-2">
+        <h3 className="truncate text-xs font-medium">{place.name}</h3>
+        <p className="text-foreground/50 truncate text-[11px]">
           {place.communeName}
-          {place.categoryName ? ` · ${place.categoryName}` : ""}
         </p>
-        {place.shortDescription && (
-          <p className="text-foreground/70 line-clamp-2 text-sm">
-            {place.shortDescription}
-          </p>
-        )}
-        {place.tags.length > 0 && (
-          <ul className="flex flex-wrap gap-1.5">
-            {place.tags.map((tag) => (
-              <li
-                key={tag}
-                className="border-accent-soft text-foreground/70 rounded-full border px-2 py-0.5 text-[11px] dark:border-white/15"
-              >
-                {TAG_LABELS[tag] ?? tag}
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </Link>
   );

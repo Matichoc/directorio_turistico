@@ -484,20 +484,48 @@ const places = [
     },
   },
   {
+    // Corregido a pedido del usuario: esta ubicación (coordenadas de antes,
+    // sin cambios) es la Laguna Pullally, no las Salinas — son dos lugares
+    // distintos del mismo humedal. "Salinas de Pullally" pasa a su propia
+    // entrada, en las coordenadas reales que dio el usuario.
     slug: "papudo-pullally",
     communeSlug: "papudo",
     categorySlug: "naturaleza",
     latitude: -32.43467097116685,
     longitude: -71.31775915116937,
     es: {
+      name: "Laguna Pullally",
+      short:
+        "Laguna dentro del Santuario de la Naturaleza Salinas de Pullally y Dunas de Longotoma (declarado en 2020), en la desembocadura de los ríos Petorca y La Ligua; el humedal alberga 137 especies de aves (más de un cuarto de las descritas en Chile), varias migratorias.",
+    },
+    en: {
+      name: "Pullally Lagoon",
+      short:
+        "A lagoon within the Salinas de Pullally y Dunas de Longotoma Nature Sanctuary (declared in 2020), at the mouth of the Petorca and La Ligua rivers; the wetland is home to 137 bird species (over a quarter of those recorded in Chile), several of them migratory.",
+    },
+    source: {
+      url: "https://es.wikipedia.org/wiki/Humedal_Salinas_de_Pullally_y_Dunas_de_Longotoma",
+      label: "Wikipedia — Humedal Salinas de Pullally y Dunas de Longotoma",
+    },
+  },
+  {
+    // Coordenadas exactas provistas por el usuario — lugar real distinto de
+    // la Laguna Pullally (ver nota arriba), dentro del mismo humedal/
+    // santuario protegido.
+    slug: "papudo-salinas-pullally",
+    communeSlug: "papudo",
+    categorySlug: "naturaleza",
+    latitude: -32.41007831226611,
+    longitude: -71.41062008860503,
+    es: {
       name: "Salinas de Pullally",
       short:
-        "Humedal entre las desembocaduras de los ríos Petorca y La Ligua, declarado Santuario de la Naturaleza en 2020; alberga 137 especies de aves (más de un cuarto de las descritas en Chile), varias migratorias.",
+        "Sector de salinas del Santuario de la Naturaleza Salinas de Pullally y Dunas de Longotoma (declarado en 2020), entre las desembocaduras de los ríos Petorca y La Ligua.",
     },
     en: {
       name: "Salinas de Pullally",
       short:
-        "A wetland between the mouths of the Petorca and La Ligua rivers, declared a Nature Sanctuary in 2020; home to 137 bird species (over a quarter of those recorded in Chile), several of them migratory.",
+        "The salt-flat sector of the Salinas de Pullally y Dunas de Longotoma Nature Sanctuary (declared in 2020), between the mouths of the Petorca and La Ligua rivers.",
     },
     source: {
       url: "https://es.wikipedia.org/wiki/Humedal_Salinas_de_Pullally_y_Dunas_de_Longotoma",
@@ -961,7 +989,10 @@ const routes = [
         "A trip along the traditional resort towns of the region's northern coast: the Pullally salt flats and Papudo's beaches, Zapallar bay, and La Ligua's coastal stretch at Los Molles and Pichicuy.",
     },
     stopSlugs: [
-      "papudo-pullally",
+      // Laguna Pullally (papudo-pullally) queda solo como lugar en el
+      // catálogo/`explorar`, no como parada de esta ruta — a pedido del
+      // usuario; las Salinas sí son parada real de la ruta costera.
+      "papudo-salinas-pullally",
       "playa-papudo",
       "playa-chica-papudo",
       "bahia-mirador-zapallar",

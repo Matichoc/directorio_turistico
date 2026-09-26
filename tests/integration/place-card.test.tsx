@@ -41,7 +41,7 @@ const basePlace: PlaceCardType = {
 };
 
 describe("PlaceCard", () => {
-  it("renders the place name, commune and verification badge", () => {
+  it("renders the place name and commune", () => {
     render(
       <NextIntlClientProvider locale="es" messages={messages}>
         <PlaceCard place={basePlace} />
@@ -50,19 +50,22 @@ describe("PlaceCard", () => {
 
     expect(screen.getByText("Escalera del Diablo")).toBeInTheDocument();
     expect(screen.getByText(/Petorca/)).toBeInTheDocument();
-    expect(screen.getByText("Pendiente de verificación")).toBeInTheDocument();
   });
 
-  it("hides the verification badge once verified", () => {
+  it("only shows the verified check once verified", () => {
+    render(
+      <NextIntlClientProvider locale="es" messages={messages}>
+        <PlaceCard place={basePlace} />
+      </NextIntlClientProvider>,
+    );
+    expect(screen.queryByTitle("Verificado")).not.toBeInTheDocument();
+
     render(
       <NextIntlClientProvider locale="es" messages={messages}>
         <PlaceCard place={{ ...basePlace, verificationStatus: "verified" }} />
       </NextIntlClientProvider>,
     );
-
-    expect(
-      screen.queryByText("Pendiente de verificación"),
-    ).not.toBeInTheDocument();
+    expect(screen.getByTitle("Verificado")).toBeInTheDocument();
   });
 
   it("links to the place detail page by slug", () => {

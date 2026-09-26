@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RouteNavigationMap } from "@/components/map/route-navigation-map";
+import { PhotoOrIcon } from "@/components/place/photo-or-icon";
+import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import { ItineraryEngine, type Itinerary } from "@/lib/itinerary-engine";
 import {
   clearTrip,
@@ -218,10 +220,29 @@ export function TripView({ locale }: { locale: Locale }) {
               key={stop.placeId}
               className="flex items-center gap-3 rounded-lg border border-black/10 px-3 py-2 text-sm dark:border-white/10"
             >
-              <span className="bg-foreground text-background flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs">
+              <span className="border-foreground/30 text-foreground/50 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-xs font-medium">
                 {index + 1}
               </span>
-              <div className="flex flex-1 flex-col">
+              {place && (
+                <Link
+                  href={{
+                    pathname: "/lugares/[slug]",
+                    params: { slug: place.slug },
+                  }}
+                  className={`relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br ${getCategoryGradient(place.categorySlug)}`}
+                >
+                  <PhotoOrIcon
+                    photoUrl={place.photoUrl}
+                    alt={place.name}
+                    categorySlug={place.categorySlug}
+                    icon={place.icon}
+                    iconClassName="h-5 w-5 text-white/70"
+                    imgClassName="object-cover object-[center_65%]"
+                    sizes="44px"
+                  />
+                </Link>
+              )}
+              <div className="flex min-w-0 flex-1 flex-col">
                 {place ? (
                   <Link
                     href={{
@@ -234,6 +255,11 @@ export function TripView({ locale }: { locale: Locale }) {
                   </Link>
                 ) : (
                   <span className="font-medium">{stop.name}</span>
+                )}
+                {place?.shortDescription && (
+                  <span className="text-foreground/60 line-clamp-1 text-xs">
+                    {place.shortDescription}
+                  </span>
                 )}
                 {index > 0 && (
                   <span className="text-foreground/50 text-xs">

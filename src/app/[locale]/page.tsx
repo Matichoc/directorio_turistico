@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { HomeSearchForm } from "@/components/home/home-search-form";
 import { RouteCard } from "@/components/route/route-card";
+import { MunicipalityBanner } from "@/components/home/municipality-banner";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { SparkleField } from "@/components/ui/sparkle-field";
 import { DevilMascot } from "@/components/ui/devil-mascot";
@@ -9,6 +10,7 @@ import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
 import { listRoutes } from "@/lib/data/routes";
+import { listMunicipalities } from "@/lib/data/communes";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -30,9 +32,10 @@ export default async function HomePage({
   const locale = resolveLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [t, routes] = await Promise.all([
+  const [t, routes, municipalities] = await Promise.all([
     getTranslations("home"),
     listRoutes(locale, 3),
+    listMunicipalities(locale),
   ]);
 
   return (
@@ -83,6 +86,8 @@ export default async function HomePage({
           ))}
         </ul>
       </section>
+
+      <MunicipalityBanner municipalities={municipalities} />
 
       <section className="px-4 pb-4">
         <div className="mb-3 flex items-center justify-between">

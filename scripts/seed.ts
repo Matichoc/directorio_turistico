@@ -54,6 +54,64 @@ const communes = [
   { slug: "papudo", es: "Papudo", en: "Papudo" },
 ];
 
+// Sitio y redes oficiales de cada municipalidad (banner del home, ver
+// docs/PLAN.md sección 8.2) — encontrados vía WebSearch y cruzados contra
+// varias búsquedas independientes (mismo criterio que el checksum de
+// población: solo se usa lo que aparece consistente en más de una
+// consulta), no navegados en vivo desde este sandbox (sin salida de red a
+// sitios externos). Antes de darlos por definitivos en producción,
+// conviene que el usuario abra cada uno y confirme con un click. Email
+// omitido donde no se encontró una dirección general de contacto (Cabildo
+// — solo aparecieron correos de unidades específicas, no uno general).
+const communeLinks: Record<string, { kind: string; value: string }[]> = {
+  "la-ligua": [
+    { kind: "website", value: "https://www.comunadelaligua.cl" },
+    { kind: "facebook", value: "https://www.facebook.com/laliguacl/" },
+    { kind: "instagram", value: "https://www.instagram.com/laliguacl/" },
+    { kind: "phone", value: "+56332342189" },
+    { kind: "email", value: "alcaldia@laligua.cl" },
+  ],
+  petorca: [
+    { kind: "website", value: "https://munipetorca.cl" },
+    {
+      kind: "facebook",
+      value: "https://www.facebook.com/MunicipalidadPetorca/",
+    },
+    {
+      kind: "instagram",
+      value: "https://www.instagram.com/municipalidadpetorca/",
+    },
+    { kind: "phone", value: "+56332337830" },
+    { kind: "email", value: "alcaldia@municipalidadpetorca.cl" },
+  ],
+  cabildo: [
+    { kind: "website", value: "https://municipiocabildo.cl" },
+    { kind: "facebook", value: "https://www.facebook.com/MunicipioCabildo/" },
+    {
+      kind: "instagram",
+      value: "https://www.instagram.com/municipio_cabildo/",
+    },
+    { kind: "phone", value: "+56332762100" },
+  ],
+  papudo: [
+    { kind: "website", value: "https://www.municipalidadpapudo.cl" },
+    { kind: "facebook", value: "https://www.facebook.com/munipapudo/" },
+    { kind: "instagram", value: "https://www.instagram.com/munipapudo/" },
+    { kind: "phone", value: "+56332325100" },
+    { kind: "email", value: "contacto@municipalidadpapudo.cl" },
+  ],
+  zapallar: [
+    { kind: "website", value: "https://www.munizapallar.cl" },
+    {
+      kind: "facebook",
+      value: "https://www.facebook.com/municipalidadzapallar/",
+    },
+    { kind: "instagram", value: "https://www.instagram.com/munizapallar/" },
+    { kind: "phone", value: "+56332296800" },
+    { kind: "email", value: "contacto@munizapallar.cl" },
+  ],
+};
+
 const categories = [
   { slug: "naturaleza", es: "Naturaleza", en: "Nature", icon: "mountain" },
   { slug: "gastronomia", es: "Gastronomía", en: "Food", icon: "utensils" },
@@ -1170,6 +1228,39 @@ async function seedCommunes() {
   return communeIds;
 }
 
+async function seedCommuneLinks(communeIds: Record<string, string>) {
+  let count = 0;
+
+  for (const [slug, links] of Object.entries(communeLinks)) {
+    const communeId = communeIds[slug];
+    if (!communeId) continue;
+
+    for (const [position, link] of links.entries()) {
+      const { data: existing } = await supabase
+        .from("contact_links")
+        .select("id")
+        .eq("entity_type", "commune")
+        .eq("entity_id", communeId)
+        .eq("kind", link.kind)
+        .eq("value", link.value)
+        .maybeSingle();
+
+      if (existing) continue;
+
+      await supabase.from("contact_links").insert({
+        entity_type: "commune",
+        entity_id: communeId,
+        kind: link.kind,
+        value: link.value,
+        position,
+      });
+      count += 1;
+    }
+  }
+
+  console.log(`✔ ${count} enlaces de contacto de municipalidades`);
+}
+
 async function seedCategories() {
   const categoryIds: Record<string, string> = {};
 
@@ -1460,6 +1551,7 @@ async function removePlaces() {
 
 async function main() {
   const communeIds = await seedCommunes();
+  await seedCommuneLinks(communeIds);
   const categoryIds = await seedCategories();
   await seedTags();
   const placeIds = await seedPlaces(communeIds, categoryIds);

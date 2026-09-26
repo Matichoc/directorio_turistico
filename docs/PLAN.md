@@ -5,7 +5,7 @@
 ## Estado actual
 
 - Fase: **Fase 1 — completada** (mergeada a `main`). Proyecto Supabase real ya creado por el usuario, migraciones y seed aplicados y verificados en vivo.
-- **Backlog nuevo en definición** (ver sección 8, sin iniciar): login opcional + "me gusta" por lugar, banner de las 5 municipalidades con sus eventos, y enlaces de contacto/redes destacados — el usuario pidió dejarlo planificado antes de escribir código.
+- **Backlog en curso** (ver sección 8): "me gusta" por lugar (vía identificador de sesión, sin esperar login OAuth), banner de las 5 municipalidades con sus links oficiales, y listado de contactos en `/informacion` — primera versión de los tres ya construida y en el PR abierto.
 - Última actualización: 2026-09-26
 - Lineamientos visuales (colores, radios, animaciones, íconos, patrones de componente) viven en `docs/DESIGN.md` — se carga automático en cada sesión de Claude Code vía `CLAUDE.md`, para que una página o componente nuevo siga la misma línea sin tener que pedirlo cada vez.
 
@@ -90,6 +90,7 @@ directorio_turistico/
 **Lugares:** places, place_translations, place_hours, place_images, place_tags
 **Rutas:** routes, route_translations, route_stops, route_stop_translations
 **Verificación:** sources, verification_logs
+**Contactos/comunidad:** contact_links, place_likes (+ función `place_like_counts()`)
 **Itinerarios:** itineraries, itinerary_stops
 **Analítica:** analytics_events
 **Auth/admin:** admin_users (mapea `auth.users` a rol de administrador)
@@ -159,83 +160,61 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 - [x] Pruebas de integración para `PlaceCard`/`RouteCard` (se corrigió un bug real: faltaba `cleanup()` entre tests de Testing Library en `tests/setup.ts`, causaba falsos positivos/negativos por acumulación del DOM)
 - [ ] `pnpm test:e2e` (Playwright) contra datos reales — no ejecutado en esta sesión (sandbox sin acceso de red a Supabase)
 
-## 8. Backlog propuesto — comunidad, municipios y contacto (2026-09-26, sin iniciar)
+## 8. Backlog — comunidad, municipios y contacto (2026-09-26, en curso)
 
-> El usuario pidió dejar esto "en plan" antes de tocar código, para decidir el enfoque con calma. Cada punto anota el enfoque técnico, las tareas y — siguiendo el pedido explícito del usuario ("empieza a pedirme cosas") — qué material real hace falta que él aporte o confirme antes de avanzar, en vez de adivinar o fabricar el dato (mismo principio de `docs/DESIGN.md`, "Nunca fabricar datos").
+> Planificado primero, luego el usuario contestó las preguntas abiertas y dio luz verde a construir una primera versión de cada punto en la misma ronda (ver Bitácora). Sigue siendo un documento vivo: lo que falta queda anotado como tarea pendiente.
 
-### 8.1 Login opcional + "me gusta" por lugar (nunca negativo)
+### 8.1 "Me gusta" por lugar vía identificador de sesión (nunca negativo)
 
-**Objetivo**: poder entrar con una cuenta que ya se tiene (Google/Facebook/Instagram) para darle "me gusta" a un lugar — sin reseña de texto libre ni calificación negativa, solo un contador positivo.
+**Objetivo**: poder marcar "me gusta" en un lugar sin reseña de texto libre ni calificación negativa, solo un contador positivo. El usuario relajó el pedido original ("login con Instagram/Facebook/Google") a "al menos un login, o identificador de sesión" — suficiente para guardar la ruta y recomendar mejor lo que se ve, sin depender de credenciales OAuth que aún no existen.
 
-**Enfoque técnico**:
+**Enfoque técnico e implementación (2026-09-26)**:
 
-- Supabase Auth ya soporta login con Google y Facebook de forma nativa (`@supabase/ssr` ya es dependencia) — falta solo configurar cada proveedor, no cambia la arquitectura.
-- **Instagram no tiene un "iniciar sesión con Instagram" equivalente y simple**: Meta lo fusionó en la API de Instagram para cuentas profesionales/creadores que conectan contenido (requiere revisión de la app por Meta y una cuenta de negocio) — no está pensado para que cualquier visitante inicie sesión. Recomendación: partir con Google + Facebook, dejar Instagram para evaluar después (puede que ni convenga para este caso de uso).
-- Tabla nueva `place_likes` (`place_id`, `user_id`, `created_at`, único por par) — RLS: cualquier usuario autenticado inserta/borra su propia fila; el conteo es de lectura pública, nunca quién dio el "me gusta".
-- Botón de corazón en `PlaceCard`/ficha de lugar: sin sesión, invita a iniciar sesión — nunca bloquea seguir navegando o usando el resto del sitio sin cuenta.
-- El contador solo se muestra si es mayor a 0 (mismo principio de "no-op" que ya sigue el resto del sitio en vez de un placeholder inventado).
+- **Fase 1a (implementada)**: identificador de sesión anónimo generado y guardado en el navegador (`lib/likes/session.ts`, `crypto.randomUUID()` en `localStorage`, mismo espíritu que `itineraries.session_id`). Tabla `place_likes` (migración `0014_place_likes.sql`), RLS con el mismo nivel de confianza que ya tolera `analytics_events` (insert/delete anónimo, `using`/`with check (true)`) — aceptable para un contador de bajo riesgo. El conteo público se sirve agregado vía `place_like_counts()` (función `security definer`), nunca la tabla cruda con los `session_id`. `LikeButton` (`src/components/place/like-button.tsx`) en la ficha de lugar, junto a "Agregar a mi recorrido"/Compartir.
+- **Fase 1b (pendiente, sin bloquear lo anterior)**: login opcional real con Google + Facebook vía Supabase Auth (nativo). **Instagram no tiene un "iniciar sesión" de consumidor equivalente** — Meta lo trata como conexión de cuenta profesional/creador con revisión de app — queda de última prioridad. Esta fase permitiría además "recomendar mejor lo que se ve" (historial real por cuenta en vez de solo por navegador).
 
 **Tareas**:
 
-- [ ] Migración `place_likes` + RLS
-- [ ] Proveedor Google en Supabase Auth (el usuario crea las credenciales OAuth en Google Cloud Console y las pega en el dashboard de Supabase → Authentication → Providers)
-- [ ] Proveedor Facebook en Supabase Auth (ídem, vía developers.facebook.com)
-- [ ] UI de sesión (botón "Iniciar sesión"/logout, estado de usuario)
-- [ ] Botón de "me gusta" + conteo en `PlaceCard` y ficha de lugar
+- [x] Migración `place_likes` + RLS + `place_like_counts()`
+- [x] Identificador de sesión anónimo (`lib/likes/session.ts`) + caché local de "ya le di like" (`lib/likes/storage.ts`)
+- [x] Botón de "me gusta" + conteo en la ficha de lugar
+- [ ] Login opcional Google + Facebook vía Supabase Auth (Fase 1b, requiere credenciales del usuario)
+- [ ] Usar el historial de "me gusta"/lugares vistos para mejorar recomendaciones (motor de itinerarios o "también te puede interesar")
 
-**Qué necesito del usuario**:
+**Qué falta del usuario** (solo para la Fase 1b, no bloquea lo ya construido):
 
-- Confirmar que partimos con Google + Facebook (Instagram queda para evaluar después, no es tan directo como los otros dos)
-- Client ID/Secret de Google OAuth (Google Cloud Console → Credentials → "OAuth client ID", tipo aplicación web)
-- App ID/Secret de una app de Facebook Login (developers.facebook.com, tipo "Consumer")
-- Configurar ambos en el dashboard de Supabase le toca a él — mismo límite ya documentado con `SUPABASE_SERVICE_ROLE_KEY`/`pnpm db:seed`: este sandbox no tiene esas credenciales ni acceso al dashboard.
+- Client ID/Secret de Google OAuth y App ID/Secret de Facebook Login, configurados en el dashboard de Supabase (Authentication → Providers) — igual que `SUPABASE_SERVICE_ROLE_KEY`, este sandbox no tiene acceso a ese dashboard.
 
-### 8.2 Banner rotativo con las 5 municipalidades y sus eventos destacados
+### 8.2 Banner rotativo con las 5 municipalidades
 
-**Objetivo**: en el home, un carrusel que va pasando las 5 comunas (La Ligua, Petorca, Cabildo, Papudo, Zapallar) — su municipalidad y, cuando exista uno vigente, su evento más destacado.
+**Objetivo**: en el home, un carrusel que va pasando las 5 comunas (La Ligua, Petorca, Cabildo, Papudo, Zapallar) con su sitio y redes oficiales.
 
-**Enfoque técnico**:
+**Implementación (2026-09-26)**: el usuario aceptó que bastaba con que se investigaran los links (no hacía falta que él los pasara a mano). Se buscaron vía `WebSearch`, cruzando cada dato contra más de una consulta independiente (mismo criterio que el checksum de población de la ronda de descripciones) — sitio, Facebook, Instagram y teléfono de las 5; email solo donde se encontró una dirección general (no en Cabildo, donde solo aparecieron correos de unidades específicas). Tabla `contact_links` (ver 8.3, genérica) con `entity_type = 'commune'`; seed en `scripts/seed.ts` (`communeLinks`, `seedCommuneLinks()`); componente `MunicipalityBanner` (`src/components/home/municipality-banner.tsx`) con auto-avance (6s, se pausa al pasar el mouse) + puntos para saltar a mano, mismo espíritu que el carrusel de fotos de `PlacePhotoHero` pero con avance automático por ser un banner. Sin "evento destacado" todavía — nadie lo pidió esta vez y no hay forma automática de traerlo (ver Riesgos #23); si una comuna no tiene links, su slide lo dice en vez de inventar algo.
 
-- Esto no puede resolverse con scraping automático de Facebook/Instagram de cada municipio: no hay una API pública de "posts destacados" a la que se pueda pedir acceso realista (implicaría que cada municipio nos diera rol de administrador en su propia página), y además este sandbox no tiene salida de red hacia redes sociales para siquiera probarlo (mismo límite ya documentado en Riesgos #10 con Wikipedia/Wikidata). Se recomienda partir **curado a mano**, igual que ya se hace hoy con fotos/destacados, en vez de perseguir una integración automática que no es viable todavía.
-- Dos tablas nuevas:
-  - `commune_links` (`commune_id`, `kind`: sitio/Facebook/Instagram, `url`) — el enlace oficial de cada municipalidad.
-  - `commune_events` (`commune_id`, `title`, `description`, `starts_at`, `link`, `image`) — el evento destacado vigente, si hay uno. Si una comuna no tiene evento cargado, su slide muestra solo el link municipal, nunca un evento inventado.
-- Componente `MunicipalityBanner`: carrusel de auto-avance en el home, un slide por comuna.
-- El panel admin real (referido como "Fase 2" en Riesgos #21/#26, todavía placeholder) eventualmente debería dejar cargar/actualizar el evento sin tocar código; mientras tanto se actualiza igual que el resto del catálogo: `scripts/seed.ts` + `pnpm db:seed`.
+**Importante — no verificado visualmente**: estos links salieron de búsquedas (no se pudo navegar a cada sitio desde este sandbox, sin salida de red externa) — conviene que el usuario abra cada uno con un click antes de darlos por definitivos en producción.
 
 **Tareas**:
 
-- [ ] Migración `commune_links` + `commune_events` + RLS (lectura pública, escritura admin)
-- [ ] Seed con los links oficiales reales de las 5 municipalidades
-- [ ] Componente `MunicipalityBanner` en el home
-- [ ] Cargar el primer evento real cuando el usuario tenga uno por comuna (no todas necesitan tenerlo desde el día uno)
-
-**Qué necesito del usuario**:
-
-- El sitio web y/o Facebook/Instagram oficial de cada una de las 5 municipalidades — no los voy a "buscar y adivinar cuál es el oficial" sin confirmación.
-- Si hay algún evento puntual que quiera destacar ahora (nombre, fecha, un link o una imagen); si todavía no hay ninguno, el banner parte solo con el link municipal.
+- [x] Migración `contact_links` + RLS (lectura pública, escritura admin)
+- [x] Seed con los links oficiales de las 5 municipalidades (sitio, Facebook, Instagram, teléfono, email donde se encontró)
+- [x] Componente `MunicipalityBanner` en el home
+- [ ] Confirmación visual del usuario (un click por municipio) antes de darlos por definitivos
+- [ ] Evento destacado por comuna, si el usuario quiere sumar uno (queda curado a mano, vía seed, hasta que exista un admin real)
 
 ### 8.3 Redes de contacto y datos relevantes destacados
 
-**Objetivo**: mostrar de forma más visible los datos de contacto reales de lugares/comunas (teléfono, sitio, redes sociales), y ordenar el pedido del contenido que sigue pendiente.
+**Objetivo**: mostrar de forma más visible los datos de contacto reales de lugares/comunas, y tener un listado a mano de números/redes de zonas relevantes.
 
-**Enfoque técnico**:
-
-- Mismo principio de "un solo lugar de verdad" de `docs/DESIGN.md`: en vez de agregar una columna suelta (`instagram_url`, `facebook_url`, `tiktok_url`, ...) a `places` cada vez que aparece una red nueva, conviene una tabla genérica `contact_links` (`entity_type`: place/route/commune, `entity_id`, `kind`, `url`, `label`) — misma idea que ya usa `sources` para fuentes de verificación, aplicada esta vez a enlaces de contacto. Sirve para lugares, para los links municipales de 8.2 y, más adelante, para el propio sponsor (Matichoc hoy vive hardcodeado por env var).
-- En la ficha de lugar/ruta y en `/informacion`, mostrar esos links como las píldoras (`rounded-full`) que ya existen ahí para Cristóbal — mismo patrón visual, con más datos reales detrás.
+**Implementación (2026-09-26)**: tabla genérica `contact_links` (migración `0013_contact_links.sql`, `entity_type`: place/route/commune + `kind` libre) — mismo principio de "un solo lugar de verdad" que `sources`, evita una columna nueva por cada red social que aparezca. Nueva sección "Contactos de la zona" en `/informacion` (bajo el bloque de Cristóbal/Matichoc) que lista cada municipalidad con sus links, mismas píldoras (`rounded-full`) que ya usaba esa página.
 
 **Tareas**:
 
-- [ ] Migración `contact_links` + RLS
-- [ ] Migrar los 2 links hoy hardcodeados en `/informacion` (Instagram y WhatsApp de Cristóbal) a esta tabla, para probar el patrón con datos que ya existen
+- [x] Migración `contact_links` + RLS
+- [x] Listado de contactos municipales en `/informacion`
+- [ ] Migrar los 2 links hoy hardcodeados en `/informacion` (Instagram y WhatsApp de Cristóbal) a esta misma tabla (`entity_type` necesitaría un valor para "el sitio/desarrollador" — no se hizo esta ronda para no forzar un caso de uso que aún no pidió nadie)
 - [ ] Agregar el Instagram real de Matichoc en cuanto se confirme la grafía exacta (pendiente desde la ronda anterior)
 - [ ] Ir sumando redes reales de lugares del catálogo a medida que el usuario las tenga
-
-**Qué necesito del usuario** (junto con lo que ya quedó pendiente de rondas anteriores):
-
-- Confirmar la grafía exacta del Instagram de Matichoc (con o sin tilde) — se vio en la foto del stand pero no está confirmada
-- Redes sociales reales de los lugares del catálogo que las tengan (no todos las van a tener, y está bien que no)
-- Los ~22 lugares que todavía no tienen `description` larga (ver Riesgos y Bitácora): si el usuario tiene folletería, un documento del municipio, notas de una guía turística o cualquier fuente real, es más rápido y confiable que seguir dependiendo de `WebSearch` (ya demostró ser inestable para datos exactos, ver Bitácora 2026-09-26)
+- [ ] Los ~22 lugares que todavía no tienen `description` larga (ver Riesgos y Bitácora) — sigue pendiente material real del usuario o fuentes verificables
 
 ## Bitácora de decisiones
 
@@ -411,3 +390,18 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
   - Se le pide directamente al usuario (nada se va a inventar): confirmar Google+Facebook como punto de partida del login; credenciales OAuth de ambos proveedores; el sitio/redes oficiales de las 5 municipalidades y si hay algún evento puntual que quiera destacar ya; la grafía exacta del Instagram de Matichoc (pendiente desde la ronda anterior); redes reales de lugares del catálogo que las tengan; y material real (folletería, documentos, fuentes) para los ~22 lugares que aún no tienen `description` larga.
 
   Solo cambios de documentación en esta ronda — no aplica gate de código.
+
+- 2026-09-26: El usuario responde las preguntas abiertas de la ronda anterior y da luz verde a construir ya una primera versión de los tres pedidos, en vez de solo dejarlos documentados:
+  - **"Me gusta"**: relaja el pedido de login con Instagram/Facebook/Google a "al menos un login, o identificador de sesión para guardar la ruta, poder dar me gusta y recomendar mejor lo que se ve" — esto permite construir la Fase 1a (sesión anónima + tabla `place_likes` + botón en la ficha de lugar) sin esperar credenciales OAuth de Google/Facebook, que quedan como Fase 1b.
+  - **Banner municipal**: "me basta con que busques los link oficiales del municipio y las rrss oficiales de cada municipio" — se investigan vía `WebSearch`, cruzando cada dato contra más de una consulta independiente (sitio, Facebook, Instagram, teléfono de las 5; email donde se encontró uno general). Fuentes por comuna:
+    - La Ligua: [comunadelaligua.cl](https://www.comunadelaligua.cl/), [Facebook](https://www.facebook.com/laliguacl/), [Instagram](https://www.instagram.com/laliguacl/)
+    - Petorca: [munipetorca.cl](https://munipetorca.cl/), [Facebook](https://www.facebook.com/MunicipalidadPetorca/), [Instagram](https://www.instagram.com/municipalidadpetorca/)
+    - Cabildo: [municipiocabildo.cl](https://municipiocabildo.cl/), [Facebook](https://www.facebook.com/MunicipioCabildo/), [Instagram](https://www.instagram.com/municipio_cabildo/)
+    - Papudo: [municipalidadpapudo.cl](https://www.municipalidadpapudo.cl/), [Facebook](https://www.facebook.com/munipapudo/), [Instagram](https://www.instagram.com/munipapudo/)
+    - Zapallar: [munizapallar.cl](https://www.munizapallar.cl/), [Facebook](https://www.facebook.com/municipalidadzapallar/), [Instagram](https://www.instagram.com/munizapallar/)
+      Sin poder navegar a cada sitio desde este sandbox (sin salida de red externa), por lo que queda pendiente que el usuario confirme cada uno con un click antes de darlos por definitivos.
+  - **Contactos**: "es bueno tener un listado de números de contacto y rrss de zonas relevantes del lugar" — se reutiliza la misma tabla `contact_links` para sumar una sección en `/informacion`.
+  - Cambios: migraciones `0012_entity_type_commune.sql` (agrega `'commune'` a `entity_type`), `0013_contact_links.sql` (tabla genérica de enlaces de contacto, reemplaza la idea original de dos tablas separadas `commune_links`/`contact_links` de la ronda anterior — un solo mecanismo cubre ambos casos) y `0014_place_likes.sql` (+ función `place_like_counts()`). Nuevos: `lib/likes/session.ts`, `lib/likes/storage.ts`, `components/place/like-button.tsx`, `components/home/municipality-banner.tsx`, `lib/data/communes.ts` gana `listMunicipalities()`. `scripts/seed.ts` gana `communeLinks`/`seedCommuneLinks()`. Sección de contactos nueva en `/informacion`. Ver `docs/DATA-MODEL.md` para el detalle de esquema.
+  - Pendiente real: Fase 1b del login (credenciales OAuth), confirmación visual de los links municipales, Instagram de Matichoc, redes de lugares puntuales, y las ~22 descripciones largas que faltan — todo sigue anotado en la sección 8 y no bloquea lo que ya quedó funcionando.
+
+  `pnpm typecheck`/`lint`/`test` (14)/`build`/`format:check` verdes.

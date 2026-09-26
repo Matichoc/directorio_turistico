@@ -11,7 +11,7 @@
 export type Locale = "es" | "en";
 export type PublicationStatus = "draft" | "published" | "archived";
 export type VerificationStatus = "pending" | "verified" | "outdated";
-export type EntityType = "place" | "route";
+export type EntityType = "place" | "route" | "commune";
 
 type Table<Row, Insert, Update> = {
   Row: Row;
@@ -188,10 +188,33 @@ type AnalyticsEventRow = {
   created_at: string;
 };
 
+type ContactLinkRow = {
+  id: string;
+  entity_type: EntityType;
+  entity_id: string;
+  kind: string;
+  value: string;
+  label: string | null;
+  position: number;
+  created_at: string;
+};
+
+type PlaceLikeRow = {
+  id: string;
+  place_id: string;
+  session_id: string;
+  created_at: string;
+};
+
 export interface Database {
   public: {
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      place_like_counts: {
+        Args: Record<string, never>;
+        Returns: { place_id: string; likes_count: number }[];
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
     Tables: {
@@ -337,6 +360,21 @@ export interface Database {
         AnalyticsEventRow,
         Partial<AnalyticsEventRow> & { name: string },
         Partial<AnalyticsEventRow>
+      >;
+      contact_links: Table<
+        ContactLinkRow,
+        Partial<ContactLinkRow> & {
+          entity_type: EntityType;
+          entity_id: string;
+          kind: string;
+          value: string;
+        },
+        Partial<ContactLinkRow>
+      >;
+      place_likes: Table<
+        PlaceLikeRow,
+        Partial<PlaceLikeRow> & { place_id: string; session_id: string },
+        Partial<PlaceLikeRow>
       >;
     };
   };

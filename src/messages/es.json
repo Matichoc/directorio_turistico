@@ -13,7 +13,8 @@
     "developerTagline": "Apoya tus proyectos de IA y con IA.",
     "developerInstagram": "Instagram: @el.cristo.cl",
     "developerWhatsapp": "WhatsApp",
-    "sponsorNote": "Auspiciado por Chocolatería Matichoc — chocolate artesanal hecho en La Ligua."
+    "sponsorNote": "Auspiciado por Chocolatería Matichoc — chocolate artesanal hecho en La Ligua.",
+    "contactsTitle": "Contactos de la zona"
   },
   "home": {
     "title": "El diablo murió en Petorca y en La Ligua lo enterraron",
@@ -27,6 +28,19 @@
       "gastronomy": "Gastronomía",
       "culture": "Cultura",
       "beach": "Playa"
+    },
+    "municipality": {
+      "title": "Municipalidades de la provincia",
+      "noLinksYet": "Todavía sin enlaces cargados.",
+      "goTo": "Ir a {name}",
+      "linkKinds": {
+        "website": "Sitio web",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "twitter": "Twitter/X",
+        "phone": "Teléfono",
+        "email": "Email"
+      }
     }
   },
   "explore": {
@@ -60,7 +74,9 @@
     "tags": "Características",
     "addToTrip": "Agregar a mi recorrido",
     "removeFromTrip": "Quitar de mi recorrido",
-    "backToExplore": "Volver a explorar"
+    "backToExplore": "Volver a explorar",
+    "like": "Me gusta",
+    "liked": "Te gusta"
   },
   "route": {
     "stops": "Paradas",

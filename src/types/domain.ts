@@ -65,6 +65,16 @@ export interface Commune {
   name: string;
 }
 
+export interface MunicipalityLink {
+  kind: string;
+  value: string;
+  label: string | null;
+}
+
+export interface Municipality extends Commune {
+  links: MunicipalityLink[];
+}
+
 export interface Category {
   id: string;
   slug: string;

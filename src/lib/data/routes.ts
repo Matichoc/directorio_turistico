@@ -8,6 +8,7 @@ const ROUTE_QUERY = `id, slug, estimated_duration_minutes, cover_image,
    publication_status,
    route_translations!inner(name, description, locale),
    route_stops(id, place_id, position,
+     route_stop_translations(notes, locale),
      places(slug, latitude, longitude, icon, place_translations(name, locale),
        categories(slug)))` as const;
 
@@ -26,6 +27,7 @@ interface RouteQueryResult {
     id: string;
     place_id: string;
     position: number;
+    route_stop_translations: { notes: string | null; locale: Locale }[];
     places: {
       slug: string;
       latitude: number;
@@ -74,7 +76,9 @@ export async function getRouteBySlug(
       latitude: stop.places?.latitude ?? 0,
       longitude: stop.places?.longitude ?? 0,
       position: stop.position,
-      notes: null,
+      notes:
+        stop.route_stop_translations.find((t) => t.locale === locale)?.notes ??
+        null,
     }));
 
   return {

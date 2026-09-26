@@ -44,7 +44,7 @@ export default async function PlaceDetailPage({
       <PlacePhotoHero
         categorySlug={place.categorySlug}
         categoryName={place.categoryName}
-        slug={place.slug}
+        icon={place.icon}
         name={place.name}
         photos={place.photos}
         isFeatured={place.isFeatured}
@@ -59,6 +59,7 @@ export default async function PlaceDetailPage({
             latitude: place.latitude,
             longitude: place.longitude,
             categorySlug: place.categorySlug,
+            icon: place.icon,
           },
         ]}
       />

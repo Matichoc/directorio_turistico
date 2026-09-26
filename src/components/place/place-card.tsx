@@ -34,7 +34,7 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
           photoUrl={place.photoUrl}
           alt={place.name}
           categorySlug={place.categorySlug}
-          slug={place.slug}
+          icon={place.icon}
           iconClassName="h-7 w-7 text-white/70"
           imgClassName="object-cover object-[center_65%]"
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

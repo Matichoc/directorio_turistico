@@ -85,7 +85,11 @@
     "remove": "Quitar",
     "clearAll": "Vaciar recorrido",
     "mapTitle": "Mapa del recorrido",
-    "skippedNotice": "Algunos lugares quedaron fuera por distancia u orden; podrías dividir el recorrido en dos días."
+    "skippedNotice": "Algunos lugares quedaron fuera por distancia u orden; podrías dividir el recorrido en dos días.",
+    "moveUp": "Subir",
+    "moveDown": "Bajar",
+    "orderManualNotice": "Orden a tu gusto — ya no se recalcula solo.",
+    "optimizeAuto": "Optimizar automáticamente"
   },
   "common": {
     "loading": "Cargando…",

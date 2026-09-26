@@ -79,6 +79,9 @@ type PlaceRow = {
   // Posición publicitaria pagada (gestionada a mano, sin pasarela de pago):
   // null = no destacado; fecha futura = destacado hasta esa fecha.
   featured_until: string | null;
+  // Ícono "de la zona" puntual (ver migración 0010_place_icon.sql): null usa
+  // el ícono de la categoría.
+  icon: string | null;
   publication_status: PublicationStatus;
   verification_status: VerificationStatus;
   created_at: string;

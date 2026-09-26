@@ -35,14 +35,14 @@ interface PlacePhoto {
 export function PlacePhotoHero({
   categorySlug,
   categoryName,
-  slug,
+  icon,
   name,
   photos,
   isFeatured = false,
 }: {
   categorySlug: string;
   categoryName?: string | null;
-  slug: string;
+  icon?: string | null;
   name: string;
   photos: PlacePhoto[];
   isFeatured?: boolean;
@@ -66,7 +66,7 @@ export function PlacePhotoHero({
         photoUrl={current?.url}
         alt={name}
         categorySlug={categorySlug}
-        slug={slug}
+        icon={icon}
         iconClassName="h-20 w-20 text-white/25"
         imgClassName="object-cover object-[center_65%]"
         sizes="100vw"

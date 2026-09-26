@@ -82,15 +82,23 @@ const places = [
       name: "Playa de Papudo",
       short:
         "Playa principal del balneario; La Terraza la bordea desde la gruta de la Virgen de Lourdes hasta la avenida Glorias Navales.",
+      description:
+        "Papudo es una comuna balnearia de la provincia de Petorca, con 6.356 habitantes según el Censo 2017. La Playa de Papudo es la principal del pueblo, bordeada por el paseo La Terraza desde la gruta de la Virgen de Lourdes hasta la avenida Glorias Navales — el punto de encuentro del balneario en verano. Sus aguas aparecieron en Sabingo (Chilevisión), donde Dani Urrizola aprendió a bucear en Papudo.",
     },
     en: {
       name: "Papudo Beach",
       short:
         "The resort's main beach; a pedestrian promenade runs along it from the Virgin of Lourdes grotto to Glorias Navales avenue.",
+      description:
+        "Papudo is a beach town in Petorca province, with 6,356 residents per the 2017 census. Papudo Beach is the town's main strand, lined by the La Terraza promenade from the Virgin of Lourdes grotto to Glorias Navales avenue — the resort's summer gathering point. Its waters were featured on Chilean TV show Sabingo (Chilevisión), where host Dani Urrizola learned to dive here.",
     },
     source: {
       url: "https://www.playasdechile.com/playas-en-papudo/",
       label: "PlayasDeChile.com — Playas en Papudo",
+    },
+    tvSource: {
+      url: "https://www.chilevision.cl/programas/sabingo/rutas-turisticas/dani-urrizola-aprendio-a-bucear-en-las-maravillosas-playas-de-papudo",
+      label: "Chilevisión — Sabingo: buceo en Papudo",
     },
   },
   {
@@ -103,11 +111,15 @@ const places = [
       name: "Playa Chica",
       short:
         "Playa resguardada apta para el baño y deportes acuáticos, más protegida del oleaje que Playa Grande.",
+      description:
+        "También en la comuna de Papudo (6.356 habitantes, Censo 2017), Playa Chica es una alternativa más resguardada que Playa Grande, apta para el baño y deportes acuáticos gracias a su menor oleaje.",
     },
     en: {
       name: "Playa Chica",
       short:
         "A sheltered beach suited for swimming and water sports, calmer than nearby Playa Grande.",
+      description:
+        "Also in Papudo commune (6,356 residents, 2017 census), Playa Chica is a more sheltered alternative to Playa Grande, suited for swimming and water sports thanks to its calmer surf.",
     },
     source: {
       url: "https://www.tripadvisor.com/Attraction_Review-g2161325-d6726685-Reviews-Playa_Chica-Papudo_Valparaiso_Region.html",
@@ -124,11 +136,15 @@ const places = [
       name: "Bahía y mirador de Zapallar",
       short:
         "Sendero costero con vistas panorámicas de la bahía, formaciones rocosas y atardeceres; la bahía resguardada suaviza el oleaje.",
+      description:
+        "Zapallar, comuna costera de 7.339 habitantes (Censo 2017), es uno de los balnearios más tradicionales de Chile central. Su bahía y mirador ofrecen un sendero costero con vistas panorámicas, formaciones rocosas y atardeceres; la bahía resguardada mantiene el oleaje suave todo el año.",
     },
     en: {
       name: "Zapallar Bay & Lookout",
       short:
         "A coastal trail with panoramic bay views, rock formations and sunsets; the sheltered bay keeps the surf gentle.",
+      description:
+        "Zapallar, a coastal commune of 7,339 residents (2017 census), is one of central Chile's most traditional seaside towns. Its bay and lookout offer a coastal trail with panoramic views, rock formations and sunsets; the sheltered bay keeps the surf gentle year-round.",
     },
     source: {
       url: "https://www.minube.com/tips/actualidad/explora-los-encantos-de-zapallar-lugares-que-ver-imprescindibles",
@@ -151,11 +167,15 @@ const places = [
       name: "Museo de La Ligua",
       short:
         "Exhibiciones sobre el mundo prehispánico del territorio y sobre La Quintrala; entrada liberada, junto a la Plaza de Armas (Pedro Polanco 698).",
+      description:
+        'La Ligua, capital de la provincia y su comuna más poblada (35.390 habitantes, Censo 2017), alberga este museo junto a la Plaza de Armas. Sus salas exhiben piezas del mundo prehispánico del territorio y la historia de Catalina de los Ríos y Lisperguer, "La Quintrala" — entrada liberada.',
     },
     en: {
       name: "La Ligua Museum",
       short:
         "Exhibits on the territory's pre-Hispanic history and on La Quintrala; free admission, next to the main square.",
+      description:
+        'La Ligua, the province\'s capital and most populous commune (35,390 residents, 2017 census), is home to this museum next to the main square. Its rooms display pre-Hispanic artifacts from the area and tell the story of Catalina de los Ríos y Lisperguer, known as "La Quintrala" — admission is free.',
     },
     source: {
       url: "https://es.wikipedia.org/wiki/Museo_de_La_Ligua",
@@ -177,11 +197,15 @@ const places = [
       name: "Plaza de Armas de La Ligua",
       short:
         "Corazón de la ciudad, con pileta central y kiosco donde se realizan conciertos y ferias, entre ellas la Feria de los Tejidos.",
+      description:
+        "Corazón de La Ligua (35.390 habitantes, Censo 2017), esta plaza reúne una pileta central y un kiosco donde se hacen conciertos y ferias durante el año, entre ellas la Feria de los Tejidos que celebra el oficio artesanal de la zona.",
     },
     en: {
       name: "La Ligua Main Square",
       short:
         "The city's heart, with a central fountain and a bandstand hosting concerts and fairs, including the Weaving Fair.",
+      description:
+        "The heart of La Ligua (35,390 residents, 2017 census), this square centers on a fountain and bandstand hosting concerts and fairs through the year, including the Weaving Fair celebrating the area's traditional craft.",
     },
     source: {
       url: "https://chileestuyo.cl/destino/la-ligua-valle-hermoso/",
@@ -200,11 +224,15 @@ const places = [
       name: "Escalera del Diablo",
       short:
         "Formación rocosa natural en forma de escalera en el sector de Hierro Viejo; según la leyenda, el Diablo la usó para escapar de vuelta al infierno.",
+      description:
+        "En la comuna de Petorca (9.826 habitantes, Censo 2017), en el sector de Hierro Viejo, esta formación rocosa natural tiene forma de escalera. La leyenda local — la misma que le da su nombre a todo este sitio — cuenta que el Diablo la usó para escapar de vuelta al infierno tras su paso por la zona.",
     },
     en: {
       name: "The Devil's Staircase",
       short:
         "A naturally sculpted rock formation shaped like a staircase in Hierro Viejo; local legend says the Devil used it to flee back to hell.",
+      description:
+        "In Petorca commune (9,826 residents, 2017 census), in the Hierro Viejo area, this naturally sculpted rock formation is shaped like a staircase. Local legend — the same one this whole site is named after — says the Devil used it to flee back to hell after his time in the area.",
     },
     source: {
       url: "https://geositiosdechile.sernageomin.cl/region/valparaiso/escalera-del-diablo/",
@@ -226,11 +254,15 @@ const places = [
       name: "Iglesia La Merced de Petorca",
       short:
         "Construida por los jesuitas en 1640 en la Plaza de Petorca; conserva líneas neogóticas con reminiscencias neobarrocas.",
+      description:
+        "Frente a la plaza de Petorca (9.826 habitantes, Censo 2017), esta iglesia fue construida por los jesuitas en 1640 y conserva líneas neogóticas con reminiscencias neobarrocas — uno de los templos más antiguos de la provincia.",
     },
     en: {
       name: "La Merced Church, Petorca",
       short:
         "Built by the Jesuits in 1640 on Petorca's main square; it keeps neo-Gothic lines with neo-Baroque touches.",
+      description:
+        "Facing Petorca's main square (9,826 residents, 2017 census), this church was built by the Jesuits in 1640 and keeps neo-Gothic lines with neo-Baroque touches — one of the province's oldest churches.",
     },
     source: {
       url: "https://www.sitrural.cl/wp-content/uploads/2024/11/Petorca_turismo.pdf",
@@ -250,11 +282,15 @@ const places = [
       name: "Casa natal de Manuel Montt",
       short:
         "Monumento histórico: la casa donde nació en 1809 el expresidente Manuel Montt, quien gobernó Chile entre 1851 y 1861 (Manuel Montt 845).",
+      description:
+        "A un costado de la plaza de Petorca (9.826 habitantes, Censo 2017), esta casa es Monumento Histórico Nacional: aquí nació en 1809 Manuel Montt, quien gobernó Chile entre 1851 y 1861.",
     },
     en: {
       name: "Manuel Montt's Birthplace",
       short:
         "Historic monument: the house where former president Manuel Montt was born in 1809; he governed Chile from 1851 to 1861 (Manuel Montt 845).",
+      description:
+        "Just off Petorca's main square (9,826 residents, 2017 census), this house is a National Historic Monument: Manuel Montt, who governed Chile from 1851 to 1861, was born here in 1809.",
     },
     source: {
       url: "https://www.monumentos.gob.cl/monumentos/monumentos-historicos/casa-donde-nacio-presidente-manuel-montt",
@@ -272,11 +308,15 @@ const places = [
       name: "Cerro Chache",
       short:
         "La cumbre más alta de la cordillera de la Costa en Chile central (más de 2.338 m); punto de ascensiones desde Cabildo. Coordenadas aproximadas (centro de Cabildo) — pendientes de precisar.",
+      description:
+        "Desde Cabildo (19.388 habitantes, Censo 2017) se asciende a este cerro, la cumbre más alta de la cordillera de la Costa en Chile central, con más de 2.338 metros — un desafío buscado por montañistas de todo el país.",
     },
     en: {
       name: "Cerro Chache",
       short:
         "The highest peak of the coastal cordillera in central Chile (over 2,338 m); a starting point for ascents from Cabildo. Coordinates are approximate (Cabildo town center) and need precising.",
+      description:
+        "Climbers set out from Cabildo (19,388 residents, 2017 census) to reach this peak, the highest point of the coastal cordillera in central Chile at over 2,338 meters — a well-known challenge among Chilean mountaineers.",
     },
     source: {
       url: "https://www.sitrural.cl/wp-content/uploads/2024/11/Cabildo_turismo.pdf",
@@ -309,11 +349,15 @@ const places = [
       name: "Chocolatería Matichoc",
       short:
         "Taller y tienda de chocolate artesanal fundada en 2011 por Inés Saavedra; auspiciador de este sitio.",
+      description:
+        "En La Ligua (35.390 habitantes, Censo 2017), este taller y tienda de chocolate artesanal fue fundado en 2011 por Inés Saavedra. Auspiciador de este sitio: si vienes a la zona, vale la pena pasar a conocer de cerca cómo se trabaja el cacao.",
     },
     en: {
       name: "Matichoc Chocolate Shop",
       short:
         "Artisanal chocolate workshop and store founded in 2011 by Inés Saavedra; this site's sponsor.",
+      description:
+        "In La Ligua (35,390 residents, 2017 census), this artisanal chocolate workshop and store was founded in 2011 by Inés Saavedra. This site's sponsor — if you're in the area, it's worth stopping by to see how the cacao is worked up close.",
     },
     source: {
       url: "https://www.matichoc.cl/inicio",
@@ -332,15 +376,23 @@ const places = [
       name: "Pedegua",
       short:
         "Localidad rural de la comuna de Cabildo, antigua parada del ramal ferroviario hacia Illapel; conserva la fachada y las bodegas restauradas de su estación de trenes.",
+      description:
+        "Localidad rural de Cabildo (19.388 habitantes, Censo 2017), antigua parada del ramal ferroviario hacia Illapel; conserva la fachada y bodegas restauradas de su estación. El actor Etienne Bobenrieth recorrió sus historias y leyendas en el programa Sabingo (Chilevisión), en un capítulo dedicado a Pedegua, Chincolco e Hierro Viejo.",
     },
     en: {
       name: "Pedegua",
       short:
         "A rural village in Cabildo commune, once a stop on the railway branch to Illapel; its train station keeps a restored façade and warehouses.",
+      description:
+        "A rural village in Cabildo commune (19,388 residents, 2017 census), a former stop on the railway branch to Illapel; it keeps its station's restored façade and warehouses. Actor Etienne Bobenrieth explored its stories and legends on Chilean TV show Sabingo (Chilevisión), in an episode covering Pedegua, Chincolco and Hierro Viejo.",
     },
     source: {
       url: "https://valparaisoregion.org/destino/cabildo/",
       label: "Valparaíso Región — Destino Cabildo",
+    },
+    tvSource: {
+      url: "https://www.chilevision.cl/programas/sabingo/etienne-bobenrieth-recorrio-los-misterios-y-leyendas-de-petorca-de-pueblo-en-pueblo-sabingo",
+      label: "Chilevisión — Sabingo: misterios y leyendas de Petorca",
     },
   },
   {
@@ -384,11 +436,15 @@ const places = [
       name: "Valle Hermoso",
       short:
         'Barrio artesanal conocido como "la cuna del tejido": cerca de 150 tiendas y talleres donde se ve a los artesanos tejer en telares tradicionales con lana de oveja, alpaca y vicuña; en verano se celebra la Fiesta del Tejido.',
+      description:
+        'En La Ligua (35.390 habitantes, Censo 2017), este barrio artesanal es conocido como "la cuna del tejido": cerca de 150 tiendas y talleres donde se ve a los artesanos tejer en telares tradicionales con lana de oveja, alpaca y vicuña. En verano se celebra la Fiesta del Tejido.',
     },
     en: {
       name: "Valle Hermoso",
       short:
         'A craft district known as "the cradle of weaving": around 150 shops and workshops where artisans weave on traditional looms with sheep, alpaca and vicuña wool; the Weaving Festival is held here every summer.',
+      description:
+        'In La Ligua (35,390 residents, 2017 census), this craft district is known as "the cradle of weaving": around 150 shops and workshops where artisans weave on traditional looms with sheep, alpaca and vicuña wool. The Weaving Festival is held here every summer.',
     },
     source: {
       url: "https://www.sercotec.cl/barrios-comerciales/barrio-comercial-valle-hermoso-la-ligua/",
@@ -406,16 +462,24 @@ const places = [
       name: "Área de los Dulces de La Ligua",
       short:
         "Puestos y locales junto a la Ruta 5 Norte donde se vende la tradición repostera de La Ligua (alfajores, empolvados, cocadas, palitas) — con Sello de Origen desde 2014 y declarada Patrimonio Cultural Inmaterial de Chile en 2019.",
+      description:
+        'En la comuna de La Ligua (35.390 habitantes, Censo 2017), junto a la Ruta 5 Norte, decenas de puestos y locales venden la tradición repostera de la zona (alfajores, empolvados, cocadas, palitas) — con Sello de Origen desde 2014 y declarada Patrimonio Cultural Inmaterial de Chile en 2019. Sabingo (Chilevisión) le dedicó un capítulo a "los encantos y la dulzura de La Ligua".',
     },
     en: {
       name: "La Ligua Sweets District",
       short:
         "Roadside stalls and shops along Route 5 North selling La Ligua's traditional sweets (alfajores, empolvados, cocadas, palitas) — a protected Denomination of Origin since 2014, declared Chile's Intangible Cultural Heritage in 2019.",
+      description:
+        "In La Ligua commune (35,390 residents, 2017 census), along Route 5 North, dozens of stalls and shops sell the area's traditional sweets (alfajores, empolvados, cocadas, palitas) — a protected Denomination of Origin since 2014, declared Chile's Intangible Cultural Heritage in 2019. Chilean TV show Sabingo (Chilevisión) dedicated an episode to \"La Ligua's charms and sweetness\".",
     },
     source: {
       url: "https://www.patrimoniocultural.gob.cl/noticias/tradicion-de-los-dulces-de-la-ligua-ingresa-al-registro-de-patrimonio-cultural-inmaterial",
       label:
         "Servicio Nacional del Patrimonio Cultural — Tradición de los dulces de La Ligua",
+    },
+    tvSource: {
+      url: "https://www.chilevision.cl/programas/sabingo/de-plaza-en-plaza/conociendo-los-encantos-y-dulzura-de-la-ligua-de-plaza-en-plaza-sabingo",
+      label: "Chilevisión — Sabingo: los dulces de La Ligua",
     },
   },
   {
@@ -450,15 +514,23 @@ const places = [
       name: "Los Molles",
       short:
         "Ex caleta de pescadores de los años 60, hoy uno de los mejores destinos de buceo de Chile por sus aguas turquesas; también surf, kayak y senderos por los cerros, cerca de la Reserva Nacional Pingüino de Humboldt.",
+      description:
+        "En la comuna de La Ligua (35.390 habitantes, Censo 2017), esta ex caleta de pescadores de los años 60 es hoy uno de los mejores destinos de buceo de Chile por sus aguas turquesas, además de surf, kayak y senderos por los cerros, cerca de la Reserva Nacional Pingüino de Humboldt. Sabingo (Chilevisión) grabó un capítulo completo explorando sus aguas.",
     },
     en: {
       name: "Los Molles",
       short:
         "A former 1960s fishing cove, now one of Chile's best diving destinations for its turquoise water; also surfing, kayaking and hillside trails, near the Humboldt Penguin National Reserve.",
+      description:
+        "In La Ligua commune (35,390 residents, 2017 census), this former 1960s fishing cove is now one of Chile's top diving destinations for its turquoise water, alongside surfing, kayaking and hillside trails, near the Humboldt Penguin National Reserve. Chilean TV show Sabingo (Chilevisión) filmed a full episode exploring its waters.",
     },
     source: {
       url: "https://es.wikipedia.org/wiki/Los_Molles_(Chile)",
       label: "Wikipedia — Los Molles (Chile)",
+    },
+    tvSource: {
+      url: "https://www.chilevision.cl/programas/sabingo/de-playa-en-playa/aventurandonos-en-las-aguas-de-los-molles-de-playa-en-playa-sabingo",
+      label: "Chilevisión — Sabingo: Los Molles",
     },
   },
   {
@@ -921,15 +993,23 @@ const places = [
       name: "Petroglifos de Chincolco",
       short:
         "Grabados rupestres en piedra asociados a las culturas El Molle, Las Ánimas, diaguita, mapuche e incluso incaica, con motivos geométricos, humanos, animales y serpientes; sin protección oficial, algunos dañados por vandalismo en 2021.",
+      description:
+        "En Chincolco, sector rural de la comuna de Petorca (9.826 habitantes, Censo 2017), estos grabados rupestres en piedra están asociados a las culturas El Molle, Las Ánimas, diaguita, mapuche e incluso incaica, con motivos geométricos, humanos, animales y serpientes. No tienen protección oficial — algunos fueron dañados por vandalismo en 2021. El mismo capítulo de Sabingo (Chilevisión) que recorrió Pedegua también pasó por Chincolco.",
     },
     en: {
       name: "Chincolco Petroglyphs",
       short:
         "Rock carvings linked to the El Molle, Las Ánimas, Diaguita, Mapuche and even Inca cultures, with geometric, human, animal and serpent motifs; unprotected, some damaged by vandalism in 2021.",
+      description:
+        "In Chincolco, a rural sector of Petorca commune (9,826 residents, 2017 census), these rock carvings are linked to the El Molle, Las Ánimas, Diaguita, Mapuche and even Inca cultures, with geometric, human, animal and serpent motifs. They have no official protection — some were damaged by vandalism in 2021. The same Sabingo (Chilevisión) episode that toured Pedegua also passed through Chincolco.",
     },
     source: {
       url: "https://repositorio.uchile.cl/handle/2250/201561",
       label: "Repositorio Universidad de Chile — Petroglifos de Chincolco",
+    },
+    tvSource: {
+      url: "https://www.chilevision.cl/programas/sabingo/etienne-bobenrieth-recorrio-los-misterios-y-leyendas-de-petorca-de-pueblo-en-pueblo-sabingo",
+      label: "Chilevisión — Sabingo: misterios y leyendas de Petorca",
     },
   },
 ] as const;
@@ -1189,6 +1269,7 @@ async function seedPlaces(
           locale: "es",
           name: place.es.name,
           short_description: place.es.short,
+          description: "description" in place.es ? place.es.description : null,
           needs_review: true,
         },
         {
@@ -1196,6 +1277,7 @@ async function seedPlaces(
           locale: "en",
           name: place.en.name,
           short_description: place.en.short,
+          description: "description" in place.en ? place.en.description : null,
           needs_review: true,
         },
       ],
@@ -1208,6 +1290,17 @@ async function seedPlaces(
     // algo que no la documenta de verdad.
     if ("source" in place) {
       await addSource("place", data.id, place.source.url, place.source.label);
+    }
+    // Mención real en TV (Sabingo/Chilevisión, investigado vía WebSearch y
+    // cruzado en varias búsquedas — ver docs/PLAN.md) como segunda fuente,
+    // aparte de la que ya documenta el dato principal del lugar.
+    if ("tvSource" in place) {
+      await addSource(
+        "place",
+        data.id,
+        place.tvSource.url,
+        place.tvSource.label,
+      );
     }
 
     // Solo borra fotos curadas a mano (no las que administra

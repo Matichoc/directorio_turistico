@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getPlaceBySlug } from "@/lib/data/places";
 import { resolveLocale } from "@/i18n/utils";
 import { ShareButton } from "@/components/place/share-button";
+import { LikeButton } from "@/components/place/like-button";
 import { AddToTripButton } from "@/components/trip/add-to-trip-button";
 import { MapView } from "@/components/map/map-view";
 import { PlacePhotoHero } from "@/components/place/place-photo-hero";
@@ -129,6 +130,7 @@ export default async function PlaceDetailPage({
 
       <div className="flex flex-wrap gap-2 pt-2">
         <AddToTripButton placeId={place.id} />
+        <LikeButton placeId={place.id} />
         <ShareButton title={place.name} />
       </div>
     </main>

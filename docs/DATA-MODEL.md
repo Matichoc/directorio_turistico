@@ -10,7 +10,7 @@ cuando exista un proyecto real).
 - `locale`: `es` | `en`
 - `publication_status`: `draft` | `published` | `archived`
 - `verification_status`: `pending` | `verified` | `outdated`
-- `entity_type`: `place` | `route` (usado por `sources`/`verification_logs`)
+- `entity_type`: `place` | `route` | `commune` (usado por `sources`/`verification_logs`/`contact_links`)
 
 ## Catálogo y geografía
 
@@ -65,6 +65,28 @@ real del visitante debe implementarse como server actions que reciban el
 evita que cualquiera con la anon key pueda listar todos los itinerarios
 (`select * from itineraries` sería público si la política fuera `using (true)`).
 Este server action queda pendiente de implementar en Fase de itinerarios.
+
+## Contactos y "me gusta" (2026-09-26)
+
+- `contact_links` (migración `0013_contact_links.sql`): enlaces de contacto/redes
+  reales (sitio, Facebook, Instagram, teléfono, email...) de un lugar, ruta o
+  comuna, vía `(entity_type, entity_id)` — mismo mecanismo genérico que
+  `sources`, pero para datos de contacto en vez de fuentes de verificación.
+  `kind` es texto libre a propósito (mismo criterio que `places.icon`): sumar
+  una red nueva no requiere otra migración. Lectura pública, escritura solo
+  admin. Hoy poblada con el sitio/redes oficiales de las 5 municipalidades
+  (`scripts/seed.ts`, `communeLinks`) — usada por `MunicipalityBanner` (home)
+  y la sección de contactos de `/informacion`.
+- `place_likes` (migración `0014_place_likes.sql`): "me gusta" por lugar, solo
+  positivo (nunca reseña ni calificación negativa). Anónimo, atado a
+  `session_id` generado y guardado en el navegador (`lib/likes/session.ts`) —
+  mismo espíritu que `itineraries.session_id`, pero sin pasar por el cliente
+  admin: RLS acepta insert/delete anónimo (`using`/`with check (true)`),
+  mismo nivel de confianza que ya tolera `analytics_events`. El conteo público
+  se expone solo agregado vía `place_like_counts()` (función `security
+definer`), nunca la tabla cruda con los `session_id`. Login opcional real
+  (Google/Facebook) puede sumarse después sin romper este mecanismo — ver
+  `docs/PLAN.md` sección 8.1.
 
 ## Analítica
 

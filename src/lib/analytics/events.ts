@@ -3,6 +3,7 @@ export type AnalyticsEventName =
   | "route_view"
   | "route_added_to_trip"
   | "place_added_to_trip"
+  | "place_liked"
   | "search_performed"
   | "filter_applied";
 

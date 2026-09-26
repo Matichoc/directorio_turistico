@@ -82,6 +82,14 @@ export async function POST(request: NextRequest) {
   );
 
   if (!upstream.ok) {
+    // Se registra el cuerpo real del error de Google en los logs del
+    // servidor (Vercel → Deployments → Functions/Runtime Logs) — sin esto
+    // no había forma de saber por qué fallaba (llave restringida, cuota,
+    // falta de facturación, etc.) más que adivinar.
+    const upstreamError = await upstream.text().catch(() => "");
+    console.error(
+      `[/api/directions] Google Routes API respondió ${upstream.status}: ${upstreamError}`,
+    );
     return NextResponse.json({ error: "upstream_error" }, { status: 502 });
   }
 

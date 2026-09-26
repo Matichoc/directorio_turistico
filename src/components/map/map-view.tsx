@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Map, {
   GeolocateControl,
   Layer,
@@ -19,9 +19,16 @@ import "maplibre-gl/dist/maplibre-gl.css";
 // guía de migración de MapLibre para el bundler de Next.js/Turbopack.
 import { Link } from "@/i18n/navigation";
 import { MapPin } from "@/components/map/map-pin";
+import { PlayerToken } from "@/components/map/player-token";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { getCategoryPinColor, getPlaceIcon } from "@/lib/ui/category-gradient";
 import { haversineDistanceKm } from "@/lib/itinerary-engine";
+import {
+  AVATAR_EVENT,
+  DEFAULT_AVATAR_ICON,
+  getAvatarIcon,
+  type AvatarIcon,
+} from "@/lib/navigation/avatar-storage";
 import {
   getMapStyleUrl,
   PETORCA_CENTER,
@@ -70,6 +77,17 @@ export function MapView({
     latitude: number;
     longitude: number;
   } | null>(null);
+  const [avatarIcon, setAvatarIconState] =
+    useState<AvatarIcon>(DEFAULT_AVATAR_ICON);
+
+  useEffect(() => {
+    function sync() {
+      setAvatarIconState(getAvatarIcon());
+    }
+    sync();
+    window.addEventListener(AVATAR_EVENT, sync);
+    return () => window.removeEventListener(AVATAR_EVENT, sync);
+  }, []);
 
   const center = markers[0]
     ? { latitude: markers[0].latitude, longitude: markers[0].longitude }
@@ -112,6 +130,10 @@ export function MapView({
           <GeolocateControl
             position="top-right"
             trackUserLocation
+            // La ficha (PlayerToken, más abajo) reemplaza al punto azul
+            // genérico — pedido del usuario ("que te acompañe por el
+            // recorrido... y sea quien se mueve en el mapa por ti").
+            showUserLocation={false}
             positionOptions={{ enableHighAccuracy: true }}
             onGeolocate={(event) =>
               setLivePosition({
@@ -120,6 +142,15 @@ export function MapView({
               })
             }
           />
+        )}
+        {showLiveLocation && livePosition && (
+          <Marker
+            latitude={livePosition.latitude}
+            longitude={livePosition.longitude}
+            anchor="center"
+          >
+            <PlayerToken icon={avatarIcon} />
+          </Marker>
         )}
         {routeLine && routeLine.length > 1 && (
           <Source

@@ -33,12 +33,22 @@ que use ese token, que es justo lo que se pidió:
   `docs/PLAN.md`, sección Bitácora, para varios ejemplos de esto aplicado).
   Si un dato no existe todavía, la UI debe poder no mostrar nada (no-op),
   no inventar un placeholder que parezca real.
-- **El hero del home es la única superficie "oscura y con brillos"**
-  (`from-[#1b0e1f] via-[#2a1420] to-background`, `SparkleField`,
-  `DevilMascot`, halo `glow-pulse`) — el resto del sitio usa el
-  claro/oscuro normal de `--background`/`--foreground` según el sistema del
-  usuario. No repliques el fondo de galaxia en otras páginas sin que el
-  usuario lo pida explícitamente para esa página.
+- **Toda página de contenido lleva la cabecera "mística"** (`PageHero`,
+  `src/components/ui/page-hero.tsx`) — mismo gradiente oscuro
+  (`from-[#1b0e1f] via-[#2a1420] to-[#1b0e1f]`) + `SparkleField` + halo
+  `glow-pulse` que el hero del home, pero como tarjeta contenida
+  (`rounded-2xl`), no a todo el ancho. Pedido explícito del usuario: "todo
+  el sitio debe conservar la mística de la zona" (antes esto vivía solo en
+  el home; ver `docs/PLAN.md` bitácora). Toda página nueva con un `<h1>`
+  de título debería usar `<PageHero title={...} subtitle={...} />` en vez
+  de un `<h1>` suelto — así se replica sola. Ojo: el contenido _dentro_ de
+  `PageHero` (aparte de `title`/`subtitle`) tiene que verse bien en texto
+  blanco sobre fondo oscuro — no metas ahí un control pensado para fondo
+  claro (ej. `ViewToggle`, que usa `text-foreground/60`) sin adaptarlo
+  primero; en `/explorar` ese control quedó fuera del `PageHero`, debajo.
+  Las páginas con su propia foto/portada a color (`PlacePhotoHero`, hero de
+  ficha de ruta) no llevan `PageHero` encima — ya tienen su propio momento
+  visual, duplicarlo se ve recargado.
 - **El folclore del diablo es un condimento, no un tema constante.** El
   `DevilMascot` solo aparece donde tiene sentido narrativo (home, "Ruta del
   Diablo") — no ponerlo en cualquier página nueva "porque sí".
@@ -103,8 +113,8 @@ Todas las animaciones viven en `globals.css` como `@keyframes` +
 | `animate-stop-in`         | Aparición escalonada (delay por índice) | Checklist de paradas de ruta                         |
 | `animate-check-pop`       | Rebote al marcar/desmarcar algo         | Checkbox de parada visitada, mensaje "ruta completa" |
 | `animate-route-glow`      | Halo pulsante suave                     | Próxima parada por visitar en el checklist           |
-| `animate-sparkle-twinkle` | Parpadeo de chispa                      | `SparkleField` (solo hero del home)                  |
-| `animate-glow-pulse`      | Halo que "respira"                      | Fondo del hero del home                              |
+| `animate-sparkle-twinkle` | Parpadeo de chispa                      | `SparkleField` (hero del home y `PageHero`)          |
+| `animate-glow-pulse`      | Halo que "respira"                      | Fondo del hero del home, `PageHero`, `PlayerToken`   |
 | `animate-devil-peek`      | Vaivén curioso                          | `DevilMascot`                                        |
 
 Antes de escribir un `@keyframes` nuevo: revisa si alguno de estos ya sirve
@@ -145,6 +155,19 @@ string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
   `localPatterns` pasa de "cualquier imagen local sin query string" a
   "solo lo listado" — un bug real ya se dio dos veces en esta sesión por
   olvidar este paso).
+
+## Ficha del jugador en el mapa en vivo
+
+Pedido del usuario: que su posición real en el mapa de navegación se vea
+como una "ficha tipo Monopoly" (un ícono elegido por él) en vez del punto
+azul genérico de MapLibre. `lib/navigation/avatar-storage.ts` guarda la
+elección (`localStorage`, mismo patrón que `lib/trip/storage.ts`) entre los
+íconos temáticos "de la zona" (`AVATAR_ICONS`: diablo/dulce/tejido/surf/
+casco-minero/palta — no los de categoría genérica, para que la ficha se
+sienta propia de Petorca/La Ligua). `AvatarPicker` (junto al botón
+"Iniciar navegación") deja elegirla; `PlayerToken` la dibuja en el mapa;
+`MapView` pasa `showUserLocation={false}` a `GeolocateControl` para que
+`PlayerToken` sea la única marca de posición, no las dos a la vez.
 
 ## Insignias sobre una foto/hero
 

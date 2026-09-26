@@ -75,7 +75,8 @@
     "calculatingRoute": "Calculando ruta…",
     "routeUnavailable": "No se pudo calcular la ruta por calle — se muestra el mapa normal.",
     "navigationSummary": "{distance} km · {duration} min en auto",
-    "liveLocationHint": "Activa tu ubicación cuando el navegador te lo pida, para ver tu posición en el mapa."
+    "liveLocationHint": "Activa tu ubicación cuando el navegador te lo pida, para ver tu posición en el mapa.",
+    "yourToken": "Tu ficha:"
   },
   "trip": {
     "title": "Mi recorrido",

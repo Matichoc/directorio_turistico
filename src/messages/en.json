@@ -10,6 +10,9 @@
     "about": "A tourism directory for Petorca province: real places, routes and trips, made by people from the area.",
     "developmentTitle": "Development",
     "developmentCredit": "Built by Cristóbal Roco, CTO of Matichoc.",
+    "developerTagline": "Support your AI projects, and projects built with AI.",
+    "developerInstagram": "Instagram: @el.cristo.cl",
+    "developerWhatsapp": "WhatsApp",
     "sponsorNote": "Sponsored by Chocolatería Matichoc — artisan chocolate made in La Ligua."
   },
   "home": {
@@ -76,7 +79,18 @@
     "routeUnavailable": "Couldn't calculate the driving route — showing the regular map.",
     "navigationSummary": "{distance} km · {duration} min by car",
     "liveLocationHint": "Allow location access when your browser asks, to see your position on the map.",
-    "yourToken": "Your token:"
+    "previousStop": "Previous stop",
+    "nextStop": "Next stop",
+    "stopPosition": "Stop {current}/{total}",
+    "yourToken": "Your token:",
+    "avatarIcons": {
+      "diablo": "The Devil",
+      "dulce": "La Ligua sweets",
+      "tejido": "Knit vest",
+      "surf": "Surfboard",
+      "casco-minero": "Miner's helmet",
+      "palta": "Avocado"
+    }
   },
   "trip": {
     "title": "My trip",

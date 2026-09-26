@@ -23,11 +23,11 @@ export function SponsorBanner() {
       <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Image
-            src="/brand/matichoc-logo.png"
+            src="/brand/matichoc-logo.webp"
             alt="Matichoc"
-            width={900}
-            height={588}
-            className="h-11 w-auto shrink-0 sm:h-14"
+            width={2000}
+            height={2000}
+            className="h-14 w-auto shrink-0 sm:h-16"
           />
           <div className="flex flex-col leading-tight">
             <span className="text-sponsor-accent text-[11px] font-bold tracking-wide uppercase">

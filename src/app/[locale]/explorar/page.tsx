@@ -83,6 +83,7 @@ export default async function ExplorePage({
           markers={places.map((place) => ({
             slug: place.slug,
             name: place.name,
+            shortDescription: place.shortDescription,
             latitude: place.latitude,
             longitude: place.longitude,
             categorySlug: place.categorySlug,

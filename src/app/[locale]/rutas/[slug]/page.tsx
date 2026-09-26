@@ -64,6 +64,7 @@ export default async function RouteDetailPage({
           markers={route.stops.map((stop) => ({
             slug: stop.placeSlug,
             name: stop.placeName,
+            shortDescription: stop.placeShortDescription,
             latitude: stop.latitude,
             longitude: stop.longitude,
             categorySlug: stop.categorySlug,
@@ -72,7 +73,11 @@ export default async function RouteDetailPage({
         />
       )}
 
-      <RouteStopChecklist routeId={route.id} stops={route.stops} />
+      <RouteStopChecklist
+        routeId={route.id}
+        routeSlug={route.slug}
+        stops={route.stops}
+      />
 
       {route.stops.length > 0 && (
         <div className="pt-2">

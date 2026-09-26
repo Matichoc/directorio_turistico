@@ -47,6 +47,7 @@ const NEAR_STOP_KM = 0.15;
 export interface MapMarkerData {
   slug: string;
   name: string;
+  shortDescription?: string | null;
   latitude: number;
   longitude: number;
   categorySlug?: string | null;
@@ -218,7 +219,7 @@ export function MapView({
                 pathname: "/lugares/[slug]",
                 params: { slug: selected.slug },
               }}
-              className="flex items-center gap-2 px-3 py-2"
+              className="flex max-w-56 items-start gap-2 px-3 py-2"
             >
               <span
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white"
@@ -231,8 +232,15 @@ export function MapView({
                   className="h-3.5 w-3.5"
                 />
               </span>
-              <span className="text-foreground text-sm font-medium">
-                {selected.name} →
+              <span className="flex flex-col">
+                <span className="text-foreground text-sm font-medium">
+                  {selected.name} →
+                </span>
+                {selected.shortDescription && (
+                  <span className="text-foreground/60 line-clamp-2 text-xs">
+                    {selected.shortDescription}
+                  </span>
+                )}
               </span>
             </Link>
           </Popup>

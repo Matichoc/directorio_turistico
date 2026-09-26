@@ -29,6 +29,25 @@ export default async function InfoPage({
         <p className="text-foreground/80 text-sm">
           {info("developmentCredit")}
         </p>
+        <p className="text-foreground/60 text-sm">{info("developerTagline")}</p>
+        <div className="mt-1 flex flex-wrap gap-2">
+          <a
+            href="https://instagram.com/el.cristo.cl"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border-accent-soft text-foreground/70 hover:border-accent rounded-full border px-3 py-1 text-xs dark:border-white/15"
+          >
+            {info("developerInstagram")}
+          </a>
+          <a
+            href="https://wa.me/56942586908"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border-accent-soft text-foreground/70 hover:border-accent rounded-full border px-3 py-1 text-xs dark:border-white/15"
+          >
+            {info("developerWhatsapp")}
+          </a>
+        </div>
       </section>
 
       <p className="text-foreground/60 text-sm">{info("sponsorNote")}</p>

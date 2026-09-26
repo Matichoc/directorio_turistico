@@ -10,6 +10,9 @@
     "about": "Un directorio turístico de la provincia de Petorca: lugares, rutas y recorridos reales, hechos por gente de la zona.",
     "developmentTitle": "Desarrollo",
     "developmentCredit": "Desarrollo de Cristóbal Roco, CTO de Matichoc.",
+    "developerTagline": "Apoya tus proyectos de IA y con IA.",
+    "developerInstagram": "Instagram: @el.cristo.cl",
+    "developerWhatsapp": "WhatsApp",
     "sponsorNote": "Auspiciado por Chocolatería Matichoc — chocolate artesanal hecho en La Ligua."
   },
   "home": {
@@ -76,7 +79,18 @@
     "routeUnavailable": "No se pudo calcular la ruta por calle — se muestra el mapa normal.",
     "navigationSummary": "{distance} km · {duration} min en auto",
     "liveLocationHint": "Activa tu ubicación cuando el navegador te lo pida, para ver tu posición en el mapa.",
-    "yourToken": "Tu ficha:"
+    "previousStop": "Parada anterior",
+    "nextStop": "Siguiente parada",
+    "stopPosition": "Parada {current}/{total}",
+    "yourToken": "Tu ficha:",
+    "avatarIcons": {
+      "diablo": "El Diablo",
+      "dulce": "Dulce de La Ligua",
+      "tejido": "Chaleco/tejido",
+      "surf": "Tabla de surf",
+      "casco-minero": "Casco minero",
+      "palta": "Palta"
+    }
   },
   "trip": {
     "title": "Mi recorrido",

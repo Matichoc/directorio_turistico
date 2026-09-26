@@ -33,24 +33,28 @@ export function AvatarPicker() {
   if (!selected) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
+    <div className="flex flex-wrap items-center gap-2">
       <span className="text-foreground/50 text-xs">{t("yourToken")}</span>
-      {AVATAR_ICONS.map((icon) => (
-        <button
-          key={icon}
-          type="button"
-          onClick={() => setAvatarIcon(icon)}
-          aria-label={icon}
-          aria-pressed={selected === icon}
-          className={`flex h-7 w-7 items-center justify-center rounded-full border-2 transition-colors ${
-            selected === icon
-              ? "border-accent bg-accent text-accent-foreground"
-              : "border-accent-soft text-foreground/60 hover:border-accent dark:border-white/15"
-          }`}
-        >
-          <CategoryIcon icon={icon} className="h-3.5 w-3.5" />
-        </button>
-      ))}
+      {AVATAR_ICONS.map((icon) => {
+        const label = t(`avatarIcons.${icon}`);
+        return (
+          <button
+            key={icon}
+            type="button"
+            onClick={() => setAvatarIcon(icon)}
+            title={label}
+            aria-label={label}
+            aria-pressed={selected === icon}
+            className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors ${
+              selected === icon
+                ? "border-accent bg-accent text-accent-foreground"
+                : "border-accent-soft text-foreground/60 hover:border-accent dark:border-white/15"
+            }`}
+          >
+            <CategoryIcon icon={icon} className="h-5 w-5" />
+          </button>
+        );
+      })}
     </div>
   );
 }

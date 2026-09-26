@@ -6,13 +6,17 @@ import { ShareButton } from "@/components/place/share-button";
 import { AddToTripButton } from "@/components/trip/add-to-trip-button";
 import { MapView } from "@/components/map/map-view";
 import { PlacePhotoHero } from "@/components/place/place-photo-hero";
+import { RouteStopNav } from "@/components/route/route-stop-nav";
 
 export default async function PlaceDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams: Promise<{ ruta?: string }>;
 }) {
   const { locale: rawLocale, slug } = await params;
+  const { ruta: routeSlug } = await searchParams;
   const locale = resolveLocale(rawLocale);
   setRequestLocale(locale);
   const t = await getTranslations("place");
@@ -24,6 +28,10 @@ export default async function PlaceDetailPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
+      {routeSlug && (
+        <RouteStopNav routeSlug={routeSlug} placeSlug={slug} locale={locale} />
+      )}
+
       <header className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold">{place.name}</h1>
         <p className="text-foreground/60 text-sm">
@@ -56,6 +64,7 @@ export default async function PlaceDetailPage({
           {
             slug: place.slug,
             name: place.name,
+            shortDescription: place.shortDescription,
             latitude: place.latitude,
             longitude: place.longitude,
             categorySlug: place.categorySlug,

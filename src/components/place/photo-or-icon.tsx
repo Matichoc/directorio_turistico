@@ -24,6 +24,7 @@ export function PhotoOrIcon({
   iconClassName,
   imgClassName = "object-cover",
   sizes = "100vw",
+  quality,
 }: {
   photoUrl?: string | null;
   alt: string;
@@ -33,6 +34,11 @@ export function PhotoOrIcon({
   iconClassName?: string;
   imgClassName?: string;
   sizes?: string;
+  /** Calidad de compresión de `next/image` (por defecto 75). Subirla ayuda
+   * en fotos que se muestran grandes y se ven "pixeladas" — aunque si la
+   * foto original (ej. subida por un usuario a Google Maps) ya es de baja
+   * resolución, ningún valor acá la va a hacer ver más nítida. */
+  quality?: number;
 }) {
   const [failed, setFailed] = useState(false);
 
@@ -43,6 +49,7 @@ export function PhotoOrIcon({
         alt={alt}
         fill
         sizes={sizes}
+        quality={quality}
         onError={() => setFailed(true)}
         className={imgClassName}
       />

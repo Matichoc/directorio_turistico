@@ -62,7 +62,7 @@ export function PlacePhotoHero({
 
   return (
     <div
-      className={`relative mx-auto flex h-40 w-40 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br sm:h-52 sm:w-52 ${getCategoryGradient(categorySlug)}`}
+      className={`relative mx-auto flex h-44 w-44 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br sm:h-64 sm:w-64 ${getCategoryGradient(categorySlug)}`}
     >
       <PhotoOrIcon
         key={current?.url ?? "placeholder"}
@@ -70,9 +70,10 @@ export function PlacePhotoHero({
         alt={name}
         categorySlug={categorySlug}
         icon={icon}
-        iconClassName="h-12 w-12 text-white/25"
+        iconClassName="h-14 w-14 text-white/25"
         imgClassName="object-cover object-[center_65%]"
-        sizes="(min-width: 640px) 208px, 160px"
+        sizes="(min-width: 640px) 256px, 176px"
+        quality={90}
       />
 
       <CategoryBadge

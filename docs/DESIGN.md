@@ -169,6 +169,32 @@ sienta propia de Petorca/La Ligua). `AvatarPicker` (junto al botón
 `MapView` pasa `showUserLocation={false}` a `GeolocateControl` para que
 `PlayerToken` sea la única marca de posición, no las dos a la vez.
 
+## Ancho de página y navegación (mobile-first, pero también web)
+
+El layout raíz (`src/app/[locale]/layout.tsx`) envuelve `{children}` en
+`mx-auto w-full max-w-3xl` — el mismo ancho que ya usaban `SponsorBanner` y
+`BottomNav`. Antes cada página crecía sin límite en monitores anchos
+mientras nav/auspicio quedaban centrados a 768px, así que mapas y fotos se
+veían "gigantes o poco proporcionales" en desktop (feedback real del
+usuario). Cualquier página nueva hereda este ancho solo, sin tener que
+ponerle un `max-w-*` a mano — si una sección puntual necesita salirse de
+ese ancho (como el hero del home), es la excepción, no la regla.
+
+Navegación entre las 5 secciones (Inicio/Explorar/Rutas/Mi recorrido/
+Información): un solo `NAV_ITEMS` (`components/ui/nav-items.tsx`, links +
+íconos) alimenta dos componentes que se muestran según el ancho de
+pantalla, nunca los dos a la vez:
+
+- `BottomNav` — fijo al fondo, solo celular (`sm:hidden`): patrón de app
+  móvil, coherente con que el sitio se sienta "de celular" primero.
+- `TopNav` — barra horizontal `sticky top-0`, solo desde `sm:` (tablet/
+  escritorio): en una ventana de escritorio alta, una barra fija al fondo
+  de la ventana pasa desapercibida y no es donde alguien en desktop espera
+  navegación ("el botón para ver las secciones no está", feedback real).
+
+Agregar una sexta sección = un solo ítem nuevo en `NAV_ITEMS`, nunca
+duplicar el link a mano en cada uno de los dos componentes.
+
 ## Insignias sobre una foto/hero
 
 Convención de posición fija (`PlacePhotoHero`, `PlaceCard`):

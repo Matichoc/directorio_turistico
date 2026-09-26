@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { ItineraryEngine } from "@/lib/itinerary-engine";
+import {
+  EXACT_ORDER_STOPS_LIMIT,
+  ItineraryEngine,
+} from "@/lib/itinerary-engine";
 import type { ItineraryPlaceInput } from "@/lib/itinerary-engine/types";
 
 const places: ItineraryPlaceInput[] = [
@@ -58,6 +61,68 @@ describe("ItineraryEngine.build", () => {
     const first = ItineraryEngine.build({ places });
     const second = ItineraryEngine.build({ places });
     expect(first).toEqual(second);
+  });
+
+  it("finds the true shortest order even when nearest-neighbor would pick a worse one", () => {
+    // Trampa clásica del vecino más cercano: ir al vecino más cercano
+    // primero ("b") deja a "d" varado, obligando a un desvío largo al
+    // final. El orden óptimo real visita "d" antes, aunque quede un poco
+    // más lejos que "b" desde el punto de partida.
+    const trapPlaces: ItineraryPlaceInput[] = [
+      {
+        id: "a",
+        name: "A",
+        latitude: 0,
+        longitude: 0,
+        visitDurationMinutes: 0,
+      },
+      {
+        id: "b",
+        name: "B",
+        latitude: 0,
+        longitude: 1,
+        visitDurationMinutes: 0,
+      },
+      {
+        id: "c",
+        name: "C",
+        latitude: 0,
+        longitude: 2,
+        visitDurationMinutes: 0,
+      },
+      {
+        id: "d",
+        name: "D",
+        latitude: 1.1,
+        longitude: 0,
+        visitDurationMinutes: 0,
+      },
+    ];
+
+    const result = ItineraryEngine.build({ places: trapPlaces });
+    expect(result.stops.map((stop) => stop.placeId)).toEqual([
+      "a",
+      "d",
+      "b",
+      "c",
+    ]);
+  });
+
+  it("falls back to nearest-neighbor without hanging past EXACT_ORDER_STOPS_LIMIT", () => {
+    const manyPlaces: ItineraryPlaceInput[] = Array.from(
+      { length: EXACT_ORDER_STOPS_LIMIT + 1 },
+      (_, index) => ({
+        id: `place-${index}`,
+        name: `Place ${index}`,
+        latitude: index * 0.1,
+        longitude: index * 0.1,
+        visitDurationMinutes: 10,
+      }),
+    );
+
+    const result = ItineraryEngine.build({ places: manyPlaces });
+    expect(result.stops).toHaveLength(manyPlaces.length);
+    expect(result.skippedPlaceIds).toHaveLength(0);
   });
 });
 

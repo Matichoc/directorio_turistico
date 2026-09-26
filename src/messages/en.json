@@ -76,7 +76,14 @@
     "removeFromTrip": "Remove from my trip",
     "backToExplore": "Back to explore",
     "like": "Like",
-    "liked": "Liked"
+    "liked": "Liked",
+    "commentsTitle": "Comments",
+    "commentLabel": "Leave a comment about this place",
+    "commentModerationNote": "It gets published once an administrator reviews it.",
+    "commentSubmit": "Send comment",
+    "commentSending": "Sending…",
+    "commentSent": "Thanks! Your comment will show up once we review it.",
+    "commentError": "Couldn't send the comment, try again."
   },
   "route": {
     "stops": "Stops",

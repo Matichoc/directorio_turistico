@@ -79,14 +79,27 @@ Este server action queda pendiente de implementar en Fase de itinerarios.
   y la sección de contactos de `/informacion`.
 - `place_likes` (migración `0014_place_likes.sql`): "me gusta" por lugar, solo
   positivo (nunca reseña ni calificación negativa). Anónimo, atado a
-  `session_id` generado y guardado en el navegador (`lib/likes/session.ts`) —
-  mismo espíritu que `itineraries.session_id`, pero sin pasar por el cliente
-  admin: RLS acepta insert/delete anónimo (`using`/`with check (true)`),
-  mismo nivel de confianza que ya tolera `analytics_events`. El conteo público
-  se expone solo agregado vía `place_like_counts()` (función `security
-definer`), nunca la tabla cruda con los `session_id`. Login opcional real
-  (Google/Facebook) puede sumarse después sin romper este mecanismo — ver
-  `docs/PLAN.md` sección 8.1.
+  `session_id` generado y guardado en el navegador
+  (`lib/session/visitor-session.ts`) — mismo espíritu que
+  `itineraries.session_id`, pero sin pasar por el cliente admin: RLS acepta
+  insert/delete anónimo (`using`/`with check (true)`), mismo nivel de
+  confianza que ya tolera `analytics_events`. El conteo público se expone
+  solo agregado vía `place_like_counts()` (función `security definer`), nunca
+  la tabla cruda con los `session_id`. Login opcional real (Google/Facebook)
+  puede sumarse después sin romper este mecanismo — ver `docs/PLAN.md`
+  sección 8.1.
+- `place_comments` (migración `0015_place_comments.sql`): comentario de texto
+  libre por lugar, para que "vayan ganando reputación" (pedido del usuario) —
+  pero con **moderación previa del admin** antes de publicarse (decisión
+  explícita del usuario, no publicación inmediata): un `status`
+  (`pending`/`approved`/`rejected`, default `pending`) gatea la lectura
+  pública (`status = 'approved' or is_admin()`) y el insert (`with check
+(status = 'pending')`, así nadie se autoaprueba vía API). Mismo
+  `session_id` anónimo que `place_likes` — un solo identificador de visitante
+  para ambas features. `lib/server/content/comments.ts` tiene los dos server
+  actions (`submitComment`/`moderateComment`); `/admin/verificaciones` es hoy
+  la cola de moderación real (antes un placeholder puro) — primer uso real
+  del panel admin en este proyecto.
 
 ## Analítica
 

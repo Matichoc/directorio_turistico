@@ -76,7 +76,14 @@
     "removeFromTrip": "Quitar de mi recorrido",
     "backToExplore": "Volver a explorar",
     "like": "Me gusta",
-    "liked": "Te gusta"
+    "liked": "Te gusta",
+    "commentsTitle": "Comentarios",
+    "commentLabel": "Deja un comentario sobre este lugar",
+    "commentModerationNote": "Se publica una vez que un administrador lo revise.",
+    "commentSubmit": "Enviar comentario",
+    "commentSending": "Enviando…",
+    "commentSent": "¡Gracias! Tu comentario quedará visible cuando lo revisemos.",
+    "commentError": "No se pudo enviar el comentario, intenta de nuevo."
   },
   "route": {
     "stops": "Paradas",

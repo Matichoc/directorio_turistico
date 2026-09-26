@@ -47,12 +47,12 @@ export default async function HomePage({
 
         <header className="relative flex items-start justify-between gap-4">
           <p className="text-xs font-semibold tracking-wide text-amber-300 uppercase">
-            Petorca · La Ligua
+            {t("provinceLabel")}
           </p>
           <LocaleSwitcher />
         </header>
 
-        <h1 className="relative text-3xl leading-tight font-semibold text-balance">
+        <h1 className="font-display relative text-3xl leading-tight font-semibold tracking-wide text-balance">
           {t("title")}
         </h1>
         <p className="relative max-w-prose text-white/70">{t("subtitle")}</p>

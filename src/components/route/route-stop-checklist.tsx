@@ -40,10 +40,15 @@ export function RouteStopChecklist({
   routeId,
   routeSlug,
   stops,
+  highlightedSlug = null,
+  onHoverStop,
 }: {
   routeId: string;
   routeSlug: string;
   stops: RouteStop[];
+  /** Resaltado cruzado mapa↔lista (ver route-map-with-stops.tsx). */
+  highlightedSlug?: string | null;
+  onHoverStop?: (slug: string | null) => void;
 }) {
   const t = useTranslations("route");
   const [visited, setVisited] = useState<Set<string>>(new Set());
@@ -90,14 +95,19 @@ export function RouteStopChecklist({
         {stops.map((stop, index) => {
           const isVisited = visited.has(stop.placeId);
           const isNext = stop.placeId === nextStopId;
+          const isHighlighted = highlightedSlug === stop.placeSlug;
 
           return (
             <li
               key={stop.id}
+              onMouseEnter={() => onHoverStop?.(stop.placeSlug)}
+              onMouseLeave={() => onHoverStop?.(null)}
               className={`animate-stop-in flex items-center gap-3 rounded-lg border px-3 py-2 text-sm transition-colors ${
-                isVisited
-                  ? "border-accent-soft bg-accent-soft/40"
-                  : "border-black/10 dark:border-white/10"
+                isHighlighted
+                  ? "border-accent bg-accent-soft/40"
+                  : isVisited
+                    ? "border-accent-soft bg-accent-soft/40"
+                    : "border-black/10 dark:border-white/10"
               } ${isNext ? "animate-route-glow" : ""}`}
               style={{ animationDelay: `${index * 60}ms` }}
             >

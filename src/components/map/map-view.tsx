@@ -64,6 +64,12 @@ export interface MapViewProps {
   /** Muestra el control de geolocalización de MapLibre (punto azul que
    * sigue tu posición real) — modo navegación. */
   showLiveLocation?: boolean;
+  /** Slug destacado desde afuera (ej. al pasar el mouse por una parada en
+   * la lista) — resaltado cruzado mapa↔lista, ver docs/PLAN.md. */
+  highlightedSlug?: string | null;
+  /** Avisa al padre qué pin se tocó, para que la lista pueda resaltar la
+   * parada correspondiente (el mismo resaltado cruzado, en el otro sentido). */
+  onMarkerClick?: (slug: string) => void;
 }
 
 export function MapView({
@@ -71,6 +77,8 @@ export function MapView({
   markers = [],
   routeLine,
   showLiveLocation = false,
+  highlightedSlug = null,
+  onMarkerClick,
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const [selected, setSelected] = useState<MapMarkerData | null>(null);
@@ -191,12 +199,18 @@ export function MapView({
               <button
                 type="button"
                 aria-label={marker.name}
-                onClick={() => setSelected(marker)}
+                onClick={() => {
+                  setSelected(marker);
+                  onMarkerClick?.(marker.slug);
+                }}
               >
                 <MapPin
                   categorySlug={marker.categorySlug}
                   placeIcon={marker.icon}
-                  selected={selected?.slug === marker.slug}
+                  selected={
+                    selected?.slug === marker.slug ||
+                    highlightedSlug === marker.slug
+                  }
                   near={isNear}
                   delayMs={Math.min(index * 60, 600)}
                 />

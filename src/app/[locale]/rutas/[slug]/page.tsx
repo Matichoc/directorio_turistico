@@ -3,9 +3,8 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getRouteBySlug } from "@/lib/data/routes";
 import { resolveLocale } from "@/i18n/utils";
-import { RouteNavigationMap } from "@/components/map/route-navigation-map";
 import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
-import { RouteStopChecklist } from "@/components/route/route-stop-checklist";
+import { RouteMapWithStops } from "@/components/route/route-map-with-stops";
 import { DevilMascot } from "@/components/ui/devil-mascot";
 
 export default async function RouteDetailPage({
@@ -58,25 +57,11 @@ export default async function RouteDetailPage({
         <p className="text-foreground/70">{route.description}</p>
       )}
 
-      {route.stops.length > 0 && (
-        <RouteNavigationMap
-          className="h-[35vh] w-full overflow-hidden rounded-xl"
-          markers={route.stops.map((stop) => ({
-            slug: stop.placeSlug,
-            name: stop.placeName,
-            shortDescription: stop.placeShortDescription,
-            latitude: stop.latitude,
-            longitude: stop.longitude,
-            categorySlug: stop.categorySlug,
-            icon: stop.placeIcon,
-          }))}
-        />
-      )}
-
-      <RouteStopChecklist
+      <RouteMapWithStops
         routeId={route.id}
         routeSlug={route.slug}
         stops={route.stops}
+        mapClassName="h-[35vh] w-full overflow-hidden rounded-xl"
       />
 
       {route.stops.length > 0 && (

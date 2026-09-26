@@ -24,9 +24,13 @@ const MAX_ERROR_DETAIL_LENGTH = 200;
 export function RouteNavigationMap({
   className,
   markers,
+  highlightedSlug,
+  onMarkerClick,
 }: {
   className?: string;
   markers: MapMarkerData[];
+  highlightedSlug?: string | null;
+  onMarkerClick?: (slug: string) => void;
 }) {
   const t = useTranslations("route");
   const [navigationOn, setNavigationOn] = useState(false);
@@ -110,6 +114,8 @@ export function RouteNavigationMap({
         markers={markers}
         routeLine={navigationOn ? directions?.coordinates : undefined}
         showLiveLocation={navigationOn}
+        highlightedSlug={highlightedSlug}
+        onMarkerClick={onMarkerClick}
       />
     </div>
   );

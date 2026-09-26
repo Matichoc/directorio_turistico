@@ -42,6 +42,7 @@ export function TripView({ locale }: { locale: Locale }) {
   const [orderMode, setOrderMode] = useState<TripOrderMode>("auto");
   const [places, setPlaces] = useState<PlaceCard[] | null>(null);
   const [loadError, setLoadError] = useState(false);
+  const [highlightedSlug, setHighlightedSlug] = useState<string | null>(null);
 
   useEffect(() => {
     function sync() {
@@ -209,6 +210,8 @@ export function TripView({ locale }: { locale: Locale }) {
         <RouteNavigationMap
           className="h-[40vh] w-full overflow-hidden rounded-xl"
           markers={markers}
+          highlightedSlug={highlightedSlug}
+          onMarkerClick={setHighlightedSlug}
         />
       )}
 
@@ -218,7 +221,13 @@ export function TripView({ locale }: { locale: Locale }) {
           return (
             <li
               key={stop.placeId}
-              className="flex items-center gap-3 rounded-lg border border-black/10 px-3 py-2 text-sm dark:border-white/10"
+              onMouseEnter={() => place && setHighlightedSlug(place.slug)}
+              onMouseLeave={() => setHighlightedSlug(null)}
+              className={`flex items-center gap-3 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                place && highlightedSlug === place.slug
+                  ? "border-accent bg-accent-soft/40"
+                  : "border-black/10 dark:border-white/10"
+              }`}
             >
               <span className="border-foreground/30 text-foreground/50 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-xs font-medium">
                 {index + 1}

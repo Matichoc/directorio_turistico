@@ -195,6 +195,26 @@ pantalla, nunca los dos a la vez:
 Agregar una sexta sección = un solo ítem nuevo en `NAV_ITEMS`, nunca
 duplicar el link a mano en cada uno de los dos componentes.
 
+## Resaltado cruzado mapa↔lista
+
+Pedido real del usuario ("lo que selecciono no sé dónde se ve"): al pasar
+el mouse por una parada en la lista, su pin se destaca en el mapa, y
+viceversa al tocar un pin. El estado (`highlightedSlug`) vive en un solo
+lugar por pantalla y baja como prop a `MapView` (`highlightedSlug` +
+`onMarkerClick`) y a la lista correspondiente — nunca duplicado ni sincronizado
+por evento global, porque map y lista siempre son hijos directos del mismo
+componente que lo sostiene:
+
+- **Ficha de ruta**: `RouteMapWithStops` (client wrapper, ya que la página
+  de la ruta es un server component y no puede tener este estado) envuelve
+  `RouteNavigationMap` + `RouteStopChecklist`.
+- **Mi recorrido**: `TripView` ya es client component, así que sostiene
+  `highlightedSlug` directo, sin wrapper aparte.
+
+Una pantalla nueva con mapa + lista de paradas debería seguir el mismo
+patrón: un solo estado arriba, nunca un mapa y una lista resueltos por
+separado sin saber uno del otro.
+
 ## Insignias sobre una foto/hero
 
 Convención de posición fija (`PlacePhotoHero`, `PlaceCard`):

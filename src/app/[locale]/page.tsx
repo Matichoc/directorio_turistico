@@ -37,7 +37,7 @@ export default async function HomePage({
 
   return (
     <main className="flex flex-1 flex-col gap-8">
-      <div className="to-background relative flex flex-col gap-6 overflow-hidden border-b border-black/10 bg-gradient-to-b from-[#1b0e1f] via-[#2a1420] px-4 pt-8 pb-10 text-white dark:border-white/10">
+      <div className="to-background relative flex flex-col gap-6 overflow-hidden rounded-b-2xl border-b border-black/10 bg-gradient-to-b from-[#1b0e1f] via-[#2a1420] px-4 pt-8 pb-10 text-white dark:border-white/10">
         <div
           className="animate-glow-pulse bg-accent/50 pointer-events-none absolute -top-20 -right-16 h-64 w-64 rounded-full blur-3xl"
           aria-hidden="true"

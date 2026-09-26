@@ -721,6 +721,55 @@ const places = [
     },
   },
   {
+    // Coordenadas exactas provistas por el usuario; muy cerca de San
+    // Lorenzo (a pedido del usuario, sumado a la Ruta Patrimonial).
+    slug: "cabildo-puente-la-sirena",
+    communeSlug: "cabildo",
+    categorySlug: "naturaleza",
+    latitude: -32.44042725165503,
+    longitude: -71.00616371332443,
+    es: {
+      name: "Puente La Sirena",
+      short:
+        'Puente rural cerca de San Lorenzo, conocido por la leyenda local de "el carretero del puente La Sirena".',
+    },
+    en: {
+      name: "Puente La Sirena",
+      short:
+        'A rural bridge near San Lorenzo, known for the local legend of "the cart driver of the Sirena bridge".',
+    },
+    source: {
+      url: "https://www.youtube.com/watch?v=k754L4dFZnk/",
+      label: 'YouTube — "El carretero del puente la sirena. Cabildo."',
+    },
+  },
+  {
+    // Coordenadas exactas provistas por el usuario. Leyenda real de pacto
+    // con el diablo a cambio de una casona (confirmada por el usuario,
+    // que conoce la zona) — no se encontró ninguna fuente online que
+    // ubique un "Castillo del Diablo" en Cabildo específicamente (el único
+    // real con ese nombre está en Talcahuano, sin relación), por eso queda
+    // sin "source" y con verificationStatus "pending" en vez de
+    // "verified" como el resto del catálogo.
+    slug: "cabildo-castillo-del-diablo",
+    communeSlug: "cabildo",
+    categorySlug: "cultura",
+    icon: "diablo",
+    verificationStatus: "pending",
+    latitude: -32.448481203218975,
+    longitude: -70.94618972595252,
+    es: {
+      name: "Castillo del Diablo",
+      short:
+        "Casona grande, nunca terminada, que la leyenda local liga a un pacto con el diablo a cambio de riqueza — el mismo motivo de leyenda rural que existe en otras partes de Chile.",
+    },
+    en: {
+      name: "Castillo del Diablo",
+      short:
+        "A large, never-finished house that local legend ties to a pact with the devil in exchange for wealth — the same rural legend motif found elsewhere in Chile.",
+    },
+  },
+  {
     slug: "cabildo-la-vega",
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
@@ -866,6 +915,9 @@ const routes = [
     // Petorca y La Ligua. Se sacan Casa natal de Manuel Montt y Museo de La
     // Ligua de las paradas (el usuario no las mencionó en la ruta nueva).
     durationMinutes: 300,
+    // Portada generada con IA a pedido del usuario (estilo cartel de
+    // viaje) — ver docs/PLAN.md bitácora 2026-09-26.
+    coverImage: "/rutas/ruta-del-diablo.webp",
     es: {
       name: "Ruta del Diablo",
       description:
@@ -879,6 +931,10 @@ const routes = [
     stopSlugs: [
       "pedegua",
       "pedegua-puente",
+      // Sumada a pedido del usuario ("seguro tiene que estar todo todo
+      // eso"): la ilustración de portada muestra un túnel, y Ruta de los
+      // Túneles se accede justo desde Pedegua.
+      "ruta-de-los-tuneles",
       "escalera-del-diablo",
       "iglesia-la-merced-petorca",
       "petorca-petroglifos-chincolco",
@@ -893,6 +949,7 @@ const routes = [
     // Se suman Los Molles, Pichicuy (tramo costero de La Ligua) y Salinas
     // de Pullally (Papudo) a pedido del usuario.
     durationMinutes: 270,
+    coverImage: "/rutas/ruta-costera-papudo-zapallar.webp",
     es: {
       name: "Ruta Costera: Papudo y Zapallar",
       description:
@@ -908,6 +965,10 @@ const routes = [
       "playa-papudo",
       "playa-chica-papudo",
       "bahia-mirador-zapallar",
+      // Sumada a pedido del usuario: ya estaba en el catálogo (Zapallar,
+      // piscinas naturales, pingüinos de Humboldt) pero no en ninguna
+      // ruta todavía.
+      "zapallar-punta-pite",
       "la-ligua-los-molles",
       "la-ligua-pichicuy",
     ],
@@ -918,25 +979,38 @@ const routes = [
   },
   {
     slug: "ruta-patrimonial-la-ligua-cabildo",
-    // Reemplazada a pedido del usuario: en vez de plaza/museo de La Ligua,
-    // ahora combina La Chorreada (La Ligua) con el interior cordillerano de
-    // Cabildo (Cerro Chache, San Lorenzo, Alicahue, La Vega).
-    durationMinutes: 270,
+    // Ampliada a pedido del usuario ("bien agree a todo"): parte en La
+    // Ligua con los dulces y el tejido, sigue a La Chorreada (opcional) y
+    // el interior cordillerano de Cabildo, sumando dos lugares nuevos
+    // (Puente La Sirena, Castillo del Diablo — ver `places` más arriba).
+    // Cerro Chache y La Vega quedan al final, como estaban antes.
+    durationMinutes: 360,
+    coverImage: "/rutas/ruta-patrimonial-la-ligua-cabildo.webp",
     es: {
       name: "Ruta Patrimonial: La Ligua y Cabildo",
       description:
-        "De La Chorreada, en La Ligua, al interior cordillerano de Cabildo: Cerro Chache, San Lorenzo, Alicahue y La Vega.",
+        "De los dulces y el tejido de La Ligua, pasando por La Chorreada, al interior cordillerano de Cabildo: San Lorenzo, Puente La Sirena, Castillo del Diablo, Alicahue, Cerro Chache y La Vega.",
     },
     en: {
       name: "Heritage Route: La Ligua & Cabildo",
       description:
-        "From La Chorreada, in La Ligua, into Cabildo's mountain interior: Cerro Chache, San Lorenzo, Alicahue and La Vega.",
+        "From La Ligua's sweets and weaving, past La Chorreada, into Cabildo's mountain interior: San Lorenzo, Puente La Sirena, Castillo del Diablo, Alicahue, Cerro Chache and La Vega.",
     },
     stopSlugs: [
-      "la-ligua-la-chorreada",
-      "cerro-chache",
+      "la-ligua-area-de-dulces",
+      "la-ligua-valle-hermoso",
+      {
+        slug: "la-ligua-la-chorreada",
+        notes: {
+          es: "Parada opcional: si el tiempo apremia, se puede saltar directo a San Lorenzo.",
+          en: "Optional stop: if you're short on time, skip ahead to San Lorenzo.",
+        },
+      },
       "cabildo-san-lorenzo",
+      "cabildo-puente-la-sirena",
+      "cabildo-castillo-del-diablo",
       "cabildo-alicahue",
+      "cerro-chache",
       "cabildo-la-vega",
     ],
     source: {
@@ -1060,7 +1134,14 @@ async function seedPlaces(
           // ícono de la categoría.
           icon: "icon" in place ? place.icon : null,
           publication_status: "published",
-          verification_status: "verified",
+          // Por defecto "verified" (dato real, revisado por el dueño del
+          // sitio); algunos lugares declaran "verificationStatus" propio
+          // cuando el contenido es real pero no se pudo confirmar con una
+          // fuente independiente (ver "cabildo-castillo-del-diablo").
+          verification_status:
+            "verificationStatus" in place
+              ? place.verificationStatus
+              : "verified",
         },
         { onConflict: "slug" },
       )
@@ -1090,7 +1171,13 @@ async function seedPlaces(
       { onConflict: "place_id,locale" },
     );
 
-    await addSource("place", data.id, place.source.url, place.source.label);
+    // "source" es opcional: "cabildo-castillo-del-diablo" es una leyenda
+    // local real (confirmada por el usuario) sin ninguna fuente online que
+    // la ubique en Cabildo específicamente — mejor no citar nada que citar
+    // algo que no la documenta de verdad.
+    if ("source" in place) {
+      await addSource("place", data.id, place.source.url, place.source.label);
+    }
 
     // Solo borra fotos curadas a mano (no las que administra
     // fetch-google-photos.ts) — sin este filtro, cada `pnpm db:seed`
@@ -1130,6 +1217,9 @@ async function seedRoutes(placeIds: Record<string, string>) {
         {
           slug: route.slug,
           estimated_duration_minutes: route.durationMinutes,
+          // Portada curada a mano (ver migración 0011_route_cover_image.sql);
+          // null cae a la foto de la primera parada (pickRouteCoverPhoto).
+          cover_image: "coverImage" in route ? route.coverImage : null,
           publication_status: "published",
           verification_status: "verified",
         },
@@ -1159,12 +1249,40 @@ async function seedRoutes(placeIds: Record<string, string>) {
     );
 
     await supabase.from("route_stops").delete().eq("route_id", data.id);
-    const stops = route.stopSlugs.map((slug, index) => ({
-      route_id: data.id,
-      place_id: placeIds[slug],
-      position: index,
+    // Cada parada es o bien un slug simple, o bien { slug, notes } cuando
+    // necesita una nota por parada (ver "la-ligua-la-chorreada" en la ruta
+    // La Ligua y Cabildo — "parada opcional", route_stop_translations.notes,
+    // hasta ahora declarado en el esquema pero nunca usado).
+    const stopsByPosition = route.stopSlugs.map((stop, position) => ({
+      position,
+      placeId: placeIds[typeof stop === "string" ? stop : stop.slug],
+      notes: typeof stop === "string" ? null : stop.notes,
     }));
-    await supabase.from("route_stops").insert(stops);
+    const { data: insertedStops, error: stopsError } = await supabase
+      .from("route_stops")
+      .insert(
+        stopsByPosition.map(({ position, placeId }) => ({
+          route_id: data.id,
+          place_id: placeId,
+          position,
+        })),
+      )
+      .select("id, position");
+
+    if (stopsError || !insertedStops)
+      throw stopsError ?? new Error("No se pudieron crear las paradas");
+
+    for (const inserted of insertedStops) {
+      const notes = stopsByPosition[inserted.position]?.notes;
+      if (!notes) continue;
+      await supabase.from("route_stop_translations").upsert(
+        [
+          { route_stop_id: inserted.id, locale: "es", notes: notes.es },
+          { route_stop_id: inserted.id, locale: "en", notes: notes.en },
+        ],
+        { onConflict: "route_stop_id,locale" },
+      );
+    }
 
     await addSource("route", data.id, route.source.url, route.source.label);
   }

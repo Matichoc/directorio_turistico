@@ -4,9 +4,11 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import type { Locale, PublicationStatus } from "@/types/database";
 import type { Route, RouteCard, RouteStop } from "@/types/domain";
 
-const ROUTE_QUERY = `id, slug, estimated_duration_minutes, publication_status,
+const ROUTE_QUERY = `id, slug, estimated_duration_minutes, cover_image,
+   publication_status,
    route_translations!inner(name, description, locale),
    route_stops(id, place_id, position,
+     route_stop_translations(notes, locale),
      places(slug, latitude, longitude, icon, place_translations(name, locale),
        categories(slug)))` as const;
 
@@ -14,6 +16,7 @@ interface RouteQueryResult {
   id: string;
   slug: string;
   estimated_duration_minutes: number | null;
+  cover_image: string | null;
   publication_status: PublicationStatus;
   route_translations: {
     name: string;
@@ -24,6 +27,7 @@ interface RouteQueryResult {
     id: string;
     place_id: string;
     position: number;
+    route_stop_translations: { notes: string | null; locale: Locale }[];
     places: {
       slug: string;
       latitude: number;
@@ -72,7 +76,9 @@ export async function getRouteBySlug(
       latitude: stop.places?.latitude ?? 0,
       longitude: stop.places?.longitude ?? 0,
       position: stop.position,
-      notes: null,
+      notes:
+        stop.route_stop_translations.find((t) => t.locale === locale)?.notes ??
+        null,
     }));
 
   return {
@@ -81,12 +87,13 @@ export async function getRouteBySlug(
     name: translation?.name ?? slug,
     description: translation?.description ?? null,
     estimatedDurationMinutes: data.estimated_duration_minutes,
+    coverImageUrl: data.cover_image,
     publicationStatus: data.publication_status,
     stops,
   };
 }
 
-const ROUTES_LIST_QUERY = `id, slug, estimated_duration_minutes,
+const ROUTES_LIST_QUERY = `id, slug, estimated_duration_minutes, cover_image,
    route_translations!inner(name, description, locale),
    route_stops(id, position,
      places(place_images(storage_path, position)))` as const;
@@ -95,6 +102,7 @@ interface RouteListQueryResult {
   id: string;
   slug: string;
   estimated_duration_minutes: number | null;
+  cover_image: string | null;
   route_translations: {
     name: string;
     description: string | null;
@@ -156,7 +164,8 @@ export async function listRoutes(
       description: translation?.description ?? null,
       estimatedDurationMinutes: route.estimated_duration_minutes,
       stopsCount: route.route_stops?.length ?? 0,
-      photoUrl: pickRouteCoverPhoto(route.route_stops ?? []),
+      photoUrl:
+        route.cover_image ?? pickRouteCoverPhoto(route.route_stops ?? []),
     };
   });
 }

@@ -52,6 +52,12 @@ const nextConfig: NextConfig = {
         pathname: "/brand/**",
         search: "",
       },
+      {
+        // Portadas de ruta generadas con IA (ver public/rutas/ y
+        // routes.cover_image, migración 0011_route_cover_image.sql).
+        pathname: "/rutas/**",
+        search: "",
+      },
     ],
   },
 };

@@ -14,6 +14,7 @@ interface RouteStop {
   placeId: string;
   placeSlug: string;
   placeName: string;
+  notes?: string | null;
 }
 
 /**
@@ -98,17 +99,24 @@ export function RouteStopChecklist({
               >
                 {isVisited ? "✓" : index + 1}
               </button>
-              <Link
-                href={{
-                  pathname: "/lugares/[slug]",
-                  params: { slug: stop.placeSlug },
-                }}
-                className={`flex-1 hover:underline ${
-                  isVisited ? "text-foreground/50 line-through" : ""
-                }`}
-              >
-                {stop.placeName}
-              </Link>
+              <div className="flex flex-1 flex-col">
+                <Link
+                  href={{
+                    pathname: "/lugares/[slug]",
+                    params: { slug: stop.placeSlug },
+                  }}
+                  className={`hover:underline ${
+                    isVisited ? "text-foreground/50 line-through" : ""
+                  }`}
+                >
+                  {stop.placeName}
+                </Link>
+                {stop.notes && (
+                  <span className="text-foreground/50 text-xs italic">
+                    {stop.notes}
+                  </span>
+                )}
+              </div>
             </li>
           );
         })}

@@ -339,12 +339,21 @@ const places = [
     // fecha, así que se usa una fecha lejana como marcador práctico en vez
     // de agregar una columna/flag separado solo para este caso.
     featuredUntil: "2099-12-31T23:59:59Z",
-    // Foto real de producto (repo matichoc/matiweb) copiada a
-    // public/fotos/chocolateria-matichoc/ — ver ese directorio para más.
-    photo: {
-      path: "/fotos/chocolateria-matichoc/tableta.jpg",
-      attribution: "Foto: Matichoc",
-    },
+    // Fotos reales copiadas a public/fotos/chocolateria-matichoc/ — ver ese
+    // directorio para más. Primero Inés atendiendo su stand (pedido del
+    // usuario: "la primera foto no pueden ser esas barras, debe ser el
+    // logo, o alguna de Inés en el toldo atendiendo"), la tableta de
+    // producto queda como segunda foto de la galería.
+    photos: [
+      {
+        path: "/fotos/chocolateria-matichoc/ines-stand.jpg",
+        attribution: "Foto: Matichoc",
+      },
+      {
+        path: "/fotos/chocolateria-matichoc/tableta.jpg",
+        attribution: "Foto: Matichoc",
+      },
+    ],
     es: {
       name: "Chocolatería Matichoc",
       short:
@@ -1312,21 +1321,27 @@ async function seedPlaces(
       .delete()
       .eq("place_id", data.id)
       .not("storage_path", "like", `${GOOGLE_PLACE_PHOTO_PREFIX}%`);
-    if ("photo" in place) {
+    // "photos" (plural, ordenado) es la forma nueva de declarar más de una
+    // foto real por lugar — la primera de la lista es la que se muestra
+    // primero en PlacePhotoHero/PlaceCard. "photo" (singular) sigue andando
+    // para los lugares que solo tienen una.
+    const photoList =
+      "photos" in place ? place.photos : "photo" in place ? [place.photo] : [];
+    for (const [position, photo] of photoList.entries()) {
       const storagePath =
-        "filename" in place.photo
-          ? wikimediaFilePath(place.photo.filename)
-          : place.photo.path;
+        "filename" in photo ? wikimediaFilePath(photo.filename) : photo.path;
       await supabase.from("place_images").insert({
         place_id: data.id,
         storage_path: storagePath,
-        alt_text: place.photo.attribution,
-        position: 0,
+        alt_text: photo.attribution,
+        position,
       });
     }
   }
 
-  const withPhotos = places.filter((place) => "photo" in place).length;
+  const withPhotos = places.filter(
+    (place) => "photo" in place || "photos" in place,
+  ).length;
   console.log(
     `✔ ${places.length} lugares (verificados, ${withPhotos} con foto real)`,
   );

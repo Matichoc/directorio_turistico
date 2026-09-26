@@ -6,6 +6,11 @@ import { MapView, type MapMarkerData } from "@/components/map/map-view";
 import { AvatarPicker } from "@/components/map/avatar-picker";
 import { fetchDirections, type DirectionsResult } from "@/lib/maps/directions";
 
+/** Cuánto del mensaje real de Google se muestra bajo el aviso — pensado
+ * para poder hacer captura de pantalla y mandarla, sin tener que ir a
+ * buscar los Runtime Logs de Vercel (bloqueo real de varias rondas). */
+const MAX_ERROR_DETAIL_LENGTH = 200;
+
 /**
  * MapView + modo "navegación en vivo": calcula la ruta real por calle
  * (Google Routes API, vía /api/directions) entre las paradas en el orden
@@ -28,10 +33,12 @@ export function RouteNavigationMap({
   const [loading, setLoading] = useState(false);
   const [directions, setDirections] = useState<DirectionsResult | null>(null);
   const [error, setError] = useState(false);
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
 
   async function startNavigation() {
     setNavigationOn(true);
     setError(false);
+    setErrorDetail(null);
 
     if (!directions && markers.length >= 2) {
       setLoading(true);
@@ -42,10 +49,11 @@ export function RouteNavigationMap({
         })),
       );
       setLoading(false);
-      if (result) {
-        setDirections(result);
+      if (result.ok) {
+        setDirections(result.data);
       } else {
         setError(true);
+        setErrorDetail(result.detail);
       }
     }
   }
@@ -86,6 +94,11 @@ export function RouteNavigationMap({
       {navigationOn && error && (
         <p className="rounded-lg bg-amber-100 px-3 py-2 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
           {t("routeUnavailable")}
+          {errorDetail && (
+            <span className="mt-1 block font-mono text-[10px] break-all text-amber-700/80 dark:text-amber-400/70">
+              {errorDetail.slice(0, MAX_ERROR_DETAIL_LENGTH)}
+            </span>
+          )}
         </p>
       )}
       {navigationOn && !error && (

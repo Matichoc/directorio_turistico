@@ -83,7 +83,8 @@ export async function getRouteBySlug(
 
 const ROUTES_LIST_QUERY = `id, slug, estimated_duration_minutes,
    route_translations!inner(name, description, locale),
-   route_stops(id)` as const;
+   route_stops(id, position,
+     places(place_images(storage_path, position)))` as const;
 
 interface RouteListQueryResult {
   id: string;
@@ -94,7 +95,25 @@ interface RouteListQueryResult {
     description: string | null;
     locale: Locale;
   }[];
-  route_stops: { id: string }[];
+  route_stops: {
+    id: string;
+    position: number;
+    places: {
+      place_images: { storage_path: string; position: number }[];
+    } | null;
+  }[];
+}
+
+/** Foto de portada de una ruta: la primera foto de su primera parada. */
+function pickRouteCoverPhoto(
+  routeStops: RouteListQueryResult["route_stops"],
+): string | null {
+  const firstStop = routeStops
+    .slice()
+    .sort((a, b) => a.position - b.position)[0];
+  const images = firstStop?.places?.place_images ?? [];
+  const firstImage = images.slice().sort((a, b) => a.position - b.position)[0];
+  return firstImage?.storage_path ?? null;
 }
 
 export async function listRoutes(
@@ -132,6 +151,7 @@ export async function listRoutes(
       description: translation?.description ?? null,
       estimatedDurationMinutes: route.estimated_duration_minutes,
       stopsCount: route.route_stops?.length ?? 0,
+      photoUrl: pickRouteCoverPhoto(route.route_stops ?? []),
     };
   });
 }

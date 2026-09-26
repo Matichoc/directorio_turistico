@@ -86,6 +86,7 @@ export interface RouteCard {
   description: string | null;
   estimatedDurationMinutes: number | null;
   stopsCount: number;
+  photoUrl: string | null;
 }
 
 export interface PlaceFilters {

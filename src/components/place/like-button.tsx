@@ -3,7 +3,7 @@
 import { useEffect, useState, type SVGProps } from "react";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
-import { getLikeSessionId } from "@/lib/likes/session";
+import { getVisitorSessionId } from "@/lib/session/visitor-session";
 import {
   isPlaceLiked,
   markPlaceLiked,
@@ -34,7 +34,7 @@ function HeartIcon({
 /**
  * "Me gusta" por lugar — solo positivo, nunca reseña ni calificación
  * negativa (pedido explícito del usuario). Anónimo por sesión de
- * navegador (`getLikeSessionId`, ver migración `0014_place_likes.sql`):
+ * navegador (`getVisitorSessionId`, ver migración `0014_place_likes.sql`):
  * no requiere login, aunque uno opcional (Google/Facebook) puede sumarse
  * después sin cambiar este mecanismo, ver docs/PLAN.md sección 8.1.
  *
@@ -92,7 +92,7 @@ export function LikeButton({ placeId }: { placeId: string }) {
     applyLiked(!wasLiked);
 
     const supabase = createClient();
-    const sessionId = getLikeSessionId();
+    const sessionId = getVisitorSessionId();
 
     try {
       if (wasLiked) {

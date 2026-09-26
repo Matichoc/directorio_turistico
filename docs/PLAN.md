@@ -260,11 +260,28 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 
 Tres piezas grandes, cada una una decisión de alcance en sí misma (no algo para elegir todas a la vez sin conversarlo):
 
-1. **Carrito de "Mi recorrido" → backend real.** Hoy vive 100% en `localStorage` (Riesgo #13); las tablas `itineraries`/`itinerary_stops` existen en el esquema desde la Fase 0 y nunca se poblaron. Migrar esto conectaría con el identificador de sesión que ya existe para "me gusta" (`lib/likes/session.ts`) — mismo `session_id`, un solo concepto de "quién es este visitante anónimo" en vez de dos.
-2. **Panel admin real (CRUD).** El de mayor impacto en "qué pasa si esto crece": sin él, todo pasa por código + `pnpm db:seed`. Sienta además las bases para usar `verification_logs` de verdad (hoy sin ningún flujo que lo escriba).
+1. **Carrito de "Mi recorrido" → backend real.** Hoy vive 100% en `localStorage` (Riesgo #13); las tablas `itineraries`/`itinerary_stops` existen en el esquema desde la Fase 0 y nunca se poblaron. Migrar esto conectaría con el identificador de sesión que ya existe para "me gusta"/comentarios (`lib/session/visitor-session.ts`) — mismo `session_id`, un solo concepto de "quién es este visitante anónimo" en vez de varios.
+2. **Panel admin real (CRUD).** El de mayor impacto en "qué pasa si esto crece": sin él, todo pasa por código + `pnpm db:seed`. **Primera pieza real construida esta misma ronda**: `/admin/verificaciones` ahora es la cola de moderación de comentarios de lugares (ver más abajo) — deja de ser un placeholder, aunque el resto del panel (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias`) sigue sin CRUD.
 3. **Categorías de POI en vivo (restaurantes/supermercados/gas/salud vía Google Places)** y **más de un auspiciador en `SponsorBanner`** — ambos ya estaban anotados como pendientes en rondas anteriores, sin tocar todavía.
 
-**Pregunta directa para el usuario**: ¿cuál de estos tres se prioriza primero? Cada uno es una ronda (o varias) de trabajo real, no un cambio chico — mejor confirmarlo que adivinar y construir el que no tocaba.
+**Pregunta directa para el usuario**: ¿cuál de estos se prioriza primero? Cada uno es una ronda (o varias) de trabajo real, no un cambio chico — mejor confirmarlo que adivinar y construir el que no tocaba.
+
+### 9.5 Comentarios de lugares con moderación (2026-09-26)
+
+El usuario pidió, en la misma ronda, poder "dejar un comentario del lugar para que se vayan ganando reputación" usando la sesión anónima que ya existe. Antes de construirlo se preguntó cómo moderar (un comentario de texto libre puede ser negativo/inapropiado, algo que el proyecto evita en todo el resto del sitio) — el usuario eligió **moderación previa del admin**, no publicación inmediata.
+
+- Migración `0015_place_comments.sql`: tabla `place_comments` (`status`: `pending`/`approved`/`rejected`, default `pending`), RLS que solo expone lo aprobado al público (o todo a un admin) y rechaza cualquier insert que no sea `pending` (nadie se autoaprueba vía API).
+- `lib/session/visitor-session.ts`: se renombra `lib/likes/session.ts` a un módulo compartido (mismo `session_id`, misma clave de `localStorage` — no se invalida a nadie que ya tuviera uno) para que "me gusta" y comentarios usen un solo concepto de visitante anónimo, en vez de uno cada uno.
+- `lib/server/content/comments.ts`: `submitComment` (público, siempre `pending`) y `moderateComment` (requiere `is_admin()`, lo mismo que ya protege el resto del panel).
+- `PlaceCommentForm` en la ficha de lugar: dice explícitamente que el comentario se publica tras revisión, no de inmediato — no sugiere que ya quedó visible.
+- `/admin/verificaciones`: deja de ser un placeholder, ahora es la cola real de comentarios pendientes con botones Aprobar/Rechazar (server actions inline, sin JS de cliente adicional).
+
+Tareas:
+
+- [x] Migración `place_comments` + RLS
+- [x] Formulario de comentario en la ficha de lugar + listado de aprobados
+- [x] Cola de moderación real en `/admin/verificaciones`
+- [ ] Mostrar de alguna forma visible la "reputación" acumulada (hoy son dos señales sueltas — "me gusta" y comentarios aprobados — sin combinarlas en un solo indicador; pendiente de que el usuario diga si quiere eso o le basta con verlas por separado)
 
 ## Bitácora de decisiones
 
@@ -464,5 +481,10 @@ Tres piezas grandes, cada una una decisión de alcance en sí misma (no algo par
 - 2026-09-26: El usuario pide empezar a tratar el proyecto "de manera más pro": seguridad, conectividad, qué pasaría si escala, y conectar sí o sí la data que quedó pendiente en el plan. En vez de una lista genérica, se audita el código real y se corrigen 4 problemas concretos de seguridad (ver Riesgo #24 y sección 9.1): el middleware de `/admin` no chequeaba `admin_users` (solo sesión válida — se vuelve explotable en cuanto exista login público); `/api/analytics` usaba el cliente de service role de más para un insert que la RLS ya permite anónimo; el evento `place_liked` faltaba en el `zod.enum` de esa misma ruta (bug real de la ronda anterior); y `/api/place-photo`/`/api/directions` no tenían límite de tasa ni validaban el `ref` contra el catálogo real, exponiendo la facturación de Google a un abuso simple. Se agrega `lib/http/rate-limit.ts` (limitador en memoria, documentado como no-distribuido).
   - En medio de esta ronda, el usuario reporta en vivo que el botón de "me gusta" no se marcaba al tocarlo. Causa real encontrada: `toggle()` esperaba la respuesta de Supabase antes de actualizar la UI, sin manejo de errores — si la escritura fallaba o tardaba (esperable si las migraciones `0012`–`0014` de la ronda anterior aún no estaban aplicadas), el corazón quedaba pegado sin ningún error visible. Se corrige a un patrón optimista (marca al toque, revierte solo si la escritura falla de verdad).
   - Se agrega la sección 9 con lo que ya aguanta a escala (RLS + índices desde la Fase 0, Supabase vía REST sin riesgo de pool de conexiones) versus el cuello de botella real hoy (el panel admin sigue siendo placeholder puro — cada cambio de datos pasa por `scripts/seed.ts` + esta sesión, no por autogestión) y tres piezas grandes de "data sin conectar" (backend real para "Mi recorrido", panel admin CRUD, POI en vivo/multi-auspiciador) para que el usuario priorice cuál ataca primero — cada una es una feature en sí misma, no algo para adivinar y construir todo junto.
+
+  `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.
+
+- 2026-09-26: El usuario pide sumar comentarios de lugares ("con la sesión que uno entra, dejar un comentario... para que se vayan ganando reputación"). Antes de construirlo se le pregunta cómo moderar — un comentario de texto libre puede ser negativo o inapropiado, algo que el proyecto evita en todo el resto del sitio — y elige moderación previa del admin en vez de publicación inmediata. Se agrega `place_comments` (migración `0015`) con `status` (`pending`/`approved`/`rejected`), RLS que solo expone lo aprobado al público, `submitComment`/`moderateComment` en `lib/server/content/comments.ts`, formulario en la ficha de lugar (deja explícito que se publica tras revisión) y una cola de moderación real en `/admin/verificaciones` (deja de ser placeholder — primera pieza real del panel admin). De paso, `lib/likes/session.ts` se renombra a `lib/session/visitor-session.ts` (misma clave de `localStorage`, no se invalida a nadie) para que "me gusta" y comentarios compartan un solo concepto de sesión anónima.
+  - Sin resolver esta ronda: el usuario también reportó "pantallas que están respondiendo lento" sin especificar cuáles — no hay suficiente información todavía para diagnosticar sin adivinar (podría ser un mapa, una carga de fotos, un cold start de Vercel); se le pregunta directamente qué pantalla y en qué condiciones antes de tocar nada, en vez de optimizar a ciegas.
 
   `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.

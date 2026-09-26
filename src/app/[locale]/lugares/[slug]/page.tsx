@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getPlaceBySlug } from "@/lib/data/places";
+import { listApprovedComments } from "@/lib/data/comments";
 import { resolveLocale } from "@/i18n/utils";
 import { ShareButton } from "@/components/place/share-button";
 import { LikeButton } from "@/components/place/like-button";
+import { PlaceCommentForm } from "@/components/place/place-comment-form";
 import { AddToTripButton } from "@/components/trip/add-to-trip-button";
 import { MapView } from "@/components/map/map-view";
 import { PlacePhotoHero } from "@/components/place/place-photo-hero";
@@ -26,6 +28,8 @@ export default async function PlaceDetailPage({
   if (!place) {
     notFound();
   }
+
+  const comments = await listApprovedComments(place.id);
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
@@ -132,6 +136,27 @@ export default async function PlaceDetailPage({
         <AddToTripButton placeId={place.id} />
         <LikeButton placeId={place.id} />
         <ShareButton title={place.name} />
+      </div>
+
+      <div className="flex flex-col gap-3 pt-2">
+        {comments.length > 0 && (
+          <div>
+            <h2 className="text-foreground/50 mb-1 text-sm">
+              {t("commentsTitle")}
+            </h2>
+            <ul className="flex flex-col gap-2">
+              {comments.map((comment) => (
+                <li
+                  key={comment.id}
+                  className="border-accent-soft rounded-xl border p-3 text-sm dark:border-white/10"
+                >
+                  {comment.body}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <PlaceCommentForm placeId={place.id} />
       </div>
     </main>
   );

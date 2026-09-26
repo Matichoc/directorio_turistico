@@ -12,6 +12,7 @@ export type Locale = "es" | "en";
 export type PublicationStatus = "draft" | "published" | "archived";
 export type VerificationStatus = "pending" | "verified" | "outdated";
 export type EntityType = "place" | "route" | "commune";
+export type CommentStatus = "pending" | "approved" | "rejected";
 
 type Table<Row, Insert, Update> = {
   Row: Row;
@@ -206,6 +207,17 @@ type PlaceLikeRow = {
   created_at: string;
 };
 
+type PlaceCommentRow = {
+  id: string;
+  place_id: string;
+  session_id: string;
+  body: string;
+  status: CommentStatus;
+  created_at: string;
+  moderated_at: string | null;
+  moderated_by: string | null;
+};
+
 export interface Database {
   public: {
     Views: Record<string, never>;
@@ -375,6 +387,15 @@ export interface Database {
         PlaceLikeRow,
         Partial<PlaceLikeRow> & { place_id: string; session_id: string },
         Partial<PlaceLikeRow>
+      >;
+      place_comments: Table<
+        PlaceCommentRow,
+        Partial<PlaceCommentRow> & {
+          place_id: string;
+          session_id: string;
+          body: string;
+        },
+        Partial<PlaceCommentRow>
       >;
     };
   };

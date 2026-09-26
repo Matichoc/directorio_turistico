@@ -1,8 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { getClientIp, isRateLimited } from "@/lib/http/rate-limit";
 
 const PHOTO_REF_PATTERN = /^places\/[\w-]+\/photos\/[\w-]+$/;
 const DEFAULT_MAX_WIDTH_PX = 1200;
 const MAX_ALLOWED_WIDTH_PX = 1600;
+// Cada foto nueva (ref distinto) le cuesta dinero real al proyecto de
+// Google Cloud — más generoso que /api/directions porque una sola página
+// puede pedir varias fotos, pero igual corta un loop de refs inventados.
+const MAX_REQUESTS_PER_MINUTE = 120;
 
 /**
  * Sirve fotos de Google Places API (New) sin exponer `GOOGLE_PLACES_API_KEY`
@@ -21,6 +28,26 @@ export async function GET(request: NextRequest) {
   }
   if (!apiKey) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
+  }
+  if (isRateLimited(getClientIp(request), MAX_REQUESTS_PER_MINUTE)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
+  // El patrón de arriba solo valida la FORMA del ref, no que sea uno real
+  // del catálogo — sin este chequeo, cualquiera podría inventar refs con
+  // esa forma y hacer que este proxy le pida a Google fotos que no existen
+  // en `place_images`, gastando cuota/facturación real sin ningún control.
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient();
+    const { data: existing } = await supabase
+      .from("place_images")
+      .select("id")
+      .eq("storage_path", ref)
+      .maybeSingle();
+
+    if (!existing) {
+      return NextResponse.json({ error: "invalid_ref" }, { status: 400 });
+    }
   }
 
   const requestedWidth = Number(request.nextUrl.searchParams.get("w"));

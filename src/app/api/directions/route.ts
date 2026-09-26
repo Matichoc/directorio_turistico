@@ -1,7 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
+import { getClientIp, isRateLimited } from "@/lib/http/rate-limit";
 
 const MAX_WAYPOINTS = 25;
+// Generoso para uso real ("iniciar navegación" una vez por recorrido),
+// pero corta un loop de peticiones — cada una le cuesta dinero real al
+// proyecto de Google Cloud (ver lib/http/rate-limit.ts).
+const MAX_REQUESTS_PER_MINUTE = 20;
 
 const bodySchema = z.object({
   waypoints: z
@@ -36,6 +41,16 @@ export async function POST(request: NextRequest) {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
+  }
+
+  if (isRateLimited(getClientIp(request), MAX_REQUESTS_PER_MINUTE)) {
+    return NextResponse.json(
+      {
+        error: "rate_limited",
+        detail: "Demasiadas solicitudes, espera un momento.",
+      },
+      { status: 429 },
+    );
   }
 
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));

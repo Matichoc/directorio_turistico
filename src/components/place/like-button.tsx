@@ -69,31 +69,52 @@ export function LikeButton({ placeId }: { placeId: string }) {
     };
   }, [placeId]);
 
+  function applyLiked(nextLiked: boolean) {
+    if (nextLiked) {
+      markPlaceLiked(placeId);
+      setCount((current) => (current ?? 0) + 1);
+    } else {
+      markPlaceUnliked(placeId);
+      setCount((current) => Math.max(0, (current ?? 1) - 1));
+    }
+    setLiked(nextLiked);
+  }
+
   async function toggle() {
     if (pending) return;
     setPending(true);
+
+    // Optimista: el corazón se marca al toque, antes de esperar la
+    // respuesta de Supabase — si la escritura falla (tabla sin migrar
+    // todavía, sin red, RLS mal configurado) se revierte en el catch, pero
+    // nunca se queda "pegado" sin reaccionar al click.
+    const wasLiked = liked;
+    applyLiked(!wasLiked);
+
     const supabase = createClient();
     const sessionId = getLikeSessionId();
 
-    if (liked) {
-      await supabase
-        .from("place_likes")
-        .delete()
-        .eq("place_id", placeId)
-        .eq("session_id", sessionId);
-      markPlaceUnliked(placeId);
-      setLiked(false);
-      setCount((current) => Math.max(0, (current ?? 1) - 1));
-    } else {
-      await supabase
-        .from("place_likes")
-        .insert({ place_id: placeId, session_id: sessionId });
-      markPlaceLiked(placeId);
-      setLiked(true);
-      setCount((current) => (current ?? 0) + 1);
-      track({ name: "place_liked", properties: { placeId } });
+    try {
+      if (wasLiked) {
+        const { error } = await supabase
+          .from("place_likes")
+          .delete()
+          .eq("place_id", placeId)
+          .eq("session_id", sessionId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("place_likes")
+          .insert({ place_id: placeId, session_id: sessionId });
+        if (error) throw error;
+        track({ name: "place_liked", properties: { placeId } });
+      }
+    } catch (error) {
+      console.error('[LikeButton] no se pudo guardar el "me gusta"', error);
+      applyLiked(wasLiked);
+    } finally {
+      setPending(false);
     }
-    setPending(false);
   }
 
   return (

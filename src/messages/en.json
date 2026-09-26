@@ -85,7 +85,11 @@
     "remove": "Remove",
     "clearAll": "Clear trip",
     "mapTitle": "Trip map",
-    "skippedNotice": "Some places were left out by distance or order; you could split the trip across two days."
+    "skippedNotice": "Some places were left out by distance or order; you could split the trip across two days.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "orderManualNotice": "Your custom order — no longer recalculated automatically.",
+    "optimizeAuto": "Optimize automatically"
   },
   "common": {
     "loading": "Loading…",

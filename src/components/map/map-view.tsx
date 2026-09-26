@@ -21,12 +21,21 @@ import { Link } from "@/i18n/navigation";
 import { MapPin } from "@/components/map/map-pin";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { getCategoryPinColor, getPlaceIcon } from "@/lib/ui/category-gradient";
+import { haversineDistanceKm } from "@/lib/itinerary-engine";
 import {
   getMapStyleUrl,
   PETORCA_CENTER,
   PETORCA_DEFAULT_ZOOM,
   PLACE_DETAIL_ZOOM,
 } from "@/lib/maps/config";
+
+/**
+ * Bajo esta distancia a una parada, su pin se destaca (pedido del usuario:
+ * "que se destaque o brille al pasar por algún lugar"). 150 m es más o
+ * menos 2 min caminando — cerca de verdad, no solo "en el mismo pueblo" —
+ * y da margen a la precisión típica del GPS de un teléfono a pie/en auto.
+ */
+const NEAR_STOP_KM = 0.15;
 
 export interface MapMarkerData {
   slug: string;
@@ -57,6 +66,10 @@ export function MapView({
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const [selected, setSelected] = useState<MapMarkerData | null>(null);
+  const [livePosition, setLivePosition] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   const center = markers[0]
     ? { latitude: markers[0].latitude, longitude: markers[0].longitude }
@@ -100,6 +113,12 @@ export function MapView({
             position="top-right"
             trackUserLocation
             positionOptions={{ enableHighAccuracy: true }}
+            onGeolocate={(event) =>
+              setLivePosition({
+                latitude: event.coords.latitude,
+                longitude: event.coords.longitude,
+              })
+            }
           />
         )}
         {routeLine && routeLine.length > 1 && (
@@ -124,27 +143,35 @@ export function MapView({
             />
           </Source>
         )}
-        {markers.map((marker, index) => (
-          <Marker
-            key={marker.slug}
-            latitude={marker.latitude}
-            longitude={marker.longitude}
-            anchor="bottom"
-          >
-            <button
-              type="button"
-              aria-label={marker.name}
-              onClick={() => setSelected(marker)}
+        {markers.map((marker, index) => {
+          const isNear =
+            showLiveLocation &&
+            livePosition !== null &&
+            haversineDistanceKm(livePosition, marker) < NEAR_STOP_KM;
+
+          return (
+            <Marker
+              key={marker.slug}
+              latitude={marker.latitude}
+              longitude={marker.longitude}
+              anchor="bottom"
             >
-              <MapPin
-                categorySlug={marker.categorySlug}
-                placeIcon={marker.icon}
-                selected={selected?.slug === marker.slug}
-                delayMs={Math.min(index * 60, 600)}
-              />
-            </button>
-          </Marker>
-        ))}
+              <button
+                type="button"
+                aria-label={marker.name}
+                onClick={() => setSelected(marker)}
+              >
+                <MapPin
+                  categorySlug={marker.categorySlug}
+                  placeIcon={marker.icon}
+                  selected={selected?.slug === marker.slug}
+                  near={isNear}
+                  delayMs={Math.min(index * 60, 600)}
+                />
+              </button>
+            </Marker>
+          );
+        })}
         {selected && (
           <Popup
             latitude={selected.latitude}

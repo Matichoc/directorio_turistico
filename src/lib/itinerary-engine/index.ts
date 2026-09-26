@@ -1,4 +1,5 @@
 import { buildItinerary } from "@/lib/itinerary-engine/build-itinerary";
+import { buildItineraryInOrder } from "@/lib/itinerary-engine/build-itinerary-in-order";
 
 export * from "@/lib/itinerary-engine/types";
 export { haversineDistanceKm } from "@/lib/itinerary-engine/geo";
@@ -10,4 +11,5 @@ export { haversineDistanceKm } from "@/lib/itinerary-engine/geo";
  */
 export const ItineraryEngine = {
   build: buildItinerary,
+  buildInOrder: buildItineraryInOrder,
 };

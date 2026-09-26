@@ -8,9 +8,13 @@ import { RouteNavigationMap } from "@/components/map/route-navigation-map";
 import { ItineraryEngine, type Itinerary } from "@/lib/itinerary-engine";
 import {
   clearTrip,
+  getTripOrderMode,
   getTripPlaceIds,
   removeTripPlace,
+  reorderTripPlaces,
+  resetTripOrder,
   TRIP_EVENT,
+  type TripOrderMode,
 } from "@/lib/trip/storage";
 import type { Locale, PlaceCard } from "@/types/domain";
 
@@ -33,12 +37,14 @@ function formatDuration(minutes: number): string {
 export function TripView({ locale }: { locale: Locale }) {
   const t = useTranslations("trip");
   const [placeIds, setPlaceIds] = useState<string[] | null>(null);
+  const [orderMode, setOrderMode] = useState<TripOrderMode>("auto");
   const [places, setPlaces] = useState<PlaceCard[] | null>(null);
   const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     function sync() {
       setPlaceIds(getTripPlaceIds());
+      setOrderMode(getTripOrderMode());
     }
     sync();
     window.addEventListener(TRIP_EVENT, sync);
@@ -79,18 +85,43 @@ export function TripView({ locale }: { locale: Locale }) {
     [places],
   );
 
+  /**
+   * En modo manual, `places` llega en el orden que devolvió la consulta
+   * (no el del usuario — ver nota en `getPlacesByIds`), así que se reordena
+   * acá según el orden guardado en `placeIds` antes de armar el itinerario.
+   */
+  const orderedPlaces = useMemo(() => {
+    if (!places) return null;
+    if (orderMode !== "manual" || !placeIds) return places;
+    const position = new Map(placeIds.map((id, index) => [id, index]));
+    return [...places].sort(
+      (a, b) => (position.get(a.id) ?? 0) - (position.get(b.id) ?? 0),
+    );
+  }, [places, orderMode, placeIds]);
+
   const itinerary: Itinerary | null = useMemo(() => {
-    if (!places || places.length === 0) return null;
-    return ItineraryEngine.build({
-      places: places.map((place) => ({
-        id: place.id,
-        name: place.name,
-        latitude: place.latitude,
-        longitude: place.longitude,
-        visitDurationMinutes: DEFAULT_VISIT_MINUTES,
-      })),
-    });
-  }, [places]);
+    if (!orderedPlaces || orderedPlaces.length === 0) return null;
+    const placeInputs = orderedPlaces.map((place) => ({
+      id: place.id,
+      name: place.name,
+      latitude: place.latitude,
+      longitude: place.longitude,
+      visitDurationMinutes: DEFAULT_VISIT_MINUTES,
+    }));
+    return orderMode === "manual"
+      ? ItineraryEngine.buildInOrder(placeInputs)
+      : ItineraryEngine.build({ places: placeInputs });
+  }, [orderedPlaces, orderMode]);
+
+  /** Sube/baja una parada e inmediatamente pasa a orden manual (ver storage). */
+  function moveStop(index: number, direction: -1 | 1) {
+    if (!itinerary) return;
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= itinerary.stops.length) return;
+    const order = itinerary.stops.map((stop) => stop.placeId);
+    [order[index], order[targetIndex]] = [order[targetIndex], order[index]];
+    reorderTripPlaces(order);
+  }
 
   if (placeIds === null) {
     return <p className="text-foreground/60 text-sm">{t("loading")}</p>;
@@ -159,6 +190,19 @@ export function TripView({ locale }: { locale: Locale }) {
         </p>
       )}
 
+      {orderMode === "manual" && (
+        <p className="text-foreground/60 flex flex-wrap items-center gap-2 text-xs">
+          {t("orderManualNotice")}
+          <button
+            type="button"
+            onClick={() => resetTripOrder()}
+            className="text-accent underline"
+          >
+            {t("optimizeAuto")}
+          </button>
+        </p>
+      )}
+
       {markers.length > 0 && (
         <RouteNavigationMap
           className="h-[40vh] w-full overflow-hidden rounded-xl"
@@ -198,6 +242,26 @@ export function TripView({ locale }: { locale: Locale }) {
                     {stop.distanceFromPreviousKm.toFixed(1)} km
                   </span>
                 )}
+              </div>
+              <div className="flex shrink-0 flex-col">
+                <button
+                  type="button"
+                  onClick={() => moveStop(index, -1)}
+                  disabled={index === 0}
+                  aria-label={t("moveUp")}
+                  className="text-foreground/60 hover:text-foreground disabled:opacity-25"
+                >
+                  ▲
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveStop(index, 1)}
+                  disabled={index === itinerary.stops.length - 1}
+                  aria-label={t("moveDown")}
+                  className="text-foreground/60 hover:text-foreground disabled:opacity-25"
+                >
+                  ▼
+                </button>
               </div>
               <button
                 type="button"

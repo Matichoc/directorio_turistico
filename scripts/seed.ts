@@ -866,6 +866,9 @@ const routes = [
     // Petorca y La Ligua. Se sacan Casa natal de Manuel Montt y Museo de La
     // Ligua de las paradas (el usuario no las mencionó en la ruta nueva).
     durationMinutes: 300,
+    // Portada generada con IA a pedido del usuario (estilo cartel de
+    // viaje) — ver docs/PLAN.md bitácora 2026-09-26.
+    coverImage: "/rutas/ruta-del-diablo.webp",
     es: {
       name: "Ruta del Diablo",
       description:
@@ -893,6 +896,7 @@ const routes = [
     // Se suman Los Molles, Pichicuy (tramo costero de La Ligua) y Salinas
     // de Pullally (Papudo) a pedido del usuario.
     durationMinutes: 270,
+    coverImage: "/rutas/ruta-costera-papudo-zapallar.webp",
     es: {
       name: "Ruta Costera: Papudo y Zapallar",
       description:
@@ -922,6 +926,7 @@ const routes = [
     // ahora combina La Chorreada (La Ligua) con el interior cordillerano de
     // Cabildo (Cerro Chache, San Lorenzo, Alicahue, La Vega).
     durationMinutes: 270,
+    coverImage: "/rutas/ruta-patrimonial-la-ligua-cabildo.webp",
     es: {
       name: "Ruta Patrimonial: La Ligua y Cabildo",
       description:
@@ -1130,6 +1135,9 @@ async function seedRoutes(placeIds: Record<string, string>) {
         {
           slug: route.slug,
           estimated_duration_minutes: route.durationMinutes,
+          // Portada curada a mano (ver migración 0011_route_cover_image.sql);
+          // null cae a la foto de la primera parada (pickRouteCoverPhoto).
+          cover_image: "coverImage" in route ? route.coverImage : null,
           publication_status: "published",
           verification_status: "verified",
         },

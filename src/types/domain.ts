@@ -51,6 +51,8 @@ export interface Route {
   name: string;
   description: string | null;
   estimatedDurationMinutes: number | null;
+  /** Portada curada a mano (ver `routes.cover_image`); null si no tiene. */
+  coverImageUrl: string | null;
   publicationStatus: PublicationStatus;
   stops: RouteStop[];
 }

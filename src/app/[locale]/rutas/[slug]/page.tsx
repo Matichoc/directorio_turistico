@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getRouteBySlug } from "@/lib/data/routes";
 import { resolveLocale } from "@/i18n/utils";
@@ -28,6 +29,19 @@ export default async function RouteDetailPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
+      {route.coverImageUrl && (
+        <div className="relative h-48 w-full overflow-hidden rounded-xl sm:h-64">
+          <Image
+            src={route.coverImageUrl}
+            alt={route.name}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+        </div>
+      )}
+
       <header className="relative flex flex-col gap-2">
         <h1 className="text-2xl font-semibold">{route.name}</h1>
         {hours && (

@@ -5,6 +5,7 @@
 ## Estado actual
 
 - Fase: **Fase 1 — completada** (mergeada a `main`). Proyecto Supabase real ya creado por el usuario, migraciones y seed aplicados y verificados en vivo.
+- **Backlog nuevo en definición** (ver sección 8, sin iniciar): login opcional + "me gusta" por lugar, banner de las 5 municipalidades con sus eventos, y enlaces de contacto/redes destacados — el usuario pidió dejarlo planificado antes de escribir código.
 - Última actualización: 2026-09-26
 - Lineamientos visuales (colores, radios, animaciones, íconos, patrones de componente) viven en `docs/DESIGN.md` — se carga automático en cada sesión de Claude Code vía `CLAUDE.md`, para que una página o componente nuevo siga la misma línea sin tener que pedirlo cada vez.
 
@@ -125,6 +126,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 20. ~~Cobertura de fotos reales para los ~30 lugares sin foto curada a mano~~ — resuelto en su mayoría: el usuario eligió Google Places API (New) (Text Search + Place Photo media) en vez de Unsplash (conector encontrado incompleto/sin fotos) o seguir buscando en Wikimedia Commons. `GOOGLE_PLACES_API_KEY` nunca se expone al navegador: `src/app/api/place-photo/route.ts` hace streaming del binario server-side, y `scripts/fetch-google-photos.ts` (que corre el usuario localmente, con su propio proyecto de Google Cloud/GSuite con facturación habilitada) busca y guarda solo en lugares que **no** tenían ya una foto en `place_images` — esto protegió automáticamente las 4 fotos curadas a mano sin necesitar una lista de exclusión. El usuario lo corrió y confirmó: 26 fotos agregadas, 4 lugares sin resultado en Google (probablemente sectores/localidades menores sin ficha propia en Google Maps, no lugares con nombre incorrecto — pendiente de identificar cuáles si el usuario quiere cubrirlos a mano) y 0 errores. Bug real encontrado al probar en vivo: `/explorar`, `/` y la ficha de cualquier lugar con foto nueva de Google tiraban `Error: Image with src "/api/place-photo?ref=...&w=..." is using a query string which is not configured in images.localPatterns` (500 en la ficha, error boundary genérico en las demás) — cambio de breaking en Next 16 (`AGENTS.md`/`node_modules/next/dist/docs/01-app/02-guides/upgrading/version-16.md`): las imágenes locales (mismo origen) con query string ahora requieren declarar `images.localPatterns` en `next.config.ts`, igual que `remotePatterns` para dominios externos, para evitar ataques de enumeración. Se agrega `localPatterns: [{ pathname: "/api/place-photo" }]` (sin `search`, para permitir cualquier query en esa ruta — la propia ruta ya valida `ref` y acota `w` antes de llamar a Google). Segundo bug relacionado, detectado también en vivo: declarar `localPatterns` convierte a `next/image` de "permite cualquier imagen local sin query string" a "solo permite lo listado ahí" — rompió la foto local de Chocolatería Matichoc (`/fotos/chocolateria-matichoc/tableta.jpg`, que no tiene query string pero tampoco estaba en la lista). Se agrega también `{ pathname: "/fotos/**", search: "" }`. Además se achica la cabecera de foto de `aspect-ratio` (crecía junto al ancho de pantalla, se veía "gigante" en monitores anchos aunque la foto fuera real y estuviera bien encuadrada — feedback repetido) a un alto fijo (`h-48 sm:h-64`). Confirmado visualmente por el usuario: la foto real de Playa de Papudo carga y se ve bien encuadrada.
 21. Nuevo: monetización vía posiciones publicitarias. El usuario quiere vender (a) espacio de banner (hoy solo Matichoc, hardcodeado por env var) y (b) destacar lugares del catálogo en el listado — cobro gestionado por fuera del sitio, sin pasarela de pago. Se agregó el mecanismo base (`places.featured_until`, insignia "Destacado") pero **no** una forma de autogestionarlo: el panel admin (`/admin/lugares`) sigue siendo un placeholder de Fase 2, así que activar/desactivar un destacado hoy requiere editar `scripts/seed.ts` y correr `pnpm db:seed` — viable mientras haya pocos auspiciadores, no escala a un panel de ventas real. Falta también soportar más de un banner/auspiciador (el componente `SponsorBanner` sigue siendo un solo slot fijo). Pendiente de decidir con el usuario cuándo construir un admin CRUD real para esto.
 22. Mapa de navegación en vivo: requiere que el usuario habilite "Routes API" en el mismo proyecto de Google Cloud que ya usa para Places (mismo `GOOGLE_PLACES_API_KEY`) — sin eso, `/api/directions` responde 503 y el mapa cae al modo normal sin romperse, pero sin línea de ruta ni resumen de viaje. Geolocalización del navegador requiere HTTPS en producción (funciona en `localhost` para desarrollo). No se probó en vivo desde este sandbox (sin salida de red hacia `routes.googleapis.com`, igual que con Places) — falta confirmación visual del usuario, incluida la aparición real del punto de ubicación al mover el dispositivo.
+23. Backlog nuevo (ver sección 8): **Instagram no tiene un login de consumidor simple** (Meta lo trata como conexión de cuenta profesional/creador, con revisión de app) — se prioriza Google + Facebook para el login opcional de "me gusta", Instagram queda pendiente de evaluar aparte. Además, **no existe una vía viable de traer automáticamente "eventos destacados" de las redes de cada municipio** (requeriría acceso de administrador a su página, que no vamos a conseguir, y este sandbox tampoco tiene salida de red hacia redes sociales para probarlo) — se opta por contenido curado a mano (mismo patrón que fotos/destacados de auspicio) en vez de una integración automática.
 
 ## 6. Fase 0 — tareas
 
@@ -156,6 +158,84 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 - [x] Accesibilidad WCAG AA básica: labels asociados a inputs/selects, `aria-pressed` en el toggle de vista, `aria-label` en marcadores del mapa, `role="search"`/`role="status"`, foco visible por defecto del navegador (sin `outline-none`)
 - [x] Pruebas de integración para `PlaceCard`/`RouteCard` (se corrigió un bug real: faltaba `cleanup()` entre tests de Testing Library en `tests/setup.ts`, causaba falsos positivos/negativos por acumulación del DOM)
 - [ ] `pnpm test:e2e` (Playwright) contra datos reales — no ejecutado en esta sesión (sandbox sin acceso de red a Supabase)
+
+## 8. Backlog propuesto — comunidad, municipios y contacto (2026-09-26, sin iniciar)
+
+> El usuario pidió dejar esto "en plan" antes de tocar código, para decidir el enfoque con calma. Cada punto anota el enfoque técnico, las tareas y — siguiendo el pedido explícito del usuario ("empieza a pedirme cosas") — qué material real hace falta que él aporte o confirme antes de avanzar, en vez de adivinar o fabricar el dato (mismo principio de `docs/DESIGN.md`, "Nunca fabricar datos").
+
+### 8.1 Login opcional + "me gusta" por lugar (nunca negativo)
+
+**Objetivo**: poder entrar con una cuenta que ya se tiene (Google/Facebook/Instagram) para darle "me gusta" a un lugar — sin reseña de texto libre ni calificación negativa, solo un contador positivo.
+
+**Enfoque técnico**:
+
+- Supabase Auth ya soporta login con Google y Facebook de forma nativa (`@supabase/ssr` ya es dependencia) — falta solo configurar cada proveedor, no cambia la arquitectura.
+- **Instagram no tiene un "iniciar sesión con Instagram" equivalente y simple**: Meta lo fusionó en la API de Instagram para cuentas profesionales/creadores que conectan contenido (requiere revisión de la app por Meta y una cuenta de negocio) — no está pensado para que cualquier visitante inicie sesión. Recomendación: partir con Google + Facebook, dejar Instagram para evaluar después (puede que ni convenga para este caso de uso).
+- Tabla nueva `place_likes` (`place_id`, `user_id`, `created_at`, único por par) — RLS: cualquier usuario autenticado inserta/borra su propia fila; el conteo es de lectura pública, nunca quién dio el "me gusta".
+- Botón de corazón en `PlaceCard`/ficha de lugar: sin sesión, invita a iniciar sesión — nunca bloquea seguir navegando o usando el resto del sitio sin cuenta.
+- El contador solo se muestra si es mayor a 0 (mismo principio de "no-op" que ya sigue el resto del sitio en vez de un placeholder inventado).
+
+**Tareas**:
+
+- [ ] Migración `place_likes` + RLS
+- [ ] Proveedor Google en Supabase Auth (el usuario crea las credenciales OAuth en Google Cloud Console y las pega en el dashboard de Supabase → Authentication → Providers)
+- [ ] Proveedor Facebook en Supabase Auth (ídem, vía developers.facebook.com)
+- [ ] UI de sesión (botón "Iniciar sesión"/logout, estado de usuario)
+- [ ] Botón de "me gusta" + conteo en `PlaceCard` y ficha de lugar
+
+**Qué necesito del usuario**:
+
+- Confirmar que partimos con Google + Facebook (Instagram queda para evaluar después, no es tan directo como los otros dos)
+- Client ID/Secret de Google OAuth (Google Cloud Console → Credentials → "OAuth client ID", tipo aplicación web)
+- App ID/Secret de una app de Facebook Login (developers.facebook.com, tipo "Consumer")
+- Configurar ambos en el dashboard de Supabase le toca a él — mismo límite ya documentado con `SUPABASE_SERVICE_ROLE_KEY`/`pnpm db:seed`: este sandbox no tiene esas credenciales ni acceso al dashboard.
+
+### 8.2 Banner rotativo con las 5 municipalidades y sus eventos destacados
+
+**Objetivo**: en el home, un carrusel que va pasando las 5 comunas (La Ligua, Petorca, Cabildo, Papudo, Zapallar) — su municipalidad y, cuando exista uno vigente, su evento más destacado.
+
+**Enfoque técnico**:
+
+- Esto no puede resolverse con scraping automático de Facebook/Instagram de cada municipio: no hay una API pública de "posts destacados" a la que se pueda pedir acceso realista (implicaría que cada municipio nos diera rol de administrador en su propia página), y además este sandbox no tiene salida de red hacia redes sociales para siquiera probarlo (mismo límite ya documentado en Riesgos #10 con Wikipedia/Wikidata). Se recomienda partir **curado a mano**, igual que ya se hace hoy con fotos/destacados, en vez de perseguir una integración automática que no es viable todavía.
+- Dos tablas nuevas:
+  - `commune_links` (`commune_id`, `kind`: sitio/Facebook/Instagram, `url`) — el enlace oficial de cada municipalidad.
+  - `commune_events` (`commune_id`, `title`, `description`, `starts_at`, `link`, `image`) — el evento destacado vigente, si hay uno. Si una comuna no tiene evento cargado, su slide muestra solo el link municipal, nunca un evento inventado.
+- Componente `MunicipalityBanner`: carrusel de auto-avance en el home, un slide por comuna.
+- El panel admin real (referido como "Fase 2" en Riesgos #21/#26, todavía placeholder) eventualmente debería dejar cargar/actualizar el evento sin tocar código; mientras tanto se actualiza igual que el resto del catálogo: `scripts/seed.ts` + `pnpm db:seed`.
+
+**Tareas**:
+
+- [ ] Migración `commune_links` + `commune_events` + RLS (lectura pública, escritura admin)
+- [ ] Seed con los links oficiales reales de las 5 municipalidades
+- [ ] Componente `MunicipalityBanner` en el home
+- [ ] Cargar el primer evento real cuando el usuario tenga uno por comuna (no todas necesitan tenerlo desde el día uno)
+
+**Qué necesito del usuario**:
+
+- El sitio web y/o Facebook/Instagram oficial de cada una de las 5 municipalidades — no los voy a "buscar y adivinar cuál es el oficial" sin confirmación.
+- Si hay algún evento puntual que quiera destacar ahora (nombre, fecha, un link o una imagen); si todavía no hay ninguno, el banner parte solo con el link municipal.
+
+### 8.3 Redes de contacto y datos relevantes destacados
+
+**Objetivo**: mostrar de forma más visible los datos de contacto reales de lugares/comunas (teléfono, sitio, redes sociales), y ordenar el pedido del contenido que sigue pendiente.
+
+**Enfoque técnico**:
+
+- Mismo principio de "un solo lugar de verdad" de `docs/DESIGN.md`: en vez de agregar una columna suelta (`instagram_url`, `facebook_url`, `tiktok_url`, ...) a `places` cada vez que aparece una red nueva, conviene una tabla genérica `contact_links` (`entity_type`: place/route/commune, `entity_id`, `kind`, `url`, `label`) — misma idea que ya usa `sources` para fuentes de verificación, aplicada esta vez a enlaces de contacto. Sirve para lugares, para los links municipales de 8.2 y, más adelante, para el propio sponsor (Matichoc hoy vive hardcodeado por env var).
+- En la ficha de lugar/ruta y en `/informacion`, mostrar esos links como las píldoras (`rounded-full`) que ya existen ahí para Cristóbal — mismo patrón visual, con más datos reales detrás.
+
+**Tareas**:
+
+- [ ] Migración `contact_links` + RLS
+- [ ] Migrar los 2 links hoy hardcodeados en `/informacion` (Instagram y WhatsApp de Cristóbal) a esta tabla, para probar el patrón con datos que ya existen
+- [ ] Agregar el Instagram real de Matichoc en cuanto se confirme la grafía exacta (pendiente desde la ronda anterior)
+- [ ] Ir sumando redes reales de lugares del catálogo a medida que el usuario las tenga
+
+**Qué necesito del usuario** (junto con lo que ya quedó pendiente de rondas anteriores):
+
+- Confirmar la grafía exacta del Instagram de Matichoc (con o sin tilde) — se vio en la foto del stand pero no está confirmada
+- Redes sociales reales de los lugares del catálogo que las tengan (no todos las van a tener, y está bien que no)
+- Los ~22 lugares que todavía no tienen `description` larga (ver Riesgos y Bitácora): si el usuario tiene folletería, un documento del municipio, notas de una guía turística o cualquier fuente real, es más rápido y confiable que seguir dependiendo de `WebSearch` (ya demostró ser inestable para datos exactos, ver Bitácora 2026-09-26)
 
 ## Bitácora de decisiones
 
@@ -323,3 +403,11 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 - 2026-09-26: **Se resuelve del todo el bug de navegación por calle** — causa raíz real, no de código: `GOOGLE_PLACES_API_KEY` estaba **vacía** en Vercel (el usuario la agregó recién). Con la key puesta, apareció un error nuevo — este sí de código nuestro: `400 INVALID_ARGUMENT: Invalid value at 'polyline_encoding' ..., "GEO_JSON_LINE_STRING"`. El valor correcto del enum `PolylineEncoding` de Google Routes API v2 es `GEO_JSON_LINESTRING` (sin guión bajo entre "LINE" y "STRING") — `/api/directions/route.ts` tenía un typo real (`GEO_JSON_LINE_STRING`) desde que se escribió este endpoint. Se corrige. El camino hasta acá: mensaje de error visible en pantalla (PR anterior) → "API no habilitada" → "API key restringida" (ninguna de las dos era la causa real) → key vacía en Vercel → este typo. Cada capa de diagnóstico fue necesaria para llegar a la de abajo.
 
   `pnpm typecheck`/`lint`/`test` (14)/`build`/`format:check` verdes.
+
+- 2026-09-26: El usuario pide dejar planificados tres pedidos nuevos antes de tocar código: (1) login opcional con Instagram/Facebook/Google para poder darle "me gusta" (nunca reseña negativa) a un lugar; (2) un banner rotativo en el home con las 5 municipalidades de la provincia y sus eventos destacados; (3) destacar redes de contacto/datos relevantes y que se le empiece a pedir material real para completar áreas que faltan. Se agrega la sección 8 ("Backlog propuesto") con el enfoque técnico, tareas y lo que hace falta pedirle al usuario para cada uno, sin escribir código todavía. Hallazgos de esta ronda de análisis, ninguno trivial:
+  - **Instagram no tiene un "iniciar sesión" de consumidor equivalente a Google/Facebook** — Meta lo fusionó en la API de Instagram para cuentas profesionales/creadores (requiere revisión de app y cuenta de negocio), no está pensado para que cualquier visitante entre con su cuenta personal. Se recomienda partir con Google + Facebook (ambos soportados nativamente por Supabase Auth) y dejar Instagram para evaluar aparte.
+  - **Los "eventos destacados" de cada municipio no se pueden traer automáticamente**: no hay una API pública de posts destacados de una página de Facebook/Instagram ajena sin ser administrador de esa página, y este sandbox tampoco tiene salida de red hacia redes sociales para intentarlo (mismo límite documentado en Riesgos #10). Se opta por contenido curado a mano, mismo patrón ya usado para fotos y lugares destacados.
+  - Se identifica un patrón repetido entre los tres pedidos (likes, links municipales, redes de un lugar) y se propone una sola tabla genérica `contact_links` (entity_type/entity_id/kind/url) en vez de tres mecanismos distintos — mismo espíritu de "un solo lugar de verdad" de `docs/DESIGN.md`.
+  - Se le pide directamente al usuario (nada se va a inventar): confirmar Google+Facebook como punto de partida del login; credenciales OAuth de ambos proveedores; el sitio/redes oficiales de las 5 municipalidades y si hay algún evento puntual que quiera destacar ya; la grafía exacta del Instagram de Matichoc (pendiente desde la ronda anterior); redes reales de lugares del catálogo que las tengan; y material real (folletería, documentos, fuentes) para los ~22 lugares que aún no tienen `description` larga.
+
+  Solo cambios de documentación en esta ronda — no aplica gate de código.

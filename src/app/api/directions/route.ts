@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
         travelMode: "DRIVE",
         routingPreference: "TRAFFIC_AWARE",
         polylineQuality: "HIGH_QUALITY",
-        polylineEncoding: "GEO_JSON_LINE_STRING",
+        polylineEncoding: "GEO_JSON_LINESTRING",
         computeAlternativeRoutes: false,
         languageCode: "es",
       }),

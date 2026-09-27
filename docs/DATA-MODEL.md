@@ -54,17 +54,28 @@ dos FKs nullable (`place_id`, `route_id`) con un `check` de exclusividad.
 
 Ambas tablas son de solo-admin en RLS (no se exponen públicamente en Fase 0).
 
-## Itinerarios
+## Itinerarios (2026-09-27: backend real)
 
-`itineraries`/`itinerary_stops` son anónimos: se identifican por `session_id`
-(un string generado en el cliente), no por `auth.users`. **Decisión de
-seguridad**: la política RLS es deny-by-default para `anon`/`authenticated`
-(solo `is_admin()` puede leer/escribir directamente vía PostgREST). El acceso
-real del visitante debe implementarse como server actions que reciban el
-`session_id` desde una cookie/localStorage y usen el cliente admin — así se
-evita que cualquiera con la anon key pueda listar todos los itinerarios
-(`select * from itineraries` sería público si la política fuera `using (true)`).
-Este server action queda pendiente de implementar en Fase de itinerarios.
+`itineraries`/`itinerary_stops` respaldan de verdad el carrito de "Mi
+recorrido" — hasta la migración `0018_itinerary_backend.sql` vivían sin usar,
+mientras la app guardaba todo en `localStorage` (Riesgo #13). Se identifican
+por `user_id uuid references auth.users` (`default auth.uid()`), la misma
+sesión real de visitante que `place_likes`/`place_comments`
+(`lib/session/visitor-session.ts`) — ya no por el `session_id` de texto
+original. RLS scoped a `user_id = auth.uid() (or is_admin())`, tanto en
+`itineraries` como en `itinerary_stops` (vía subconsulta a su itinerario
+padre): el propio cliente lee/escribe su recorrido directo, sin pasar por el
+cliente admin como planteaba el diseño original de este documento.
+
+`unique(user_id)` en `itineraries`: un solo itinerario activo por
+visitante, coincide con la UX de hoy (un carrito, no una lista de viajes
+guardados). `order_mode` (`auto`/`manual`) vive en `itineraries` en vez de en
+`localStorage` aparte, como antes. El `unique(itinerary_id, position)`
+original de `itinerary_stops` se relaja (se quita la constraint): reordenar a
+mano actualiza posiciones una fila a la vez vía PostgREST (no en una sola
+transacción), así que dos filas pueden coincidir de forma transitoria durante
+un intercambio — el orden visual sigue siendo correcto (`order by position`),
+un empate se resuelve arbitrario pero estable.
 
 ## Contactos y "me gusta" (2026-09-26)
 

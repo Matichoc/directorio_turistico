@@ -1,79 +1,164 @@
+import { createClient } from "@/lib/supabase/client";
+import { ensureVisitorSession } from "@/lib/session/visitor-session";
+
 /**
- * Carrito de recorrido: solo localStorage del navegador, sin backend. Es
- * intencional (ver docs/PLAN.md) — la persistencia de itinerarios por
- * sesión de servidor queda para una fase posterior. Dispara `TRIP_EVENT` en
- * `window` en cada mutación para que otros componentes montados (botones
- * "agregar", la página /recorrido) se mantengan sincronizados sin prop
- * drilling.
+ * Carrito de recorrido: backend real vía `itineraries`/`itinerary_stops`
+ * (migración `0018_itinerary_backend.sql`), atado a la misma sesión real
+ * de visitante que ya usan "me gusta"/comentarios
+ * (`lib/session/visitor-session.ts`) — antes vivía solo en `localStorage`
+ * del navegador (Riesgo #13 en docs/PLAN.md), pedido explícito del
+ * usuario para que fuera "real". Dispara `TRIP_EVENT` en `window` en cada
+ * mutación para que otros componentes montados (botones "agregar", la
+ * página /recorrido) se mantengan sincronizados sin prop drilling — mismo
+ * mecanismo de antes, ahora avisando al terminar la escritura async en
+ * vez de un `localStorage.setItem` síncrono.
  */
-
-const STORAGE_KEY = "petorca-trip-places";
-// Ver getTripOrderMode/reorderTripPlaces/resetTripOrder: "auto" recalcula el
-// orden por vecino más cercano en cada carga (comportamiento de siempre);
-// "manual" respeta el orden exacto que el usuario armó a mano y deja de
-// recalcularse solo hasta que lo resetee.
-const ORDER_MODE_KEY = "petorca-trip-order-mode";
 export const TRIP_EVENT = "trip:change";
-
 export type TripOrderMode = "auto" | "manual";
 
-function isBrowser(): boolean {
-  return typeof window !== "undefined";
-}
-
-export function getTripPlaceIds(): string[] {
-  if (!isBrowser()) return [];
-
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed)
-      ? parsed.filter((id): id is string => typeof id === "string")
-      : [];
-  } catch {
-    return [];
-  }
-}
-
-function persist(ids: string[]): string[] {
-  if (isBrowser()) {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+function notify(): void {
+  if (typeof window !== "undefined") {
     window.dispatchEvent(new Event(TRIP_EVENT));
   }
-  return ids;
 }
 
-export function isInTrip(placeId: string): boolean {
-  return getTripPlaceIds().includes(placeId);
+async function getCurrentUserId(): Promise<string | null> {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  return session?.user.id ?? null;
 }
 
-export function addTripPlace(placeId: string): string[] {
-  const current = getTripPlaceIds();
-  if (current.includes(placeId)) return current;
-  return persist([...current, placeId]);
+async function getOwnItinerary(): Promise<{
+  id: string;
+  orderMode: TripOrderMode;
+} | null> {
+  const userId = await getCurrentUserId();
+  if (!userId) return null;
+
+  const supabase = createClient();
+  const { data } = await supabase
+    .from("itineraries")
+    .select("id, order_mode")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  return data ? { id: data.id, orderMode: data.order_mode } : null;
 }
 
-export function addTripPlaces(placeIds: string[]): string[] {
-  const current = new Set(getTripPlaceIds());
-  for (const id of placeIds) current.add(id);
-  return persist([...current]);
+/** Crea el itinerario del visitante si todavía no tiene uno (siempre uno solo, `unique(user_id)`). */
+async function getOrCreateItineraryId(): Promise<string> {
+  await ensureVisitorSession();
+  const existing = await getOwnItinerary();
+  if (existing) return existing.id;
+
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("itineraries")
+    .insert({})
+    .select("id")
+    .single();
+
+  if (error || !data) {
+    throw error ?? new Error("No se pudo crear el recorrido");
+  }
+  return data.id;
 }
 
-export function removeTripPlace(placeId: string): string[] {
-  return persist(getTripPlaceIds().filter((id) => id !== placeId));
+async function getNextPosition(itineraryId: string): Promise<number> {
+  const supabase = createClient();
+  const { data } = await supabase
+    .from("itinerary_stops")
+    .select("position")
+    .eq("itinerary_id", itineraryId)
+    .order("position", { ascending: false })
+    .limit(1);
+  return (data?.[0]?.position ?? -1) + 1;
 }
 
-export function clearTrip(): string[] {
-  if (isBrowser()) window.localStorage.removeItem(ORDER_MODE_KEY);
-  return persist([]);
+export async function getTripPlaceIds(): Promise<string[]> {
+  const itinerary = await getOwnItinerary();
+  if (!itinerary) return [];
+
+  const supabase = createClient();
+  const { data } = await supabase
+    .from("itinerary_stops")
+    .select("place_id")
+    .eq("itinerary_id", itinerary.id)
+    .order("position");
+
+  return (data ?? []).map((stop) => stop.place_id);
 }
 
-export function getTripOrderMode(): TripOrderMode {
-  if (!isBrowser()) return "auto";
-  return window.localStorage.getItem(ORDER_MODE_KEY) === "manual"
-    ? "manual"
-    : "auto";
+export async function isInTrip(placeId: string): Promise<boolean> {
+  const ids = await getTripPlaceIds();
+  return ids.includes(placeId);
+}
+
+export async function addTripPlace(placeId: string): Promise<void> {
+  const current = await getTripPlaceIds();
+  if (current.includes(placeId)) return;
+
+  const itineraryId = await getOrCreateItineraryId();
+  const position = await getNextPosition(itineraryId);
+  const supabase = createClient();
+  await supabase
+    .from("itinerary_stops")
+    .insert({ itinerary_id: itineraryId, place_id: placeId, position });
+  notify();
+}
+
+export async function addTripPlaces(placeIds: string[]): Promise<void> {
+  const current = new Set(await getTripPlaceIds());
+  const toAdd = placeIds.filter((id) => !current.has(id));
+  if (toAdd.length === 0) return;
+
+  const itineraryId = await getOrCreateItineraryId();
+  let nextPosition = await getNextPosition(itineraryId);
+  const rows = toAdd.map((placeId) => ({
+    itinerary_id: itineraryId,
+    place_id: placeId,
+    position: nextPosition++,
+  }));
+
+  const supabase = createClient();
+  await supabase.from("itinerary_stops").insert(rows);
+  notify();
+}
+
+export async function removeTripPlace(placeId: string): Promise<void> {
+  const itinerary = await getOwnItinerary();
+  if (!itinerary) return;
+
+  const supabase = createClient();
+  await supabase
+    .from("itinerary_stops")
+    .delete()
+    .eq("itinerary_id", itinerary.id)
+    .eq("place_id", placeId);
+  notify();
+}
+
+export async function clearTrip(): Promise<void> {
+  const itinerary = await getOwnItinerary();
+  if (itinerary) {
+    const supabase = createClient();
+    await supabase
+      .from("itinerary_stops")
+      .delete()
+      .eq("itinerary_id", itinerary.id);
+    await supabase
+      .from("itineraries")
+      .update({ order_mode: "auto" })
+      .eq("id", itinerary.id);
+  }
+  notify();
+}
+
+export async function getTripOrderMode(): Promise<TripOrderMode> {
+  const itinerary = await getOwnItinerary();
+  return itinerary?.orderMode ?? "auto";
 }
 
 /**
@@ -81,16 +166,34 @@ export function getTripOrderMode(): TripOrderMode {
  * bajando paradas) y pasa a modo manual: `TripView` deja de recalcular el
  * orden por vecino más cercano hasta que se llame a `resetTripOrder`.
  */
-export function reorderTripPlaces(orderedIds: string[]): string[] {
-  if (isBrowser()) {
-    window.localStorage.setItem(ORDER_MODE_KEY, "manual");
+export async function reorderTripPlaces(orderedIds: string[]): Promise<void> {
+  const itineraryId = await getOrCreateItineraryId();
+  const supabase = createClient();
+
+  await supabase
+    .from("itineraries")
+    .update({ order_mode: "manual" })
+    .eq("id", itineraryId);
+
+  for (const [position, placeId] of orderedIds.entries()) {
+    await supabase
+      .from("itinerary_stops")
+      .update({ position })
+      .eq("itinerary_id", itineraryId)
+      .eq("place_id", placeId);
   }
-  return persist(orderedIds);
+  notify();
 }
 
 /** Descarta el orden a mano y vuelve a calcular por vecino más cercano. */
-export function resetTripOrder(): void {
-  if (!isBrowser()) return;
-  window.localStorage.setItem(ORDER_MODE_KEY, "auto");
-  window.dispatchEvent(new Event(TRIP_EVENT));
+export async function resetTripOrder(): Promise<void> {
+  const itinerary = await getOwnItinerary();
+  if (!itinerary) return;
+
+  const supabase = createClient();
+  await supabase
+    .from("itineraries")
+    .update({ order_mode: "auto" })
+    .eq("id", itinerary.id);
+  notify();
 }

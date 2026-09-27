@@ -15,26 +15,33 @@ export function AddToTripButton({ placeId }: { placeId: string }) {
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
-    function sync() {
-      setAdded(isInTrip(placeId));
+    let cancelled = false;
+    async function sync() {
+      const result = await isInTrip(placeId);
+      if (!cancelled) setAdded(result);
     }
-    sync();
+    void sync();
     window.addEventListener(TRIP_EVENT, sync);
-    return () => window.removeEventListener(TRIP_EVENT, sync);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(TRIP_EVENT, sync);
+    };
   }, [placeId]);
+
+  async function toggle() {
+    if (added) {
+      await removeTripPlace(placeId);
+    } else {
+      await addTripPlace(placeId);
+      track({ name: "place_added_to_trip", properties: { placeId } });
+    }
+  }
 
   return (
     <button
       type="button"
       aria-pressed={added}
-      onClick={() => {
-        if (added) {
-          removeTripPlace(placeId);
-        } else {
-          addTripPlace(placeId);
-          track({ name: "place_added_to_trip", properties: { placeId } });
-        }
-      }}
+      onClick={() => void toggle()}
       className={`rounded-full px-4 py-2 text-sm font-medium ${
         added
           ? "border-accent text-accent border"

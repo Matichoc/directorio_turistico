@@ -267,7 +267,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 
 Tres piezas grandes, cada una una decisión de alcance en sí misma (no algo para elegir todas a la vez sin conversarlo):
 
-1. **Carrito de "Mi recorrido" → backend real.** El usuario confirmó que quiere avanzar ("empecemos a pensar en grande, lo veo bonito"). Hoy vive 100% en `localStorage` (Riesgo #13); las tablas `itineraries`/`itinerary_stops` existen en el esquema desde la Fase 0 y nunca se poblaron. Ahora que existe una identidad real de visitante (`ensureVisitorSession()`, ver 8.1) esto se puede conectar de verdad — mismo `user_id`, un solo concepto de "quién es este visitante" en vez de varios. Sigue sin construirse esta ronda (es la pieza más grande de las tres); próxima ronda.
+1. ~~Carrito de "Mi recorrido" → backend real~~ — **resuelto 2026-09-27** (el usuario lo pidió "ASAP"). Ver sección 9.8.
 2. **Panel admin real (CRUD).** El de mayor impacto en "qué pasa si esto crece": sin él, todo pasa por código + `pnpm db:seed`. `/admin/verificaciones` ya es real (cola de moderación de comentarios) — el resto (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias`) sigue sin CRUD.
 3. ~~Categorías de POI en vivo~~ y ~~más de un auspiciador en `SponsorBanner`~~ — el segundo ya se resolvió esta ronda (Ember Accesorios, ver 9.7); POI en vivo (restaurantes/supermercados/gas/salud vía Google Places) sigue sin tocar.
 
@@ -327,18 +327,58 @@ El usuario respondió todo el feedback de 9.6 de una vez y pidió "pensar en gra
 - Aplicar las migraciones nuevas (`0012`–`0017`) y correr `pnpm db:seed` (carga también el sitio/redes de las municipalidades, Matichoc y Ember Accesorios).
 - Habilitar **"Allow anonymous sign-ins"** en el dashboard de Supabase (Authentication → Settings) — sin esto, el login anónimo falla (con error manejado, no rompe la página, pero "me gusta"/comentarios no se guardan).
 
-**Cómo dejar al usuario como administrador** (pendiente, necesita que él lo ejecute — este sandbox no tiene la `SUPABASE_SERVICE_ROLE_KEY` para hacerlo directo):
+**Cómo aplicar las migraciones nuevas** (el usuario preguntó — hasta ahora solo corría `pnpm db:seed`, que solo carga/actualiza filas, no crea tablas/columnas nuevas):
 
-1. Si el usuario todavía no tiene una cuenta de email/contraseña para `/admin/login`: crearla desde el dashboard de Supabase → Authentication → Users → "Add user" (email + contraseña, marcar "Auto Confirm User").
-2. Copiar el `UID` de esa cuenta (columna en la misma tabla de Users).
-3. En el SQL Editor del dashboard de Supabase, correr: `insert into public.admin_users (user_id) values ('<ese UID>');`
-4. Entrar a `/admin/login` con ese email/contraseña — el middleware ya valida contra `admin_users` (ver Riesgo #24), así que sin este paso no entra aunque el login de Supabase Auth sea válido.
+1. `git pull origin main` (o la rama que tenga mergeado lo último) en su clon local.
+2. Si es la primera vez que usa el CLI de Supabase en este proyecto: `supabase login` y `supabase link --project-ref <su-project-ref>` (el ref está en la URL del proyecto en supabase.com, o en Project Settings → General). Si ya lo vinculó antes (aplicó migraciones anteriores así), se saltan estos dos pasos.
+3. `supabase db push` — aplica todas las migraciones pendientes de `supabase/migrations/` en orden, incluidas las nuevas (`0012` a `0018`).
+4. `pnpm db:seed` — como siempre, carga/actualiza los datos (comunas, municipalidades, auspiciadores, lugares, rutas).
 
-**Pendiente, todavía sin construir (necesitan una decisión/insumo del usuario, ver 9.2/9.4)**:
+**Dónde está el login anónimo en el dashboard de Supabase** (el usuario mandó una captura de "Authentication → OAuth Server" — esa pantalla es para que el propio proyecto de Supabase actúe como proveedor OAuth de terceros, no es lo que buscamos): en el menú de la izquierda de Authentication, es **"Sign In / Providers"** (no "OAuth Server") — ahí, además de la lista de proveedores (Google, Facebook, Email...), hay un toggle separado para **"Allow anonymous sign-ins"**. Activarlo ahí.
 
-- Rate limiting distribuido (Upstash) — falta que el usuario cree la cuenta y comparta las credenciales.
-- Backend real de "Mi recorrido" vs. terminar el panel admin — falta que el usuario priorice cuál primero.
-- Las ~22 descripciones largas de lugares que faltan — el usuario preguntó cómo ayudar: lo más útil es cualquier material real por lugar (una foto de un letrero/folleto, una nota de una guía turística, un documento del municipio, o simplemente los nombres exactos de los lugares que más le importa cubrir primero) — con eso se prioriza y se escribe con fuente real, en vez de seguir dependiendo de `WebSearch` para todos (que ya demostró ser inestable para datos exactos).
+**Cómo dejar al usuario como administrador — paso a paso completo** (pendiente, necesita que él lo ejecute — este sandbox no tiene la `SUPABASE_SERVICE_ROLE_KEY` para hacerlo directo):
+
+1. En el dashboard de Supabase, ir a **Authentication → Users** (en el menú de la izquierda, sección "Manage").
+2. Si el usuario todavía no tiene una cuenta de email/contraseña para `/admin/login`: botón **"Add user"** (arriba a la derecha) → elegir "Create new user" → completar email y contraseña → **marcar "Auto Confirm User"** (si no se marca, Supabase espera que confirme el email por correo, y como es una cuenta interna no hace falta ese paso) → "Create user".
+3. En la tabla de usuarios que aparece, buscar esa cuenta (por el email) y copiar el valor de la columna **"UID"** (es un UUID largo, tipo `a1b2c3d4-...`) — hay un ícono de copiar al lado al pasar el mouse por la fila, o se puede hacer clic en el usuario para ver el detalle con el UID completo.
+4. Ir a **SQL Editor** (ícono de `</>` o "SQL Editor" en el menú de la izquierda, sección aparte de Authentication — es una herramienta general del proyecto, no de esta sección).
+5. Click en **"New query"**, pegar esto reemplazando el UID por el que copiaste (con las comillas simples, tal cual):
+   ```sql
+   insert into public.admin_users (user_id) values ('a1b2c3d4-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+   ```
+6. Click en **"Run"** (o Ctrl/Cmd+Enter). Si sale un mensaje de éxito ("Success. No rows returned" o similar), quedó.
+7. Ir a `/admin/login` en el sitio (ej. `https://tu-sitio.vercel.app/admin/login`) e iniciar sesión con ese mismo email/contraseña — debería entrar directo al panel.
+
+**Rate limiting con Upstash — paso a paso** (el usuario pidió el detalle antes de decidir):
+
+1. Crear cuenta gratis en [upstash.com](https://upstash.com) (permite entrar con GitHub/Google, sin tarjeta para el tier gratis).
+2. Dentro de la consola, crear una base de datos: **"Create Database"** → tipo **Redis** → elegir una región cercana a donde esté desplegado Vercel (ej. si Vercel despliega en `us-east-1`, elegir esa misma o la más cercana, para menos latencia) → nombre libre (ej. `directorio-turistico-ratelimit`).
+3. Una vez creada, en la página de esa base de datos hay una sección **"REST API"** con dos valores: `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`.
+4. Copiar esos dos valores y agregarlos como variables de entorno en Vercel (Project Settings → Environment Variables) con esos mismos nombres — y avisarme para que yo agregue `@upstash/ratelimit` + `@upstash/redis` como dependencias y reemplace `lib/http/rate-limit.ts` (hoy en memoria) por la versión distribuida.
+5. No hace falta que me pases los valores reales a mí — solo confirmarme que ya están en Vercel, y yo escribo el código asumiendo esos nombres de variable (mismo patrón que `GOOGLE_PLACES_API_KEY`: nunca veo el valor real, solo el nombre).
+
+**Login real con Google/Facebook** (el usuario confirmó que lo quiere pronto, no solo "algún día"): la sesión anónima de hoy ya es una cuenta real y estable — el paso que falta es "subirla" a una cuenta de Google/Facebook (`supabase.auth.linkIdentity()`) sin perder el historial. Para eso, cuando el usuario quiera avanzar, necesito que cree (en paralelo, no bloquea nada de lo de arriba):
+
+- Un **OAuth Client ID** en Google Cloud Console (APIs & Services → Credentials → "Create Credentials" → "OAuth client ID", tipo "Web application") con la URL de callback que da Supabase (aparece en Authentication → Sign In / Providers → Google, ahí mismo dice exactamente qué URL de redirección pegar en Google Cloud).
+- Una **app de Facebook Login** en developers.facebook.com (tipo "Consumer"), con el mismo tipo de URL de callback (Authentication → Sign In / Providers → Facebook en el dashboard de Supabase).
+
+Con esas credenciales pegadas en Supabase (Authentication → Sign In / Providers → activar Google/Facebook con esos datos), el código para el botón de "vincular cuenta" es relativamente chico — puedo escribirlo apenas estén esas credenciales configuradas.
+
+**Pendiente, todavía sin construir**:
+
+- Rate limiting distribuido (Upstash) — falta que el usuario cree la cuenta (ver paso a paso arriba).
+- Login real Google/Facebook — falta que el usuario cree las credenciales OAuth (ver arriba).
+- Terminar el resto del panel admin (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias` siguen sin CRUD).
+- Las ~22 descripciones largas de lugares que faltan — se le mandó una planilla (`lugares-descripciones.csv`) para que aporte material real por lugar.
+
+### 9.8 Backend real de "Mi recorrido" (2026-09-27)
+
+El usuario pidió esto "ASAP" en la misma ronda. Se construye completo:
+
+- Migración `0018_itinerary_backend.sql`: `itineraries`/`itinerary_stops` (existían desde la Fase 0, sin usar — Riesgo #13) pasan a identificarse por `user_id` real (mismo mecanismo que "me gusta"/comentarios, `default auth.uid()`), con RLS scoped al dueño (`user_id = auth.uid() or is_admin()`) — el cliente lee/escribe su recorrido directo, sin necesitar server actions con cliente admin como planteaba el diseño original.
+- `unique(user_id)`: un solo itinerario activo por visitante, igual que la UX de hoy (un carrito, no una lista de viajes guardados). `order_mode` (auto/manual) se muda de `localStorage` a una columna real en `itineraries`.
+- `lib/trip/storage.ts` reescrito completo: mismas funciones que antes (`getTripPlaceIds`, `addTripPlace`, `removeTripPlace`, `reorderTripPlaces`, etc.) pero ahora async contra Supabase en vez de síncronas contra `localStorage` — mismo `TRIP_EVENT` para que los componentes sigan sincronizados entre sí sin prop drilling. `TripView`, `AddToTripButton` y `AddRouteToTripButton` se actualizan para el nuevo flujo async.
+- Efecto práctico: el carrito ya no se pierde si el usuario borra el caché del navegador o cambia de dispositivo con la misma cuenta (una vez que exista login real con Google/Facebook, hoy es anónimo por navegador).
 
 ## Bitácora de decisiones
 
@@ -562,3 +602,11 @@ El usuario respondió todo el feedback de 9.6 de una vez y pidió "pensar en gra
 - 2026-09-27: **Se detecta trabajo perdido de una ronda anterior**: la corrección de "Puente Pedegua" (comuna Cabildo → Petorca, pedida por el usuario tras confirmar "también petorca por que es de pedegua") se había commiteado y pusheado (`fc1537a`/`a759daf`), pero **nunca llegó a mergearse** — un `git checkout -B ... origin/main` posterior (hecho tras una notificación de "PR mergeado" que en realidad correspondía a un estado anterior de la rama, sin esos dos commits todavía) reinició la rama y los descartó silenciosamente, sin que se notara hasta ahora. Se vuelve a aplicar el fix (`pedegua-puente.communeSlug` → `petorca`). Lección para no repetir: antes de resetear la rama tras un aviso de "PR mergeado", verificar que el SHA mergeado realmente incluya el último commit pusheado (no asumirlo solo por el aviso) — si hay commits locales/pusheados más nuevos que el SHA mergeado, hay que abrir un PR nuevo para ellos en vez de descartarlos con el reset.
 
   `pnpm typecheck`/`lint` verdes (gate completo al final de esta ronda).
+
+- 2026-09-27 (segunda ronda del día): El usuario responde con una tanda de preguntas operativas y pedidos de prioridad: (a) confirma que quiere login real con Google/Facebook pronto, no solo "algún día"; (b) pregunta cómo aplicar las migraciones nuevas (solo corría `pnpm db:seed`, nunca `supabase db push`); (c) manda una captura mostrando que llegó a "Authentication → OAuth Server" en el dashboard de Supabase buscando el toggle de login anónimo — pantalla equivocada, es para que el proyecto actúe como proveedor OAuth de terceros; (d) pide el paso a paso detallado para dejarlo como admin; (e) pide el paso a paso de Upstash; (f) pide el backend real de "Mi recorrido" ASAP; (g) pide una planilla para ir completando las descripciones de lugares que faltan.
+  - Al armar la planilla se detecta que la corrección de "Puente Pedegua" de una ronda anterior nunca se había mergeado (ver entrada anterior) — se vuelve a aplicar.
+  - Se construye completo el backend real de "Mi recorrido" (ver 9.8): migración `0018_itinerary_backend.sql`, reescritura de `lib/trip/storage.ts` a async contra Supabase, y actualización de `TripView`/`AddToTripButton`/`AddRouteToTripButton`.
+  - Se documentan paso a paso completos (sin código, solo instrucciones): cómo aplicar migraciones (`supabase db push`), dónde está el toggle de login anónimo (Sign In / Providers, no OAuth Server), cómo insertar al usuario en `admin_users` con el detalle exacto que pidió, cómo crear la base de Upstash para rate limiting distribuido, y qué credenciales OAuth va a necesitar crear para el login real con Google/Facebook.
+  - Se genera y se envía `lugares-descripciones.csv`: los 37 lugares del catálogo, los 22 sin descripción primero, con columnas para que el usuario pegue un link/fuente y notas por lugar.
+
+  `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.

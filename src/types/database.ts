@@ -169,8 +169,9 @@ type VerificationLogRow = {
 
 type ItineraryRow = {
   id: string;
-  session_id: string;
+  user_id: string;
   name: string | null;
+  order_mode: "auto" | "manual";
   created_at: string;
 };
 
@@ -374,7 +375,7 @@ export interface Database {
       >;
       itineraries: Table<
         ItineraryRow,
-        Partial<ItineraryRow> & { session_id: string },
+        Partial<ItineraryRow>,
         Partial<ItineraryRow>
       >;
       itinerary_stops: Table<

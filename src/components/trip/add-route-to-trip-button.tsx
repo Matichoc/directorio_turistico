@@ -16,22 +16,28 @@ export function AddRouteToTripButton({
   const [allAdded, setAllAdded] = useState(false);
 
   useEffect(() => {
-    function sync() {
-      const current = new Set(getTripPlaceIds());
-      setAllAdded(placeIds.every((id) => current.has(id)));
+    let cancelled = false;
+    async function sync() {
+      const current = new Set(await getTripPlaceIds());
+      if (!cancelled) setAllAdded(placeIds.every((id) => current.has(id)));
     }
-    sync();
+    void sync();
     window.addEventListener(TRIP_EVENT, sync);
-    return () => window.removeEventListener(TRIP_EVENT, sync);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(TRIP_EVENT, sync);
+    };
   }, [placeIds]);
+
+  async function handleClick() {
+    await addTripPlaces(placeIds);
+    track({ name: "route_added_to_trip", properties: { routeId } });
+  }
 
   return (
     <button
       type="button"
-      onClick={() => {
-        addTripPlaces(placeIds);
-        track({ name: "route_added_to_trip", properties: { routeId } });
-      }}
+      onClick={() => void handleClick()}
       disabled={allAdded}
       className="bg-accent text-accent-foreground rounded-full px-4 py-2 text-sm font-medium disabled:opacity-60"
     >

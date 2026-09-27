@@ -478,11 +478,15 @@ const places = [
       name: "Ruta de los Túneles",
       short:
         "Antiguo trazado del ferrocarril Cabildo–Pedegua: cinco túneles y dos puentes ferroviarios en un entorno natural, incluidos los túneles La Grupa y Las Palmas (966 m, inaugurado en 1914). Se recorre en bicicleta o vehículo todo terreno; el acceso es desde Pedegua.",
+      description:
+        "En la comuna de Cabildo (19.388 habitantes, Censo 2017), este trazado del antiguo ferrocarril Cabildo–Pedegua se recorre hoy en bicicleta o vehículo todo terreno: cinco túneles y dos puentes, entre ellos La Grupa y Las Palmas (966 m, 1914), en un tramo que continúa hasta Illapel, en la Región de Coquimbo.",
     },
     en: {
       name: "Ruta de los Túneles (Tunnel Route)",
       short:
         "The old Cabildo–Pedegua railway line: five tunnels and two bridges through a natural landscape, including the La Grupa and Las Palmas tunnels (966 m, opened in 1914). Usually ridden by bike or off-road vehicle; access is from Pedegua.",
+      description:
+        "In Cabildo commune (19,388 residents, 2017 census), this stretch of the old Cabildo–Pedegua railway is now ridden by bike or off-road vehicle: five tunnels and two bridges, including La Grupa and Las Palmas (966 m, 1914), on a route that continues on to Illapel, in the Coquimbo Region.",
     },
     source: {
       url: "https://www.geovirtual2.cl/Ferrocarril-Chile-Coquimbo/Ferrocarril-Puente-Pedegua-Chile-01.htm",
@@ -560,16 +564,20 @@ const places = [
     es: {
       name: "La Chorreada",
       short:
-        'Sector rural de la comuna de La Ligua conocido localmente como "La Chorreada". Contenido pendiente de más fuentes — si conoces el lugar y quieres ayudarnos a describirlo mejor, cuéntanos.',
+        'Sector de quebrada al interior de La Ligua con pozones y pequeñas cascadas ("las chorreadas"), a los que se llega por un camino de ripio pasando la ex Mina La Patagua — hoy recorrido sobre todo por ciclistas de gravel.',
+      description:
+        'En la comuna de La Ligua (35.390 habitantes, Censo 2017), este sector de quebrada tiene pozones y pequeñas cascadas ("las chorreadas") a los que se llega por un camino de ripio que pasa la ex Mina La Patagua — hoy recorrido sobre todo por ciclistas de gravel. Sigue siendo un lugar con poca información pública; si conoces la zona y quieres ayudarnos a describirla mejor, cuéntanos.',
     },
     en: {
       name: "La Chorreada",
       short:
-        'A rural sector of La Ligua commune known locally as "La Chorreada". Description pending better sources — if you know this spot, let us know so we can describe it properly.',
+        'A canyon sector inland from La Ligua with pools and small waterfalls ("las chorreadas"), reached along a gravel road past the former Mina La Patagua — today mostly ridden by gravel cyclists.',
+      description:
+        'In La Ligua commune (35,390 residents, 2017 census), this canyon sector has pools and small waterfalls ("las chorreadas") reached along a gravel road past the former Mina La Patagua — today mostly ridden by gravel cyclists. It remains a spot with little public information; if you know it, let us know so we can describe it better.',
     },
     source: {
-      url: "https://www.instagram.com/explore/locations/586679601/la-chorreada-la-ligua/",
-      label: "Instagram — La Chorreada, La Ligua",
+      url: "https://www.wikiloc.com/gravel-bike-trails/la-ligua-las-chorreadas-59616563",
+      label: "Wikiloc — La Ligua: Las Chorreadas",
     },
   },
   {
@@ -613,11 +621,15 @@ const places = [
       name: "Pichicuy",
       short:
         'Balneario de nombre mapudungún ("pichi kuykuy", puentecito), con un humedal protegido junto a la playa y la ola internacional "La Marmola" (hasta 13 m), que atrae surfistas de todo el mundo.',
+      description:
+        'En la comuna de La Ligua (35.390 habitantes, Censo 2017), esta playa se extiende cerca de 6 km de arena blanca hasta las dunas de Longotoma. Es sede de la ola internacional "La Marmola" (hasta 13 m) y de un humedal protegido junto a la playa; ferias locales acercan a los visitantes productos campesinos de la zona.',
     },
     en: {
       name: "Pichicuy",
       short:
         'A resort town with a Mapudungun name ("pichi kuykuy", little bridge), a protected wetland next to the beach, and the international wave "La Marmola" (up to 13 m), which draws surfers worldwide.',
+      description:
+        'In La Ligua commune (35,390 residents, 2017 census), this beach stretches nearly 6 km of white sand to the Longotoma dunes. It hosts the international wave "La Marmola" (up to 13 m) and a protected wetland next to the beach; local fairs bring the area\'s country products to visitors.',
     },
     source: {
       url: "https://es.wikipedia.org/wiki/Pichicuy",
@@ -638,11 +650,15 @@ const places = [
       name: "Laguna Pullally",
       short:
         "Laguna dentro del Santuario de la Naturaleza Salinas de Pullally y Dunas de Longotoma (declarado en 2020), en la desembocadura de los ríos Petorca y La Ligua; el humedal alberga 137 especies de aves (más de un cuarto de las descritas en Chile), varias migratorias.",
+      description:
+        "En la comuna de Papudo (6.356 habitantes, Censo 2017), esta laguna forma parte del Santuario de la Naturaleza Salinas de Pullally y Dunas de Longotoma (declarado en 2020), en la desembocadura de los ríos Petorca y La Ligua. El humedal registra 137 especies de aves — más de un cuarto de las descritas en Chile — entre ellas gaviota garuma, perrito y pilpilén, además de especies migratorias del hemisferio norte.",
     },
     en: {
       name: "Pullally Lagoon",
       short:
         "A lagoon within the Salinas de Pullally y Dunas de Longotoma Nature Sanctuary (declared in 2020), at the mouth of the Petorca and La Ligua rivers; the wetland is home to 137 bird species (over a quarter of those recorded in Chile), several of them migratory.",
+      description:
+        "In Papudo commune (6,356 residents, 2017 census), this lagoon is part of the Salinas de Pullally y Dunas de Longotoma Nature Sanctuary (declared in 2020), at the mouth of the Petorca and La Ligua rivers. The wetland has recorded 137 bird species — over a quarter of those described in Chile — including the grey gull, black-necked stilt and American oystercatcher, plus migratory species from the northern hemisphere.",
     },
     source: {
       url: "https://es.wikipedia.org/wiki/Humedal_Salinas_de_Pullally_y_Dunas_de_Longotoma",
@@ -662,11 +678,15 @@ const places = [
       name: "Salinas de Pullally",
       short:
         "Sector de salinas del Santuario de la Naturaleza Salinas de Pullally y Dunas de Longotoma (declarado en 2020), entre las desembocaduras de los ríos Petorca y La Ligua.",
+      description:
+        "En la comuna de Papudo (6.356 habitantes, Censo 2017), este sector de salinas —a unos 12 km al norte del balneario— es una caleta de pescadores artesanales en la desembocadura del río Ligua, donde botes amarrados a un pequeño muelle cruzan el río. El encuentro entre el río y el mar deja aguas tranquilas aptas para niños, mientras el sector abierto atrae a surfistas por la calidad de sus olas.",
     },
     en: {
       name: "Salinas de Pullally",
       short:
         "The salt-flat sector of the Salinas de Pullally y Dunas de Longotoma Nature Sanctuary (declared in 2020), between the mouths of the Petorca and La Ligua rivers.",
+      description:
+        "In Papudo commune (6,356 residents, 2017 census), this salt-flat sector — about 12 km north of the resort town — is a small artisanal fishing cove at the mouth of the Río Ligua, where boats tied to a small pier ferry people across the river. Where the river meets the sea the water turns calm enough for children, while the open stretch draws surfers for the quality of its waves.",
     },
     source: {
       url: "https://es.wikipedia.org/wiki/Humedal_Salinas_de_Pullally_y_Dunas_de_Longotoma",
@@ -683,11 +703,15 @@ const places = [
       name: "Playa Los Lilenes",
       short:
         "Playa escondida y tranquila al norte de Papudo, a la que se llega por un sendero costero de unos 800 m (o a caballo); pocas visitas, ideal para nadar y descansar rodeado de naturaleza.",
+      description:
+        'En la comuna de Papudo (6.356 habitantes, Censo 2017), esta playa escondida se alcanza por un sendero costero de unos 800 m que también conecta con Punta Puyay y la llamada "playa del amor" — un circuito de caminata de baja exigencia y pocas visitas, ideal para nadar y descansar rodeado de naturaleza.',
     },
     en: {
       name: "Los Lilenes Beach",
       short:
         "A quiet, hidden beach north of Papudo, reached via an ~800 m coastal path (or on horseback); few visitors, great for swimming and relaxing surrounded by nature.",
+      description:
+        'In Papudo commune (6,356 residents, 2017 census), this hidden beach is reached along an ~800 m coastal trail that also connects to Punta Puyay and the so-called "playa del amor" — an easy, lightly visited walking circuit, ideal for swimming and relaxing surrounded by nature.',
     },
     source: {
       url: "https://tres60.travel/el-lilen-la-playa-escondida-de-chile-que-combina-naturaleza-y-tranquilidad/",
@@ -704,11 +728,15 @@ const places = [
       name: "Costanera de Papudo",
       short:
         'Paseo peatonal "La Terraza", desde la gruta de la Virgen de Lourdes hasta Av. Glorias Navales, bordeando Playa Chica y Playa Grande; tiendas de artesanía, restaurantes, juegos infantiles y club de yates.',
+      description:
+        'En la comuna de Papudo (6.356 habitantes, Censo 2017), este paseo peatonal —"La Terraza"— bordea Playa Chica y Playa Grande desde la gruta de la Virgen de Lourdes hasta la avenida Glorias Navales. Es el punto de encuentro del balneario en verano, con tiendas de artesanía, restaurantes, juegos infantiles y el club de yates.',
     },
     en: {
       name: "Papudo Waterfront",
       short:
         '"La Terraza" pedestrian promenade, from the Virgin of Lourdes grotto to Glorias Navales avenue, running along Playa Chica and Playa Grande; craft shops, restaurants, a playground and a yacht club.',
+      description:
+        "In Papudo commune (6,356 residents, 2017 census), this pedestrian promenade — \"La Terraza\" — runs along Playa Chica and Playa Grande from the Virgin of Lourdes grotto to Glorias Navales avenue. It's the resort's summer gathering point, with craft shops, restaurants, a playground and the yacht club.",
     },
     source: {
       url: "https://www.playasdechile.com/playas-en-papudo/",
@@ -725,11 +753,15 @@ const places = [
       name: "Plaza de Papudo",
       short:
         "Plaza central del pueblo, punto de encuentro de la comunidad y sede de ferias artesanales; rodeada de tiendas y restaurantes, con áreas verdes para sentarse.",
+      description:
+        "En la comuna de Papudo (6.356 habitantes, Censo 2017), esta plaza central es el punto de encuentro de la comunidad y sede de ferias artesanales, rodeada de tiendas y restaurantes del pueblo.",
     },
     en: {
       name: "Papudo Main Square",
       short:
         "The town's central square, a community gathering point and home to craft fairs; surrounded by shops and restaurants, with green spaces to sit.",
+      description:
+        "In Papudo commune (6,356 residents, 2017 census), this central square is the community's gathering point and hosts craft fairs, surrounded by the town's shops and restaurants.",
     },
     source: {
       url: "http://www.vregion.cl/petorca/papudo/",
@@ -751,11 +783,15 @@ const places = [
       name: "Punta Pite",
       short:
         "Sendero costero de 1,5 km entre Papudo y Zapallar diseñado por la paisajista Teresa Moller (2004-2006): terrazas y escaleras en la misma roca de la costa, piscinas naturales, y avistamiento de pingüinos de Humboldt y delfines.",
+      description:
+        "En la comuna de Zapallar (7.339 habitantes, Censo 2017), este sendero costero de 1,5 km entre Papudo y Zapallar fue diseñado por la paisajista Teresa Moller (2004-2006): terrazas y escaleras talladas en la misma roca de la costa, piscinas naturales, y avistamiento de pingüinos de Humboldt y delfines.",
     },
     en: {
       name: "Punta Pite",
       short:
         "A 1.5 km coastal trail between Papudo and Zapallar designed by landscape architect Teresa Moller (2004-2006): terraces and stairs carved into the coastal rock, natural pools, and sightings of Humboldt penguins and dolphins.",
+      description:
+        "In Zapallar commune (7,339 residents, 2017 census), this 1.5 km coastal trail between Papudo and Zapallar was designed by landscape architect Teresa Moller (2004-2006): terraces and stairs carved into the coastal rock itself, natural pools, and sightings of Humboldt penguins and dolphins.",
     },
     source: {
       url: "https://laderasur.com/articulo/proyecto-punta-pite-escuela-de-pedreros/",
@@ -772,11 +808,15 @@ const places = [
       name: "Laguna de Zapallar",
       short:
         "Humedal en la desembocadura de los esteros Catapilco y La Canela, santuario de aves acuáticas (tagua, zarapito, gansos); playa de casi 1 km y senderos junto al agua.",
+      description:
+        "En la comuna de Zapallar (7.339 habitantes, Censo 2017), esta laguna en la desembocadura de los esteros Catapilco y La Canela es refugio de aves acuáticas silvestres —tagua común, zarapito, perrito, gansos y pato jergón— con aporte migratorio del hemisferio norte visible en verano; tiene una playa de casi 1 km y senderos junto al agua.",
     },
     en: {
       name: "Zapallar Lagoon",
       short:
         "A wetland at the mouth of the Catapilco and La Canela streams, a sanctuary for waterbirds (coots, curlews, geese); a beach almost 1 km long and trails along the water.",
+      description:
+        "In Zapallar commune (7,339 residents, 2017 census), this lagoon at the mouth of the Catapilco and La Canela streams is a refuge for wild waterbirds — common coot, whimbrel, black-necked stilt, geese and mallard — with northern-hemisphere migratory birds visible in summer; it has a beach almost 1 km long and trails along the water.",
     },
     source: {
       url: "https://laderasur.com/articulo/maitencillo-y-laguna-de-zapallar-tres-panoramas-imperdibles-por-cielo-mar-y-tierra/",
@@ -793,11 +833,15 @@ const places = [
       name: "Cachagua — Isla de los Pingüinos y Playa Las Cujas",
       short:
         "Isla Cachagua (4,5 ha, santuario de la naturaleza desde 1989) alberga hasta 2.000 pingüinos de Humboldt, uno de los 5 sitios de nidificación más importantes de Chile; junto a ella, la playa Las Cujas, parte del sendero costero Zapallar–Cachagua.",
+      description:
+        "En la comuna de Zapallar (7.339 habitantes, Censo 2017), la Isla Cachagua (4,5 ha, santuario de la naturaleza desde 1989) está separada de la costa por un brazo de mar de unos 100 m y alberga hasta 2.000 pingüinos de Humboldt — uno de los 5 sitios de nidificación más importantes de Chile. Junto a ella, la playa Las Cujas forma parte del sendero costero Zapallar–Cachagua.",
     },
     en: {
       name: "Cachagua — Penguin Island & Las Cujas Beach",
       short:
         "Cachagua Island (4.5 ha, a nature sanctuary since 1989) hosts up to 2,000 Humboldt penguins, one of Chile's 5 most important nesting sites; next to it, Las Cujas beach, part of the Zapallar–Cachagua coastal trail.",
+      description:
+        "In Zapallar commune (7,339 residents, 2017 census), Cachagua Island (4.5 ha, a nature sanctuary since 1989) is separated from the coast by roughly 100 m of open sea and hosts up to 2,000 Humboldt penguins — one of Chile's 5 most important nesting sites. Next to it, Las Cujas beach is part of the Zapallar–Cachagua coastal trail.",
     },
     source: {
       url: "https://www.munizapallar.cl/lugares-de-interes",
@@ -814,11 +858,15 @@ const places = [
       name: "Catapilco y Palos Quemados",
       short:
         "Sector cordillerano de Zapallar con la laguna de Catapilco y la cascada de Palos Quemados; ahí hubo estaciones del tren que a inicios del siglo XX llevaba veraneantes hasta Zapallar.",
+      description:
+        "En la comuna de Zapallar (7.339 habitantes, Censo 2017), esta caleta fue declarada puerto menor de cabotaje en 1847 y sus cerros le dan un microclima resguardado del viento costero. Ahí funcionó la estación de trenes de Palos Quemados y, después, la de Catapilco, desde donde veraneantes bajaban a Zapallar a inicios del siglo XX.",
     },
     en: {
       name: "Catapilco & Palos Quemados",
       short:
         "A foothill sector of Zapallar with the Catapilco lagoon and the Palos Quemados waterfall; it once had train stations that carried summer visitors to Zapallar in the early 20th century.",
+      description:
+        "In Zapallar commune (7,339 residents, 2017 census), this cove was declared a minor cabotage port in 1847, and its surrounding hills give it a microclimate sheltered from coastal winds. It once had the Palos Quemados train station and, later, the Catapilco station, from which summer visitors continued on to Zapallar in the early 20th century.",
     },
     source: {
       url: "https://es.wikipedia.org/wiki/Estaci%C3%B3n_Catapilco",
@@ -835,11 +883,15 @@ const places = [
       name: "Plaza de Cabildo",
       short:
         "Plaza central de Cabildo, punto de encuentro de la ciudad y punto de partida para recorrer los atractivos naturales y patrimoniales de la comuna.",
+      description:
+        "En la comuna de Cabildo (19.388 habitantes, Censo 2017), esta plaza central es el punto de encuentro de la ciudad y el punto de partida habitual para recorrer los atractivos naturales y patrimoniales de la comuna, desde el valle de Alicahue hasta los túneles del antiguo ferrocarril.",
     },
     en: {
       name: "Cabildo Main Square",
       short:
         "Cabildo's central square, the town's gathering point and a starting point for exploring the commune's natural and heritage sites.",
+      description:
+        "In Cabildo commune (19,388 residents, 2017 census), this central square is the town's gathering point and the usual starting point for exploring the commune's natural and heritage sites, from the Alicahue valley to the old railway's tunnels.",
     },
     source: {
       url: "https://www.sitrural.cl/wp-content/uploads/2024/11/Cabildo_turismo.pdf",
@@ -856,11 +908,15 @@ const places = [
       name: "Alicahue",
       short:
         "Valle cordillerano a 34 km de Cabildo, centro turístico de la comuna desde donde parten circuitos a la laguna, el Camino del Inca y petroglifos; en el sector se ubica la legendaria casa de La Quintrala.",
+      description:
+        'En la comuna de Cabildo (19.388 habitantes, Censo 2017), este valle a 34 km del pueblo —su nombre viene del mapudungún "ali-ca-hue", "lugar seco" o "lugar cálido"— es el centro turístico de la comuna: agricultura de paltas, almendros, cítricos y nueces, la laguna Chepical, La Casona (casa principal de la ex hacienda) y petroglifos de origen incaico.',
     },
     en: {
       name: "Alicahue",
       short:
         "A mountain valley 34 km from Cabildo, the commune's tourism hub with routes to the lagoon, the Inca Road and petroglyphs; the legendary house of La Quintrala sits in this area.",
+      description:
+        'In Cabildo commune (19,388 residents, 2017 census), this valley 34 km from town — its name comes from the Mapudungun "ali-ca-hue", "dry place" or "warm spot" — is the commune\'s tourism hub: avocado, almond, citrus and walnut farming, the Chepical lagoon, La Casona (the former hacienda\'s main house), and Inca-era petroglyphs.',
     },
     source: {
       url: "https://alicahue.cl/",
@@ -878,11 +934,15 @@ const places = [
       name: "San Lorenzo",
       short:
         "Localidad rural a 10 km de Cabildo hacia la cordillera (~2.800 habitantes); su parroquia, dedicada al patrono de mineros y campesinos, se independizó en 1633 con apoyo de Catalina de los Ríos (La Quintrala).",
+      description:
+        "En la comuna de Cabildo (19.388 habitantes, Censo 2017), esta localidad rural de unos 2.800 habitantes celebra cada 10 de agosto a su patrono San Lorenzo, protector de mineros y campesinos, con bailes religiosos que llegan desde distintos puntos de la comuna y la región.",
     },
     en: {
       name: "San Lorenzo",
       short:
         "A rural village 10 km from Cabildo toward the mountains (~2,800 residents); its parish, dedicated to the patron saint of miners and peasants, became independent in 1633 with the backing of Catalina de los Ríos (La Quintrala).",
+      description:
+        "In Cabildo commune (19,388 residents, 2017 census), this rural village of about 2,800 people celebrates its patron saint, San Lorenzo — protector of miners and farmers — every August 10th, with religious dance groups arriving from across the commune and the region.",
     },
     source: {
       url: "https://revista.cenizas.cl/san-lorenzo-riqueza-patrimonial-y-religiosa-en-la-comuna-de-cabildo/",
@@ -901,11 +961,15 @@ const places = [
       name: "Puente La Sirena",
       short:
         'Puente rural cerca de San Lorenzo, conocido por la leyenda local de "el carretero del puente La Sirena".',
+      description:
+        "En la comuna de Cabildo (19.388 habitantes, Censo 2017), este puente rural cerca de San Lorenzo debe su nombre a una leyenda local: una sirena que aparecía sobre dos piedras blancas a peinarse con un peine de oro y cantar para encantar a los hombres. La historia del carretero enamorado que recoge la fuente en video sigue contándose en la zona.",
     },
     en: {
       name: "Puente La Sirena",
       short:
         'A rural bridge near San Lorenzo, known for the local legend of "the cart driver of the Sirena bridge".',
+      description:
+        "In Cabildo commune (19,388 residents, 2017 census), this rural bridge near San Lorenzo takes its name from a local legend: a mermaid said to appear on two white stones to comb her hair with a golden comb and sing to enchant men. The story of the smitten cart driver, as told in the video source below, is still told around here.",
     },
     source: {
       url: "https://www.youtube.com/watch?v=k754L4dFZnk/",
@@ -948,11 +1012,15 @@ const places = [
       name: "La Vega",
       short:
         "Sector a 39 km de Cabildo, de acceso no pavimentado desde Alicahue; una cascada alimentada por la laguna El Chepical riega los cultivos del lugar, que tiene capilla, cabañas y zona de camping.",
+      description:
+        "En la comuna de Cabildo (19.388 habitantes, Censo 2017), este sector a 39 km del pueblo se alcanza por un camino sin pavimentar desde Alicahue; una cascada alimentada por la laguna El Chepical riega los cultivos locales, y el lugar cuenta con capilla, cabañas y zona de camping.",
     },
     en: {
       name: "La Vega",
       short:
         "A sector 39 km from Cabildo, reached by an unpaved road from Alicahue; a waterfall fed by the El Chepical lagoon irrigates local crops, and the area has a chapel, cabins and a campsite.",
+      description:
+        "In Cabildo commune (19,388 residents, 2017 census), this sector 39 km from town is reached by an unpaved road from Alicahue; a waterfall fed by the El Chepical lagoon irrigates local crops, and the area has a chapel, cabins and a campsite.",
     },
     source: {
       url: "https://www.sitrural.cl/wp-content/uploads/2020/03/Cabildo_turismo.pdf",
@@ -970,11 +1038,15 @@ const places = [
       name: "Túnel La Grupa",
       short:
         "Túnel de 1.277 m construido en 1907 para conectar por ferrocarril las estaciones de Pedegua y Cabildo; tras el cierre del ramal en los años 70 se pavimentó como parte de la ruta E-35 (Cabildo–Petorca), con semáforo de una vía.",
+      description:
+        "En la comuna de Cabildo (19.388 habitantes, Censo 2017), este túnel de 1.277 m se construyó en 1907 para el ferrocarril entre las estaciones de Pedegua y Cabildo. Tras el cierre del ramal se habilitó para automóviles como parte de la ruta E-35 hacia Petorca, con un solo carril y semáforo de ciclo de seis minutos.",
     },
     en: {
       name: "Túnel La Grupa",
       short:
         "A 1,277 m tunnel built in 1907 to link the Pedegua and Cabildo railway stations; after the branch line closed in the 1970s it was paved as part of route E-35 (Cabildo–Petorca), with a single-lane traffic light.",
+      description:
+        "In Cabildo commune (19,388 residents, 2017 census), this 1,277 m tunnel was built in 1907 for the railway between the Pedegua and Cabildo stations. After the branch line closed it was converted for cars as part of route E-35 toward Petorca, with a single lane and a six-minute traffic-light cycle.",
     },
     source: {
       url: "https://es.wikipedia.org/wiki/T%C3%BAnel_La_Grupa",
@@ -992,11 +1064,15 @@ const places = [
       name: "Puente Pedegua",
       short:
         "Puente ferroviario histórico junto a Pedegua, parte del antiguo ramal Cabildo–Illapel; uno de los dos puentes que se cruzan en la Ruta de los Túneles.",
+      description:
+        "En la comuna de Petorca (9.826 habitantes, Censo 2017), este puente ferroviario formaba parte del ramal Pedegua–Petorca, inaugurado en 1927 como tramo interior del ferrocarril Longitudinal Norte. Originalmente tenía 5 arcos; hoy los dos extremos fueron reemplazados por tramos modernos, y el puente cruza el río Petorca junto a la desembocadura del estero Las Palmas.",
     },
     en: {
       name: "Pedegua Bridge",
       short:
         "A historic railway bridge near Pedegua, part of the old Cabildo–Illapel branch line; one of the two bridges crossed on the Ruta de los Túneles.",
+      description:
+        "In Petorca commune (9,826 residents, 2017 census), this railway bridge was part of the Pedegua–Petorca branch line, opened in 1927 as an inland section of the Northern Longitudinal railway. It originally had 5 arches; today the two end arches have been replaced with modern spans, and the bridge crosses the Río Petorca near where the Estero Las Palmas flows in.",
     },
     source: {
       url: "https://www.geovirtual2.cl/Ferrocarril-Chile-Coquimbo/Ferrocarril-Puente-Pedegua-Chile-01.htm",
@@ -1019,11 +1095,15 @@ const places = [
       name: "Túnel Las Palmas",
       short:
         "Túnel ferroviario de 966 m inaugurado en 1914 (parte de la red Longitudinal Norte); declarado Monumento Histórico en 2011 junto a otros túneles y puentes del mismo trazado.",
+      description:
+        "Aunque administrativamente el túnel está del lado de la Región de Coquimbo, forma parte del mismo corredor ferroviario histórico que Pedegua y La Grupa, en la comuna de Petorca (9.826 habitantes, Censo 2017): 966 m inaugurados en 1914 como parte de la red Longitudinal Norte ordenada construir por el presidente Balmaceda, declarado Monumento Histórico en 2011.",
     },
     en: {
       name: "Túnel Las Palmas",
       short:
         "A 966 m railway tunnel opened in 1914 (part of the Northern Longitudinal network); declared a National Historic Monument in 2011 together with other tunnels and bridges on the same line.",
+      description:
+        "Although the tunnel sits administratively on the Coquimbo Region side, it's part of the same historic railway corridor as Pedegua and La Grupa, in Petorca commune (9,826 residents, 2017 census): 966 m opened in 1914 as part of the Northern Longitudinal network ordered built by President Balmaceda, declared a National Historic Monument in 2011.",
     },
     source: {
       url: "https://www.monumentos.gob.cl/monumentos/monumentos-historicos/tunel-las-palmas",
@@ -1040,11 +1120,15 @@ const places = [
       name: "Plaza de Petorca",
       short:
         'Plaza central de Petorca, con un círculo donde está el monumento a Manuel Montt; ahí mismo se ubica la Iglesia La Merced. Una remodelación reciente la hizo conocida como "la plaza más cara de Chile".',
+      description:
+        "En la comuna de Petorca (9.826 habitantes, Censo 2017), el centro del pueblo se construyó a mediados del siglo XVIII donde antes había una huerta parroquial, siguiendo el esquema clásico de plaza con una pileta en el círculo central. Hoy es el corazón administrativo, comercial y religioso de la ciudad, con el monumento a Manuel Montt y la Iglesia La Merced junto a ella.",
     },
     en: {
       name: "Petorca Main Square",
       short:
         "Petorca's central square, with a circle holding the monument to Manuel Montt; the La Merced Church stands right on it. A recent remodel made it known as \"Chile's most expensive plaza\".",
+      description:
+        "In Petorca commune (9,826 residents, 2017 census), the town center was built in the mid-18th century on what had been a parish orchard, following the classic plaza layout with a fountain at its central circle. Today it's the city's administrative, commercial and religious hub, with the monument to Manuel Montt and La Merced Church standing right on it.",
     },
     source: {
       url: "https://www.infopetorca.cl/2019/07/la-plaza-mas-cara-de-chile-en-petorca.html",

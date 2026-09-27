@@ -3,12 +3,7 @@ import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
 import { PageHero } from "@/components/ui/page-hero";
 import { listMunicipalities } from "@/lib/data/communes";
-
-function linkHref(kind: string, value: string): string {
-  if (kind === "phone") return `tel:${value}`;
-  if (kind === "email") return `mailto:${value}`;
-  return value;
-}
+import { contactLinkHref, contactLinkLabel } from "@/lib/ui/contact-link";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -87,7 +82,7 @@ export default async function InfoPage({
                     {municipality.links.map((link) => (
                       <a
                         key={`${link.kind}-${link.value}`}
-                        href={linkHref(link.kind, link.value)}
+                        href={contactLinkHref(link.kind, link.value)}
                         target={
                           link.kind === "phone" || link.kind === "email"
                             ? undefined
@@ -96,7 +91,7 @@ export default async function InfoPage({
                         rel="noopener noreferrer"
                         className="border-accent-soft text-foreground/70 hover:border-accent rounded-full border px-3 py-1 text-xs dark:border-white/15"
                       >
-                        {link.label ?? kindLabels[link.kind] ?? link.kind}
+                        {contactLinkLabel(link, kindLabels)}
                       </a>
                     ))}
                   </div>

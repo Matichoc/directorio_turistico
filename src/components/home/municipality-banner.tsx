@@ -3,14 +3,9 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Municipality, MunicipalityLink } from "@/types/domain";
+import { contactLinkHref, contactLinkLabel } from "@/lib/ui/contact-link";
 
 const AUTO_ADVANCE_MS = 6000;
-
-function linkHref(kind: string, value: string): string {
-  if (kind === "phone") return `tel:${value}`;
-  if (kind === "email") return `mailto:${value}`;
-  return value;
-}
 
 /**
  * Banner rotativo en el home con las 5 municipalidades de la provincia y
@@ -46,7 +41,7 @@ export function MunicipalityBanner({
   };
 
   function labelFor(link: MunicipalityLink): string {
-    return link.label ?? kindLabels[link.kind] ?? link.kind;
+    return contactLinkLabel(link, kindLabels);
   }
 
   useEffect(() => {
@@ -75,7 +70,7 @@ export function MunicipalityBanner({
             {current.links.map((link) => (
               <a
                 key={`${link.kind}-${link.value}`}
-                href={linkHref(link.kind, link.value)}
+                href={contactLinkHref(link.kind, link.value)}
                 target={
                   link.kind === "phone" || link.kind === "email"
                     ? undefined

@@ -18,7 +18,7 @@
 import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../src/types/database";
-import { GOOGLE_PLACE_PHOTO_PREFIX } from "./lib/google-photo-prefix";
+import { GOOGLE_PLACE_PHOTO_PREFIX } from "../src/lib/data/google-photo-prefix";
 
 /**
  * URL hotlinkeable a un archivo de Wikimedia Commons vía `Special:FilePath`

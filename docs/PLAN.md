@@ -134,6 +134,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
     - `/api/place-photo` y `/api/directions` (proxies a Google Places/Routes, con costo real por llamada) no tenían ningún límite de tasa ni verificaban que el `ref` pedido fuera una foto real del catálogo — cualquiera podía inventar refs con la forma correcta y hacer que el proxy gastara cuota/facturación de Google sin control. Se agrega `lib/http/rate-limit.ts` (limitador simple en memoria, por IP — **no es distribuido**: en Vercel cada instancia serverless tiene su propia memoria, así que el límite real es "por instancia"; si el tráfico real muestra que no basta, la solución correcta es un limitador distribuido tipo Upstash Redis, decisión pendiente de confirmar con el usuario) y, en `/api/place-photo`, un chequeo contra `place_images.storage_path` antes de llamar a Google.
 
 24. Backlog nuevo (ver sección 8): **Instagram no tiene un login de consumidor simple** (Meta lo trata como conexión de cuenta profesional/creador, con revisión de app) — se prioriza Google + Facebook para el login opcional de "me gusta", Instagram queda pendiente de evaluar aparte. Además, **no existe una vía viable de traer automáticamente "eventos destacados" de las redes de cada municipio** (requeriría acceso de administrador a su página, que no vamos a conseguir, y este sandbox tampoco tiene salida de red hacia redes sociales para probarlo) — se opta por contenido curado a mano (mismo patrón que fotos/destacados de auspicio) en vez de una integración automática.
+25. **Bug real 2026-09-27, reportado en vivo por el usuario** ("algunos lugares se ve bien, los otros al entrar no se ven las fotos"): el chequeo anti-abuso agregado a `/api/place-photo` en la ronda anterior (Riesgo #23) comparaba el `ref` crudo contra `place_images.storage_path` — pero `storage_path` para una foto de Google no guarda el `ref` a secas, guarda la URL completa del proxy (`/api/place-photo?ref=<ref codificado>&w=...`, ver `GOOGLE_PLACE_PHOTO_PREFIX`). La comparación nunca podía coincidir, así que **todas** las fotos de Google (26 de las ~30 con foto) quedaban rechazadas (`invalid_ref`) y caían al ícono de categoría — mientras las fotos de Wikimedia/locales (URLs directas, no pasan por este proxy) seguían viéndose bien, lo que explica el patrón "unos sí, otros no". Se corrige parseando `storage_path` como URL y comparando el `ref` real ya decodificado, en vez de comparar strings crudos o meterlo sin escapar en un `like` (sus propios `%XX` de la codificación se leerían como comodines). De paso, `GOOGLE_PLACE_PHOTO_PREFIX` se mueve de `scripts/lib/` a `src/lib/data/google-photo-prefix.ts` — ya no es un detalle interno de un script, lo necesita también la ruta de la app.
 
 ## 6. Fase 0 — tareas
 
@@ -282,6 +283,29 @@ Tareas:
 - [x] Formulario de comentario en la ficha de lugar + listado de aprobados
 - [x] Cola de moderación real en `/admin/verificaciones`
 - [ ] Mostrar de alguna forma visible la "reputación" acumulada (hoy son dos señales sueltas — "me gusta" y comentarios aprobados — sin combinarlas en un solo indicador; pendiente de que el usuario diga si quiere eso o le basta con verlas por separado)
+
+### 9.6 Pedidos y hallazgos en vivo 2026-09-27
+
+Tras probar el PR #26 en producción, el usuario reportó varios puntos en una sola tanda — separados por tipo:
+
+**Ya corregido esta ronda:**
+
+- Fotos de Google rotas en varios lugares (ver Riesgo #25) — bug real de la ronda de seguridad anterior, corregido.
+
+**Esperable hasta que se apliquen las migraciones/seed pendientes** (no son bugs nuevos, ya avisado en rondas anteriores):
+
+- "No se pudo enviar el comentario" — `place_comments` (migración `0015`) probablemente aún no existe en la base real.
+- Banner de Zapallar "todavía sin enlaces cargados" — `contact_links` (migraciones `0012`/`0013`) aún sin poblar con `pnpm db:seed`.
+
+**Pedidos nuevos, todavía sin construir:**
+
+- Sugerir rutas nuevas basadas en lo que más busca la gente (`search_performed`/`filter_applied` en `analytics_events` ya se registran, pero nada los usa todavía) — falta definir el alcance: ¿un panel para que el admin vea qué se busca más y decida, o algo que arme un borrador de ruta automático? Son dos features muy distintas en esfuerzo.
+- Lightbox: poder abrir una foto a tamaño real/bien dimensionado al hacer clic, en vez de solo verla recortada en su miniatura.
+
+**Necesita una vuelta más de conversación antes de construir:**
+
+- "En `/explorar`, al pasar por las tarjetas no sale el popup con información" — ambiguo entre dos lecturas distintas: (a) en la vista de mapa, que el popup de un pin aparezca al pasar el mouse en vez de solo al hacer clic (hoy es `onClick`, ver `MapView`); o (b) en la vista de lista, que las tarjetas compactas (`PlaceCard`) muestren más info al pasar el mouse — pero esas tarjetas achicadas sin descripción/tags fueron un pedido explícito de una ronda anterior ("un tamaño más pequeño, parecido a recuadros de carpetas"), así que agregar contenido ahí de vuelta revierte esa decisión a propósito. Falta que el usuario diga cuál de las dos quiere (o ambas).
+- "Se demora mucho en algunos cambios de página" — sigue sin especificar cuáles; con esta ronda la ficha de lugar suma 2 consultas más (comentarios aprobados + conteo de "me gusta"), así que si el lugar es la ficha de lugar ya hay una pista concreta para optimizar, pero falta confirmar que sea ahí antes de tocar código a ciegas.
 
 ## Bitácora de decisiones
 
@@ -486,5 +510,11 @@ Tareas:
 
 - 2026-09-26: El usuario pide sumar comentarios de lugares ("con la sesión que uno entra, dejar un comentario... para que se vayan ganando reputación"). Antes de construirlo se le pregunta cómo moderar — un comentario de texto libre puede ser negativo o inapropiado, algo que el proyecto evita en todo el resto del sitio — y elige moderación previa del admin en vez de publicación inmediata. Se agrega `place_comments` (migración `0015`) con `status` (`pending`/`approved`/`rejected`), RLS que solo expone lo aprobado al público, `submitComment`/`moderateComment` en `lib/server/content/comments.ts`, formulario en la ficha de lugar (deja explícito que se publica tras revisión) y una cola de moderación real en `/admin/verificaciones` (deja de ser placeholder — primera pieza real del panel admin). De paso, `lib/likes/session.ts` se renombra a `lib/session/visitor-session.ts` (misma clave de `localStorage`, no se invalida a nadie) para que "me gusta" y comentarios compartan un solo concepto de sesión anónima.
   - Sin resolver esta ronda: el usuario también reportó "pantallas que están respondiendo lento" sin especificar cuáles — no hay suficiente información todavía para diagnosticar sin adivinar (podría ser un mapa, una carga de fotos, un cold start de Vercel); se le pregunta directamente qué pantalla y en qué condiciones antes de tocar nada, en vez de optimizar a ciegas.
+
+  `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.
+
+- 2026-09-27: El usuario prueba el PR #26 mergeado en producción y manda una tanda de feedback con capturas. Un hallazgo real y serio: **las fotos de Google se ven rotas en varios lugares** (cae al ícono de categoría en vez de la foto real, aunque el crédito de la foto sí aparece) — causado por el chequeo anti-abuso que se agregó a `/api/place-photo` en la ronda de seguridad anterior: comparaba el `ref` crudo contra `place_images.storage_path`, pero ese campo guarda la URL completa del proxy (`/api/place-photo?ref=...&w=...`), no el `ref` a secas — la comparación nunca coincidía y rechazaba **todas** las fotos de Google del sitio (26 de ~30). Se corrige parseando la URL guardada y comparando el `ref` ya decodificado (ver Riesgo #25).
+  - El resto del feedback se separa en tres baldes (ver sección 9.6): dos síntomas esperables mientras no se apliquen las migraciones `0012`–`0015`/`pnpm db:seed` (el formulario de comentarios y el banner municipal sin datos); dos pedidos nuevos sin construir (sugerir rutas según búsquedas populares, lightbox de fotos); y dos puntos que necesitan una respuesta del usuario antes de tocar código (qué significa exactamente el "popup" que espera en `/explorar`, y en qué pantalla específica nota la lentitud) — en vez de adivinar y arriesgarse a revertir una decisión de diseño ya tomada a propósito (el tamaño chico de `PlaceCard` fue un pedido explícito de una ronda anterior).
+  - El usuario también preguntó por qué existen dos proyectos de Vercel (`directorio-turistico` y `directorio-turistico-bgl3`) y cuál está roto — se le explicó la causa típica (el CLI de Vercel crea un proyecto nuevo con sufijo aleatorio si no se vinculó primero con `vercel link`, y cada proyecto tiene sus propias variables de entorno) y se le indicó qué revisar en su dashboard — esto es configuración de Vercel, fuera del alcance de este repo/sandbox.
 
   `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.

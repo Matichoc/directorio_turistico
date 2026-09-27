@@ -1199,6 +1199,83 @@ const routes = [
   },
 ] as const;
 
+// Auspiciadores del banner rotativo (`SponsorBanner`) — antes un solo slot
+// fijo (Matichoc, hardcodeado por env vars), ver migración
+// `0016_sponsors.sql`. Instagram de Matichoc queda sin confirmar todavía
+// (pendiente de que el usuario confirme la grafía exacta, ver
+// docs/PLAN.md) — se deja `null` en vez de adivinarlo. Ember Accesorios
+// solo tiene Instagram como link real (sin sitio propio conocido), y sin
+// tagline propia (el usuario no dio una, no se inventa).
+const sponsors = [
+  {
+    slug: "matichoc",
+    logoPath: "/brand/matichoc-logo.webp",
+    websiteUrl: "https://www.matichoc.cl",
+    instagramUrl: null as string | null,
+    position: 0,
+    es: {
+      name: "Matichoc",
+      tagline: "Chocolate artesanal hecho en La Ligua",
+    },
+    en: {
+      name: "Matichoc",
+      tagline: "Artisanal chocolate made in La Ligua",
+    },
+  },
+  {
+    slug: "ember-accesorios",
+    logoPath: "/brand/ember-accesorios-logo.png",
+    websiteUrl: null as string | null,
+    instagramUrl: "https://www.instagram.com/accesorios.ember",
+    position: 1,
+    es: { name: "Ember Accesorios", tagline: null as string | null },
+    en: { name: "Ember Accesorios", tagline: null as string | null },
+  },
+];
+
+async function seedSponsors() {
+  for (const sponsor of sponsors) {
+    const { data, error } = await supabase
+      .from("sponsors")
+      .upsert(
+        {
+          slug: sponsor.slug,
+          logo_path: sponsor.logoPath,
+          website_url: sponsor.websiteUrl,
+          instagram_url: sponsor.instagramUrl,
+          position: sponsor.position,
+          active: true,
+        },
+        { onConflict: "slug" },
+      )
+      .select("id")
+      .single();
+
+    if (error || !data)
+      throw error ?? new Error("No se pudo crear el auspiciador");
+
+    await supabase.from("sponsor_translations").upsert(
+      [
+        {
+          sponsor_id: data.id,
+          locale: "es",
+          name: sponsor.es.name,
+          tagline: sponsor.es.tagline,
+        },
+        {
+          sponsor_id: data.id,
+          locale: "en",
+          name: sponsor.en.name,
+          tagline: sponsor.en.tagline,
+        },
+      ],
+      { onConflict: "sponsor_id,locale" },
+    );
+  }
+
+  console.log(`✔ ${sponsors.length} auspiciadores`);
+}
+
 async function seedCommunes() {
   const communeIds: Record<string, string> = {};
 
@@ -1550,6 +1627,7 @@ async function removePlaces() {
 }
 
 async function main() {
+  await seedSponsors();
   const communeIds = await seedCommunes();
   await seedCommuneLinks(communeIds);
   const categoryIds = await seedCategories();

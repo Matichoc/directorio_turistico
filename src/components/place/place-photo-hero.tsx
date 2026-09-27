@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { PhotoOrIcon } from "@/components/place/photo-or-icon";
 import { CategoryBadge } from "@/components/place/category-badge";
 import { FeaturedBadge } from "@/components/place/featured-badge";
+import { PhotoLightbox } from "@/components/place/photo-lightbox";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 
 interface PlacePhoto {
@@ -52,6 +53,7 @@ export function PlacePhotoHero({
 }) {
   const t = useTranslations("place");
   const [index, setIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const current = photos[index] ?? null;
   const hasMultiple = photos.length > 1;
@@ -64,17 +66,38 @@ export function PlacePhotoHero({
     <div
       className={`relative mx-auto flex h-44 w-44 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br sm:h-64 sm:w-64 ${getCategoryGradient(categorySlug)}`}
     >
-      <PhotoOrIcon
-        key={current?.url ?? "placeholder"}
-        photoUrl={current?.url}
-        alt={name}
-        categorySlug={categorySlug}
-        icon={icon}
-        iconClassName="h-14 w-14 text-white/25"
-        imgClassName="object-cover object-[center_65%]"
-        sizes="(min-width: 640px) 256px, 176px"
-        quality={90}
-      />
+      {current ? (
+        <button
+          type="button"
+          onClick={() => setLightboxOpen(true)}
+          aria-label={t("viewFullSize")}
+          className="absolute inset-0 cursor-zoom-in"
+        >
+          <PhotoOrIcon
+            key={current.url}
+            photoUrl={current.url}
+            alt={name}
+            categorySlug={categorySlug}
+            icon={icon}
+            iconClassName="h-14 w-14 text-white/25"
+            imgClassName="object-cover object-[center_65%]"
+            sizes="(min-width: 640px) 256px, 176px"
+            quality={90}
+          />
+        </button>
+      ) : (
+        <PhotoOrIcon
+          key="placeholder"
+          photoUrl={undefined}
+          alt={name}
+          categorySlug={categorySlug}
+          icon={icon}
+          iconClassName="h-14 w-14 text-white/25"
+          imgClassName="object-cover object-[center_65%]"
+          sizes="(min-width: 640px) 256px, 176px"
+          quality={90}
+        />
+      )}
 
       <CategoryBadge
         categorySlug={categorySlug}
@@ -123,6 +146,14 @@ export function PlacePhotoHero({
           ? (current.attribution ?? t("photoCredit"))
           : t("photosComingSoon")}
       </span>
+
+      {lightboxOpen && current && (
+        <PhotoLightbox
+          photoUrl={current.url}
+          alt={name}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </div>
   );
 }

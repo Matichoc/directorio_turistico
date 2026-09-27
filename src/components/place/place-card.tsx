@@ -11,12 +11,18 @@ import type { PlaceCard as PlaceCardType } from "@/types/domain";
  * vista. La insignia de "pendiente de verificación" se saca del todo (es
  * el estado por defecto, ruido visual en una grilla chica); "verificado"
  * queda como un check discreto en vez del pill de texto de antes.
+ *
+ * Al pasar el mouse aparece la descripción breve como velo sobre toda la
+ * tarjeta (pedido del usuario) — no revierte la decisión anterior de
+ * mantenerla chica y sin texto por defecto, solo la revela al pasar el
+ * mouse en vez de mostrarla siempre. No-op si el lugar no tiene
+ * `shortDescription` (nunca se inventa una).
  */
 export function PlaceCard({ place }: { place: PlaceCardType }) {
   return (
     <Link
       href={{ pathname: "/lugares/[slug]", params: { slug: place.slug } }}
-      className={`group flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 dark:bg-white/[.03] ${
+      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-black/[.015] shadow-sm transition-all hover:-translate-y-0.5 dark:bg-white/[.03] ${
         place.isFeatured
           ? "border-amber-400 hover:shadow-[0_0_20px_2px_rgba(245,158,11,0.35)] dark:border-amber-500/70"
           : "border-accent-soft hover:border-accent hover:shadow-[0_0_20px_2px_var(--accent-soft)] dark:border-white/10"
@@ -55,6 +61,14 @@ export function PlaceCard({ place }: { place: PlaceCardType }) {
           {place.communeName}
         </p>
       </div>
+
+      {place.shortDescription && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/75 p-3 text-center opacity-0 transition-opacity group-hover:opacity-100">
+          <p className="line-clamp-6 text-xs text-white">
+            {place.shortDescription}
+          </p>
+        </div>
+      )}
     </Link>
   );
 }

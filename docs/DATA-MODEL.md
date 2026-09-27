@@ -77,29 +77,47 @@ Este server action queda pendiente de implementar en Fase de itinerarios.
   admin. Hoy poblada con el sitio/redes oficiales de las 5 municipalidades
   (`scripts/seed.ts`, `communeLinks`) — usada por `MunicipalityBanner` (home)
   y la sección de contactos de `/informacion`.
-- `place_likes` (migración `0014_place_likes.sql`): "me gusta" por lugar, solo
-  positivo (nunca reseña ni calificación negativa). Anónimo, atado a
-  `session_id` generado y guardado en el navegador
-  (`lib/session/visitor-session.ts`) — mismo espíritu que
-  `itineraries.session_id`, pero sin pasar por el cliente admin: RLS acepta
-  insert/delete anónimo (`using`/`with check (true)`), mismo nivel de
-  confianza que ya tolera `analytics_events`. El conteo público se expone
-  solo agregado vía `place_like_counts()` (función `security definer`), nunca
-  la tabla cruda con los `session_id`. Login opcional real (Google/Facebook)
-  puede sumarse después sin romper este mecanismo — ver `docs/PLAN.md`
-  sección 8.1.
-- `place_comments` (migración `0015_place_comments.sql`): comentario de texto
-  libre por lugar, para que "vayan ganando reputación" (pedido del usuario) —
-  pero con **moderación previa del admin** antes de publicarse (decisión
-  explícita del usuario, no publicación inmediata): un `status`
+- `place_likes` (migraciones `0014_place_likes.sql`, `0017_visitor_identity.sql`):
+  "me gusta" por lugar, solo positivo (nunca reseña ni calificación
+  negativa). Identidad real de Supabase Auth (`user_id uuid references
+auth.users`, `default auth.uid()`) en vez del `session_id` de texto
+  original — `ensureVisitorSession()` (`lib/session/visitor-session.ts`)
+  crea una sesión **anónima** (`supabase.auth.signInAnonymously()`, sin
+  email/contraseña) la primera vez que hace falta; RLS exige `user_id =
+auth.uid()` tanto para insertar como para borrar, cerrando el hueco que
+  tenía la v1 (cualquiera con la anon key podía dar/quitar un "me gusta"
+  con solo adivinar un `session_id` ajeno). El conteo público se expone
+  solo agregado vía `place_like_counts()` (función `security definer`),
+  nunca la tabla cruda. La sesión anónima puede subirse después a una
+  cuenta real de Google/Facebook (`linkIdentity()`) sin perder el
+  historial (mismo `user_id`) — ver `docs/PLAN.md` sección 8.1. Requiere
+  habilitar **"Allow anonymous sign-ins"** en Authentication → Settings
+  del dashboard de Supabase (un toggle, sin credenciales de terceros).
+- `place_comments` (migraciones `0015_place_comments.sql`,
+  `0017_visitor_identity.sql`): comentario de texto libre por lugar, para
+  que "vayan ganando reputación" (pedido del usuario) — pero con
+  **moderación previa del admin** antes de publicarse (decisión explícita
+  del usuario, no publicación inmediata): un `status`
   (`pending`/`approved`/`rejected`, default `pending`) gatea la lectura
   pública (`status = 'approved' or is_admin()`) y el insert (`with check
-(status = 'pending')`, así nadie se autoaprueba vía API). Mismo
-  `session_id` anónimo que `place_likes` — un solo identificador de visitante
-  para ambas features. `lib/server/content/comments.ts` tiene los dos server
-  actions (`submitComment`/`moderateComment`); `/admin/verificaciones` es hoy
-  la cola de moderación real (antes un placeholder puro) — primer uso real
+(status = 'pending' and user_id = auth.uid())`, así nadie se autoaprueba
+  ni suplanta a otro visitante vía API). Mismo `user_id` de sesión real que
+  `place_likes` — un solo identificador de visitante para ambas features.
+  `lib/server/content/comments.ts` tiene los dos server actions
+  (`submitComment`/`moderateComment`); `/admin/verificaciones` es hoy la
+  cola de moderación real (antes un placeholder puro) — primer uso real
   del panel admin en este proyecto.
+
+## Auspiciadores (2026-09-27)
+
+`sponsors` + `sponsor_translations` (migración `0016_sponsors.sql`): antes un
+solo slot fijo (Matichoc, hardcodeado por variables de entorno
+`NEXT_PUBLIC_SPONSOR_*`, ya retiradas). Ahora una lista real que
+`SponsorBanner` rota si hay más de uno (pedido del usuario al sumar Ember
+Accesorios como segundo auspiciador). Lectura pública de los `active`,
+escritura solo admin. Matichoc conserva su paleta de marca real (tokens
+`--sponsor*`) por ser un caso ya aprobado; el resto usa la paleta estándar
+del sitio (`--accent`) para no inventar un color de marca sin verificar.
 
 ## Analítica
 

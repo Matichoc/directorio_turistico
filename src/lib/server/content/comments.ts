@@ -7,22 +7,26 @@ import type { CommentStatus } from "@/types/database";
 
 const submitCommentSchema = z.object({
   placeId: z.uuid(),
-  sessionId: z.string().min(1),
   body: z.string().trim().min(1).max(500),
 });
 
 export interface SubmitCommentInput {
   placeId: string;
-  sessionId: string;
   body: string;
 }
 
 /**
- * Envía un comentario de un visitante anónimo — queda en `pending` hasta
- * que un administrador lo apruebe (ver `moderateComment` y
+ * Envía un comentario de un visitante — queda en `pending` hasta que un
+ * administrador lo apruebe (ver `moderateComment` y
  * `/admin/verificaciones`). Nunca se publica solo: la política RLS de
- * `place_comments` (0015_place_comments.sql) rechaza cualquier intento de
- * insertarlo en un estado distinto a `pending`.
+ * `place_comments` rechaza cualquier intento de insertarlo en un estado
+ * distinto a `pending`.
+ *
+ * La identidad (`user_id`) no la manda el cliente — la toma la propia
+ * base vía `default auth.uid()` (migración `0017_visitor_identity.sql`),
+ * a partir de la sesión de Supabase Auth que ya viaja en las cookies
+ * (`ensureVisitorSession()` la crea del lado del cliente antes de llamar
+ * a este server action). Si no hay sesión, el insert lo rechaza la RLS.
  */
 export async function submitComment(input: SubmitCommentInput) {
   const parsed = submitCommentSchema.parse(input);
@@ -30,7 +34,6 @@ export async function submitComment(input: SubmitCommentInput) {
 
   const { error } = await supabase.from("place_comments").insert({
     place_id: parsed.placeId,
-    session_id: parsed.sessionId,
     body: parsed.body,
   });
 

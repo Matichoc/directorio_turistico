@@ -983,7 +983,7 @@ const places = [
   },
   {
     slug: "pedegua-puente",
-    communeSlug: "cabildo",
+    communeSlug: "petorca",
     categorySlug: "naturaleza",
     icon: "casco-minero",
     latitude: -32.348696990370975,

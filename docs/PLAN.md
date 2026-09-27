@@ -558,3 +558,7 @@ El usuario respondió todo el feedback de 9.6 de una vez y pidió "pensar en gra
   - Quedan como decisiones/insumos pendientes del usuario: crear la cuenta de Upstash para el rate limiting distribuido, priorizar backend de "Mi recorrido" vs. terminar el panel admin, y aportar material real para las ~22 descripciones de lugares que faltan.
 
   `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.
+
+- 2026-09-27: **Se detecta trabajo perdido de una ronda anterior**: la corrección de "Puente Pedegua" (comuna Cabildo → Petorca, pedida por el usuario tras confirmar "también petorca por que es de pedegua") se había commiteado y pusheado (`fc1537a`/`a759daf`), pero **nunca llegó a mergearse** — un `git checkout -B ... origin/main` posterior (hecho tras una notificación de "PR mergeado" que en realidad correspondía a un estado anterior de la rama, sin esos dos commits todavía) reinició la rama y los descartó silenciosamente, sin que se notara hasta ahora. Se vuelve a aplicar el fix (`pedegua-puente.communeSlug` → `petorca`). Lección para no repetir: antes de resetear la rama tras un aviso de "PR mergeado", verificar que el SHA mergeado realmente incluya el último commit pusheado (no asumirlo solo por el aviso) — si hay commits locales/pusheados más nuevos que el SHA mergeado, hay que abrir un PR nuevo para ellos en vez de descartarlos con el reset.
+
+  `pnpm typecheck`/`lint` verdes (gate completo al final de esta ronda).

@@ -16,6 +16,7 @@ const DEFAULT_AVERAGE_SPEED_KMH = 40;
 export function buildItineraryInOrder(
   places: ItineraryPlaceInput[],
   averageSpeedKmh = DEFAULT_AVERAGE_SPEED_KMH,
+  returnToStart = false,
 ): Itinerary {
   if (places.length === 0) {
     return {
@@ -23,6 +24,8 @@ export function buildItineraryInOrder(
       totalDurationMinutes: 0,
       totalDistanceKm: 0,
       skippedPlaceIds: [],
+      returnLegDistanceKm: null,
+      returnLegDurationMinutes: null,
     };
   }
 
@@ -58,5 +61,21 @@ export function buildItineraryInOrder(
     previous = place;
   }
 
-  return { stops, totalDurationMinutes, totalDistanceKm, skippedPlaceIds: [] };
+  let returnLegDistanceKm: number | null = null;
+  let returnLegDurationMinutes: number | null = null;
+  if (returnToStart && places.length > 1) {
+    returnLegDistanceKm = haversineDistanceKm(previous!, places[0]!);
+    returnLegDurationMinutes = (returnLegDistanceKm / averageSpeedKmh) * 60;
+    totalDurationMinutes += returnLegDurationMinutes;
+    totalDistanceKm += returnLegDistanceKm;
+  }
+
+  return {
+    stops,
+    totalDurationMinutes,
+    totalDistanceKm,
+    skippedPlaceIds: [],
+    returnLegDistanceKm,
+    returnLegDurationMinutes,
+  };
 }

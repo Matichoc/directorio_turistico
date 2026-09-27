@@ -12,9 +12,13 @@ import {
   clearTrip,
   getTripOrderMode,
   getTripPlaceIds,
+  getTripReturnToStart,
+  getTripStartPlaceId,
   removeTripPlace,
   reorderTripPlaces,
   resetTripOrder,
+  setTripReturnToStart,
+  setTripStartPlace,
   TRIP_EVENT,
   type TripOrderMode,
 } from "@/lib/trip/storage";
@@ -40,6 +44,8 @@ export function TripView({ locale }: { locale: Locale }) {
   const t = useTranslations("trip");
   const [placeIds, setPlaceIds] = useState<string[] | null>(null);
   const [orderMode, setOrderMode] = useState<TripOrderMode>("auto");
+  const [startPlaceId, setStartPlaceId] = useState<string | null>(null);
+  const [returnToStart, setReturnToStart] = useState(false);
   const [places, setPlaces] = useState<PlaceCard[] | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [highlightedSlug, setHighlightedSlug] = useState<string | null>(null);
@@ -47,13 +53,17 @@ export function TripView({ locale }: { locale: Locale }) {
   useEffect(() => {
     let cancelled = false;
     async function sync() {
-      const [ids, mode] = await Promise.all([
+      const [ids, mode, startId, returnValue] = await Promise.all([
         getTripPlaceIds(),
         getTripOrderMode(),
+        getTripStartPlaceId(),
+        getTripReturnToStart(),
       ]);
       if (cancelled) return;
       setPlaceIds(ids);
       setOrderMode(mode);
+      setStartPlaceId(startId);
+      setReturnToStart(returnValue);
     }
     void sync();
     window.addEventListener(TRIP_EVENT, sync);
@@ -120,10 +130,40 @@ export function TripView({ locale }: { locale: Locale }) {
       longitude: place.longitude,
       visitDurationMinutes: DEFAULT_VISIT_MINUTES,
     }));
-    return orderMode === "manual"
-      ? ItineraryEngine.buildInOrder(placeInputs)
-      : ItineraryEngine.build({ places: placeInputs });
-  }, [orderedPlaces, orderMode]);
+
+    if (orderMode === "manual") {
+      // En modo manual el "inicio" ya lo eligió el usuario arrastrando la
+      // parada al primer lugar — el selector de inicio solo tiene sentido
+      // en modo automático (ver más abajo).
+      return ItineraryEngine.buildInOrder(
+        placeInputs,
+        undefined,
+        returnToStart,
+      );
+    }
+
+    const startIndex = startPlaceId
+      ? Math.max(
+          0,
+          placeInputs.findIndex((place) => place.id === startPlaceId),
+        )
+      : 0;
+    return ItineraryEngine.build({
+      places: placeInputs,
+      startIndex,
+      returnToStart,
+    });
+  }, [orderedPlaces, orderMode, startPlaceId, returnToStart]);
+
+  function handleStartPlaceChange(placeId: string) {
+    setStartPlaceId(placeId);
+    void setTripStartPlace(placeId);
+  }
+
+  function handleReturnToStartChange(value: boolean) {
+    setReturnToStart(value);
+    void setTripReturnToStart(value);
+  }
 
   /** Sube/baja una parada e inmediatamente pasa a orden manual (ver storage). */
   function moveStop(index: number, direction: -1 | 1) {
@@ -195,6 +235,49 @@ export function TripView({ locale }: { locale: Locale }) {
           </dd>
         </div>
       </dl>
+
+      {itinerary.returnLegDistanceKm !== null &&
+        itinerary.returnLegDurationMinutes !== null && (
+          <p className="text-foreground/60 text-xs">
+            {t("returnLeg", {
+              place: itinerary.stops[0]?.name ?? "",
+              duration: formatDuration(itinerary.returnLegDurationMinutes),
+              distance: itinerary.returnLegDistanceKm.toFixed(1),
+            })}
+          </p>
+        )}
+
+      {itinerary.stops.length > 1 && (
+        <div className="border-accent-soft flex flex-col gap-2 rounded-xl border p-3 text-sm dark:border-white/10">
+          {orderMode === "auto" && (
+            <label className="flex flex-col gap-1">
+              <span className="text-foreground/60 text-xs">{t("startAt")}</span>
+              <select
+                value={startPlaceId ?? itinerary.stops[0]?.placeId ?? ""}
+                onChange={(event) => handleStartPlaceChange(event.target.value)}
+                className="border-accent-soft rounded-lg border bg-transparent px-2 py-1.5 text-sm dark:border-white/15"
+              >
+                {orderedPlaces?.map((place) => (
+                  <option key={place.id} value={place.id}>
+                    {place.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={returnToStart}
+              onChange={(event) =>
+                handleReturnToStartChange(event.target.checked)
+              }
+              className="accent-accent h-4 w-4"
+            />
+            {t("returnToStart")}
+          </label>
+        </div>
+      )}
 
       {itinerary.skippedPlaceIds.length > 0 && (
         <p className="text-foreground/60 rounded-lg bg-amber-100 px-3 py-2 text-xs dark:bg-amber-900/30">

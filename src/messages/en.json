@@ -135,7 +135,10 @@
     "moveUp": "Move up",
     "moveDown": "Move down",
     "orderManualNotice": "Your custom order — no longer recalculated automatically.",
-    "optimizeAuto": "Optimize automatically"
+    "optimizeAuto": "Optimize automatically",
+    "startAt": "Starts at",
+    "returnToStart": "Return to the starting point at the end",
+    "returnLeg": "Return to {place}: {duration} · {distance} km"
   },
   "common": {
     "loading": "Loading…",

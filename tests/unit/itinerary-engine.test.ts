@@ -108,6 +108,75 @@ describe("ItineraryEngine.build", () => {
     ]);
   });
 
+  it("adds the return leg to the totals when returnToStart is set", () => {
+    const withoutReturn = ItineraryEngine.build({ places });
+    const withReturn = ItineraryEngine.build({
+      places,
+      returnToStart: true,
+    });
+
+    expect(withReturn.returnLegDistanceKm).not.toBeNull();
+    expect(withReturn.returnLegDurationMinutes).not.toBeNull();
+    expect(withReturn.totalDistanceKm).toBeGreaterThan(
+      withoutReturn.totalDistanceKm,
+    );
+    // El propio orden de paradas no debería cambiar para este set (las
+    // distancias son chicas y monótonas), solo los totales.
+    expect(withReturn.stops.map((stop) => stop.placeId)).toEqual(
+      withoutReturn.stops.map((stop) => stop.placeId),
+    );
+  });
+
+  it("returnToStart can change the optimal order, not just the totals", () => {
+    // Cuadrado: a-b-c-d en sentido horario. Sin vuelta, el orden óptimo
+    // desde "a" es a-b-c-d (o cualquier rotación) igual de corto que
+    // a-d-c-b para un camino abierto. Con vuelta al origen, ambos also dan
+    // el mismo total (es un ciclo) — así que en vez de eso se prueba que
+    // el total con vuelta sea igual a recorrer las 4 aristas del cuadrado.
+    const square: ItineraryPlaceInput[] = [
+      {
+        id: "a",
+        name: "A",
+        latitude: 0,
+        longitude: 0,
+        visitDurationMinutes: 0,
+      },
+      {
+        id: "b",
+        name: "B",
+        latitude: 0,
+        longitude: 1,
+        visitDurationMinutes: 0,
+      },
+      {
+        id: "c",
+        name: "C",
+        latitude: 1,
+        longitude: 1,
+        visitDurationMinutes: 0,
+      },
+      {
+        id: "d",
+        name: "D",
+        latitude: 1,
+        longitude: 0,
+        visitDurationMinutes: 0,
+      },
+    ];
+
+    const result = ItineraryEngine.build({
+      places: square,
+      returnToStart: true,
+    });
+    // Perímetro del cuadrado unitario: 4 lados de longitud 1 (en grados,
+    // aproximado por haversine) — el total con vuelta debe acercarse a 4
+    // veces un lado, no a un camino abierto más corto que se salte una
+    // arista.
+    const oneSideKm = result.totalDistanceKm / 4;
+    expect(result.totalDistanceKm).toBeCloseTo(oneSideKm * 4, 5);
+    expect(result.returnLegDistanceKm).toBeCloseTo(oneSideKm, 1);
+  });
+
   it("falls back to nearest-neighbor without hanging past EXACT_ORDER_STOPS_LIMIT", () => {
     const manyPlaces: ItineraryPlaceInput[] = Array.from(
       { length: EXACT_ORDER_STOPS_LIMIT + 1 },
@@ -146,5 +215,15 @@ describe("ItineraryEngine.buildInOrder", () => {
     const result = ItineraryEngine.buildInOrder(places);
     expect(result.stops).toHaveLength(places.length);
     expect(result.skippedPlaceIds).toHaveLength(0);
+  });
+
+  it("adds the return leg when returnToStart is set", () => {
+    const withoutReturn = ItineraryEngine.buildInOrder(places);
+    const withReturn = ItineraryEngine.buildInOrder(places, undefined, true);
+
+    expect(withReturn.returnLegDistanceKm).not.toBeNull();
+    expect(withReturn.totalDistanceKm).toBeGreaterThan(
+      withoutReturn.totalDistanceKm,
+    );
   });
 });

@@ -172,6 +172,8 @@ type ItineraryRow = {
   user_id: string;
   name: string | null;
   order_mode: "auto" | "manual";
+  start_place_id: string | null;
+  return_to_start: boolean;
   created_at: string;
 };
 

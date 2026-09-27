@@ -27,6 +27,7 @@ export const EXACT_ORDER_STOPS_LIMIT = 10;
 export function findOptimalOrder(
   places: ItineraryPlaceInput[],
   startIndex = 0,
+  returnToStart = false,
 ): number[] {
   if (places.length <= 2) {
     return places.map((_, index) => index);
@@ -41,8 +42,20 @@ export function findOptimalOrder(
 
   function search(currentDistanceKm: number) {
     if (order.length === places.length) {
-      if (currentDistanceKm < bestDistanceKm) {
-        bestDistanceKm = currentDistanceKm;
+      // El tramo de vuelta solo se suma acá, al comparar el recorrido
+      // completo — las podas de más abajo siguen siendo válidas porque
+      // agregar el tramo de vuelta nunca puede *mejorar* la distancia
+      // parcial ya recorrida.
+      const totalDistanceKm = returnToStart
+        ? currentDistanceKm +
+          haversineDistanceKm(
+            places[order[order.length - 1]!]!,
+            places[startIndex]!,
+          )
+        : currentDistanceKm;
+
+      if (totalDistanceKm < bestDistanceKm) {
+        bestDistanceKm = totalDistanceKm;
         bestOrder = [...order];
       }
       return;

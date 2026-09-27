@@ -21,21 +21,32 @@ export default function AdminLoginPage() {
     setError(null);
     setLoading(true);
 
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    setLoading(false);
+      if (signInError) {
+        setError(signInError.message);
+        return;
+      }
 
-    if (signInError) {
-      setError(signInError.message);
-      return;
+      router.replace("/admin");
+      router.refresh();
+    } catch (error) {
+      // Por ejemplo si faltan las env vars de Supabase en este deployment
+      // (NEXT_PUBLIC_SUPABASE_URL/ANON_KEY): sin este catch, el botón se
+      // quedaba en "Ingresando…" para siempre, sin ningún mensaje.
+      setError(
+        error instanceof Error
+          ? error.message
+          : "No se pudo conectar con el servidor. Intenta de nuevo.",
+      );
+    } finally {
+      setLoading(false);
     }
-
-    router.replace("/admin");
-    router.refresh();
   }
 
   return (

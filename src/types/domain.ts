@@ -65,6 +65,16 @@ export interface Commune {
   name: string;
 }
 
+export interface Sponsor {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string | null;
+  logoPath: string;
+  websiteUrl: string | null;
+  instagramUrl: string | null;
+}
+
 export interface MunicipalityLink {
   kind: string;
   value: string;

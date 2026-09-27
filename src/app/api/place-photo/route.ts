@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { getClientIp, isRateLimited } from "@/lib/http/rate-limit";
+import { GOOGLE_PLACE_PHOTO_PREFIX } from "@/lib/data/google-photo-prefix";
 
 const PHOTO_REF_PATTERN = /^places\/[\w-]+\/photos\/[\w-]+$/;
 const DEFAULT_MAX_WIDTH_PX = 1200;
@@ -37,15 +38,30 @@ export async function GET(request: NextRequest) {
   // del catálogo — sin este chequeo, cualquiera podría inventar refs con
   // esa forma y hacer que este proxy le pida a Google fotos que no existen
   // en `place_images`, gastando cuota/facturación real sin ningún control.
+  //
+  // `place_images.storage_path` no guarda el `ref` a secas: guarda la URL
+  // completa del proxy tal como la arma `fetch-google-photos.ts`
+  // (`GOOGLE_PLACE_PHOTO_PREFIX + encodeURIComponent(ref) + "&w=..."`), así
+  // que hay que parsearla para comparar el `ref` real — compararla contra
+  // el `ref` crudo (o meterlo en un `like` sin escapar, que trata sus
+  // propios `%XX` de la codificación como comodines) nunca iba a encontrar
+  // nada y tiraba abajo TODAS las fotos de Google del sitio (bug real,
+  // reportado en vivo: "algunos lugares se ve bien, los otros no").
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
-    const { data: existing } = await supabase
+    const { data: candidates } = await supabase
       .from("place_images")
-      .select("id")
-      .eq("storage_path", ref)
-      .maybeSingle();
+      .select("storage_path")
+      .like("storage_path", `${GOOGLE_PLACE_PHOTO_PREFIX}%`);
 
-    if (!existing) {
+    const isKnownRef = (candidates ?? []).some(
+      (image) =>
+        new URL(image.storage_path, "http://placeholder").searchParams.get(
+          "ref",
+        ) === ref,
+    );
+
+    if (!isKnownRef) {
       return NextResponse.json({ error: "invalid_ref" }, { status: 400 });
     }
   }

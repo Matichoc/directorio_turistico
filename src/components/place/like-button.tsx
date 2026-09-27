@@ -3,7 +3,7 @@
 import { useEffect, useState, type SVGProps } from "react";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
-import { getVisitorSessionId } from "@/lib/session/visitor-session";
+import { ensureVisitorSession } from "@/lib/session/visitor-session";
 import {
   isPlaceLiked,
   markPlaceLiked,
@@ -33,10 +33,12 @@ function HeartIcon({
 
 /**
  * "Me gusta" por lugar — solo positivo, nunca reseña ni calificación
- * negativa (pedido explícito del usuario). Anónimo por sesión de
- * navegador (`getVisitorSessionId`, ver migración `0014_place_likes.sql`):
- * no requiere login, aunque uno opcional (Google/Facebook) puede sumarse
- * después sin cambiar este mecanismo, ver docs/PLAN.md sección 8.1.
+ * negativa (pedido explícito del usuario). Identidad real de Supabase
+ * Auth (`ensureVisitorSession`, anónima por defecto — ver migración
+ * `0017_visitor_identity.sql`): no requiere email/contraseña, pero ya no
+ * es un `session_id` que cualquiera podía inventar. Login opcional real
+ * (Google/Facebook) puede sumarse después sin perder el historial, ver
+ * docs/PLAN.md sección 8.1.
  *
  * El conteo se pide vía `place_like_counts()` (RPC, agregado — nunca la
  * tabla cruda) y el estado "¿ya le di me gusta?" se guarda localmente
@@ -92,20 +94,20 @@ export function LikeButton({ placeId }: { placeId: string }) {
     applyLiked(!wasLiked);
 
     const supabase = createClient();
-    const sessionId = getVisitorSessionId();
 
     try {
+      await ensureVisitorSession();
+
       if (wasLiked) {
         const { error } = await supabase
           .from("place_likes")
           .delete()
-          .eq("place_id", placeId)
-          .eq("session_id", sessionId);
+          .eq("place_id", placeId);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from("place_likes")
-          .insert({ place_id: placeId, session_id: sessionId });
+          .insert({ place_id: placeId });
         if (error) throw error;
         track({ name: "place_liked", properties: { placeId } });
       }

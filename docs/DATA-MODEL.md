@@ -54,17 +54,28 @@ dos FKs nullable (`place_id`, `route_id`) con un `check` de exclusividad.
 
 Ambas tablas son de solo-admin en RLS (no se exponen públicamente en Fase 0).
 
-## Itinerarios
+## Itinerarios (2026-09-27: backend real)
 
-`itineraries`/`itinerary_stops` son anónimos: se identifican por `session_id`
-(un string generado en el cliente), no por `auth.users`. **Decisión de
-seguridad**: la política RLS es deny-by-default para `anon`/`authenticated`
-(solo `is_admin()` puede leer/escribir directamente vía PostgREST). El acceso
-real del visitante debe implementarse como server actions que reciban el
-`session_id` desde una cookie/localStorage y usen el cliente admin — así se
-evita que cualquiera con la anon key pueda listar todos los itinerarios
-(`select * from itineraries` sería público si la política fuera `using (true)`).
-Este server action queda pendiente de implementar en Fase de itinerarios.
+`itineraries`/`itinerary_stops` respaldan de verdad el carrito de "Mi
+recorrido" — hasta la migración `0018_itinerary_backend.sql` vivían sin usar,
+mientras la app guardaba todo en `localStorage` (Riesgo #13). Se identifican
+por `user_id uuid references auth.users` (`default auth.uid()`), la misma
+sesión real de visitante que `place_likes`/`place_comments`
+(`lib/session/visitor-session.ts`) — ya no por el `session_id` de texto
+original. RLS scoped a `user_id = auth.uid() (or is_admin())`, tanto en
+`itineraries` como en `itinerary_stops` (vía subconsulta a su itinerario
+padre): el propio cliente lee/escribe su recorrido directo, sin pasar por el
+cliente admin como planteaba el diseño original de este documento.
+
+`unique(user_id)` en `itineraries`: un solo itinerario activo por
+visitante, coincide con la UX de hoy (un carrito, no una lista de viajes
+guardados). `order_mode` (`auto`/`manual`) vive en `itineraries` en vez de en
+`localStorage` aparte, como antes. El `unique(itinerary_id, position)`
+original de `itinerary_stops` se relaja (se quita la constraint): reordenar a
+mano actualiza posiciones una fila a la vez vía PostgREST (no en una sola
+transacción), así que dos filas pueden coincidir de forma transitoria durante
+un intercambio — el orden visual sigue siendo correcto (`order by position`),
+un empate se resuelve arbitrario pero estable.
 
 ## Contactos y "me gusta" (2026-09-26)
 
@@ -77,29 +88,47 @@ Este server action queda pendiente de implementar en Fase de itinerarios.
   admin. Hoy poblada con el sitio/redes oficiales de las 5 municipalidades
   (`scripts/seed.ts`, `communeLinks`) — usada por `MunicipalityBanner` (home)
   y la sección de contactos de `/informacion`.
-- `place_likes` (migración `0014_place_likes.sql`): "me gusta" por lugar, solo
-  positivo (nunca reseña ni calificación negativa). Anónimo, atado a
-  `session_id` generado y guardado en el navegador
-  (`lib/session/visitor-session.ts`) — mismo espíritu que
-  `itineraries.session_id`, pero sin pasar por el cliente admin: RLS acepta
-  insert/delete anónimo (`using`/`with check (true)`), mismo nivel de
-  confianza que ya tolera `analytics_events`. El conteo público se expone
-  solo agregado vía `place_like_counts()` (función `security definer`), nunca
-  la tabla cruda con los `session_id`. Login opcional real (Google/Facebook)
-  puede sumarse después sin romper este mecanismo — ver `docs/PLAN.md`
-  sección 8.1.
-- `place_comments` (migración `0015_place_comments.sql`): comentario de texto
-  libre por lugar, para que "vayan ganando reputación" (pedido del usuario) —
-  pero con **moderación previa del admin** antes de publicarse (decisión
-  explícita del usuario, no publicación inmediata): un `status`
+- `place_likes` (migraciones `0014_place_likes.sql`, `0017_visitor_identity.sql`):
+  "me gusta" por lugar, solo positivo (nunca reseña ni calificación
+  negativa). Identidad real de Supabase Auth (`user_id uuid references
+auth.users`, `default auth.uid()`) en vez del `session_id` de texto
+  original — `ensureVisitorSession()` (`lib/session/visitor-session.ts`)
+  crea una sesión **anónima** (`supabase.auth.signInAnonymously()`, sin
+  email/contraseña) la primera vez que hace falta; RLS exige `user_id =
+auth.uid()` tanto para insertar como para borrar, cerrando el hueco que
+  tenía la v1 (cualquiera con la anon key podía dar/quitar un "me gusta"
+  con solo adivinar un `session_id` ajeno). El conteo público se expone
+  solo agregado vía `place_like_counts()` (función `security definer`),
+  nunca la tabla cruda. La sesión anónima puede subirse después a una
+  cuenta real de Google/Facebook (`linkIdentity()`) sin perder el
+  historial (mismo `user_id`) — ver `docs/PLAN.md` sección 8.1. Requiere
+  habilitar **"Allow anonymous sign-ins"** en Authentication → Settings
+  del dashboard de Supabase (un toggle, sin credenciales de terceros).
+- `place_comments` (migraciones `0015_place_comments.sql`,
+  `0017_visitor_identity.sql`): comentario de texto libre por lugar, para
+  que "vayan ganando reputación" (pedido del usuario) — pero con
+  **moderación previa del admin** antes de publicarse (decisión explícita
+  del usuario, no publicación inmediata): un `status`
   (`pending`/`approved`/`rejected`, default `pending`) gatea la lectura
   pública (`status = 'approved' or is_admin()`) y el insert (`with check
-(status = 'pending')`, así nadie se autoaprueba vía API). Mismo
-  `session_id` anónimo que `place_likes` — un solo identificador de visitante
-  para ambas features. `lib/server/content/comments.ts` tiene los dos server
-  actions (`submitComment`/`moderateComment`); `/admin/verificaciones` es hoy
-  la cola de moderación real (antes un placeholder puro) — primer uso real
+(status = 'pending' and user_id = auth.uid())`, así nadie se autoaprueba
+  ni suplanta a otro visitante vía API). Mismo `user_id` de sesión real que
+  `place_likes` — un solo identificador de visitante para ambas features.
+  `lib/server/content/comments.ts` tiene los dos server actions
+  (`submitComment`/`moderateComment`); `/admin/verificaciones` es hoy la
+  cola de moderación real (antes un placeholder puro) — primer uso real
   del panel admin en este proyecto.
+
+## Auspiciadores (2026-09-27)
+
+`sponsors` + `sponsor_translations` (migración `0016_sponsors.sql`): antes un
+solo slot fijo (Matichoc, hardcodeado por variables de entorno
+`NEXT_PUBLIC_SPONSOR_*`, ya retiradas). Ahora una lista real que
+`SponsorBanner` rota si hay más de uno (pedido del usuario al sumar Ember
+Accesorios como segundo auspiciador). Lectura pública de los `active`,
+escritura solo admin. Matichoc conserva su paleta de marca real (tokens
+`--sponsor*`) por ser un caso ya aprobado; el resto usa la paleta estándar
+del sitio (`--accent`) para no inventar un color de marca sin verificar.
 
 ## Analítica
 

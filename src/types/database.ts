@@ -169,8 +169,9 @@ type VerificationLogRow = {
 
 type ItineraryRow = {
   id: string;
-  session_id: string;
+  user_id: string;
   name: string | null;
+  order_mode: "auto" | "manual";
   created_at: string;
 };
 
@@ -203,14 +204,32 @@ type ContactLinkRow = {
 type PlaceLikeRow = {
   id: string;
   place_id: string;
-  session_id: string;
+  user_id: string;
   created_at: string;
+};
+
+type SponsorRow = {
+  id: string;
+  slug: string;
+  logo_path: string;
+  website_url: string | null;
+  instagram_url: string | null;
+  position: number;
+  active: boolean;
+  created_at: string;
+};
+
+type SponsorTranslationRow = {
+  sponsor_id: string;
+  locale: Locale;
+  name: string;
+  tagline: string | null;
 };
 
 type PlaceCommentRow = {
   id: string;
   place_id: string;
-  session_id: string;
+  user_id: string;
   body: string;
   status: CommentStatus;
   created_at: string;
@@ -356,7 +375,7 @@ export interface Database {
       >;
       itineraries: Table<
         ItineraryRow,
-        Partial<ItineraryRow> & { session_id: string },
+        Partial<ItineraryRow>,
         Partial<ItineraryRow>
       >;
       itinerary_stops: Table<
@@ -385,14 +404,27 @@ export interface Database {
       >;
       place_likes: Table<
         PlaceLikeRow,
-        Partial<PlaceLikeRow> & { place_id: string; session_id: string },
+        Partial<PlaceLikeRow> & { place_id: string },
         Partial<PlaceLikeRow>
+      >;
+      sponsors: Table<
+        SponsorRow,
+        Partial<SponsorRow> & { slug: string; logo_path: string },
+        Partial<SponsorRow>
+      >;
+      sponsor_translations: Table<
+        SponsorTranslationRow,
+        Partial<SponsorTranslationRow> & {
+          sponsor_id: string;
+          locale: Locale;
+          name: string;
+        },
+        Partial<SponsorTranslationRow>
       >;
       place_comments: Table<
         PlaceCommentRow,
         Partial<PlaceCommentRow> & {
           place_id: string;
-          session_id: string;
           body: string;
         },
         Partial<PlaceCommentRow>

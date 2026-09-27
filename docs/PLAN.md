@@ -134,6 +134,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
     - `/api/place-photo` y `/api/directions` (proxies a Google Places/Routes, con costo real por llamada) no tenían ningún límite de tasa ni verificaban que el `ref` pedido fuera una foto real del catálogo — cualquiera podía inventar refs con la forma correcta y hacer que el proxy gastara cuota/facturación de Google sin control. Se agrega `lib/http/rate-limit.ts` (limitador simple en memoria, por IP — **no es distribuido**: en Vercel cada instancia serverless tiene su propia memoria, así que el límite real es "por instancia"; si el tráfico real muestra que no basta, la solución correcta es un limitador distribuido tipo Upstash Redis, decisión pendiente de confirmar con el usuario) y, en `/api/place-photo`, un chequeo contra `place_images.storage_path` antes de llamar a Google.
 
 24. Backlog nuevo (ver sección 8): **Instagram no tiene un login de consumidor simple** (Meta lo trata como conexión de cuenta profesional/creador, con revisión de app) — se prioriza Google + Facebook para el login opcional de "me gusta", Instagram queda pendiente de evaluar aparte. Además, **no existe una vía viable de traer automáticamente "eventos destacados" de las redes de cada municipio** (requeriría acceso de administrador a su página, que no vamos a conseguir, y este sandbox tampoco tiene salida de red hacia redes sociales para probarlo) — se opta por contenido curado a mano (mismo patrón que fotos/destacados de auspicio) en vez de una integración automática.
+25. **Bug real 2026-09-27, reportado en vivo por el usuario** ("algunos lugares se ve bien, los otros al entrar no se ven las fotos"): el chequeo anti-abuso agregado a `/api/place-photo` en la ronda anterior (Riesgo #23) comparaba el `ref` crudo contra `place_images.storage_path` — pero `storage_path` para una foto de Google no guarda el `ref` a secas, guarda la URL completa del proxy (`/api/place-photo?ref=<ref codificado>&w=...`, ver `GOOGLE_PLACE_PHOTO_PREFIX`). La comparación nunca podía coincidir, así que **todas** las fotos de Google (26 de las ~30 con foto) quedaban rechazadas (`invalid_ref`) y caían al ícono de categoría — mientras las fotos de Wikimedia/locales (URLs directas, no pasan por este proxy) seguían viéndose bien, lo que explica el patrón "unos sí, otros no". Se corrige parseando `storage_path` como URL y comparando el `ref` real ya decodificado, en vez de comparar strings crudos o meterlo sin escapar en un `like` (sus propios `%XX` de la codificación se leerían como comodines). De paso, `GOOGLE_PLACE_PHOTO_PREFIX` se mueve de `scripts/lib/` a `src/lib/data/google-photo-prefix.ts` — ya no es un detalle interno de un script, lo necesita también la ruta de la app.
 
 ## 6. Fase 0 — tareas
 
@@ -174,22 +175,28 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 
 **Objetivo**: poder marcar "me gusta" en un lugar sin reseña de texto libre ni calificación negativa, solo un contador positivo. El usuario relajó el pedido original ("login con Instagram/Facebook/Google") a "al menos un login, o identificador de sesión" — suficiente para guardar la ruta y recomendar mejor lo que se ve, sin depender de credenciales OAuth que aún no existen.
 
-**Enfoque técnico e implementación (2026-09-26)**:
+**Enfoque técnico e implementación**:
 
-- **Fase 1a (implementada)**: identificador de sesión anónimo generado y guardado en el navegador (`lib/likes/session.ts`, `crypto.randomUUID()` en `localStorage`, mismo espíritu que `itineraries.session_id`). Tabla `place_likes` (migración `0014_place_likes.sql`), RLS con el mismo nivel de confianza que ya tolera `analytics_events` (insert/delete anónimo, `using`/`with check (true)`) — aceptable para un contador de bajo riesgo. El conteo público se sirve agregado vía `place_like_counts()` (función `security definer`), nunca la tabla cruda con los `session_id`. `LikeButton` (`src/components/place/like-button.tsx`) en la ficha de lugar, junto a "Agregar a mi recorrido"/Compartir.
-- **Fase 1b (pendiente, sin bloquear lo anterior)**: login opcional real con Google + Facebook vía Supabase Auth (nativo). **Instagram no tiene un "iniciar sesión" de consumidor equivalente** — Meta lo trata como conexión de cuenta profesional/creador con revisión de app — queda de última prioridad. Esta fase permitiría además "recomendar mejor lo que se ve" (historial real por cuenta en vez de solo por navegador).
+- **Fase 1a (2026-09-26)**: identificador de sesión anónimo generado y guardado en el navegador (`crypto.randomUUID()` en `localStorage`).
+- **Fase 1a.5 — login real anónimo (2026-09-27, reemplaza la 1a)**: el usuario pidió explícitamente pasar a "login real... al menos un invitado que sea único para siempre con el mismo usuario". Se reemplaza el `session_id` casero por una sesión real de **Supabase Auth anónima** (`supabase.auth.signInAnonymously()`, `ensureVisitorSession()` en `lib/session/visitor-session.ts`) — migración `0017_visitor_identity.sql`: `place_likes`/`place_comments` pasan de `session_id text` a `user_id uuid references auth.users`, con `default auth.uid()` (ni `LikeButton` ni `submitComment` necesitan mandar la identidad a mano) y RLS que exige `user_id = auth.uid()` — cierra el hueco real que tenía la v1 (cualquiera con la anon key podía dar/quitar un "me gusta" adivinando un `session_id` ajeno). Requiere que el usuario habilite **"Allow anonymous sign-ins"** en Authentication → Settings del dashboard de Supabase (un toggle, sin credenciales de terceros) — sin eso, `signInAnonymously()` falla y el botón de "me gusta"/el formulario de comentarios muestran su error ya manejado, no rompen la página.
+- **Fase 1b (pendiente, sin bloquear lo anterior)**: subir esa sesión anónima a una cuenta real de Google/Facebook (`supabase.auth.linkIdentity()`) sin perder el historial (mismo `user_id`) — recién ahí hace falta pedirle al usuario las credenciales OAuth. **Instagram sigue sin un "iniciar sesión" de consumidor equivalente** — Meta lo trata como conexión de cuenta profesional/creador con revisión de app — última prioridad.
 
 **Tareas**:
 
 - [x] Migración `place_likes` + RLS + `place_like_counts()`
-- [x] Identificador de sesión anónimo (`lib/likes/session.ts`) + caché local de "ya le di like" (`lib/likes/storage.ts`)
+- [x] Sesión anónima real vía Supabase Auth (`ensureVisitorSession()`), reemplazando el `session_id` casero
 - [x] Botón de "me gusta" + conteo en la ficha de lugar
-- [ ] Login opcional Google + Facebook vía Supabase Auth (Fase 1b, requiere credenciales del usuario)
+- [ ] Login opcional Google + Facebook vía `linkIdentity()` (Fase 1b, requiere credenciales del usuario)
 - [ ] Usar el historial de "me gusta"/lugares vistos para mejorar recomendaciones (motor de itinerarios o "también te puede interesar")
 
-**Qué falta del usuario** (solo para la Fase 1b, no bloquea lo ya construido):
+**Qué falta del usuario ahora mismo** (para que la Fase 1a.5 funcione en producción):
 
-- Client ID/Secret de Google OAuth y App ID/Secret de Facebook Login, configurados en el dashboard de Supabase (Authentication → Providers) — igual que `SUPABASE_SERVICE_ROLE_KEY`, este sandbox no tiene acceso a ese dashboard.
+- Habilitar **Authentication → Settings → "Allow anonymous sign-ins"** en el dashboard de Supabase — un solo toggle, sin nada más que configurar.
+- Aplicar la migración `0017_visitor_identity.sql` (borra cualquier "me gusta"/comentario de prueba hecho bajo el esquema anterior — no hay tráfico real todavía, así que no se pierde nada importante).
+
+**Qué falta del usuario para la Fase 1b** (no bloquea lo de arriba):
+
+- Client ID/Secret de Google OAuth y App ID/Secret de Facebook Login, configurados en el dashboard de Supabase (Authentication → Providers).
 
 ### 8.2 Banner rotativo con las 5 municipalidades
 
@@ -239,7 +246,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 
 ### 9.2 Seguridad — lo que sigue siendo una decisión de alcance
 
-- **Rate limiting distribuido real** (hoy es en memoria, por instancia — un atacante repartido entre varias funciones serverless lo esquiva). La opción estándar en Vercel es Upstash Redis + `@upstash/ratelimit` — implica una cuenta/servicio nuevo (gratis en su tier bajo, pero es una decisión, no algo para sumar sin avisar).
+- **Rate limiting distribuido real** (hoy es en memoria, por instancia — un atacante repartido entre varias funciones serverless lo esquiva). El usuario confirmó que quiere avanzar en esto ("Empezar a ver el rate limit para prevenir ataques") — la opción estándar en Vercel es Upstash Redis + `@upstash/ratelimit`: implica crear una cuenta en upstash.com (tiene tier gratis) y pasar `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` como variables de entorno — ninguna de las dos existe todavía en este proyecto, así que queda pendiente de que el usuario cree la cuenta y las comparta antes de escribir el código.
 - **`place_likes`/`analytics_events` aceptan escritura anónima sin verificar identidad real** (mismo diseño desde el día 1, documentado en `docs/DATA-MODEL.md`) — aceptable para un contador de bajo riesgo y telemetría anónima; dejaría de serlo si se le da más peso a los "me gusta" (por ejemplo, si algún día valen para destacar un lugar o cobrar por publicidad basada en popularidad).
 - **Panel admin sin CRUD real** (ver 9.3) es en sí mismo un tema de seguridad operativa: hoy el único modo de cambiar datos en producción es que el usuario corra `pnpm db:seed` con la `SUPABASE_SERVICE_ROLE_KEY` en su máquina — funciona, pero no queda registro de quién cambió qué ni cuándo (`verification_logs` existe en el esquema pero no se usa desde ningún flujo real).
 
@@ -253,18 +260,18 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 
 **El cuello de botella real hoy no es de tráfico, es de contenido/operación:**
 
-- El panel admin (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias`, `/admin/verificaciones`) sigue siendo un placeholder puro (~10 líneas cada uno). Mientras no exista, **cada cambio de datos pasa por `scripts/seed.ts` + `pnpm db:seed` + esta sesión de Claude Code** — no escala a que el usuario (o alguien del municipio, o un futuro auspiciador) cargue/edite algo sin pedirlo acá. Es, con diferencia, la pieza que más limita crecer el catálogo o vender más destacados (Riesgo #21).
-- `SponsorBanner` sigue siendo un slot fijo (Matichoc, hardcodeado por env var) — no soporta más de un auspiciador todavía.
+- El panel admin (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias`) sigue siendo un placeholder puro (~10 líneas cada uno) — `/admin/verificaciones` ya es real desde la ronda de comentarios. Mientras no exista el resto, **cada cambio de datos pasa por `scripts/seed.ts` + `pnpm db:seed` + esta sesión de Claude Code** — no escala a que el usuario (o alguien del municipio, o un futuro auspiciador) cargue/edite algo sin pedirlo acá. Es, con diferencia, la pieza que más limita crecer el catálogo o vender más destacados (Riesgo #21).
+- ~~`SponsorBanner` sigue siendo un slot fijo~~ — resuelto 2026-09-27: ahora es una tabla real (`sponsors`/`sponsor_translations`) que rota si hay más de uno, con Ember Accesorios sumado como segundo auspiciador (ver 9.7).
 
 ### 9.4 Datos que quedaron sin conectar — para priorizar con el usuario
 
 Tres piezas grandes, cada una una decisión de alcance en sí misma (no algo para elegir todas a la vez sin conversarlo):
 
-1. **Carrito de "Mi recorrido" → backend real.** Hoy vive 100% en `localStorage` (Riesgo #13); las tablas `itineraries`/`itinerary_stops` existen en el esquema desde la Fase 0 y nunca se poblaron. Migrar esto conectaría con el identificador de sesión que ya existe para "me gusta"/comentarios (`lib/session/visitor-session.ts`) — mismo `session_id`, un solo concepto de "quién es este visitante anónimo" en vez de varios.
-2. **Panel admin real (CRUD).** El de mayor impacto en "qué pasa si esto crece": sin él, todo pasa por código + `pnpm db:seed`. **Primera pieza real construida esta misma ronda**: `/admin/verificaciones` ahora es la cola de moderación de comentarios de lugares (ver más abajo) — deja de ser un placeholder, aunque el resto del panel (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias`) sigue sin CRUD.
-3. **Categorías de POI en vivo (restaurantes/supermercados/gas/salud vía Google Places)** y **más de un auspiciador en `SponsorBanner`** — ambos ya estaban anotados como pendientes en rondas anteriores, sin tocar todavía.
+1. ~~Carrito de "Mi recorrido" → backend real~~ — **resuelto 2026-09-27** (el usuario lo pidió "ASAP"). Ver sección 9.8.
+2. **Panel admin real (CRUD).** El de mayor impacto en "qué pasa si esto crece": sin él, todo pasa por código + `pnpm db:seed`. `/admin/verificaciones` ya es real (cola de moderación de comentarios) — el resto (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias`) sigue sin CRUD.
+3. ~~Categorías de POI en vivo~~ y ~~más de un auspiciador en `SponsorBanner`~~ — el segundo ya se resolvió esta ronda (Ember Accesorios, ver 9.7); POI en vivo (restaurantes/supermercados/gas/salud vía Google Places) sigue sin tocar.
 
-**Pregunta directa para el usuario**: ¿cuál de estos se prioriza primero? Cada uno es una ronda (o varias) de trabajo real, no un cambio chico — mejor confirmarlo que adivinar y construir el que no tocaba.
+**Pregunta directa para el usuario**: ¿backend real de "Mi recorrido" o terminar el panel admin primero? Las dos son rondas grandes — mejor confirmar el orden que adivinar y construir la que no tocaba.
 
 ### 9.5 Comentarios de lugares con moderación (2026-09-26)
 
@@ -282,6 +289,96 @@ Tareas:
 - [x] Formulario de comentario en la ficha de lugar + listado de aprobados
 - [x] Cola de moderación real en `/admin/verificaciones`
 - [ ] Mostrar de alguna forma visible la "reputación" acumulada (hoy son dos señales sueltas — "me gusta" y comentarios aprobados — sin combinarlas en un solo indicador; pendiente de que el usuario diga si quiere eso o le basta con verlas por separado)
+
+### 9.6 Pedidos y hallazgos en vivo 2026-09-27
+
+Tras probar el PR #26 en producción, el usuario reportó varios puntos en una sola tanda — separados por tipo:
+
+**Ya corregido esta ronda:**
+
+- Fotos de Google rotas en varios lugares (ver Riesgo #25) — bug real de la ronda de seguridad anterior, corregido.
+
+**Esperable hasta que se apliquen las migraciones/seed pendientes** (no son bugs nuevos, ya avisado en rondas anteriores):
+
+- "No se pudo enviar el comentario" — `place_comments` (migración `0015`) probablemente aún no existe en la base real.
+- Banner de Zapallar "todavía sin enlaces cargados" — `contact_links` (migraciones `0012`/`0013`) aún sin poblar con `pnpm db:seed`.
+
+**Pedidos nuevos:**
+
+- ~~Lightbox~~ — resuelto 2026-09-27, ver 9.7.
+- Sugerir rutas nuevas basadas en lo que más busca la gente (`search_performed`/`filter_applied` en `analytics_events` ya se registran, pero nada los usa todavía) — el usuario respondió que "necesitas más gente para sugerir, rutas o lugares": de acuerdo, no hay tráfico real todavía para que esto tenga sentido — queda explícitamente deprioritizado hasta que haya volumen real de búsquedas.
+
+**Se resolvió la ambigüedad (respuesta del usuario, 2026-09-27):**
+
+- El "popup" de `/explorar` era la lectura (b): que las tarjetas de la lista (`PlaceCard`) muestren una descripción breve al pasar el mouse. Confirmado y construido, ver 9.7 — no revierte la decisión de tarjeta chica, la descripción aparece como velo al pasar el mouse en vez de texto siempre visible.
+- "Se demora en algunos cambios de página" sigue sin una pantalla específica — no se tocó nada a ciegas.
+
+### 9.7 Ronda grande 2026-09-27 — construido en el mismo día
+
+El usuario respondió todo el feedback de 9.6 de una vez y pidió "pensar en grande". Se construyó lo autocontenido (sin esperar credenciales/servicios de terceros) en la misma ronda:
+
+- **Popup de `/explorar`**: `PlaceCard` gana un velo con la descripción breve (`shortDescription`) que aparece al pasar el mouse sobre toda la tarjeta — la miniatura sigue chica por defecto, la info solo se revela al pasar el mouse. No-op si el lugar no tiene descripción corta (nunca se inventa una).
+- **Lightbox de fotos**: nuevo `PhotoLightbox` — al hacer clic en la foto de `PlacePhotoHero` se abre a pantalla completa (`object-contain`, sin el recorte cuadrado de la miniatura), se cierra con la X, tocando el fondo, o Escape.
+- **Segundo auspiciador (Ember Accesorios)**: `SponsorBanner` deja de ser un slot fijo — tabla real `sponsors`/`sponsor_translations` (migración `0016_sponsors.sql`), rota entre auspiciadores activos igual que `MunicipalityBanner`. Matichoc conserva su paleta de marca real; Ember usa la paleta estándar del sitio (no se le inventó un color de marca). Datos reales cargados: logo que mandó el usuario (`public/brand/ember-accesorios-logo.png`) e Instagram `@accesorios.ember` — sin sitio propio conocido, así que el botón principal apunta directo a Instagram (no se inventa un sitio web). Sin tagline propia todavía (el usuario no dio una).
+- **Login real (sesión anónima)**: ver 8.1 — reemplaza el `session_id` casero de `place_likes`/`place_comments` por una sesión real de Supabase Auth (`signInAnonymously()`), con la puerta abierta a subirla a Google/Facebook después sin perder el historial.
+
+**Qué falta del usuario para que todo esto funcione en producción**:
+
+- Aplicar las migraciones nuevas (`0012`–`0017`) y correr `pnpm db:seed` (carga también el sitio/redes de las municipalidades, Matichoc y Ember Accesorios).
+- Habilitar **"Allow anonymous sign-ins"** en el dashboard de Supabase (Authentication → Settings) — sin esto, el login anónimo falla (con error manejado, no rompe la página, pero "me gusta"/comentarios no se guardan).
+
+**Cómo aplicar las migraciones nuevas** (el usuario preguntó — hasta ahora solo corría `pnpm db:seed`, que solo carga/actualiza filas, no crea tablas/columnas nuevas):
+
+1. `git pull origin main` (o la rama que tenga mergeado lo último) en su clon local.
+2. Si es la primera vez que usa el CLI de Supabase en este proyecto: `supabase login` y `supabase link --project-ref <su-project-ref>` (el ref está en la URL del proyecto en supabase.com, o en Project Settings → General). Si ya lo vinculó antes (aplicó migraciones anteriores así), se saltan estos dos pasos.
+3. `supabase db push` — aplica todas las migraciones pendientes de `supabase/migrations/` en orden, incluidas las nuevas (`0012` a `0018`).
+4. `pnpm db:seed` — como siempre, carga/actualiza los datos (comunas, municipalidades, auspiciadores, lugares, rutas).
+
+**Dónde está el login anónimo en el dashboard de Supabase** (el usuario mandó una captura de "Authentication → OAuth Server" — esa pantalla es para que el propio proyecto de Supabase actúe como proveedor OAuth de terceros, no es lo que buscamos): en el menú de la izquierda de Authentication, es **"Sign In / Providers"** (no "OAuth Server") — ahí, además de la lista de proveedores (Google, Facebook, Email...), hay un toggle separado para **"Allow anonymous sign-ins"**. Activarlo ahí.
+
+**Cómo dejar al usuario como administrador — paso a paso completo** (pendiente, necesita que él lo ejecute — este sandbox no tiene la `SUPABASE_SERVICE_ROLE_KEY` para hacerlo directo):
+
+1. En el dashboard de Supabase, ir a **Authentication → Users** (en el menú de la izquierda, sección "Manage").
+2. Si el usuario todavía no tiene una cuenta de email/contraseña para `/admin/login`: botón **"Add user"** (arriba a la derecha) → elegir "Create new user" → completar email y contraseña → **marcar "Auto Confirm User"** (si no se marca, Supabase espera que confirme el email por correo, y como es una cuenta interna no hace falta ese paso) → "Create user".
+3. En la tabla de usuarios que aparece, buscar esa cuenta (por el email) y copiar el valor de la columna **"UID"** (es un UUID largo, tipo `a1b2c3d4-...`) — hay un ícono de copiar al lado al pasar el mouse por la fila, o se puede hacer clic en el usuario para ver el detalle con el UID completo.
+4. Ir a **SQL Editor** (ícono de `</>` o "SQL Editor" en el menú de la izquierda, sección aparte de Authentication — es una herramienta general del proyecto, no de esta sección).
+5. Click en **"New query"**, pegar esto reemplazando el UID por el que copiaste (con las comillas simples, tal cual):
+   ```sql
+   insert into public.admin_users (user_id) values ('a1b2c3d4-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+   ```
+6. Click en **"Run"** (o Ctrl/Cmd+Enter). Si sale un mensaje de éxito ("Success. No rows returned" o similar), quedó.
+7. Ir a `/admin/login` en el sitio (ej. `https://tu-sitio.vercel.app/admin/login`) e iniciar sesión con ese mismo email/contraseña — debería entrar directo al panel.
+
+**Rate limiting con Upstash — paso a paso** (el usuario pidió el detalle antes de decidir):
+
+1. Crear cuenta gratis en [upstash.com](https://upstash.com) (permite entrar con GitHub/Google, sin tarjeta para el tier gratis).
+2. Dentro de la consola, crear una base de datos: **"Create Database"** → tipo **Redis** → elegir una región cercana a donde esté desplegado Vercel (ej. si Vercel despliega en `us-east-1`, elegir esa misma o la más cercana, para menos latencia) → nombre libre (ej. `directorio-turistico-ratelimit`).
+3. Una vez creada, en la página de esa base de datos hay una sección **"REST API"** con dos valores: `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`.
+4. Copiar esos dos valores y agregarlos como variables de entorno en Vercel (Project Settings → Environment Variables) con esos mismos nombres — y avisarme para que yo agregue `@upstash/ratelimit` + `@upstash/redis` como dependencias y reemplace `lib/http/rate-limit.ts` (hoy en memoria) por la versión distribuida.
+5. No hace falta que me pases los valores reales a mí — solo confirmarme que ya están en Vercel, y yo escribo el código asumiendo esos nombres de variable (mismo patrón que `GOOGLE_PLACES_API_KEY`: nunca veo el valor real, solo el nombre).
+
+**Login real con Google/Facebook** (el usuario confirmó que lo quiere pronto, no solo "algún día"): la sesión anónima de hoy ya es una cuenta real y estable — el paso que falta es "subirla" a una cuenta de Google/Facebook (`supabase.auth.linkIdentity()`) sin perder el historial. Para eso, cuando el usuario quiera avanzar, necesito que cree (en paralelo, no bloquea nada de lo de arriba):
+
+- Un **OAuth Client ID** en Google Cloud Console (APIs & Services → Credentials → "Create Credentials" → "OAuth client ID", tipo "Web application") con la URL de callback que da Supabase (aparece en Authentication → Sign In / Providers → Google, ahí mismo dice exactamente qué URL de redirección pegar en Google Cloud).
+- Una **app de Facebook Login** en developers.facebook.com (tipo "Consumer"), con el mismo tipo de URL de callback (Authentication → Sign In / Providers → Facebook en el dashboard de Supabase).
+
+Con esas credenciales pegadas en Supabase (Authentication → Sign In / Providers → activar Google/Facebook con esos datos), el código para el botón de "vincular cuenta" es relativamente chico — puedo escribirlo apenas estén esas credenciales configuradas.
+
+**Pendiente, todavía sin construir**:
+
+- Rate limiting distribuido (Upstash) — falta que el usuario cree la cuenta (ver paso a paso arriba).
+- Login real Google/Facebook — falta que el usuario cree las credenciales OAuth (ver arriba).
+- Terminar el resto del panel admin (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias` siguen sin CRUD).
+- Las ~22 descripciones largas de lugares que faltan — se le mandó una planilla (`lugares-descripciones.csv`) para que aporte material real por lugar.
+
+### 9.8 Backend real de "Mi recorrido" (2026-09-27)
+
+El usuario pidió esto "ASAP" en la misma ronda. Se construye completo:
+
+- Migración `0018_itinerary_backend.sql`: `itineraries`/`itinerary_stops` (existían desde la Fase 0, sin usar — Riesgo #13) pasan a identificarse por `user_id` real (mismo mecanismo que "me gusta"/comentarios, `default auth.uid()`), con RLS scoped al dueño (`user_id = auth.uid() or is_admin()`) — el cliente lee/escribe su recorrido directo, sin necesitar server actions con cliente admin como planteaba el diseño original.
+- `unique(user_id)`: un solo itinerario activo por visitante, igual que la UX de hoy (un carrito, no una lista de viajes guardados). `order_mode` (auto/manual) se muda de `localStorage` a una columna real en `itineraries`.
+- `lib/trip/storage.ts` reescrito completo: mismas funciones que antes (`getTripPlaceIds`, `addTripPlace`, `removeTripPlace`, `reorderTripPlaces`, etc.) pero ahora async contra Supabase en vez de síncronas contra `localStorage` — mismo `TRIP_EVENT` para que los componentes sigan sincronizados entre sí sin prop drilling. `TripView`, `AddToTripButton` y `AddRouteToTripButton` se actualizan para el nuevo flujo async.
+- Efecto práctico: el carrito ya no se pierde si el usuario borra el caché del navegador o cambia de dispositivo con la misma cuenta (una vez que exista login real con Google/Facebook, hoy es anónimo por navegador).
 
 ## Bitácora de decisiones
 
@@ -486,5 +583,30 @@ Tareas:
 
 - 2026-09-26: El usuario pide sumar comentarios de lugares ("con la sesión que uno entra, dejar un comentario... para que se vayan ganando reputación"). Antes de construirlo se le pregunta cómo moderar — un comentario de texto libre puede ser negativo o inapropiado, algo que el proyecto evita en todo el resto del sitio — y elige moderación previa del admin en vez de publicación inmediata. Se agrega `place_comments` (migración `0015`) con `status` (`pending`/`approved`/`rejected`), RLS que solo expone lo aprobado al público, `submitComment`/`moderateComment` en `lib/server/content/comments.ts`, formulario en la ficha de lugar (deja explícito que se publica tras revisión) y una cola de moderación real en `/admin/verificaciones` (deja de ser placeholder — primera pieza real del panel admin). De paso, `lib/likes/session.ts` se renombra a `lib/session/visitor-session.ts` (misma clave de `localStorage`, no se invalida a nadie) para que "me gusta" y comentarios compartan un solo concepto de sesión anónima.
   - Sin resolver esta ronda: el usuario también reportó "pantallas que están respondiendo lento" sin especificar cuáles — no hay suficiente información todavía para diagnosticar sin adivinar (podría ser un mapa, una carga de fotos, un cold start de Vercel); se le pregunta directamente qué pantalla y en qué condiciones antes de tocar nada, en vez de optimizar a ciegas.
+
+  `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.
+
+- 2026-09-27: El usuario prueba el PR #26 mergeado en producción y manda una tanda de feedback con capturas. Un hallazgo real y serio: **las fotos de Google se ven rotas en varios lugares** (cae al ícono de categoría en vez de la foto real, aunque el crédito de la foto sí aparece) — causado por el chequeo anti-abuso que se agregó a `/api/place-photo` en la ronda de seguridad anterior: comparaba el `ref` crudo contra `place_images.storage_path`, pero ese campo guarda la URL completa del proxy (`/api/place-photo?ref=...&w=...`), no el `ref` a secas — la comparación nunca coincidía y rechazaba **todas** las fotos de Google del sitio (26 de ~30). Se corrige parseando la URL guardada y comparando el `ref` ya decodificado (ver Riesgo #25).
+  - El resto del feedback se separa en tres baldes (ver sección 9.6): dos síntomas esperables mientras no se apliquen las migraciones `0012`–`0015`/`pnpm db:seed` (el formulario de comentarios y el banner municipal sin datos); dos pedidos nuevos sin construir (sugerir rutas según búsquedas populares, lightbox de fotos); y dos puntos que necesitan una respuesta del usuario antes de tocar código (qué significa exactamente el "popup" que espera en `/explorar`, y en qué pantalla específica nota la lentitud) — en vez de adivinar y arriesgarse a revertir una decisión de diseño ya tomada a propósito (el tamaño chico de `PlaceCard` fue un pedido explícito de una ronda anterior).
+  - El usuario también preguntó por qué existen dos proyectos de Vercel (`directorio-turistico` y `directorio-turistico-bgl3`) y cuál está roto — se le explicó la causa típica (el CLI de Vercel crea un proyecto nuevo con sufijo aleatorio si no se vinculó primero con `vercel link`, y cada proyecto tiene sus propias variables de entorno) y se le indicó qué revisar en su dashboard — esto es configuración de Vercel, fuera del alcance de este repo/sandbox.
+
+  `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.
+
+- 2026-09-27: El usuario responde toda la tanda de feedback de la ronda anterior de una sola vez y pide "empezar a pensar en grande" — confirma: (a) el popup de `/explorar` era sobre las tarjetas de la lista, no el mapa; (b) el lightbox de fotos "es para hacer ahora"; (c) las sugerencias de rutas quedan deprioritizadas ("necesitas más gente"); (d) quiere avanzar en backend real para "Mi recorrido", rate limiting, y login real con al menos un invitado único para siempre; (e) él será el admin; (f) pide sumar Ember Accesorios (@accesorios.ember) como segundo auspiciador, con logo y foto adjuntos; (g) pregunta cómo ayudar con las descripciones que faltan.
+  - Se construye en la misma ronda todo lo que no dependía de credenciales/servicios externos: popup de descripción en `PlaceCard` (velo al pasar el mouse, no revierte el tamaño chico de la tarjeta), `PhotoLightbox` en `PlacePhotoHero`, `sponsors`/`sponsor_translations` (migración `0016`) con Ember Accesorios real (logo + Instagram, sin inventar tagline ni sitio web que no dio), y el reemplazo del `session_id` casero de "me gusta"/comentarios por una sesión anónima real de Supabase Auth (migración `0017_visitor_identity.sql`, `ensureVisitorSession()`) — esta última cierra además un hueco de seguridad real que tenía la v1 (cualquiera con la anon key podía adivinar un `session_id` ajeno).
+  - Se le dan instrucciones concretas para volverse admin (crear su cuenta en el dashboard de Supabase + insertar su UID en `admin_users`, ya que este sandbox no tiene la service role key para hacerlo directo) y para habilitar el login anónimo (un toggle en Authentication → Settings).
+  - Quedan como decisiones/insumos pendientes del usuario: crear la cuenta de Upstash para el rate limiting distribuido, priorizar backend de "Mi recorrido" vs. terminar el panel admin, y aportar material real para las ~22 descripciones de lugares que faltan.
+
+  `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.
+
+- 2026-09-27: **Se detecta trabajo perdido de una ronda anterior**: la corrección de "Puente Pedegua" (comuna Cabildo → Petorca, pedida por el usuario tras confirmar "también petorca por que es de pedegua") se había commiteado y pusheado (`fc1537a`/`a759daf`), pero **nunca llegó a mergearse** — un `git checkout -B ... origin/main` posterior (hecho tras una notificación de "PR mergeado" que en realidad correspondía a un estado anterior de la rama, sin esos dos commits todavía) reinició la rama y los descartó silenciosamente, sin que se notara hasta ahora. Se vuelve a aplicar el fix (`pedegua-puente.communeSlug` → `petorca`). Lección para no repetir: antes de resetear la rama tras un aviso de "PR mergeado", verificar que el SHA mergeado realmente incluya el último commit pusheado (no asumirlo solo por el aviso) — si hay commits locales/pusheados más nuevos que el SHA mergeado, hay que abrir un PR nuevo para ellos en vez de descartarlos con el reset.
+
+  `pnpm typecheck`/`lint` verdes (gate completo al final de esta ronda).
+
+- 2026-09-27 (segunda ronda del día): El usuario responde con una tanda de preguntas operativas y pedidos de prioridad: (a) confirma que quiere login real con Google/Facebook pronto, no solo "algún día"; (b) pregunta cómo aplicar las migraciones nuevas (solo corría `pnpm db:seed`, nunca `supabase db push`); (c) manda una captura mostrando que llegó a "Authentication → OAuth Server" en el dashboard de Supabase buscando el toggle de login anónimo — pantalla equivocada, es para que el proyecto actúe como proveedor OAuth de terceros; (d) pide el paso a paso detallado para dejarlo como admin; (e) pide el paso a paso de Upstash; (f) pide el backend real de "Mi recorrido" ASAP; (g) pide una planilla para ir completando las descripciones de lugares que faltan.
+  - Al armar la planilla se detecta que la corrección de "Puente Pedegua" de una ronda anterior nunca se había mergeado (ver entrada anterior) — se vuelve a aplicar.
+  - Se construye completo el backend real de "Mi recorrido" (ver 9.8): migración `0018_itinerary_backend.sql`, reescritura de `lib/trip/storage.ts` a async contra Supabase, y actualización de `TripView`/`AddToTripButton`/`AddRouteToTripButton`.
+  - Se documentan paso a paso completos (sin código, solo instrucciones): cómo aplicar migraciones (`supabase db push`), dónde está el toggle de login anónimo (Sign In / Providers, no OAuth Server), cómo insertar al usuario en `admin_users` con el detalle exacto que pidió, cómo crear la base de Upstash para rate limiting distribuido, y qué credenciales OAuth va a necesitar crear para el login real con Google/Facebook.
+  - Se genera y se envía `lugares-descripciones.csv`: los 37 lugares del catálogo, los 22 sin descripción primero, con columnas para que el usuario pegue un link/fuente y notas por lugar.
 
   `pnpm typecheck`/`lint`/`test` (16)/`build`/`format:check` verdes.

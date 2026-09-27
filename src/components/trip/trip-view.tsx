@@ -45,13 +45,22 @@ export function TripView({ locale }: { locale: Locale }) {
   const [highlightedSlug, setHighlightedSlug] = useState<string | null>(null);
 
   useEffect(() => {
-    function sync() {
-      setPlaceIds(getTripPlaceIds());
-      setOrderMode(getTripOrderMode());
+    let cancelled = false;
+    async function sync() {
+      const [ids, mode] = await Promise.all([
+        getTripPlaceIds(),
+        getTripOrderMode(),
+      ]);
+      if (cancelled) return;
+      setPlaceIds(ids);
+      setOrderMode(mode);
     }
-    sync();
+    void sync();
     window.addEventListener(TRIP_EVENT, sync);
-    return () => window.removeEventListener(TRIP_EVENT, sync);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(TRIP_EVENT, sync);
+    };
   }, []);
 
   const idsKey = placeIds?.join(",") ?? "";
@@ -123,7 +132,7 @@ export function TripView({ locale }: { locale: Locale }) {
     if (targetIndex < 0 || targetIndex >= itinerary.stops.length) return;
     const order = itinerary.stops.map((stop) => stop.placeId);
     [order[index], order[targetIndex]] = [order[targetIndex], order[index]];
-    reorderTripPlaces(order);
+    void reorderTripPlaces(order);
   }
 
   if (placeIds === null) {
@@ -198,7 +207,7 @@ export function TripView({ locale }: { locale: Locale }) {
           {t("orderManualNotice")}
           <button
             type="button"
-            onClick={() => resetTripOrder()}
+            onClick={() => void resetTripOrder()}
             className="text-accent underline"
           >
             {t("optimizeAuto")}
@@ -300,7 +309,7 @@ export function TripView({ locale }: { locale: Locale }) {
               </div>
               <button
                 type="button"
-                onClick={() => removeTripPlace(stop.placeId)}
+                onClick={() => void removeTripPlace(stop.placeId)}
                 className="text-foreground/50 hover:text-foreground shrink-0 text-xs underline"
               >
                 {t("remove")}
@@ -312,7 +321,7 @@ export function TripView({ locale }: { locale: Locale }) {
 
       <button
         type="button"
-        onClick={() => clearTrip()}
+        onClick={() => void clearTrip()}
         className="text-foreground/60 self-start text-xs underline"
       >
         {t("clearAll")}

@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { submitComment } from "@/lib/server/content/comments";
-import { getVisitorSessionId } from "@/lib/session/visitor-session";
+import { ensureVisitorSession } from "@/lib/session/visitor-session";
 
 const MAX_COMMENT_LENGTH = 500;
 
@@ -29,11 +29,8 @@ export function PlaceCommentForm({ placeId }: { placeId: string }) {
     setStatus("pending");
 
     try {
-      await submitComment({
-        placeId,
-        sessionId: getVisitorSessionId(),
-        body,
-      });
+      await ensureVisitorSession();
+      await submitComment({ placeId, body });
       setBody("");
       setStatus("sent");
     } catch (error) {

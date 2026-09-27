@@ -6,6 +6,7 @@ import { routing } from "@/i18n/routing";
 import { BottomNav } from "@/components/ui/bottom-nav";
 import { TopNav } from "@/components/ui/top-nav";
 import { SponsorBanner } from "@/components/ui/sponsor-banner";
+import { listActiveSponsors } from "@/lib/data/sponsors";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -26,6 +27,8 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
+  const sponsors = await listActiveSponsors(locale);
+
   return (
     <NextIntlClientProvider>
       <div className="flex min-h-dvh flex-1 flex-col pb-16 sm:pb-0">
@@ -38,7 +41,7 @@ export default async function LocaleLayout({
         <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
           {children}
         </div>
-        <SponsorBanner />
+        <SponsorBanner sponsors={sponsors} />
       </div>
       <BottomNav />
     </NextIntlClientProvider>

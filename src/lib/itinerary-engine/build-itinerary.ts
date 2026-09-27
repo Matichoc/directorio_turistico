@@ -66,6 +66,7 @@ export function buildItinerary(input: ItineraryBuildInput): Itinerary {
     maxStops = places.length,
     maxDurationMinutes = Number.POSITIVE_INFINITY,
     averageSpeedKmh = DEFAULT_AVERAGE_SPEED_KMH,
+    returnToStart = false,
   } = input;
 
   if (places.length === 0) {
@@ -74,12 +75,14 @@ export function buildItinerary(input: ItineraryBuildInput): Itinerary {
       totalDurationMinutes: 0,
       totalDistanceKm: 0,
       skippedPlaceIds: [],
+      returnLegDistanceKm: null,
+      returnLegDurationMinutes: null,
     };
   }
 
   const [firstIndex, ...restIndices] =
     places.length <= EXACT_ORDER_STOPS_LIMIT
-      ? findOptimalOrder(places, startIndex)
+      ? findOptimalOrder(places, startIndex, returnToStart)
       : nearestNeighborOrder(places, startIndex);
 
   const firstPlace: ItineraryPlaceInput = places[firstIndex!]!;
@@ -134,5 +137,21 @@ export function buildItinerary(input: ItineraryBuildInput): Itinerary {
     .map((place) => place.id)
     .filter((id) => !visitedIds.has(id));
 
-  return { stops, totalDurationMinutes, totalDistanceKm, skippedPlaceIds };
+  let returnLegDistanceKm: number | null = null;
+  let returnLegDurationMinutes: number | null = null;
+  if (returnToStart && stops.length > 1) {
+    returnLegDistanceKm = haversineDistanceKm(previous, firstPlace);
+    returnLegDurationMinutes = (returnLegDistanceKm / averageSpeedKmh) * 60;
+    totalDurationMinutes += returnLegDurationMinutes;
+    totalDistanceKm += returnLegDistanceKm;
+  }
+
+  return {
+    stops,
+    totalDurationMinutes,
+    totalDistanceKm,
+    skippedPlaceIds,
+    returnLegDistanceKm,
+    returnLegDurationMinutes,
+  };
 }

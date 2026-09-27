@@ -33,6 +33,8 @@ async function getCurrentUserId(): Promise<string | null> {
 async function getOwnItinerary(): Promise<{
   id: string;
   orderMode: TripOrderMode;
+  startPlaceId: string | null;
+  returnToStart: boolean;
 } | null> {
   const userId = await getCurrentUserId();
   if (!userId) return null;
@@ -40,11 +42,18 @@ async function getOwnItinerary(): Promise<{
   const supabase = createClient();
   const { data } = await supabase
     .from("itineraries")
-    .select("id, order_mode")
+    .select("id, order_mode, start_place_id, return_to_start")
     .eq("user_id", userId)
     .maybeSingle();
 
-  return data ? { id: data.id, orderMode: data.order_mode } : null;
+  return data
+    ? {
+        id: data.id,
+        orderMode: data.order_mode,
+        startPlaceId: data.start_place_id,
+        returnToStart: data.return_to_start,
+      }
+    : null;
 }
 
 /** Crea el itinerario del visitante si todavía no tiene uno (siempre uno solo, `unique(user_id)`). */
@@ -159,6 +168,41 @@ export async function clearTrip(): Promise<void> {
 export async function getTripOrderMode(): Promise<TripOrderMode> {
   const itinerary = await getOwnItinerary();
   return itinerary?.orderMode ?? "auto";
+}
+
+/** `null` = sin elección explícita, se usa el primer lugar del carrito. */
+export async function getTripStartPlaceId(): Promise<string | null> {
+  const itinerary = await getOwnItinerary();
+  return itinerary?.startPlaceId ?? null;
+}
+
+/** Cuál lugar del carrito debería ser el punto de partida del recorrido. */
+export async function setTripStartPlace(placeId: string | null): Promise<void> {
+  const itineraryId = await getOrCreateItineraryId();
+  const supabase = createClient();
+  await supabase
+    .from("itineraries")
+    .update({ start_place_id: placeId })
+    .eq("id", itineraryId);
+  notify();
+}
+
+export async function getTripReturnToStart(): Promise<boolean> {
+  const itinerary = await getOwnItinerary();
+  return itinerary?.returnToStart ?? false;
+}
+
+/** Si el recorrido debería volver al punto de partida al terminar la última parada. */
+export async function setTripReturnToStart(
+  returnToStart: boolean,
+): Promise<void> {
+  const itineraryId = await getOrCreateItineraryId();
+  const supabase = createClient();
+  await supabase
+    .from("itineraries")
+    .update({ return_to_start: returnToStart })
+    .eq("id", itineraryId);
+  notify();
 }
 
 /**

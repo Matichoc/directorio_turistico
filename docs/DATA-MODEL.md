@@ -77,6 +77,18 @@ transacción), así que dos filas pueden coincidir de forma transitoria durante
 un intercambio — el orden visual sigue siendo correcto (`order by position`),
 un empate se resuelve arbitrario pero estable.
 
+`start_place_id`/`return_to_start` (migración `0019_itinerary_start_return.sql`,
+pedido del usuario: "preguntar donde inicia y donde termina tu travesía, si
+te vas a quedar en el último punto, o vas a volver a tu punto de origen"):
+`start_place_id` (nullable, `on delete set null`) es qué lugar del carrito
+debería usar el motor como punto de partida — sin elección explícita, sigue
+usando el primer lugar agregado (comportamiento de siempre). `return_to_start`
+le dice al motor (`findOptimalOrder`/`buildItinerary`) si el recorrido debe
+volver a ese punto de partida al terminar la última parada (viaje redondo) o
+quedarse ahí — afecta tanto el orden óptimo elegido como los totales de
+distancia/duración expuestos (`Itinerary.returnLegDistanceKm`/
+`returnLegDurationMinutes`).
+
 ## Contactos y "me gusta" (2026-09-26)
 
 - `contact_links` (migración `0013_contact_links.sql`): enlaces de contacto/redes

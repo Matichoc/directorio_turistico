@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { PageHero } from "@/components/ui/page-hero";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center gap-6 px-4">
-      <h1 className="text-xl font-semibold">Ingreso administrador</h1>
+      <PageHero title="Ingreso administrador" />
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1 text-sm">
           Correo
@@ -61,7 +62,7 @@ export default function AdminLoginPage() {
             autoComplete="username"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="rounded border border-black/10 px-3 py-2 dark:border-white/20"
+            className="border-accent-soft focus:border-accent rounded-xl border bg-transparent px-3 py-2 outline-none dark:border-white/15"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm">
@@ -72,14 +73,14 @@ export default function AdminLoginPage() {
             autoComplete="current-password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="rounded border border-black/10 px-3 py-2 dark:border-white/20"
+            className="border-accent-soft focus:border-accent rounded-xl border bg-transparent px-3 py-2 outline-none dark:border-white/15"
           />
         </label>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button
           type="submit"
           disabled={loading}
-          className="bg-foreground text-background rounded px-4 py-2 disabled:opacity-50"
+          className="bg-accent text-accent-foreground rounded-full px-4 py-2 font-medium disabled:opacity-60"
         >
           {loading ? "Ingresando…" : "Ingresar"}
         </button>

@@ -11,6 +11,7 @@ import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
 import { listRoutes } from "@/lib/data/routes";
 import { listMunicipalities } from "@/lib/data/communes";
+import { getCategoryGradient } from "@/lib/ui/category-gradient";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -73,9 +74,11 @@ export default async function HomePage({
                   pathname: "/explorar",
                   query: { categoria: intent.slug },
                 }}
-                className="border-accent-soft hover:border-accent hover:bg-accent-soft/40 flex flex-col items-center gap-2 rounded-2xl border p-4 text-center transition-colors dark:border-white/10"
+                className="border-accent-soft hover:border-accent flex flex-col items-center gap-2 rounded-2xl border bg-black/[.015] p-4 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_2px_var(--accent-soft)] dark:border-white/10 dark:bg-white/[.03]"
               >
-                <span className="bg-accent-soft text-accent flex h-10 w-10 items-center justify-center rounded-full">
+                <span
+                  className={`flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br text-white ${getCategoryGradient(intent.slug)}`}
+                >
                   <CategoryIcon icon={intent.icon} className="h-5 w-5" />
                 </span>
                 <span className="text-sm font-medium">

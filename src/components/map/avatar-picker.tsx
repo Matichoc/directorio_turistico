@@ -45,10 +45,10 @@ export function AvatarPicker() {
             title={label}
             aria-label={label}
             aria-pressed={selected === icon}
-            className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors ${
+            className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all ${
               selected === icon
-                ? "border-accent bg-accent text-accent-foreground"
-                : "border-accent-soft text-foreground/60 hover:border-accent dark:border-white/15"
+                ? "animate-check-pop border-accent bg-accent text-accent-foreground shadow-[0_0_16px_2px_var(--accent-soft)]"
+                : "border-accent-soft text-foreground/60 hover:border-accent hover:shadow-[0_0_12px_1px_var(--accent-soft)] dark:border-white/15"
             }`}
           >
             <CategoryIcon icon={icon} className="h-5 w-5" />

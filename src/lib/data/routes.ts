@@ -1,7 +1,11 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import type { Locale, PublicationStatus } from "@/types/database";
+import type {
+  Locale,
+  PublicationStatus,
+  VerificationStatus,
+} from "@/types/database";
 import type { Route, RouteCard, RouteStop } from "@/types/domain";
 
 const ROUTE_QUERY = `id, slug, estimated_duration_minutes, cover_image,
@@ -144,6 +148,164 @@ function pickRouteCoverPhoto(
   const images = firstStop?.places?.place_images ?? [];
   const firstImage = images.slice().sort((a, b) => a.position - b.position)[0];
   return firstImage?.storage_path ?? null;
+}
+
+export interface AdminRouteListItem {
+  id: string;
+  slug: string;
+  name: string;
+  stopsCount: number;
+  publicationStatus: PublicationStatus;
+}
+
+const ADMIN_ROUTES_LIST_QUERY = `id, slug, publication_status,
+   route_translations!inner(name, locale),
+   route_stops(id)` as const;
+
+interface AdminRouteListQueryResult {
+  id: string;
+  slug: string;
+  publication_status: PublicationStatus;
+  route_translations: { name: string; locale: Locale }[];
+  route_stops: { id: string }[];
+}
+
+/** Lista TODAS las rutas (cualquier `publication_status`) para el panel admin. */
+export async function listAdminRoutes(): Promise<AdminRouteListItem[]> {
+  if (!isSupabaseConfigured()) {
+    return [];
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("routes")
+    .select<typeof ADMIN_ROUTES_LIST_QUERY, AdminRouteListQueryResult>(
+      ADMIN_ROUTES_LIST_QUERY,
+    )
+    .eq("route_translations.locale", "es")
+    .order("slug");
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((route) => ({
+    id: route.id,
+    slug: route.slug,
+    name: route.route_translations[0]?.name ?? route.slug,
+    stopsCount: route.route_stops?.length ?? 0,
+    publicationStatus: route.publication_status,
+  }));
+}
+
+export interface AdminRouteTranslation {
+  name: string;
+  description: string | null;
+}
+
+export interface AdminRouteStop {
+  id: string;
+  placeId: string;
+  placeName: string;
+  position: number;
+}
+
+export interface AdminRouteDetail {
+  id: string;
+  slug: string;
+  estimatedDurationMinutes: number | null;
+  coverImageUrl: string | null;
+  publicationStatus: PublicationStatus;
+  verificationStatus: VerificationStatus;
+  translations: Record<Locale, AdminRouteTranslation>;
+  stops: AdminRouteStop[];
+}
+
+const ADMIN_ROUTE_DETAIL_QUERY =
+  `id, slug, estimated_duration_minutes, cover_image, publication_status,
+   verification_status,
+   route_translations(locale, name, description),
+   route_stops(id, place_id, position,
+     places(place_translations(name, locale)))` as const;
+
+interface AdminRouteDetailQueryResult {
+  id: string;
+  slug: string;
+  estimated_duration_minutes: number | null;
+  cover_image: string | null;
+  publication_status: PublicationStatus;
+  verification_status: VerificationStatus;
+  route_translations: {
+    locale: Locale;
+    name: string;
+    description: string | null;
+  }[];
+  route_stops: {
+    id: string;
+    place_id: string;
+    position: number;
+    places: { place_translations: { name: string; locale: Locale }[] } | null;
+  }[];
+}
+
+const EMPTY_ROUTE_TRANSLATION: AdminRouteTranslation = {
+  name: "",
+  description: null,
+};
+
+export async function getAdminRouteById(
+  id: string,
+): Promise<AdminRouteDetail | null> {
+  if (!isSupabaseConfigured()) {
+    return null;
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("routes")
+    .select<typeof ADMIN_ROUTE_DETAIL_QUERY, AdminRouteDetailQueryResult>(
+      ADMIN_ROUTE_DETAIL_QUERY,
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  const translations: Record<Locale, AdminRouteTranslation> = {
+    es: { ...EMPTY_ROUTE_TRANSLATION },
+    en: { ...EMPTY_ROUTE_TRANSLATION },
+  };
+  for (const translation of data.route_translations) {
+    translations[translation.locale] = {
+      name: translation.name,
+      description: translation.description,
+    };
+  }
+
+  const stops = (data.route_stops ?? [])
+    .slice()
+    .sort((a, b) => a.position - b.position)
+    .map((stop) => ({
+      id: stop.id,
+      placeId: stop.place_id,
+      placeName:
+        stop.places?.place_translations.find((t) => t.locale === "es")?.name ??
+        "",
+      position: stop.position,
+    }));
+
+  return {
+    id: data.id,
+    slug: data.slug,
+    estimatedDurationMinutes: data.estimated_duration_minutes,
+    coverImageUrl: data.cover_image,
+    publicationStatus: data.publication_status,
+    verificationStatus: data.verification_status,
+    translations,
+    stops,
+  };
 }
 
 export async function listRoutes(

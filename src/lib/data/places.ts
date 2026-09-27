@@ -245,6 +245,174 @@ export async function listPlaces(
  * guarda ids en `localStorage` — ver `lib/trip/storage.ts`). El orden de
  * salida no sigue el de `ids`: quien llama reordena si lo necesita.
  */
+export interface AdminPlaceListItem {
+  id: string;
+  slug: string;
+  name: string;
+  communeName: string;
+  categoryName: string;
+  publicationStatus: PublicationStatus;
+  verificationStatus: VerificationStatus;
+}
+
+const ADMIN_PLACES_LIST_QUERY =
+  `id, slug, publication_status, verification_status,
+   place_translations!inner(name, locale),
+   communes!inner(commune_translations!inner(name, locale)),
+   categories!inner(category_translations!inner(name, locale))` as const;
+
+interface AdminPlaceListQueryResult {
+  id: string;
+  slug: string;
+  publication_status: PublicationStatus;
+  verification_status: VerificationStatus;
+  place_translations: { name: string; locale: Locale }[];
+  communes: { commune_translations: { name: string; locale: Locale }[] } | null;
+  categories: {
+    category_translations: { name: string; locale: Locale }[];
+  } | null;
+}
+
+/**
+ * Lista TODOS los lugares (cualquier `publication_status`) para el panel
+ * admin — a diferencia de `listPlaces`, que solo muestra publicados. El
+ * panel administra en español únicamente (ver CLAUDE.md: Cristóbal siempre
+ * en español), así que se filtra a esa traducción sin recibir `locale`.
+ */
+export async function listAdminPlaces(): Promise<AdminPlaceListItem[]> {
+  if (!isSupabaseConfigured()) {
+    return [];
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("places")
+    .select<typeof ADMIN_PLACES_LIST_QUERY, AdminPlaceListQueryResult>(
+      ADMIN_PLACES_LIST_QUERY,
+    )
+    .eq("place_translations.locale", "es")
+    .eq("communes.commune_translations.locale", "es")
+    .eq("categories.category_translations.locale", "es")
+    .order("slug");
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((place) => ({
+    id: place.id,
+    slug: place.slug,
+    name: place.place_translations[0]?.name ?? place.slug,
+    communeName: place.communes?.commune_translations[0]?.name ?? "",
+    categoryName: place.categories?.category_translations[0]?.name ?? "",
+    publicationStatus: place.publication_status,
+    verificationStatus: place.verification_status,
+  }));
+}
+
+export interface AdminPlaceTranslation {
+  name: string;
+  shortDescription: string | null;
+  description: string | null;
+}
+
+export interface AdminPlaceDetail {
+  id: string;
+  slug: string;
+  communeId: string;
+  categoryId: string;
+  latitude: number;
+  longitude: number;
+  address: string | null;
+  phone: string | null;
+  website: string | null;
+  icon: string | null;
+  publicationStatus: PublicationStatus;
+  verificationStatus: VerificationStatus;
+  translations: Record<Locale, AdminPlaceTranslation>;
+}
+
+const ADMIN_PLACE_DETAIL_QUERY =
+  `id, slug, commune_id, category_id, latitude, longitude, address, phone,
+   website, icon, publication_status, verification_status,
+   place_translations(locale, name, short_description, description)` as const;
+
+interface AdminPlaceDetailQueryResult {
+  id: string;
+  slug: string;
+  commune_id: string;
+  category_id: string;
+  latitude: number;
+  longitude: number;
+  address: string | null;
+  phone: string | null;
+  website: string | null;
+  icon: string | null;
+  publication_status: PublicationStatus;
+  verification_status: VerificationStatus;
+  place_translations: {
+    locale: Locale;
+    name: string;
+    short_description: string | null;
+    description: string | null;
+  }[];
+}
+
+const EMPTY_TRANSLATION: AdminPlaceTranslation = {
+  name: "",
+  shortDescription: null,
+  description: null,
+};
+
+export async function getAdminPlaceById(
+  id: string,
+): Promise<AdminPlaceDetail | null> {
+  if (!isSupabaseConfigured()) {
+    return null;
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("places")
+    .select<typeof ADMIN_PLACE_DETAIL_QUERY, AdminPlaceDetailQueryResult>(
+      ADMIN_PLACE_DETAIL_QUERY,
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  const translations: Record<Locale, AdminPlaceTranslation> = {
+    es: { ...EMPTY_TRANSLATION },
+    en: { ...EMPTY_TRANSLATION },
+  };
+  for (const translation of data.place_translations) {
+    translations[translation.locale] = {
+      name: translation.name,
+      shortDescription: translation.short_description,
+      description: translation.description,
+    };
+  }
+
+  return {
+    id: data.id,
+    slug: data.slug,
+    communeId: data.commune_id,
+    categoryId: data.category_id,
+    latitude: data.latitude,
+    longitude: data.longitude,
+    address: data.address,
+    phone: data.phone,
+    website: data.website,
+    icon: data.icon,
+    publicationStatus: data.publication_status,
+    verificationStatus: data.verification_status,
+    translations,
+  };
+}
+
 export async function getPlacesByIds(
   ids: string[],
   locale: Locale,

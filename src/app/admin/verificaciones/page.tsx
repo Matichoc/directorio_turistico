@@ -1,5 +1,6 @@
 import { listPendingComments } from "@/lib/data/comments";
 import { moderateComment } from "@/lib/server/content/comments";
+import { PageHero } from "@/components/ui/page-hero";
 
 /**
  * Cola de moderación de comentarios de lugares — pedido del usuario
@@ -13,19 +14,18 @@ export default async function AdminVerificationsPage() {
   const comments = await listPendingComments();
 
   return (
-    <div>
-      <h1 className="text-xl font-semibold">Verificaciones</h1>
-      <p className="text-foreground/60 mt-2">
-        Comentarios pendientes de aprobar antes de que se vean en la ficha del
-        lugar.
-      </p>
+    <div className="flex flex-col gap-6">
+      <PageHero
+        title="Verificaciones"
+        subtitle="Comentarios pendientes de aprobar antes de que se vean en la ficha del lugar."
+      />
 
       {comments.length === 0 ? (
-        <p className="text-foreground/60 mt-6 text-sm">
+        <p className="text-foreground/60 text-sm">
           No hay comentarios pendientes.
         </p>
       ) : (
-        <ul className="mt-6 flex flex-col gap-4">
+        <ul className="flex flex-col gap-4">
           {comments.map((comment) => (
             <li
               key={comment.id}

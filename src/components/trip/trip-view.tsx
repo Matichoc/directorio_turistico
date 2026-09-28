@@ -248,14 +248,16 @@ export function TripView({ locale }: { locale: Locale }) {
         )}
 
       {itinerary.stops.length > 1 && (
-        <div className="border-accent-soft flex flex-col gap-2 rounded-xl border p-3 text-sm dark:border-white/10">
+        <div className="border-accent-soft hover:border-accent flex flex-col gap-3 rounded-2xl border p-4 text-sm transition-all hover:shadow-[0_0_20px_2px_var(--accent-soft)] dark:border-white/10">
           {orderMode === "auto" && (
-            <label className="flex flex-col gap-1">
-              <span className="text-foreground/60 text-xs">{t("startAt")}</span>
+            <label className="flex flex-col gap-1.5">
+              <span className="text-foreground/60 text-xs font-medium tracking-wide uppercase">
+                {t("startAt")}
+              </span>
               <select
                 value={startPlaceId ?? itinerary.stops[0]?.placeId ?? ""}
                 onChange={(event) => handleStartPlaceChange(event.target.value)}
-                className="border-accent-soft rounded-lg border bg-transparent px-2 py-1.5 text-sm dark:border-white/15"
+                className="border-accent-soft focus:border-accent rounded-full border bg-transparent px-3 py-2 text-sm outline-none dark:border-white/15"
               >
                 {orderedPlaces?.map((place) => (
                   <option key={place.id} value={place.id}>
@@ -265,14 +267,14 @@ export function TripView({ locale }: { locale: Locale }) {
               </select>
             </label>
           )}
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2.5">
             <input
               type="checkbox"
               checked={returnToStart}
               onChange={(event) =>
                 handleReturnToStartChange(event.target.checked)
               }
-              className="accent-accent h-4 w-4"
+              className="accent-accent h-4 w-4 rounded"
             />
             {t("returnToStart")}
           </label>

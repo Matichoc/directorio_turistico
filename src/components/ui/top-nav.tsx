@@ -30,7 +30,7 @@ export function TopNav() {
                 aria-current={active ? "page" : undefined}
                 className={`flex items-center gap-2 border-b-2 px-3 py-3 text-sm font-medium transition-colors ${
                   active
-                    ? "border-accent text-accent"
+                    ? "border-accent text-accent [text-shadow:0_0_14px_var(--accent)]"
                     : "text-foreground/60 hover:text-foreground/80 border-transparent"
                 }`}
               >

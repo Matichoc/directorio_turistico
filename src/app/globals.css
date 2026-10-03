@@ -1,19 +1,30 @@
 @import "tailwindcss";
 
+/* El sitio es oscuro de punta a punta (pedido del usuario: "más oscuro,
+   tecnológico, con efecto wow"). `dark:` pasa de seguir el modo del sistema
+   a seguir la clase `dark` del <html> (siempre puesta en layout.tsx), así
+   todos los `dark:` ya escritos en los componentes valen para todos. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  /* Blanco puro se sentía "poco atractivo" (feedback real del usuario) —
-     un crema tibio con un dejo del acento terracota, no blanco plano, sin
-     arriesgar el contraste del texto (sigue siendo casi blanco). */
-  --background: #fbf4ee;
-  --foreground: #171717;
-  --accent: #b3401f;
-  --accent-foreground: #fff7ed;
-  --accent-soft: #f6e2d5;
-  /* Colores reales de la marca Matichoc (ver matichoc/matiweb, css/styles.css)
-     — el banner de auspicio usa su propia identidad, no la paleta del sitio. */
-  --sponsor: #fff8f0;
-  --sponsor-foreground: #4b2e2e;
-  --sponsor-accent: #d4216c;
+  color-scheme: dark;
+  --background: #07060c;
+  --foreground: #ecebf6;
+  /* Brasa del diablo: el acento de marca, ahora más vivo para que "brille"
+     sobre el fondo oscuro. */
+  --accent: #ff7a45;
+  --accent-foreground: #1a0a04;
+  /* Tinte translúcido del acento: bordes y halo de hover/estado activo. */
+  --accent-soft: rgba(255, 122, 69, 0.3);
+  /* Segundo y tercer color "tecnológicos" para degradados y neón. */
+  --neon: #8b7bff;
+  --neon-2: #29d3f0;
+  /* Colores reales de la marca Matichoc (ver matichoc/matiweb) — el banner
+     de auspicio usa su propia identidad, no la paleta del sitio; marrón
+     oscuro de su header/footer para no meter un parche claro. */
+  --sponsor: #4b2e2e;
+  --sponsor-foreground: #fff8f0;
+  --sponsor-accent: #f2589f;
   --sponsor-accent-foreground: #fff8f0;
 }
 
@@ -23,6 +34,8 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-soft: var(--accent-soft);
+  --color-neon: var(--neon);
+  --color-neon-2: var(--neon-2);
   --color-sponsor: var(--sponsor);
   --color-sponsor-foreground: var(--sponsor-foreground);
   --color-sponsor-accent: var(--sponsor-accent);
@@ -39,6 +52,8 @@
   --animate-sparkle-twinkle: sparkle-twinkle 2.6s ease-in-out infinite;
   --animate-glow-pulse: glow-pulse 4s ease-in-out infinite;
   --animate-devil-peek: devil-peek 3.2s ease-in-out infinite;
+  --animate-aurora-drift: aurora-drift 26s ease-in-out infinite alternate;
+  --animate-shimmer: shimmer 6s linear infinite;
 }
 
 /* Pines del mapa (components/map/map-pin.tsx): aparición con rebote. */
@@ -126,20 +141,23 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --accent: #e07a4c;
-    --accent-foreground: #1c0f0a;
-    --accent-soft: #3a2418;
-    /* Mismo color que usa matiweb para su propio header/footer (marrón
-       oscuro), en vez del crema — se ve fuera de lugar un parche claro en
-       una página oscura. */
-    --sponsor: #4b2e2e;
-    --sponsor-foreground: #fff8f0;
-    --sponsor-accent: #f2589f;
-    --sponsor-accent-foreground: #fff8f0;
+/* Aurora: dos manchas de color que derivan lento detrás de todo el sitio. */
+@keyframes aurora-drift {
+  from {
+    transform: translate3d(-4%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.12);
+  }
+}
+
+/* Barrido de luz sobre bordes y títulos "tecnológicos". */
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
   }
 }
 
@@ -147,4 +165,111 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Fondo "tecnológico" de todo el sitio: aurora (animada) + cuadrícula fina
+   que se desvanece hacia abajo. Ambas capas van detrás del contenido
+   (z-index -1 sobre el fondo de la raíz) y no capturan clics. */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+body::before {
+  background:
+    radial-gradient(
+      900px 520px at 8% -8%,
+      rgba(255, 122, 69, 0.22),
+      transparent 60%
+    ),
+    radial-gradient(
+      800px 560px at 100% 4%,
+      rgba(139, 123, 255, 0.24),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 500px at 50% 112%,
+      rgba(41, 211, 240, 0.14),
+      transparent 60%
+    );
+  animation: var(--animate-aurora-drift);
+}
+body::after {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000, transparent 85%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+}
+
+/* Panel de vidrio oscuro: la superficie base de toda tarjeta/panel nuevo
+   (ver docs/DESIGN.md, "Vidrio y neón"). */
+@utility surface-glass {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.07),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 30px -12px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(14px);
+}
+
+/* Borde de degradado neón (acento → violeta → cian) que se enciende con
+   `group-hover`/`data-[open=true]`; se dibuja con una máscara sobre un
+   pseudo-elemento para no perder el radio de la tarjeta. */
+@utility glow-edge {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      120deg,
+      var(--accent),
+      var(--neon) 55%,
+      var(--neon-2)
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+  &:hover::before,
+  &[data-open="true"]::before {
+    opacity: 1;
+  }
+}
+
+/* Texto con degradado y barrido de luz (títulos de cabecera). */
+@utility text-gradient {
+  background: linear-gradient(
+    100deg,
+    #ffffff 0%,
+    #ffd9c4 30%,
+    #c9bfff 55%,
+    #a5f0ff 75%,
+    #ffffff 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: var(--animate-shimmer);
 }

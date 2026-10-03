@@ -23,12 +23,23 @@ export function PageHero({
   children?: ReactNode;
 }) {
   return (
-    <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1b0e1f] via-[#2a1420] to-[#1b0e1f] px-5 py-6 text-white">
+    <header className="surface-glass relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#140b1f]/90 via-[#1d0f22]/80 to-[#0b1220]/90 px-5 py-7 text-white">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 [background-image:linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] [mask-image:linear-gradient(to_bottom,#000,transparent_85%)] [background-size:28px_28px] opacity-60"
+      />
       <SparkleField />
-      <div className="bg-accent animate-glow-pulse pointer-events-none absolute -top-14 -right-14 h-48 w-48 rounded-full opacity-50 blur-3xl" />
-      <div className="animate-glow-pulse pointer-events-none absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-amber-400 opacity-20 blur-3xl [animation-delay:-2s]" />
-      <div className="relative flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">{title}</h1>
+      <div className="bg-accent animate-glow-pulse pointer-events-none absolute -top-16 -right-14 h-52 w-52 rounded-full opacity-50 blur-3xl" />
+      <div className="bg-neon animate-glow-pulse pointer-events-none absolute -bottom-16 -left-12 h-40 w-40 rounded-full opacity-35 blur-3xl [animation-delay:-2s]" />
+      <div className="bg-neon-2 animate-glow-pulse pointer-events-none absolute top-1/2 left-1/2 h-24 w-24 rounded-full opacity-15 blur-3xl [animation-delay:-3s]" />
+      <div
+        aria-hidden="true"
+        className="via-accent pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
+      />
+      <div className="relative flex flex-col gap-1.5">
+        <h1 className="text-gradient text-3xl font-semibold tracking-tight">
+          {title}
+        </h1>
         {subtitle && <p className="text-sm text-white/70">{subtitle}</p>}
         {children}
       </div>

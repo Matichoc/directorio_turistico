@@ -63,11 +63,12 @@ Definidos en `src/app/globals.css`, con variante para `prefers-color-scheme:
 dark` — usa siempre la clase/token de Tailwind (`bg-accent`,
 `text-accent-foreground`, `border-accent-soft`), nunca el hex a mano:
 
-| Token                                                                                     | Uso                                                                                                                                                                                                                                    |
-| ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--background` / `--foreground`                                                           | Fondo/texto base del sitio en claro. `--background` es un crema tibio (`#fbf4ee`, con un dejo del acento terracota), nunca blanco puro — feedback real del usuario ("no me gusta el sitio blanco de fondo, lo siento poco atractivo"). |
-| `--accent` / `--accent-foreground` / `--accent-soft`                                      | Color de marca del sitio (terracota). Botones primarios, bordes de tarjeta, glow de hover.                                                                                                                                             |
-| `--sponsor` / `--sponsor-foreground` / `--sponsor-accent` / `--sponsor-accent-foreground` | Solo para `SponsorBanner` — son los colores reales de la marca Matichoc (ver `matichoc/matiweb`), no la paleta del sitio. No reusar en otro lado.                                                                                      |
+| Token                                                                                     | Uso                                                                                                                                                                                                                       |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--background` / `--foreground`                                                           | Fondo/texto base del sitio, **oscuro de punta a punta** (`#07060c` / `#ecebf6`) — pedido del usuario tras probar el sitio claro: "más oscuro, tecnológico, con efecto wow". Antes: crema `#fbf4ee` (y antes blanco puro). |
+| `--accent` / `--accent-foreground` / `--accent-soft`                                      | Color de marca del sitio (brasa, `#ff7a45`). Botones primarios, bordes, glow de hover (`--accent-soft` es un tinte translúcido pensado para halos).                                                                       |
+| `--neon` / `--neon-2`                                                                     | Violeta y cian "tecnológicos": segundo y tercer color de los degradados neón (`glow-edge`, `text-gradient`, chips de conteo). Nunca como color de texto largo.                                                            |
+| `--sponsor` / `--sponsor-foreground` / `--sponsor-accent` / `--sponsor-accent-foreground` | Solo para `SponsorBanner` — son los colores reales de la marca Matichoc (ver `matichoc/matiweb`), no la paleta del sitio. No reusar en otro lado.                                                                         |
 
 Colores **por categoría** (`naturaleza`/`gastronomia`/`cultura`/`playa`),
 en `lib/ui/category-gradient.ts`:
@@ -78,6 +79,28 @@ en `lib/ui/category-gradient.ts`:
 
 Agregar una categoría nueva = agregar una entrada a los tres `Record` de
 ese archivo, nunca un `if` especial en un componente.
+
+## Vidrio y neón (look oscuro/tecnológico)
+
+El sitio es oscuro siempre: `dark:` de Tailwind sigue la clase `dark` del
+`<html>` (`@custom-variant` en `globals.css`), no el modo del sistema, así
+que todo `dark:` ya escrito vale para todos. Fondo de todo el sitio
+(`body::before/::after`): aurora animada (acento + violeta + cian, respeta
+`prefers-reduced-motion`) y una cuadrícula fina que se desvanece hacia
+abajo. Utilidades en `globals.css` — úsalas en vez de inventar bordes/fondos
+sueltos:
+
+- `surface-glass`: la superficie base de toda tarjeta/panel (vidrio oscuro
+  con borde y brillo superior).
+- `glow-edge`: borde de degradado neón que se enciende en hover o con
+  `data-open="true"` (comunas y pueblos de `/explorar`).
+- `text-gradient`: título con degradado y barrido de luz (`PageHero`,
+  encabezados de comuna).
+
+`PageHero` suma cuadrícula, tres halos (brasa/violeta/cian) y una línea de
+luz superior. Pendiente (no se tocó): el mapa base (OpenFreeMap "liberty")
+sigue claro — para un mapa oscuro, `NEXT_PUBLIC_MAP_STYLE_URL` con un estilo
+oscuro (p. ej. CARTO "dark-matter").
 
 ## Radios y espaciado
 
@@ -211,6 +234,13 @@ por comuna y, dentro, por pueblo (`buildExploreTree`,
 así que un pueblo sin atractivos igual aparece (vacío); la cabecera comunal
 (el pueblo que lleva el nombre de la comuna) va primero; los lugares de una
 comuna sin pueblo van a un grupo "Otros lugares" al final de esa comuna.
+
+Las comunas son listas desplegables que arrancan **plegadas** (pedido del
+usuario: "deberían ser listas desplegables para que no se acumulen siempre
+todos en la pantalla"): cada encabezado resume cuántos pueblos y atractivos
+tiene, y un clic lo abre o cierra. Con filtros activos arrancan abiertas para
+mostrar de entrada lo que coincide (la página remonta el componente al
+cambiar los filtros, con `key`).
 
 Interacción (`LocalityBrowser`): pasar el mouse sobre un pueblo previsualiza
 sus atractivos; clic (o toque en celular) lo deja **fijo abierto** hasta

@@ -51,6 +51,7 @@
     "noResults": "No encontramos lugares con estos filtros.",
     "otherPlaces": "Otros lugares",
     "subtitle": "Comuna por comuna, pueblo por pueblo: pasa el mouse sobre uno para ver sus atractivos, toca para dejarlo abierto.",
+    "communeSummary": "{villages, plural, =0 {sin pueblos} one {# pueblo} other {# pueblos}} · {places, plural, =0 {sin atractivos} one {# atractivo} other {# atractivos}}",
     "filtersButton": "Filtros",
     "placesCount": "{count, plural, =0 {Sin atractivos} one {# atractivo} other {# atractivos}}",
     "pinned": "(fijado abierto)",

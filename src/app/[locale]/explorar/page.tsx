@@ -116,7 +116,11 @@ export default async function ExplorePage({
       ) : tree.length === 0 ? (
         <EmptyState>{t("noResults")}</EmptyState>
       ) : (
-        <LocalityBrowser tree={tree} filtersActive={filtersActiveCount > 0} />
+        <LocalityBrowser
+          key={`${filters.q}|${filters.comuna}|${filters.categoria}|${filters.caracteristica}`}
+          tree={tree}
+          filtersActive={filtersActiveCount > 0}
+        />
       )}
     </main>
   );

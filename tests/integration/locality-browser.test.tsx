@@ -58,16 +58,46 @@ const tree: ExploreCommuneNode[] = [
   },
 ];
 
-function renderBrowser() {
+function renderBrowser({
+  filtersActive = false,
+  openCommune = true,
+}: { filtersActive?: boolean; openCommune?: boolean } = {}) {
   render(
     <NextIntlClientProvider locale="es" messages={messages}>
-      <LocalityBrowser tree={tree} filtersActive={false} />
+      <LocalityBrowser tree={tree} filtersActive={filtersActive} />
     </NextIntlClientProvider>,
   );
+  if (openCommune) {
+    fireEvent.click(screen.getByRole("button", { name: /^Petorca/ }));
+  }
 }
 
 describe("LocalityBrowser", () => {
-  it("shows communes and villages collapsed by default", () => {
+  it("starts with every commune folded, showing only a summary", () => {
+    renderBrowser({ openCommune: false });
+
+    expect(screen.getByRole("button", { name: /^Petorca/ })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+    expect(screen.getByText(/2 pueblos · 1 atractivo/)).toBeInTheDocument();
+    expect(screen.queryByText("Hierro Viejo")).not.toBeInTheDocument();
+  });
+
+  it("starts with communes open when filters are active", () => {
+    renderBrowser({ filtersActive: true, openCommune: false });
+
+    expect(screen.getByText("Hierro Viejo")).toBeInTheDocument();
+  });
+
+  it("folds a commune back when its header is clicked again", () => {
+    renderBrowser();
+    fireEvent.click(screen.getByRole("button", { name: /^Petorca/ }));
+
+    expect(screen.queryByText("Hierro Viejo")).not.toBeInTheDocument();
+  });
+
+  it("shows villages collapsed once the commune is open", () => {
     renderBrowser();
 
     expect(screen.getByText("Petorca")).toBeInTheDocument();

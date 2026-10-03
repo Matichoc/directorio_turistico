@@ -74,7 +74,7 @@ export default async function HomePage({
                   pathname: "/explorar",
                   query: { categoria: intent.slug },
                 }}
-                className="border-accent-soft hover:border-accent flex flex-col items-center gap-2 rounded-2xl border bg-black/[.015] p-4 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_2px_var(--accent-soft)] dark:border-white/10 dark:bg-white/[.03]"
+                className="border-accent-soft hover:border-accent surface-glass flex flex-col items-center gap-2 rounded-2xl border p-4 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_2px_var(--accent-soft)] dark:border-white/10"
               >
                 <span
                   className={`flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br text-white ${getCategoryGradient(intent.slug)}`}

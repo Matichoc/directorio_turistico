@@ -46,6 +46,10 @@ que use ese token, que es justo lo que se pidió:
   blanco sobre fondo oscuro — no metas ahí un control pensado para fondo
   claro (ej. `ViewToggle`, que usa `text-foreground/60`) sin adaptarlo
   primero; en `/explorar` ese control quedó fuera del `PageHero`, debajo.
+  `MunicipalityBanner` usa el mismo gradiente + `SparkleField` (pedido del
+  usuario: "más contraste" en los banners, efecto wow) — es la otra
+  excepción a "solo cabeceras de página": un banner real, no un control
+  suelto, así que el tratamiento místico completo sí le calza.
   Las páginas con su propia foto/portada a color (`PlacePhotoHero`, hero de
   ficha de ruta) no llevan `PageHero` encima — ya tienen su propio momento
   visual, duplicarlo se ve recargado.
@@ -59,10 +63,11 @@ Definidos en `src/app/globals.css`, con variante para `prefers-color-scheme:
 dark` — usa siempre la clase/token de Tailwind (`bg-accent`,
 `text-accent-foreground`, `border-accent-soft`), nunca el hex a mano:
 
-| Token                                                                                     | Uso                                                                                                                                               |
-| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--accent` / `--accent-foreground` / `--accent-soft`                                      | Color de marca del sitio (terracota). Botones primarios, bordes de tarjeta, glow de hover.                                                        |
-| `--sponsor` / `--sponsor-foreground` / `--sponsor-accent` / `--sponsor-accent-foreground` | Solo para `SponsorBanner` — son los colores reales de la marca Matichoc (ver `matichoc/matiweb`), no la paleta del sitio. No reusar en otro lado. |
+| Token                                                                                     | Uso                                                                                                                                                                                                                                    |
+| ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--background` / `--foreground`                                                           | Fondo/texto base del sitio en claro. `--background` es un crema tibio (`#fbf4ee`, con un dejo del acento terracota), nunca blanco puro — feedback real del usuario ("no me gusta el sitio blanco de fondo, lo siento poco atractivo"). |
+| `--accent` / `--accent-foreground` / `--accent-soft`                                      | Color de marca del sitio (terracota). Botones primarios, bordes de tarjeta, glow de hover.                                                                                                                                             |
+| `--sponsor` / `--sponsor-foreground` / `--sponsor-accent` / `--sponsor-accent-foreground` | Solo para `SponsorBanner` — son los colores reales de la marca Matichoc (ver `matichoc/matiweb`), no la paleta del sitio. No reusar en otro lado.                                                                                      |
 
 Colores **por categoría** (`naturaleza`/`gastronomia`/`cultura`/`playa`),
 en `lib/ui/category-gradient.ts`:

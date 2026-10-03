@@ -43,8 +43,8 @@ export function SponsorBanner({ sponsors }: { sponsors: Sponsor[] }) {
     <div
       className={
         isMatichoc
-          ? "bg-sponsor border-sponsor-accent border-t-4 px-4 py-3"
-          : "bg-accent-soft border-accent border-t-4 px-4 py-3"
+          ? "bg-sponsor border-sponsor-accent border-t-4 px-4 py-3 shadow-[0_-8px_24px_-6px_rgba(0,0,0,0.25)]"
+          : "bg-accent-soft border-accent border-t-4 px-4 py-3 shadow-[0_-8px_24px_-6px_rgba(0,0,0,0.25)]"
       }
     >
       <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3">

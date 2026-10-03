@@ -24,7 +24,7 @@ export function ViewToggle({ current }: { current: "lista" | "mapa" }) {
     <div
       role="group"
       aria-label={t("mapView")}
-      className="inline-flex rounded-full border border-black/10 p-0.5 text-sm dark:border-white/20"
+      className="surface-glass inline-flex rounded-full p-0.5 text-sm"
     >
       <button
         type="button"
@@ -32,7 +32,7 @@ export function ViewToggle({ current }: { current: "lista" | "mapa" }) {
         onClick={() => setView("lista")}
         className={`rounded-full px-3 py-1 ${
           current === "lista"
-            ? "bg-accent text-accent-foreground"
+            ? "bg-accent text-accent-foreground shadow-[0_0_14px_var(--accent-soft)]"
             : "text-foreground/60"
         }`}
       >
@@ -44,7 +44,7 @@ export function ViewToggle({ current }: { current: "lista" | "mapa" }) {
         onClick={() => setView("mapa")}
         className={`rounded-full px-3 py-1 ${
           current === "mapa"
-            ? "bg-accent text-accent-foreground"
+            ? "bg-accent text-accent-foreground shadow-[0_0_14px_var(--accent-soft)]"
             : "text-foreground/60"
         }`}
       >

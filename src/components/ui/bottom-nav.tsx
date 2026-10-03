@@ -31,7 +31,7 @@ export function BottomNav() {
                 aria-current={active ? "page" : undefined}
                 className={`flex flex-col items-center gap-1 py-2 text-xs font-medium ${
                   active
-                    ? "text-accent"
+                    ? "text-accent [text-shadow:0_0_14px_var(--accent)]"
                     : "text-foreground/50 hover:text-foreground/80"
                 }`}
               >

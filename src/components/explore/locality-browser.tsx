@@ -82,7 +82,8 @@ export function LocalityBrowser({ tree, filtersActive }: LocalityBrowserProps) {
                 aria-expanded={communeOpen}
                 aria-controls={communePanelId}
                 onClick={() => toggleCommune(commune.slug)}
-                className="bg-foreground/5 hover:bg-foreground/10 flex w-full items-center gap-2 rounded-2xl px-4 py-3 text-left transition-colors"
+                data-open={communeOpen}
+                className="surface-glass glow-edge flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition-all hover:-translate-y-0.5"
               >
                 <span
                   aria-hidden
@@ -92,8 +93,10 @@ export function LocalityBrowser({ tree, filtersActive }: LocalityBrowserProps) {
                 >
                   ›
                 </span>
-                <span className="text-base font-semibold">{commune.name}</span>
-                <span className="text-foreground/50 text-xs font-normal">
+                <span className="text-gradient text-lg font-semibold tracking-tight">
+                  {commune.name}
+                </span>
+                <span className="border-neon/40 bg-neon/10 text-neon ml-auto rounded-full border px-2.5 py-0.5 text-[11px] font-medium">
                   {t("communeSummary", {
                     villages: villageCount,
                     places: placeCount,
@@ -114,10 +117,9 @@ export function LocalityBrowser({ tree, filtersActive }: LocalityBrowserProps) {
                       key={key}
                       onPointerEnter={(event) => handlePointerEnter(event, key)}
                       onPointerLeave={(event) => handlePointerLeave(event, key)}
-                      className={`rounded-2xl border transition-all ${
-                        isPinned
-                          ? "border-accent shadow-[0_0_20px_2px_var(--accent-soft)]"
-                          : "border-accent-soft hover:border-accent dark:border-white/10"
+                      data-open={isOpen}
+                      className={`surface-glass glow-edge rounded-2xl transition-all ${
+                        isPinned ? "shadow-[0_0_28px_0_var(--accent-soft)]" : ""
                       }`}
                     >
                       <div className="flex items-center gap-2 px-4 py-2">

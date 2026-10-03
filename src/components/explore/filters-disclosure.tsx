@@ -25,7 +25,7 @@ export function FiltersDisclosure({
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className="border-accent-soft hover:border-accent flex w-fit items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium transition-all dark:border-white/10"
+        className="surface-glass hover:border-accent flex w-fit items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition-all hover:shadow-[0_0_20px_2px_var(--accent-soft)]"
       >
         {t("filtersButton")}
         {activeCount > 0 && (

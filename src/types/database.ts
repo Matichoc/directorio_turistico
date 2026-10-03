@@ -85,6 +85,9 @@ type PlaceRow = {
   icon: string | null;
   publication_status: PublicationStatus;
   verification_status: VerificationStatus;
+  // Cuándo cambió `publication_status` por última vez (ver migración
+  // 0020_status_tracking.sql) — no se actualiza en otras ediciones.
+  status_changed_at: string;
   created_at: string;
   updated_at: string;
 };
@@ -124,6 +127,7 @@ type RouteRow = {
   estimated_duration_minutes: number | null;
   publication_status: PublicationStatus;
   verification_status: VerificationStatus;
+  status_changed_at: string;
   created_at: string;
   updated_at: string;
 };

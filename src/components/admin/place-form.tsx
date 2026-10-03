@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   createPlace,
@@ -8,6 +8,7 @@ import {
   type PlaceFormInput,
 } from "@/lib/server/content/places";
 import type { AdminPlaceDetail } from "@/lib/data/places";
+import { slugify } from "@/lib/slug";
 
 const ICON_OPTIONS = [
   { value: "", label: "— (usar el de la categoría)" },
@@ -29,7 +30,7 @@ const PUBLICATION_OPTIONS: {
 }[] = [
   { value: "draft", label: "Borrador" },
   { value: "published", label: "Publicado" },
-  { value: "archived", label: "Archivado" },
+  { value: "archived", label: "Desactivado" },
 ];
 
 const VERIFICATION_OPTIONS: {
@@ -65,6 +66,16 @@ export function PlaceForm({
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const slugInputRef = useRef<HTMLInputElement>(null);
+  // Si ya existe el lugar, su slug no se toca solo (podría ya estar
+  // publicado con ese slug en otro lado) — el autocompletado es solo para
+  // el alta de uno nuevo, para que quien lo crea no tenga que inventarlo.
+  const slugTouchedRef = useRef(Boolean(place));
+
+  function handleNameEsChange(event: ChangeEvent<HTMLInputElement>) {
+    if (slugTouchedRef.current || !slugInputRef.current) return;
+    slugInputRef.current.value = slugify(event.target.value);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -123,10 +134,18 @@ export function PlaceForm({
           <input
             name="slug"
             required
+            ref={slugInputRef}
             defaultValue={place?.slug}
             placeholder="mi-lugar"
+            onChange={() => {
+              slugTouchedRef.current = true;
+            }}
             className={inputClassName}
           />
+          <span className="text-foreground/50 text-xs">
+            Se genera solo a partir del nombre — cámbialo solo si sabés qué
+            hace.
+          </span>
         </label>
         <label className={labelClassName}>
           Comuna
@@ -269,6 +288,7 @@ export function PlaceForm({
               name={`${locale}.name`}
               required
               defaultValue={place?.translations[locale].name}
+              onChange={locale === "es" ? handleNameEsChange : undefined}
               className={inputClassName}
             />
           </label>

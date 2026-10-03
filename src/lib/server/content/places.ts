@@ -156,6 +156,30 @@ export async function updatePlace(
 }
 
 /**
+ * Activa/desactiva un lugar desde el listado simple, sin abrir el
+ * formulario completo — pedido del usuario: dar de baja algo debe ser tan
+ * simple como un botón, y nunca borra el registro ni pisa su contenido,
+ * solo cambia `publication_status` (la fecha de ese cambio queda sola en
+ * `status_changed_at` vía trigger, ver `0020_status_tracking.sql`).
+ */
+export async function setPlacePublicationStatus(
+  id: string,
+  status: "published" | "archived",
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("places")
+    .update({ publication_status: status })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(`No se pudo cambiar el estado: ${error.message}`);
+  }
+
+  revalidatePath("/admin/lugares");
+}
+
+/**
  * Elimina un lugar. `route_stops.place_id` referencia `places` con
  * `on delete restrict` (ver `0004_routes.sql`): si el lugar es parada de
  * alguna ruta, Postgres rechaza el delete en vez de dejar una parada

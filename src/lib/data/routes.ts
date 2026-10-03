@@ -156,9 +156,11 @@ export interface AdminRouteListItem {
   name: string;
   stopsCount: number;
   publicationStatus: PublicationStatus;
+  statusChangedAt: string;
 }
 
-const ADMIN_ROUTES_LIST_QUERY = `id, slug, publication_status,
+const ADMIN_ROUTES_LIST_QUERY =
+  `id, slug, publication_status, status_changed_at,
    route_translations!inner(name, locale),
    route_stops(id)` as const;
 
@@ -166,6 +168,7 @@ interface AdminRouteListQueryResult {
   id: string;
   slug: string;
   publication_status: PublicationStatus;
+  status_changed_at: string;
   route_translations: { name: string; locale: Locale }[];
   route_stops: { id: string }[];
 }
@@ -195,6 +198,7 @@ export async function listAdminRoutes(): Promise<AdminRouteListItem[]> {
     name: route.route_translations[0]?.name ?? route.slug,
     stopsCount: route.route_stops?.length ?? 0,
     publicationStatus: route.publication_status,
+    statusChangedAt: route.status_changed_at,
   }));
 }
 

@@ -33,6 +33,11 @@ pendiente de reverificación).
 - `place_hours`: una fila por día de semana (`0`–`6`), `unique(place_id, day_of_week)`.
 - `place_images`: ordenadas por `position`.
 - `place_tags`: tabla puente `place_id, tag_id`.
+- `status_changed_at` (migración `0020_status_tracking.sql`, también en
+  `routes`): cuándo cambió `publication_status` por última vez, vía trigger
+  (`touch_status_changed_at`) — no se toca en otras ediciones. Alimenta el
+  botón simple "Activar"/"Desactivar" del panel admin: nunca borra el
+  registro, solo cambia el estado y deja la fecha.
 
 Índices trigram (`gin_trgm_ops`) en `name`/`description` para búsqueda por
 similitud (buscador de Fase 1).

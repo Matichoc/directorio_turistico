@@ -253,10 +253,11 @@ export interface AdminPlaceListItem {
   categoryName: string;
   publicationStatus: PublicationStatus;
   verificationStatus: VerificationStatus;
+  statusChangedAt: string;
 }
 
 const ADMIN_PLACES_LIST_QUERY =
-  `id, slug, publication_status, verification_status,
+  `id, slug, publication_status, verification_status, status_changed_at,
    place_translations!inner(name, locale),
    communes!inner(commune_translations!inner(name, locale)),
    categories!inner(category_translations!inner(name, locale))` as const;
@@ -266,6 +267,7 @@ interface AdminPlaceListQueryResult {
   slug: string;
   publication_status: PublicationStatus;
   verification_status: VerificationStatus;
+  status_changed_at: string;
   place_translations: { name: string; locale: Locale }[];
   communes: { commune_translations: { name: string; locale: Locale }[] } | null;
   categories: {
@@ -307,6 +309,36 @@ export async function listAdminPlaces(): Promise<AdminPlaceListItem[]> {
     categoryName: place.categories?.category_translations[0]?.name ?? "",
     publicationStatus: place.publication_status,
     verificationStatus: place.verification_status,
+    statusChangedAt: place.status_changed_at,
+  }));
+}
+
+/**
+ * slug→id (y estado actual) de todos los lugares, para la carga masiva:
+ * decide alta vs. edición por slug, y deja saber el estado vigente de un
+ * lugar existente para no pisarlo cuando la fila no trae columna "estado"
+ * (ver `importPlacesCsv`).
+ */
+export async function listAllPlacesForImport(): Promise<
+  { id: string; slug: string; publicationStatus: PublicationStatus }[]
+> {
+  if (!isSupabaseConfigured()) {
+    return [];
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("places")
+    .select("id, slug, publication_status");
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((place) => ({
+    id: place.id,
+    slug: place.slug,
+    publicationStatus: place.publication_status,
   }));
 }
 
@@ -436,4 +468,96 @@ export async function getPlacesByIds(
   }
 
   return data.map(mapPlaceCard);
+}
+
+export interface AdminPlaceExportRow {
+  slug: string;
+  communeName: string;
+  categoryName: string;
+  latitude: number;
+  longitude: number;
+  address: string | null;
+  phone: string | null;
+  website: string | null;
+  icon: string | null;
+  publicationStatus: PublicationStatus;
+  translations: Record<Locale, AdminPlaceTranslation>;
+}
+
+const ADMIN_PLACES_EXPORT_QUERY =
+  `slug, latitude, longitude, address, phone, website, icon, publication_status,
+   place_translations(locale, name, short_description, description),
+   communes!inner(commune_translations!inner(name, locale)),
+   categories!inner(category_translations!inner(name, locale))` as const;
+
+interface AdminPlaceExportQueryResult {
+  slug: string;
+  latitude: number;
+  longitude: number;
+  address: string | null;
+  phone: string | null;
+  website: string | null;
+  icon: string | null;
+  publication_status: PublicationStatus;
+  place_translations: {
+    locale: Locale;
+    name: string;
+    short_description: string | null;
+    description: string | null;
+  }[];
+  communes: { commune_translations: { name: string; locale: Locale }[] } | null;
+  categories: {
+    category_translations: { name: string; locale: Locale }[];
+  } | null;
+}
+
+/** Todos los lugares con los campos necesarios para la plantilla de carga masiva. */
+export async function listAdminPlacesForExport(): Promise<
+  AdminPlaceExportRow[]
+> {
+  if (!isSupabaseConfigured()) {
+    return [];
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("places")
+    .select<typeof ADMIN_PLACES_EXPORT_QUERY, AdminPlaceExportQueryResult>(
+      ADMIN_PLACES_EXPORT_QUERY,
+    )
+    .eq("communes.commune_translations.locale", "es")
+    .eq("categories.category_translations.locale", "es")
+    .order("slug");
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((place) => {
+    const translations: Record<Locale, AdminPlaceTranslation> = {
+      es: { ...EMPTY_TRANSLATION },
+      en: { ...EMPTY_TRANSLATION },
+    };
+    for (const translation of place.place_translations) {
+      translations[translation.locale] = {
+        name: translation.name,
+        shortDescription: translation.short_description,
+        description: translation.description,
+      };
+    }
+
+    return {
+      slug: place.slug,
+      communeName: place.communes?.commune_translations[0]?.name ?? "",
+      categoryName: place.categories?.category_translations[0]?.name ?? "",
+      latitude: place.latitude,
+      longitude: place.longitude,
+      address: place.address,
+      phone: place.phone,
+      website: place.website,
+      icon: place.icon,
+      publicationStatus: place.publication_status,
+      translations,
+    };
+  });
 }

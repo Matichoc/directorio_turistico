@@ -15,7 +15,7 @@ const PUBLICATION_OPTIONS: {
 }[] = [
   { value: "draft", label: "Borrador" },
   { value: "published", label: "Publicado" },
-  { value: "archived", label: "Archivado" },
+  { value: "archived", label: "Desactivado" },
 ];
 
 const VERIFICATION_OPTIONS: {

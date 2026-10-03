@@ -148,6 +148,16 @@ const localities: {
 }[] = [
   // La Ligua
   {
+    slug: "la-ligua",
+    communeSlug: "la-ligua",
+    es: "La Ligua",
+    en: "La Ligua",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Capital de la provincia de Petorca y su comuna más poblada (35.390 habitantes, Censo 2017). Aquí están la Plaza de Armas y el Museo de La Ligua, en el corazón de la tradición del tejido y de los dulces típicos, declarados Patrimonio Cultural Inmaterial de Chile en 2019.",
+  },
+  {
     slug: "longotoma",
     communeSlug: "la-ligua",
     es: "Longotoma",
@@ -271,6 +281,16 @@ const localities: {
   },
   // Petorca
   {
+    slug: "petorca",
+    communeSlug: "petorca",
+    es: "Petorca",
+    en: "Petorca",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Cabecera de la comuna de Petorca (9.826 habitantes, Censo 2017). Su centro se construyó a mediados del siglo XVIII donde antes había una huerta parroquial; en la plaza están la Iglesia La Merced (construida por los jesuitas en 1640) y, a un costado, la casa donde nació el presidente Manuel Montt.",
+  },
+  {
     slug: "chincolco",
     communeSlug: "petorca",
     es: "Chincolco",
@@ -383,6 +403,16 @@ const localities: {
     longitude: null,
   },
   // Cabildo
+  {
+    slug: "cabildo",
+    communeSlug: "cabildo",
+    es: "Cabildo",
+    en: "Cabildo",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Cabecera de la comuna de Cabildo (19.388 habitantes, Censo 2017). Su plaza es el punto de partida habitual para recorrer los atractivos de la comuna, desde el valle de Alicahue hasta los túneles del antiguo ferrocarril; desde aquí se asciende también al Cerro Chache.",
+  },
   {
     slug: "alicahue",
     communeSlug: "cabildo",
@@ -569,6 +599,8 @@ const localities: {
     en: "Zapallar",
     latitude: null,
     longitude: null,
+    summary:
+      "Cabecera de la comuna de Zapallar (7.339 habitantes, Censo 2017), uno de los balnearios más tradicionales de Chile central; su bahía resguardada mantiene el oleaje suave todo el año.",
   },
   {
     slug: "cachagua",
@@ -622,6 +654,16 @@ const localities: {
   },
   // Papudo
   {
+    slug: "papudo",
+    communeSlug: "papudo",
+    es: "Papudo",
+    en: "Papudo",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Cabecera de la comuna de Papudo (6.356 habitantes, Censo 2017), balneario con el paseo peatonal La Terraza, que bordea Playa Chica y Playa Grande y es el punto de encuentro del pueblo en verano.",
+  },
+  {
     slug: "pullally",
     communeSlug: "papudo",
     es: "Pullally",
@@ -647,7 +689,7 @@ const localities: {
 const places = [
   {
     slug: "playa-papudo",
-    localitySlug: null,
+    localitySlug: "papudo",
     communeSlug: "papudo",
     categorySlug: "playa",
     latitude: -32.5061,
@@ -677,7 +719,7 @@ const places = [
   },
   {
     slug: "playa-chica-papudo",
-    localitySlug: null,
+    localitySlug: "papudo",
     communeSlug: "papudo",
     categorySlug: "playa",
     latitude: -32.5075,
@@ -703,7 +745,7 @@ const places = [
   },
   {
     slug: "bahia-mirador-zapallar",
-    localitySlug: null,
+    localitySlug: "zapallar-pueblo",
     communeSlug: "zapallar",
     categorySlug: "naturaleza",
     latitude: -32.5522,
@@ -729,7 +771,7 @@ const places = [
   },
   {
     slug: "museo-de-la-ligua",
-    localitySlug: null,
+    localitySlug: "la-ligua",
     communeSlug: "la-ligua",
     categorySlug: "cultura",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
@@ -761,7 +803,7 @@ const places = [
   },
   {
     slug: "plaza-de-armas-la-ligua",
-    localitySlug: null,
+    localitySlug: "la-ligua",
     communeSlug: "la-ligua",
     categorySlug: "cultura",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
@@ -820,7 +862,7 @@ const places = [
   },
   {
     slug: "iglesia-la-merced-petorca",
-    localitySlug: null,
+    localitySlug: "petorca",
     communeSlug: "petorca",
     categorySlug: "cultura",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
@@ -851,7 +893,7 @@ const places = [
   },
   {
     slug: "casa-natal-manuel-montt",
-    localitySlug: null,
+    localitySlug: "petorca",
     communeSlug: "petorca",
     categorySlug: "cultura",
     // Manuel Montt 845, a un costado de la plaza (no en el mismo punto):
@@ -907,7 +949,7 @@ const places = [
   },
   {
     slug: "chocolateria-matichoc",
-    localitySlug: null,
+    localitySlug: "la-ligua",
     communeSlug: "la-ligua",
     categorySlug: "gastronomia",
     // Coordenadas exactas provistas por el usuario (dueño del local, pin
@@ -1255,7 +1297,7 @@ const places = [
   },
   {
     slug: "papudo-parque",
-    localitySlug: null,
+    localitySlug: "papudo",
     communeSlug: "papudo",
     categorySlug: "naturaleza",
     latitude: -32.50461851619594,
@@ -1281,7 +1323,7 @@ const places = [
   },
   {
     slug: "papudo-plaza",
-    localitySlug: null,
+    localitySlug: "papudo",
     communeSlug: "papudo",
     categorySlug: "cultura",
     latitude: -32.50745877114493,
@@ -1416,7 +1458,7 @@ const places = [
   },
   {
     slug: "cabildo-plaza",
-    localitySlug: null,
+    localitySlug: "cabildo",
     communeSlug: "cabildo",
     categorySlug: "cultura",
     latitude: -32.426628719411156,
@@ -1662,7 +1704,7 @@ const places = [
   },
   {
     slug: "petorca-plaza",
-    localitySlug: null,
+    localitySlug: "petorca",
     communeSlug: "petorca",
     categorySlug: "cultura",
     latitude: -32.25155652774576,

@@ -103,6 +103,24 @@ describe("buildExploreTree", () => {
     ]);
   });
 
+  it("lists the commune seat first, ahead of the other villages", () => {
+    const tree = buildExploreTree(
+      communes,
+      [
+        locality("hierro-viejo", "Hierro Viejo", "Petorca"),
+        locality("petorca", "Petorca", "Petorca"),
+        locality("pedernal", "Pedernal", "Petorca"),
+      ],
+      [],
+    );
+
+    expect(tree[0].localities.map((node) => node.slug)).toEqual([
+      "petorca",
+      "hierro-viejo",
+      "pedernal",
+    ]);
+  });
+
   it("drops communes with nothing to show", () => {
     expect(buildExploreTree(communes, [], [])).toEqual([]);
   });

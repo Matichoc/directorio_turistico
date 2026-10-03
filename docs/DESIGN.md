@@ -208,7 +208,8 @@ solo redirige acá para no romper links viejos — la ficha de un pueblo,
 `/pueblos/[slug]`, sigue existiendo). La vista lista es un árbol ordenado
 por comuna y, dentro, por pueblo (`buildExploreTree`,
 `src/lib/ui/build-explore-tree.ts`): el catálogo completo de pueblos manda,
-así que un pueblo sin atractivos igual aparece (vacío); los lugares de una
+así que un pueblo sin atractivos igual aparece (vacío); la cabecera comunal
+(el pueblo que lleva el nombre de la comuna) va primero; los lugares de una
 comuna sin pueblo van a un grupo "Otros lugares" al final de esa comuna.
 
 Interacción (`LocalityBrowser`): pasar el mouse sobre un pueblo previsualiza

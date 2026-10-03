@@ -36,8 +36,15 @@ export function buildExploreTree(
       );
       const placed = new Set<string>();
 
+      // La cabecera comunal lleva el nombre de su comuna (Cabildo, La
+      // Ligua, Petorca…) y va primero; el resto sigue el orden recibido
+      // (alfabético) — `sort` es estable.
       const villages = localities
         .filter((locality) => locality.communeName === commune.name)
+        .sort(
+          (a, b) =>
+            Number(b.name === commune.name) - Number(a.name === commune.name),
+        )
         .map((locality) => {
           const villagePlaces = communePlaces.filter(
             (place) => place.localitySlug === locality.slug,

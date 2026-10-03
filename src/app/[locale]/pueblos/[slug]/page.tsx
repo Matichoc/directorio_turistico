@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { resolveLocale } from "@/i18n/utils";
+import { Link } from "@/i18n/navigation";
 import { PageHero } from "@/components/ui/page-hero";
 import { PlaceCard } from "@/components/place/place-card";
 import { MapView } from "@/components/map/map-view";
@@ -48,6 +49,12 @@ export default async function LocalityDetailPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
+      <Link
+        href="/explorar"
+        className="text-foreground/60 hover:text-accent w-fit text-sm underline-offset-2 hover:underline"
+      >
+        ← {t("backToList")}
+      </Link>
       <PageHero
         title={locality.name}
         subtitle={`${locality.communeName}${locality.summary ? ` — ${locality.summary}` : ""}`}

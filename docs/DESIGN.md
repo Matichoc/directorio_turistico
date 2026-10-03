@@ -185,7 +185,7 @@ usuario). Cualquier página nueva hereda este ancho solo, sin tener que
 ponerle un `max-w-*` a mano — si una sección puntual necesita salirse de
 ese ancho (como el hero del home), es la excepción, no la regla.
 
-Navegación entre las 6 secciones (Inicio/Explorar/Pueblos/Rutas/Mi
+Navegación entre las 5 secciones (Inicio/Explorar/Rutas/Mi
 recorrido/Información): un solo `NAV_ITEMS` (`components/ui/nav-items.tsx`, links +
 íconos) alimenta dos componentes que se muestran según el ancho de
 pantalla, nunca los dos a la vez:
@@ -200,19 +200,29 @@ pantalla, nunca los dos a la vez:
 Agregar una sexta sección = un solo ítem nuevo en `NAV_ITEMS`, nunca
 duplicar el link a mano en cada uno de los dos componentes.
 
-## Explorar: agrupado por pueblo
+## Explorar: comuna → pueblo → atractivos
 
-`/explorar` (vista lista) agrupa los resultados por pueblo en vez de una
-grilla plana — pedido del usuario ("enfocaría los pueblos y los atractivos
-dentro de ellos"). Cada sección es el nombre del pueblo (link a
-`/pueblos/[slug]`) + cantidad, con sus `PlaceCard` adentro; los lugares sin
-pueblo asignado (`place.localitySlug` null) van en una sección "Otros
-lugares" siempre al final, nunca intercalados a ojo entre los demás. La
-vista mapa no agrupa (son pines sueltos sobre el mapa, agrupar ahí no
-aporta nada visualmente). Una pantalla nueva que liste lugares y quiera el
-mismo agrupado reusa `groupPlacesByLocality()`
-(`src/lib/ui/group-places-by-locality.ts`) en vez de reimplementar el
-ordenamiento (pueblos primero por nombre, "Otros lugares" siempre último).
+`/explorar` es la **única** pantalla para recorrer el catálogo por pueblos
+(pedido del usuario: "no tendría dos pantallas para lo mismo"; `/pueblos`
+solo redirige acá para no romper links viejos — la ficha de un pueblo,
+`/pueblos/[slug]`, sigue existiendo). La vista lista es un árbol ordenado
+por comuna y, dentro, por pueblo (`buildExploreTree`,
+`src/lib/ui/build-explore-tree.ts`): el catálogo completo de pueblos manda,
+así que un pueblo sin atractivos igual aparece (vacío); los lugares de una
+comuna sin pueblo van a un grupo "Otros lugares" al final de esa comuna.
+
+Interacción (`LocalityBrowser`): pasar el mouse sobre un pueblo previsualiza
+sus atractivos; clic (o toque en celular) lo deja **fijo abierto** hasta
+volver a tocarlo, y se pueden dejar varios abiertos. El hover solo responde a
+`pointerType === "mouse"` — en táctil, los eventos de mouse sintéticos del
+toque dejarían el pueblo pegado abierto. Cada pueblo real trae un link "Ver
+pueblo" a su ficha.
+
+Los filtros (buscador, comuna, categoría, característica) quedan plegados
+detrás de un botón "Filtros" (`FiltersDisclosure`, con el conteo de filtros
+activos) para que el árbol sea lo primero que se ve; achican los atractivos
+dentro de cada pueblo, no esconden pueblos. La vista mapa (toggle
+lista/mapa) sigue mostrando pines sueltos, sin agrupar.
 
 ## Resaltado cruzado mapa↔lista
 

@@ -2,7 +2,6 @@
   "nav": {
     "home": "Home",
     "explore": "Explore",
-    "villages": "Villages",
     "routes": "Routes",
     "myTrip": "My trip",
     "info": "Info"
@@ -51,6 +50,11 @@
     "resultsCount": "{count, plural, =0 {No results} one {# place} other {# places}}",
     "noResults": "We couldn't find places matching these filters.",
     "otherPlaces": "Other places",
+    "subtitle": "Commune by commune, village by village: hover one to see its attractions, tap to keep it open.",
+    "filtersButton": "Filters",
+    "placesCount": "{count, plural, =0 {No attractions} one {# attraction} other {# attractions}}",
+    "pinned": "(pinned open)",
+    "viewVillage": "View village",
     "filters": {
       "commune": "Commune",
       "category": "Category",
@@ -119,12 +123,9 @@
     }
   },
   "locality": {
-    "title": "Villages",
-    "subtitle": "The villages and localities of Petorca province, commune by commune.",
-    "noResults": "No villages added yet.",
     "placesTitle": "Places in {name}",
     "noPlacesYet": "No places added to this village yet.",
-    "backToList": "Back to villages"
+    "backToList": "Back to explore"
   },
   "trip": {
     "title": "My trip",

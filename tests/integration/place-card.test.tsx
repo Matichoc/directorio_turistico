@@ -28,6 +28,8 @@ const basePlace: PlaceCardType = {
   name: "Escalera del Diablo",
   shortDescription: "Formación rocosa en Hierro Viejo.",
   communeName: "Petorca",
+  localityName: null,
+  localitySlug: null,
   categoryName: "Naturaleza",
   categorySlug: "naturaleza",
   icon: null,

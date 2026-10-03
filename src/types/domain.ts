@@ -124,6 +124,9 @@ export interface PlaceCard {
   name: string;
   shortDescription: string | null;
   communeName: string;
+  /** Pueblo al que pertenece, si se asignó uno — ver `Place.localityId`. */
+  localityName: string | null;
+  localitySlug: string | null;
   categoryName: string;
   categorySlug: string;
   /** Ícono puntual (ver migración 0010_place_icon.sql); null = de categoría. */

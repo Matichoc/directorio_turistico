@@ -13,6 +13,8 @@ function locality(slug: string, name: string, communeName: string): Locality {
     slug,
     name,
     summary: null,
+    summarySourceUrl: null,
+    summarySourceLabel: null,
     communeId: communeName,
     communeName,
     latitude: null,
@@ -72,6 +74,7 @@ describe("buildExploreTree", () => {
       {
         slug: "pedernal",
         name: "Pedernal",
+        summary: null,
         latitude: null,
         longitude: null,
         places: [],

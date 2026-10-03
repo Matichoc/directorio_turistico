@@ -168,7 +168,15 @@ export function LocalityBrowser({ tree, filtersActive }: LocalityBrowserProps) {
                       </div>
 
                       {isOpen && (
-                        <div id={panelId} className="px-4 pb-4">
+                        <div
+                          id={panelId}
+                          className="flex flex-col gap-3 px-4 pb-4"
+                        >
+                          {locality.summary && (
+                            <p className="text-foreground/70 line-clamp-3 text-sm">
+                              {locality.summary}
+                            </p>
+                          )}
                           {locality.places.length === 0 ? (
                             <p className="text-foreground/60 text-sm">
                               {filtersActive

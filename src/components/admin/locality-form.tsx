@@ -52,6 +52,8 @@ export function LocalityForm({
       communeId: String(formData.get("communeId") ?? ""),
       latitude: String(formData.get("latitude") ?? ""),
       longitude: String(formData.get("longitude") ?? ""),
+      summarySourceUrl: String(formData.get("summarySourceUrl") ?? ""),
+      summarySourceLabel: String(formData.get("summarySourceLabel") ?? ""),
       translations: {
         es: esTranslation,
         // Sin nombre en inglés todavía no debería bloquear el alta — usa el
@@ -143,6 +145,25 @@ export function LocalityForm({
             step="any"
             placeholder="Déjalo vacío si todavía no la sabés"
             defaultValue={locality?.longitude ?? ""}
+            className={inputClassName}
+          />
+        </label>
+        <label className={labelClassName}>
+          Fuente del resumen — enlace (opcional)
+          <input
+            name="summarySourceUrl"
+            type="url"
+            placeholder="https://…"
+            defaultValue={locality?.summarySourceUrl ?? ""}
+            className={inputClassName}
+          />
+        </label>
+        <label className={labelClassName}>
+          Fuente del resumen — nombre (opcional)
+          <input
+            name="summarySourceLabel"
+            placeholder="Ej: Wikipedia, Municipalidad de Cabildo"
+            defaultValue={locality?.summarySourceLabel ?? ""}
             className={inputClassName}
           />
         </label>

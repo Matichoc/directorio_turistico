@@ -4,6 +4,8 @@ import type { Commune, Locality, PlaceCard } from "@/types/domain";
 export interface ExploreLocalityNode {
   slug: string | null;
   name: string | null;
+  /** Resumen del pueblo, si tiene uno con fuente real (null en "otros"). */
+  summary: string | null;
   /** Null mientras el pueblo no tenga coordenada confirmada (y en "otros"). */
   latitude: number | null;
   longitude: number | null;
@@ -56,6 +58,7 @@ export function buildExploreTree(
           return {
             slug: locality.slug,
             name: locality.name,
+            summary: locality.summary,
             latitude: locality.latitude,
             longitude: locality.longitude,
             places: villagePlaces,
@@ -74,6 +77,7 @@ export function buildExploreTree(
                 {
                   slug: null,
                   name: null,
+                  summary: null,
                   latitude: null,
                   longitude: null,
                   places: others,

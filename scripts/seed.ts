@@ -145,6 +145,13 @@ const localities: {
   latitude: number | null;
   longitude: number | null;
   summary?: string;
+  /**
+   * De dónde salió `summary` (se muestra como "Fuente: …" en la ficha del
+   * pueblo). Campos planos, no un objeto anidado: `geocode-localities.ts`
+   * parsea cada bloque con una regex sin llaves anidadas.
+   */
+  sourceUrl?: string;
+  sourceLabel?: string;
 }[] = [
   // La Ligua
   {
@@ -164,6 +171,11 @@ const localities: {
     en: "Longotoma",
     latitude: null,
     longitude: null,
+    summary:
+      "Da nombre al campo dunar de Longotoma (unas 653 hectáreas), entre La Ligua y Papudo, que forma parte del Santuario de la Naturaleza Humedal Salinas de Pullally y Dunas de Longotoma. El río Petorca lo separa del humedal.",
+    sourceUrl:
+      "https://es.wikipedia.org/wiki/Humedal_Salinas_de_Pullally_y_Dunas_de_Longotoma",
+    sourceLabel: "Wikipedia — Humedal Salinas de Pullally y Dunas de Longotoma",
   },
   {
     slug: "valle-hermoso",
@@ -172,6 +184,11 @@ const localities: {
     en: "Valle Hermoso",
     latitude: null,
     longitude: null,
+    summary:
+      "Considerado la cuna del tejido de La Ligua: su barrio comercial reúne cerca de 150 tiendas y talleres y es sede de la Fiesta del Tejido.",
+    sourceUrl:
+      "https://www.sercotec.cl/barrios-comerciales/barrio-comercial-valle-hermoso-la-ligua/",
+    sourceLabel: "Sercotec — Barrio Comercial Valle Hermoso",
   },
   {
     slug: "placilla",
@@ -188,6 +205,10 @@ const localities: {
     en: "Pichicuy",
     latitude: null,
     longitude: null,
+    summary:
+      "Balneario y caleta de pescadores de la costa de La Ligua, a unos 25 km de la ciudad y 174 km de Santiago. Su nombre viene del mapudungún. Vive de la pesca artesanal y del surf: su ola La Marmola puede alcanzar hasta 13 metros. En el sector hay un predio de la Escuela Militar.",
+    sourceUrl: "https://es.wikipedia.org/wiki/Pichicuy",
+    sourceLabel: "Wikipedia — Pichicuy",
   },
   {
     slug: "los-molles-pueblo",
@@ -196,6 +217,10 @@ const localities: {
     en: "Los Molles",
     latitude: null,
     longitude: null,
+    summary:
+      "Caleta fundada en los años 60, a unos 187 km de Santiago. Además de la pesca, en la zona se cultivan flores, sobre todo claveles. Es un destino de buceo conocido por La Lobera, Tres Islas y la Piedra del Bilagay.",
+    sourceUrl: "https://es.wikipedia.org/wiki/Los_Molles_(Chile)",
+    sourceLabel: "Wikipedia — Los Molles (Chile)",
   },
   {
     slug: "casas-viejas-de-longotoma",
@@ -212,6 +237,10 @@ const localities: {
     en: "Huaquén",
     latitude: null,
     longitude: null,
+    summary:
+      "Villa Huaquén nació de una antigua hacienda de 34.713 hectáreas que perteneció a los padres mercedarios. Fue expropiada entre 1969 y 1970, durante la reforma agraria, y se dividió en 1994.",
+    sourceUrl: "https://es.wikipedia.org/wiki/Los_Molles_(Chile)",
+    sourceLabel: "Wikipedia — Los Molles (Chile)",
   },
   {
     slug: "quebradilla",
@@ -228,6 +257,11 @@ const localities: {
     en: "La Higuera",
     latitude: null,
     longitude: null,
+    summary:
+      "Localidad de la comuna de La Ligua que contaba con 1.370 habitantes según el Censo 2017.",
+    sourceUrl:
+      "https://telencuestas.com/censos-de-poblacion/chile/2017/valparaiso/petorca/la-ligua",
+    sourceLabel: "Censo 2017 (vía Telencuestas)",
   },
   {
     slug: "la-ballena",
@@ -462,6 +496,10 @@ const localities: {
     en: "El Ingenio",
     latitude: null,
     longitude: null,
+    summary:
+      "Sector de Cabildo que surgió de la hacienda formada al dividirse el Mayorazgo de los Cerda, junto con La Higuera, San José, San Lorenzo y Los Ángeles.",
+    sourceUrl: "https://es.wikipedia.org/wiki/Cabildo_(Chile)",
+    sourceLabel: "Wikipedia — Cabildo (Chile)",
   },
   {
     slug: "el-quemado",
@@ -526,6 +564,12 @@ const localities: {
     en: "San Lorenzo",
     latitude: null,
     longitude: null,
+    summary:
+      "Localidad rural a unos 10 km de Cabildo, con cerca de 2.800 habitantes. Cada 10 de agosto celebra a su patrono con bailes religiosos. Su parroquia se independizó en 1633 con el apoyo de Catalina de los Ríos (La Quintrala).",
+    sourceUrl:
+      "https://revista.cenizas.cl/san-lorenzo-riqueza-patrimonial-y-religiosa-en-la-comuna-de-cabildo/",
+    sourceLabel:
+      "Revista Cenizas — San Lorenzo, riqueza patrimonial y religiosa",
   },
   {
     slug: "montegrande",
@@ -534,6 +578,10 @@ const localities: {
     en: "Montegrande",
     latitude: null,
     longitude: null,
+    summary:
+      'Su nombre alude a lo montañoso del lugar. Según la tradición recogida, ahí se reunían los indígenas a planear su resistencia contra el encomendero, por lo que se lo recuerda como "El Cabildo de los Indios".',
+    sourceUrl: "https://es.wikipedia.org/wiki/Cabildo_(Chile)",
+    sourceLabel: "Wikipedia — Cabildo (Chile)",
   },
   {
     slug: "las-puertas",
@@ -609,6 +657,10 @@ const localities: {
     en: "Cachagua",
     latitude: null,
     longitude: null,
+    summary:
+      'Su nombre viene de Kachuwe, "lugar de pastos". Tiene una playa de unos 5 km y casas de troncos con techo de coirón y estuco a la cal. Frente a la costa está la Isla Cachagua, Monumento Natural desde el 27 de junio de 1989 (4,5 hectáreas), donde vive cerca del 15 % del pingüino de Humboldt del país.',
+    sourceUrl: "https://www.ecured.cu/Cachagua_(Chile)",
+    sourceLabel: "EcuRed — Cachagua (Chile)",
   },
   {
     slug: "catapilco",
@@ -617,6 +669,10 @@ const localities: {
     en: "Catapilco",
     latitude: null,
     longitude: null,
+    summary:
+      "Su origen está en una hacienda otorgada en 1590 a Francisco Hernández de Herrera, quien tomó posesión el 3 de junio de 1599; antes esas tierras pertenecían al cacique Gaspar de Catapilco. En 1847 fue habilitado como puerto menor.",
+    sourceUrl: "https://es.wikipedia.org/wiki/Zapallar",
+    sourceLabel: "Wikipedia — Zapallar",
   },
   {
     slug: "blanquillo",
@@ -670,6 +726,11 @@ const localities: {
     en: "Pullally",
     latitude: null,
     longitude: null,
+    summary:
+      "Da nombre al humedal Salinas de Pullally, Santuario de la Naturaleza que se extiende junto a las dunas de Longotoma, entre La Ligua y Papudo.",
+    sourceUrl:
+      "https://es.wikipedia.org/wiki/Humedal_Salinas_de_Pullally_y_Dunas_de_Longotoma",
+    sourceLabel: "Wikipedia — Humedal Salinas de Pullally y Dunas de Longotoma",
   },
   {
     slug: "las-salinas-papudo",
@@ -2036,6 +2097,8 @@ async function seedLocalities(communeIds: Record<string, string>) {
           commune_id: communeId,
           latitude: locality.latitude,
           longitude: locality.longitude,
+          summary_source_url: locality.sourceUrl ?? null,
+          summary_source_label: locality.sourceLabel ?? null,
         },
         { onConflict: "commune_id,slug" },
       )

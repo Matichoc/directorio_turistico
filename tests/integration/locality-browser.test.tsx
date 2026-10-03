@@ -31,6 +31,7 @@ const tree: ExploreCommuneNode[] = [
       {
         slug: "hierro-viejo",
         name: "Hierro Viejo",
+        summary: "Sector donde se descubrió oro en 1730.",
         latitude: -32.28,
         longitude: -71,
         places: [
@@ -58,6 +59,7 @@ const tree: ExploreCommuneNode[] = [
       {
         slug: "pedernal",
         name: "Pedernal",
+        summary: null,
         latitude: null,
         longitude: null,
         places: [],
@@ -135,6 +137,17 @@ describe("LocalityBrowser", () => {
 
     fireEvent.click(toggle);
     expect(screen.queryByText("Escalera del Diablo")).not.toBeInTheDocument();
+  });
+
+  it("shows a village summary only when it has one", () => {
+    renderBrowser();
+    fireEvent.click(screen.getByRole("button", { name: /Hierro Viejo/ }));
+    expect(
+      screen.getByText("Sector donde se descubrió oro en 1730."),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /Pedernal/ }));
+    expect(screen.getAllByText(/descubrió oro/)).toHaveLength(1);
   });
 
   it("ignores touch pointers for the hover preview", () => {

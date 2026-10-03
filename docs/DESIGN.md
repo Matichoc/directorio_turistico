@@ -265,6 +265,11 @@ volver a tocarlo, y se pueden dejar varios abiertos. El hover solo responde a
 toque dejarían el pueblo pegado abierto. Cada pueblo real trae un link "Ver
 pueblo" a su ficha.
 
+Un pueblo con resumen real lo muestra al abrirse (3 líneas); la ficha
+(`/pueblos/[slug]`) lo muestra completo en un bloque "Sobre {pueblo}" con
+"Fuente: …" enlazada. Sin resumen, ninguno de los dos muestra nada — nunca
+un texto de relleno.
+
 Los filtros (buscador, comuna, categoría, característica) quedan plegados
 detrás de un botón "Filtros" (`FiltersDisclosure`, con el conteo de filtros
 activos) para que el árbol sea lo primero que se ve; achican los atractivos

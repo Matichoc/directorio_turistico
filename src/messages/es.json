@@ -127,6 +127,8 @@
   "locality": {
     "placesTitle": "Lugares en {name}",
     "noPlacesYet": "Todavía no hay lugares cargados en este pueblo.",
+    "aboutTitle": "Sobre {name}",
+    "source": "Fuente",
     "backToList": "Volver a explorar"
   },
   "trip": {

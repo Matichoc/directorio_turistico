@@ -39,5 +39,13 @@ export const routing = defineRouting({
       es: "/informacion",
       en: "/info",
     },
+    "/pueblos": {
+      es: "/pueblos",
+      en: "/villages",
+    },
+    "/pueblos/[slug]": {
+      es: "/pueblos/[slug]",
+      en: "/villages/[slug]",
+    },
   },
 });

@@ -40,10 +40,19 @@ type LocalityRow = {
   id: string;
   commune_id: string;
   slug: string;
-  name: string;
-  latitude: number;
-  longitude: number;
+  // Opcionales a propósito: se confirmó la existencia real de varios
+  // pueblos sin poder verificar una coordenada precisa (ver migración
+  // 0021_locality_translations.sql) — null mientras no se confirme.
+  latitude: number | null;
+  longitude: number | null;
   created_at: string;
+};
+
+type LocalityTranslationRow = {
+  locality_id: string;
+  locale: Locale;
+  name: string;
+  summary: string | null;
 };
 
 type CategoryRow = {
@@ -274,11 +283,17 @@ export interface Database {
         Partial<LocalityRow> & {
           commune_id: string;
           slug: string;
-          name: string;
-          latitude: number;
-          longitude: number;
         },
         Partial<LocalityRow>
+      >;
+      locality_translations: Table<
+        LocalityTranslationRow,
+        Partial<LocalityTranslationRow> & {
+          locality_id: string;
+          locale: Locale;
+          name: string;
+        },
+        Partial<LocalityTranslationRow>
       >;
       categories: Table<
         CategoryRow,

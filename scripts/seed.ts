@@ -126,6 +126,521 @@ const tags = [
   { slug: "leyenda", name: "Leyenda local" },
 ];
 
+/**
+ * Pueblos/localidades reales de la provincia, investigados cruzando
+ * Wikipedia (es), INE, municipios e infopetorca.cl/pueblosamerica.com
+ * (ver docs/PLAN.md) y confirmados con el usuario (que corrigió, de
+ * primera mano, varios nombres y comunas mal asignadas en la primera
+ * pasada de investigación). Coordenadas en `null` cuando no se pudo
+ * verificar una ubicación precisa — mejor dejarla pendiente que
+ * inventar un punto que parezca real (docs/DESIGN.md). `summary` solo
+ * cuando hay contenido real respaldado por una fuente, igual criterio
+ * que `places`/`routes` más abajo.
+ */
+const localities: {
+  slug: string;
+  communeSlug: string;
+  es: string;
+  en: string;
+  latitude: number | null;
+  longitude: number | null;
+  summary?: string;
+}[] = [
+  // La Ligua
+  {
+    slug: "longotoma",
+    communeSlug: "la-ligua",
+    es: "Longotoma",
+    en: "Longotoma",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "valle-hermoso",
+    communeSlug: "la-ligua",
+    es: "Valle Hermoso",
+    en: "Valle Hermoso",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "placilla",
+    communeSlug: "la-ligua",
+    es: "Placilla",
+    en: "Placilla",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "pichicuy",
+    communeSlug: "la-ligua",
+    es: "Pichicuy",
+    en: "Pichicuy",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "los-molles-pueblo",
+    communeSlug: "la-ligua",
+    es: "Los Molles",
+    en: "Los Molles",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "casas-viejas-de-longotoma",
+    communeSlug: "la-ligua",
+    es: "Casas Viejas de Longotoma",
+    en: "Casas Viejas de Longotoma",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "huaquen",
+    communeSlug: "la-ligua",
+    es: "Huaquén",
+    en: "Huaquén",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "quebradilla",
+    communeSlug: "la-ligua",
+    es: "Quebradilla",
+    en: "Quebradilla",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "la-higuera-la-ligua",
+    communeSlug: "la-ligua",
+    es: "La Higuera",
+    en: "La Higuera",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "la-ballena",
+    communeSlug: "la-ligua",
+    es: "La Ballena",
+    en: "La Ballena",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Sector costero de La Ligua, en el km 180 de la Ruta 5 Norte, a pocas cuadras del centro y minutos de Los Molles, Pichidangui, Pichicuy y Salinas de Pullally.",
+  },
+  {
+    slug: "la-engorda",
+    communeSlug: "la-ligua",
+    es: "La Engorda",
+    en: "La Engorda",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "los-hornos",
+    communeSlug: "la-ligua",
+    es: "Los Hornos",
+    en: "Los Hornos",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "pueblo-de-roco",
+    communeSlug: "la-ligua",
+    es: "Pueblo de Roco",
+    en: "Pueblo de Roco",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "pueblo-de-varas",
+    communeSlug: "la-ligua",
+    es: "Pueblo de Varas",
+    en: "Pueblo de Varas",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "trapiche",
+    communeSlug: "la-ligua",
+    es: "Trapiche",
+    en: "Trapiche",
+    latitude: null,
+    longitude: null,
+  },
+  // Petorca
+  {
+    slug: "chincolco",
+    communeSlug: "petorca",
+    es: "Chincolco",
+    en: "Chincolco",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Pueblo en la parte alta del valle del río Petorca, a unos 6,5 km al noreste de la ciudad de Petorca. Fue comuna propia hasta 1928, cuando se anexó a la comuna de Petorca.",
+  },
+  {
+    slug: "hierro-viejo",
+    communeSlug: "petorca",
+    es: "Hierro Viejo",
+    en: "Hierro Viejo",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Sector donde se descubrió en 1730 un rico yacimiento de oro ('Los Tornos'), que atrajo a los primeros ocupantes de tierras de la hacienda Pedegua.",
+  },
+  {
+    slug: "el-sobrante",
+    communeSlug: "petorca",
+    es: "El Sobrante",
+    en: "El Sobrante",
+    latitude: null,
+    longitude: null,
+    summary:
+      "El río Petorca nace en la cordillera de los Andes con el nombre de río Sobrante; al recibir la confluencia del estero Pedernal, a la altura de Chincolco, pasa a llamarse río Petorca.",
+  },
+  {
+    slug: "pedernal",
+    communeSlug: "petorca",
+    es: "Pedernal",
+    en: "Pedernal",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "frutillar-petorca",
+    communeSlug: "petorca",
+    es: "Frutillar",
+    en: "Frutillar",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "manuel-montt-petorca",
+    communeSlug: "petorca",
+    es: "Manuel Montt",
+    en: "Manuel Montt",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "pedegua",
+    communeSlug: "petorca",
+    es: "Pedegua",
+    en: "Pedegua",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Antigua hacienda de la comunidad religiosa agustina; al descubrirse oro en 1730 en el sector de Hierro Viejo, trabajadores y aventureros mineros ocuparon tierras de la hacienda. En 1924 se inauguró un ramal ferroviario que la conectó con la estación de Petorca.",
+  },
+  {
+    slug: "palquico",
+    communeSlug: "petorca",
+    es: "Palquico",
+    en: "Palquico",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "las-palmas-petorca",
+    communeSlug: "petorca",
+    es: "Las Palmas",
+    en: "Las Palmas",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "santa-julia",
+    communeSlug: "petorca",
+    es: "Santa Julia",
+    en: "Santa Julia",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "la-polcura",
+    communeSlug: "petorca",
+    es: "La Polcura",
+    en: "La Polcura",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "la-chimba-petorca",
+    communeSlug: "petorca",
+    es: "La Chimba",
+    en: "La Chimba",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "la-nipa",
+    communeSlug: "petorca",
+    es: "La Ñipa",
+    en: "La Ñipa",
+    latitude: null,
+    longitude: null,
+  },
+  // Cabildo
+  {
+    slug: "alicahue",
+    communeSlug: "cabildo",
+    es: "Alicahue",
+    en: "Alicahue",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Localidad rural en el precordillera, a unos 35 km al interior de la ciudad de Cabildo.",
+  },
+  {
+    slug: "artificio",
+    communeSlug: "cabildo",
+    es: "Artificio",
+    en: "Artificio",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "casas-de-alicahue",
+    communeSlug: "cabildo",
+    es: "Casas de Alicahue",
+    en: "Casas de Alicahue",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "el-cartucho",
+    communeSlug: "cabildo",
+    es: "El Cartucho",
+    en: "El Cartucho",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "el-crucero-cabildo",
+    communeSlug: "cabildo",
+    es: "El Crucero",
+    en: "El Crucero",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "el-ingenio",
+    communeSlug: "cabildo",
+    es: "El Ingenio",
+    en: "El Ingenio",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "el-quemado",
+    communeSlug: "cabildo",
+    es: "El Quemado",
+    en: "El Quemado",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "el-guayacan",
+    communeSlug: "cabildo",
+    es: "El Guayacán",
+    en: "El Guayacán",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "hospital-cabildo",
+    communeSlug: "cabildo",
+    es: "Hospital",
+    en: "Hospital",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "la-mora",
+    communeSlug: "cabildo",
+    es: "La Mora",
+    en: "La Mora",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "los-perales",
+    communeSlug: "cabildo",
+    es: "Los Perales",
+    en: "Los Perales",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "penablanca",
+    communeSlug: "cabildo",
+    es: "Peñablanca",
+    en: "Peñablanca",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "pitipeumo",
+    communeSlug: "cabildo",
+    es: "Pitipeumo",
+    en: "Pitipeumo",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "san-lorenzo-cabildo",
+    communeSlug: "cabildo",
+    es: "San Lorenzo",
+    en: "San Lorenzo",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "montegrande",
+    communeSlug: "cabildo",
+    es: "Montegrande",
+    en: "Montegrande",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "las-puertas",
+    communeSlug: "cabildo",
+    es: "Las Puertas",
+    en: "Las Puertas",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "la-vina-cabildo",
+    communeSlug: "cabildo",
+    es: "La Viña",
+    en: "La Viña",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "pililen",
+    communeSlug: "cabildo",
+    es: "Pililén",
+    en: "Pililén",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "paihuen",
+    communeSlug: "cabildo",
+    es: "Paihuén",
+    en: "Paihuén",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "bartolillo",
+    communeSlug: "cabildo",
+    es: "Bartolillo",
+    en: "Bartolillo",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "los-molinos-cabildo",
+    communeSlug: "cabildo",
+    es: "Los Molinos",
+    en: "Los Molinos",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "algarrobo-cabildo",
+    communeSlug: "cabildo",
+    es: "Algarrobo",
+    en: "Algarrobo",
+    latitude: null,
+    longitude: null,
+  },
+  // Zapallar
+  {
+    slug: "zapallar-pueblo",
+    communeSlug: "zapallar",
+    es: "Zapallar",
+    en: "Zapallar",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "cachagua",
+    communeSlug: "zapallar",
+    es: "Cachagua",
+    en: "Cachagua",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "catapilco",
+    communeSlug: "zapallar",
+    es: "Catapilco",
+    en: "Catapilco",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "blanquillo",
+    communeSlug: "zapallar",
+    es: "Blanquillo",
+    en: "Blanquillo",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "la-laguna-zapallar",
+    communeSlug: "zapallar",
+    es: "La Laguna",
+    en: "La Laguna",
+    latitude: null,
+    longitude: null,
+    summary:
+      "También conocida como Laguna de Zapallar, junto a Maitencillo, en la ribera norte de la laguna que conecta con la desembocadura del estero Catapilco; su playa se une con las de Maitencillo, Las Ágatas y Cachagua.",
+  },
+  {
+    slug: "la-hacienda-zapallar",
+    communeSlug: "zapallar",
+    es: "La Hacienda",
+    en: "La Hacienda",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "san-alfonso-zapallar",
+    communeSlug: "zapallar",
+    es: "San Alfonso",
+    en: "San Alfonso",
+    latitude: null,
+    longitude: null,
+  },
+  // Papudo
+  {
+    slug: "pullally",
+    communeSlug: "papudo",
+    es: "Pullally",
+    en: "Pullally",
+    latitude: null,
+    longitude: null,
+  },
+  {
+    slug: "las-salinas-papudo",
+    communeSlug: "papudo",
+    es: "Las Salinas",
+    en: "Las Salinas",
+    latitude: null,
+    longitude: null,
+    summary:
+      "Localidad rural a 12 km de la playa, con familias dedicadas a la agricultura y una pequeña caleta de pesca artesanal en la desembocadura del río La Ligua. Se han encontrado restos arqueológicos changos en las dunas de Salinas de Pullally.",
+  },
+];
+
 // Lugares reales, con la fuente que respalda nombre/descripción/ubicación
 // aproximada. Coordenadas sin fuente exacta (marcadas "aprox.") usan el
 // centro del pueblo/comuna como referencia y deben corregirse en terreno.
@@ -1422,6 +1937,60 @@ async function seedCommuneLinks(communeIds: Record<string, string>) {
   console.log(`✔ ${count} enlaces de contacto de municipalidades`);
 }
 
+/**
+ * `localities` es único por `(commune_id, slug)`, no por `slug` a secas (ver
+ * `0002_catalog.sql`) — el `onConflict` tiene que incluir ambas columnas o
+ * dos pueblos de distinta comuna con el mismo slug chocarían entre sí.
+ */
+async function seedLocalities(communeIds: Record<string, string>) {
+  const localityIds: Record<string, string> = {};
+
+  for (const locality of localities) {
+    const communeId = communeIds[locality.communeSlug];
+    if (!communeId) continue;
+
+    const { data, error } = await supabase
+      .from("localities")
+      .upsert(
+        {
+          slug: locality.slug,
+          commune_id: communeId,
+          latitude: locality.latitude,
+          longitude: locality.longitude,
+        },
+        { onConflict: "commune_id,slug" },
+      )
+      .select("id")
+      .single();
+
+    if (error || !data) throw error ?? new Error("No se pudo crear el pueblo");
+    localityIds[locality.slug] = data.id;
+
+    await supabase.from("locality_translations").upsert(
+      [
+        {
+          locality_id: data.id,
+          locale: "es",
+          name: locality.es,
+          summary: locality.summary ?? null,
+        },
+        {
+          // El resumen solo se investigó en español — mostrarlo igual en
+          // "en" sería mostrar texto en español en la página en inglés.
+          locality_id: data.id,
+          locale: "en",
+          name: locality.en,
+          summary: null,
+        },
+      ],
+      { onConflict: "locality_id,locale" },
+    );
+  }
+
+  console.log(`✔ ${localities.length} pueblos`);
+  return localityIds;
+}
+
 async function seedCategories() {
   const categoryIds: Record<string, string> = {};
 
@@ -1714,6 +2283,7 @@ async function main() {
   await seedSponsors();
   const communeIds = await seedCommunes();
   await seedCommuneLinks(communeIds);
+  await seedLocalities(communeIds);
   const categoryIds = await seedCategories();
   await seedTags();
   const placeIds = await seedPlaces(communeIds, categoryIds);

@@ -20,6 +20,7 @@ const placeFormSchema = z.object({
       "El slug debe ser minúsculas, números y guiones (ej: mi-lugar)",
     ),
   communeId: z.uuid(),
+  localityId: z.uuid().optional().or(z.literal("")),
   categoryId: z.uuid(),
   latitude: z.coerce.number().min(-90).max(90),
   longitude: z.coerce.number().min(-180).max(180),
@@ -59,6 +60,7 @@ export async function createPlace(
     .insert({
       slug: parsed.slug,
       commune_id: parsed.communeId,
+      locality_id: normalize(parsed.localityId),
       category_id: parsed.categoryId,
       latitude: parsed.latitude,
       longitude: parsed.longitude,
@@ -114,6 +116,7 @@ export async function updatePlace(
     .update({
       slug: parsed.slug,
       commune_id: parsed.communeId,
+      locality_id: normalize(parsed.localityId),
       category_id: parsed.categoryId,
       latitude: parsed.latitude,
       longitude: parsed.longitude,

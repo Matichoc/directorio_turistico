@@ -9,6 +9,7 @@ import {
 } from "@/lib/data/places";
 import { listCommunes } from "@/lib/data/communes";
 import { listCategories } from "@/lib/data/categories";
+import { listLocalityOptions } from "@/lib/data/localities";
 import { createPlace, updatePlace, type PlaceFormInput } from "./places";
 import type { PublicationStatus } from "@/types/database";
 
@@ -24,6 +25,7 @@ const CSV_HEADERS = [
   "nombre_en",
   "categoria",
   "comuna",
+  "pueblo",
   "latitud",
   "longitud",
   "direccion",
@@ -59,6 +61,7 @@ export async function exportPlacesCsv(): Promise<string> {
     place.translations.en.name,
     place.categoryName,
     place.communeName,
+    place.localityName ?? "",
     String(place.latitude),
     String(place.longitude),
     place.address ?? "",
@@ -105,9 +108,10 @@ export interface ImportReport {
  */
 export async function importPlacesCsv(csvText: string): Promise<ImportReport> {
   const rows = parseCsvWithHeader(csvText);
-  const [communes, categories, existingPlaces] = await Promise.all([
+  const [communes, categories, localities, existingPlaces] = await Promise.all([
     listCommunes("es"),
     listCategories("es"),
+    listLocalityOptions(),
     listAllPlacesForImport(),
   ]);
 
@@ -118,6 +122,12 @@ export async function importPlacesCsv(csvText: string): Promise<ImportReport> {
     categories.map((category) => [
       category.name.trim().toLowerCase(),
       category.id,
+    ]),
+  );
+  const localityByCommuneAndName = new Map(
+    localities.map((locality) => [
+      `${locality.communeId}::${locality.name.trim().toLowerCase()}`,
+      locality.id,
     ]),
   );
   const existingBySlug = new Map(
@@ -145,6 +155,25 @@ export async function importPlacesCsv(csvText: string): Promise<ImportReport> {
             .map((commune) => commune.name)
             .join(", ")}.`,
         );
+      }
+
+      const pueblo = (row.pueblo ?? "").trim();
+      let localityId: string | null = null;
+      if (pueblo) {
+        const found = localityByCommuneAndName.get(
+          `${communeId}::${pueblo.toLowerCase()}`,
+        );
+        if (!found) {
+          const optionsInCommune = localities
+            .filter((locality) => locality.communeId === communeId)
+            .map((locality) => locality.name);
+          throw new Error(
+            optionsInCommune.length > 0
+              ? `Pueblo "${pueblo}" no existe en esa comuna. Usa uno de: ${optionsInCommune.join(", ")} (o déjalo vacío).`
+              : `Pueblo "${pueblo}" no existe — esa comuna todavía no tiene pueblos cargados en /admin/pueblos.`,
+          );
+        }
+        localityId = found;
       }
 
       const categoryId = categoryByName.get(
@@ -187,6 +216,7 @@ export async function importPlacesCsv(csvText: string): Promise<ImportReport> {
       const input: PlaceFormInput = {
         slug: slug || slugify(name),
         communeId,
+        localityId: localityId ?? "",
         categoryId,
         latitude,
         longitude,

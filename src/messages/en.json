@@ -116,6 +116,14 @@
       "palta": "Avocado"
     }
   },
+  "locality": {
+    "title": "Villages",
+    "subtitle": "The villages and localities of Petorca province, commune by commune.",
+    "noResults": "No villages added yet.",
+    "placesTitle": "Places in {name}",
+    "noPlacesYet": "No places added to this village yet.",
+    "backToList": "Back to villages"
+  },
   "trip": {
     "title": "My trip",
     "subtitle": "Build your itinerary by adding places and routes from the site; it's saved only on this device.",

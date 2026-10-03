@@ -14,6 +14,10 @@ export interface Place {
   shortDescription: string | null;
   communeId: string;
   communeName: string;
+  /** Pueblo al que pertenece, si se asignó uno (ver `types.Locality`). */
+  localityId: string | null;
+  localityName: string | null;
+  localitySlug: string | null;
   categoryId: string;
   categoryName: string;
   categorySlug: string;
@@ -63,6 +67,28 @@ export interface Commune {
   id: string;
   slug: string;
   name: string;
+}
+
+/**
+ * "Pueblo" — dimensión entre comuna y lugar (comuna → pueblo → lugares),
+ * pedida por el usuario para armar un mapa real de la provincia. Reusa
+ * `localities` (en el esquema desde `0002_catalog.sql`, nunca poblada
+ * hasta ahora) en vez de una tabla nueva.
+ */
+export interface Locality {
+  id: string;
+  slug: string;
+  name: string;
+  summary: string | null;
+  communeId: string;
+  communeName: string;
+  /** Null mientras no se confirme una coordenada real (ver docs/DESIGN.md). */
+  latitude: number | null;
+  longitude: number | null;
+}
+
+export interface LocalityWithPlaces extends Locality {
+  places: PlaceCard[];
 }
 
 export interface Sponsor {

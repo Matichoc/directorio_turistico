@@ -57,10 +57,17 @@ function readTranslation(formData: FormData, locale: "es" | "en") {
 export function PlaceForm({
   communes,
   categories,
+  localities,
   place,
 }: {
   communes: { id: string; name: string }[];
   categories: { id: string; name: string }[];
+  localities: {
+    id: string;
+    name: string;
+    communeId: string;
+    communeName: string;
+  }[];
   place?: AdminPlaceDetail;
 }) {
   const router = useRouter();
@@ -86,6 +93,7 @@ export function PlaceForm({
     const input: PlaceFormInput = {
       slug: String(formData.get("slug") ?? ""),
       communeId: String(formData.get("communeId") ?? ""),
+      localityId: String(formData.get("localityId") ?? ""),
       categoryId: String(formData.get("categoryId") ?? ""),
       latitude: Number(formData.get("latitude")),
       longitude: Number(formData.get("longitude")),
@@ -162,6 +170,32 @@ export function PlaceForm({
               <option key={commune.id} value={commune.id}>
                 {commune.name}
               </option>
+            ))}
+          </select>
+        </label>
+        <label className={labelClassName}>
+          Pueblo (opcional)
+          <select
+            name="localityId"
+            defaultValue={place?.localityId ?? ""}
+            className={inputClassName}
+          >
+            <option value="">— (sin pueblo asignado)</option>
+            {Array.from(
+              localities.reduce((byCommune, locality) => {
+                const group = byCommune.get(locality.communeName) ?? [];
+                group.push(locality);
+                byCommune.set(locality.communeName, group);
+                return byCommune;
+              }, new Map<string, typeof localities>()),
+            ).map(([communeName, group]) => (
+              <optgroup key={communeName} label={communeName}>
+                {group.map((locality) => (
+                  <option key={locality.id} value={locality.id}>
+                    {locality.name}
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </label>

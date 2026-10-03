@@ -80,6 +80,9 @@ export interface Locality {
   slug: string;
   name: string;
   summary: string | null;
+  /** De dónde salió el resumen (se muestra como "Fuente: …"); null si no hay. */
+  summarySourceUrl: string | null;
+  summarySourceLabel: string | null;
   communeId: string;
   communeName: string;
   /** Null mientras no se confirme una coordenada real (ver docs/DESIGN.md). */

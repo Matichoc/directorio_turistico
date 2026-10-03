@@ -45,6 +45,16 @@ const localityFormSchema = z.object({
   communeId: z.uuid(),
   latitude: optionalCoordinate(-90, 90),
   longitude: optionalCoordinate(-180, 180),
+  summarySourceUrl: z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal(""))
+    .refine(
+      (value) => !value || /^https?:\/\//i.test(value),
+      "La fuente debe ser un enlace que empiece con http:// o https://",
+    ),
+  summarySourceLabel: z.string().trim().optional().or(z.literal("")),
   translations: z.object({
     es: localityLocaleContentSchema,
     en: localityLocaleContentSchema,
@@ -70,6 +80,8 @@ export async function createLocality(
       commune_id: parsed.communeId,
       latitude: parsed.latitude,
       longitude: parsed.longitude,
+      summary_source_url: normalize(parsed.summarySourceUrl),
+      summary_source_label: normalize(parsed.summarySourceLabel),
     })
     .select("id")
     .single();
@@ -115,6 +127,8 @@ export async function updateLocality(
       commune_id: parsed.communeId,
       latitude: parsed.latitude,
       longitude: parsed.longitude,
+      summary_source_url: normalize(parsed.summarySourceUrl),
+      summary_source_label: normalize(parsed.summarySourceLabel),
     })
     .eq("id", id);
 

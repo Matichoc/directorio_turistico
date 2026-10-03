@@ -45,6 +45,9 @@ type LocalityRow = {
   // 0021_locality_translations.sql) — null mientras no se confirme.
   latitude: number | null;
   longitude: number | null;
+  /** Fuente del resumen (ver migración 0022); null mientras no tenga una. */
+  summary_source_url: string | null;
+  summary_source_label: string | null;
   created_at: string;
 };
 

@@ -71,6 +71,45 @@ export default async function ExplorePage({
     places,
   );
 
+  // Pueblos con coordenada confirmada también van al mapa. Con un filtro de
+  // búsqueda/categoría/característica solo los que tienen atractivos que
+  // coinciden (si no, el mapa se llenaría de pueblos ajenos a la búsqueda).
+  const narrowing = Boolean(
+    filters.q || filters.categoria || filters.caracteristica,
+  );
+  const villageMarkers = tree.flatMap((commune) =>
+    commune.localities.flatMap((village) =>
+      village.slug &&
+      village.name &&
+      village.latitude !== null &&
+      village.longitude !== null &&
+      (!narrowing || village.places.length > 0)
+        ? [
+            {
+              slug: village.slug,
+              name: village.name,
+              latitude: village.latitude,
+              longitude: village.longitude,
+              kind: "locality" as const,
+            },
+          ]
+        : [],
+    ),
+  );
+
+  const mapMarkers = [
+    ...villageMarkers,
+    ...places.map((place) => ({
+      slug: place.slug,
+      name: place.name,
+      shortDescription: place.shortDescription,
+      latitude: place.latitude,
+      longitude: place.longitude,
+      categorySlug: place.categorySlug,
+      icon: place.icon,
+    })),
+  ];
+
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
       <PageHero
@@ -100,21 +139,15 @@ export default async function ExplorePage({
         <>
           <p className="text-foreground/50 text-sm">
             {t("resultsCount", { count: places.length })}
+            {villageMarkers.length > 0 &&
+              ` · ${t("villagesOnMap", { count: villageMarkers.length })}`}
           </p>
-          {places.length === 0 ? (
+          {mapMarkers.length === 0 ? (
             <EmptyState>{t("noResults")}</EmptyState>
           ) : (
             <MapView
               className="h-[60vh] w-full overflow-hidden rounded-xl"
-              markers={places.map((place) => ({
-                slug: place.slug,
-                name: place.name,
-                shortDescription: place.shortDescription,
-                latitude: place.latitude,
-                longitude: place.longitude,
-                categorySlug: place.categorySlug,
-                icon: place.icon,
-              }))}
+              markers={mapMarkers}
             />
           )}
         </>

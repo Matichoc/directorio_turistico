@@ -14,6 +14,7 @@ export function MapPin({
   selected = false,
   near = false,
   delayMs = 0,
+  variant = "place",
 }: {
   categorySlug?: string | null;
   placeIcon?: string | null;
@@ -23,8 +24,33 @@ export function MapPin({
    * pedido del usuario, "que se destaque o brille al pasar por algún lugar". */
   near?: boolean;
   delayMs?: number;
+  /** "locality" = pueblo: círculo neón con casita, distinto de la gota de
+   * un atractivo, para que ambos se lean de un vistazo en el mismo mapa. */
+  variant?: "place" | "locality";
 }) {
   const color = getCategoryPinColor(categorySlug);
+
+  if (variant === "locality") {
+    return (
+      <span
+        className="relative flex h-8 w-8 items-center justify-center"
+        style={{ animationDelay: `${delayMs}ms` }}
+      >
+        <span
+          className="bg-neon absolute h-7 w-7 animate-ping rounded-full opacity-30"
+          style={{ animationDelay: `${delayMs}ms` }}
+        />
+        <span
+          className={`animate-pin-pop bg-neon relative flex h-7 w-7 items-center justify-center rounded-full border-2 shadow-[0_0_14px_2px_var(--neon)] transition-transform duration-150 hover:scale-110 ${
+            selected ? "scale-110 border-white" : "border-white/80"
+          }`}
+          style={{ animationDelay: `${delayMs}ms` }}
+        >
+          <CategoryIcon icon="pueblo" className="h-4 w-4 text-white" />
+        </span>
+      </span>
+    );
+  }
 
   return (
     <span

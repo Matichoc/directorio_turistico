@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getPlaceBySlug } from "@/lib/data/places";
 import { listApprovedComments } from "@/lib/data/comments";
 import { resolveLocale } from "@/i18n/utils";
+import { Link } from "@/i18n/navigation";
 import { ShareButton } from "@/components/place/share-button";
 import { LikeButton } from "@/components/place/like-button";
 import { PlaceCommentForm } from "@/components/place/place-comment-form";
@@ -41,6 +42,20 @@ export default async function PlaceDetailPage({
         <h1 className="text-2xl font-semibold">{place.name}</h1>
         <p className="text-foreground/60 text-sm">
           {place.communeName}
+          {place.localityName && place.localitySlug && (
+            <>
+              {" · "}
+              <Link
+                href={{
+                  pathname: "/pueblos/[slug]",
+                  params: { slug: place.localitySlug },
+                }}
+                className="hover:text-accent underline-offset-2 hover:underline"
+              >
+                {place.localityName}
+              </Link>
+            </>
+          )}
           {place.categoryName ? ` · ${place.categoryName}` : ""}
         </p>
         {place.verificationStatus === "verified" ? (

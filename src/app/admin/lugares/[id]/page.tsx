@@ -5,6 +5,7 @@ import { ConfirmSubmitButton } from "@/components/admin/confirm-submit-button";
 import { getAdminPlaceById } from "@/lib/data/places";
 import { listCommunes } from "@/lib/data/communes";
 import { listCategories } from "@/lib/data/categories";
+import { listLocalityOptions } from "@/lib/data/localities";
 import { deletePlace } from "@/lib/server/content/places";
 
 export default async function EditAdminPlacePage({
@@ -13,10 +14,11 @@ export default async function EditAdminPlacePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [place, communes, categories] = await Promise.all([
+  const [place, communes, categories, localities] = await Promise.all([
     getAdminPlaceById(id),
     listCommunes("es"),
     listCategories("es"),
+    listLocalityOptions(),
   ]);
 
   if (!place) {
@@ -36,7 +38,12 @@ export default async function EditAdminPlacePage({
         title={place.translations.es.name || place.slug}
         subtitle="Editar lugar."
       />
-      <PlaceForm communes={communes} categories={categories} place={place} />
+      <PlaceForm
+        communes={communes}
+        categories={categories}
+        localities={localities}
+        place={place}
+      />
 
       <form action={deleteAndRedirect} className="self-start">
         <ConfirmSubmitButton

@@ -20,6 +20,7 @@ const placeFormSchema = z.object({
       "El slug debe ser minúsculas, números y guiones (ej: mi-lugar)",
     ),
   communeId: z.uuid(),
+  localityId: z.uuid().optional().or(z.literal("")),
   categoryId: z.uuid(),
   latitude: z.coerce.number().min(-90).max(90),
   longitude: z.coerce.number().min(-180).max(180),
@@ -59,6 +60,7 @@ export async function createPlace(
     .insert({
       slug: parsed.slug,
       commune_id: parsed.communeId,
+      locality_id: normalize(parsed.localityId),
       category_id: parsed.categoryId,
       latitude: parsed.latitude,
       longitude: parsed.longitude,
@@ -114,6 +116,7 @@ export async function updatePlace(
     .update({
       slug: parsed.slug,
       commune_id: parsed.communeId,
+      locality_id: normalize(parsed.localityId),
       category_id: parsed.categoryId,
       latitude: parsed.latitude,
       longitude: parsed.longitude,
@@ -153,6 +156,30 @@ export async function updatePlace(
 
   revalidatePath("/admin/lugares");
   revalidatePath(`/admin/lugares/${id}`);
+}
+
+/**
+ * Activa/desactiva un lugar desde el listado simple, sin abrir el
+ * formulario completo — pedido del usuario: dar de baja algo debe ser tan
+ * simple como un botón, y nunca borra el registro ni pisa su contenido,
+ * solo cambia `publication_status` (la fecha de ese cambio queda sola en
+ * `status_changed_at` vía trigger, ver `0020_status_tracking.sql`).
+ */
+export async function setPlacePublicationStatus(
+  id: string,
+  status: "published" | "archived",
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("places")
+    .update({ publication_status: status })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(`No se pudo cambiar el estado: ${error.message}`);
+  }
+
+  revalidatePath("/admin/lugares");
 }
 
 /**

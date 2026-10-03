@@ -116,6 +116,14 @@
       "palta": "Palta"
     }
   },
+  "locality": {
+    "title": "Pueblos",
+    "subtitle": "Los pueblos y localidades de la provincia de Petorca, comuna por comuna.",
+    "noResults": "Todavía no hay pueblos cargados.",
+    "placesTitle": "Lugares en {name}",
+    "noPlacesYet": "Todavía no hay lugares cargados en este pueblo.",
+    "backToList": "Volver a pueblos"
+  },
   "trip": {
     "title": "Mi recorrido",
     "subtitle": "Arma tu itinerario agregando lugares y rutas desde el sitio; se guarda solo en este dispositivo.",

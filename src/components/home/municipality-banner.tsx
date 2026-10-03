@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Municipality, MunicipalityLink } from "@/types/domain";
 import { contactLinkHref, contactLinkLabel } from "@/lib/ui/contact-link";
+import { SparkleField } from "@/components/ui/sparkle-field";
 
 const AUTO_ADVANCE_MS = 6000;
 
@@ -63,48 +64,52 @@ export function MunicipalityBanner({
       onMouseLeave={() => setPaused(false)}
     >
       <h2 className="mb-3 text-lg font-medium">{t("title")}</h2>
-      <div className="border-accent-soft rounded-2xl border p-4 dark:border-white/10">
-        <p className="font-medium">{current.name}</p>
-        {current.links.length > 0 ? (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {current.links.map((link) => (
-              <a
-                key={`${link.kind}-${link.value}`}
-                href={contactLinkHref(link.kind, link.value)}
-                target={
-                  link.kind === "phone" || link.kind === "email"
-                    ? undefined
-                    : "_blank"
-                }
-                rel="noopener noreferrer"
-                className="border-accent-soft text-foreground/70 hover:border-accent rounded-full border px-3 py-1 text-xs dark:border-white/15"
-              >
-                {labelFor(link)}
-              </a>
-            ))}
-          </div>
-        ) : (
-          <p className="text-foreground/50 mt-1 text-sm">{t("noLinksYet")}</p>
-        )}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1b0e1f] via-[#2a1420] to-[#1b0e1f] p-4 text-white">
+        <SparkleField />
+        <div className="bg-accent animate-glow-pulse pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full opacity-40 blur-3xl" />
+        <div className="relative">
+          <p className="font-medium">{current.name}</p>
+          {current.links.length > 0 ? (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {current.links.map((link) => (
+                <a
+                  key={`${link.kind}-${link.value}`}
+                  href={contactLinkHref(link.kind, link.value)}
+                  target={
+                    link.kind === "phone" || link.kind === "email"
+                      ? undefined
+                      : "_blank"
+                  }
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs text-white/90 hover:border-white/60 hover:bg-white/20"
+                >
+                  {labelFor(link)}
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-1 text-sm text-white/60">{t("noLinksYet")}</p>
+          )}
 
-        {municipalities.length > 1 && (
-          <div className="mt-3 flex items-center gap-1.5">
-            {municipalities.map((municipality, municipalityIndex) => (
-              <button
-                key={municipality.id}
-                type="button"
-                onClick={() => setIndex(municipalityIndex)}
-                aria-label={t("goTo", { name: municipality.name })}
-                aria-current={municipalityIndex === index}
-                className={`h-1.5 rounded-full transition-all ${
-                  municipalityIndex === index
-                    ? "bg-accent w-4"
-                    : "bg-accent-soft w-1.5"
-                }`}
-              />
-            ))}
-          </div>
-        )}
+          {municipalities.length > 1 && (
+            <div className="mt-3 flex items-center gap-1.5">
+              {municipalities.map((municipality, municipalityIndex) => (
+                <button
+                  key={municipality.id}
+                  type="button"
+                  onClick={() => setIndex(municipalityIndex)}
+                  aria-label={t("goTo", { name: municipality.name })}
+                  aria-current={municipalityIndex === index}
+                  className={`h-1.5 rounded-full transition-all ${
+                    municipalityIndex === index
+                      ? "bg-accent w-4"
+                      : "w-1.5 bg-white/25"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

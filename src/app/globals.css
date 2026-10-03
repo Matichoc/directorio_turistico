@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  /* Blanco puro se sentía "poco atractivo" (feedback real del usuario) —
+     un crema tibio con un dejo del acento terracota, no blanco plano, sin
+     arriesgar el contraste del texto (sigue siendo casi blanco). */
+  --background: #fbf4ee;
   --foreground: #171717;
   --accent: #b3401f;
   --accent-foreground: #fff7ed;

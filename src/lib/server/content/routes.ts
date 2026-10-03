@@ -133,6 +133,28 @@ export async function updateRoute(
   revalidatePath(`/admin/rutas/${id}`);
 }
 
+/**
+ * Activa/desactiva una ruta desde el listado simple, igual que
+ * `setPlacePublicationStatus` — nunca borra el registro, solo cambia el
+ * estado (la fecha queda en `status_changed_at` vía trigger).
+ */
+export async function setRoutePublicationStatus(
+  id: string,
+  status: "published" | "archived",
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("routes")
+    .update({ publication_status: status })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(`No se pudo cambiar el estado: ${error.message}`);
+  }
+
+  revalidatePath("/admin/rutas");
+}
+
 export async function deleteRoute(id: string): Promise<void> {
   const supabase = await createClient();
   const { error } = await supabase.from("routes").delete().eq("id", id);

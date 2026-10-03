@@ -21,6 +21,9 @@ const ICON_PATHS: Record<string, string> = {
     "M12 3c4 3.5 6 8.5 6 12.5a6 6 0 0 1-12 0c0-4 2-9 6-12.5Z M9.6 15.5a2.4 2.4 0 1 0 4.8 0 2.4 2.4 0 1 0 -4.8 0",
 };
 
+/** Claves válidas de `places.icon` — derivadas de `ICON_PATHS`, nunca duplicadas a mano. */
+export const ICON_KEYS = Object.keys(ICON_PATHS);
+
 export function CategoryIcon({
   icon,
   className = "h-5 w-5",

@@ -2,7 +2,6 @@
   "nav": {
     "home": "Inicio",
     "explore": "Explorar",
-    "villages": "Pueblos",
     "routes": "Rutas",
     "myTrip": "Mi recorrido",
     "info": "Información"
@@ -51,6 +50,11 @@
     "resultsCount": "{count, plural, =0 {Sin resultados} one {# lugar} other {# lugares}}",
     "noResults": "No encontramos lugares con estos filtros.",
     "otherPlaces": "Otros lugares",
+    "subtitle": "Comuna por comuna, pueblo por pueblo: pasa el mouse sobre uno para ver sus atractivos, toca para dejarlo abierto.",
+    "filtersButton": "Filtros",
+    "placesCount": "{count, plural, =0 {Sin atractivos} one {# atractivo} other {# atractivos}}",
+    "pinned": "(fijado abierto)",
+    "viewVillage": "Ver pueblo",
     "filters": {
       "commune": "Comuna",
       "category": "Categoría",
@@ -119,12 +123,9 @@
     }
   },
   "locality": {
-    "title": "Pueblos",
-    "subtitle": "Los pueblos y localidades de la provincia de Petorca, comuna por comuna.",
-    "noResults": "Todavía no hay pueblos cargados.",
     "placesTitle": "Lugares en {name}",
     "noPlacesYet": "Todavía no hay lugares cargados en este pueblo.",
-    "backToList": "Volver a pueblos"
+    "backToList": "Volver a explorar"
   },
   "trip": {
     "title": "Mi recorrido",

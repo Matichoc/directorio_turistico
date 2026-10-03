@@ -26,19 +26,6 @@ function CompassIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function VillageIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.75" {...props}>
-      <path
-        d="M3 11.5 8 7l5 4.5M5 10.5V19h6v-7.5M14 19v-5.5l3.5-3L21 13.5V19h-7Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 function RouteIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.75" {...props}>
@@ -91,7 +78,6 @@ function InfoIcon(props: SVGProps<SVGSVGElement>) {
 export const NAV_ITEMS = [
   { href: "/", key: "home", Icon: HomeIcon },
   { href: "/explorar", key: "explore", Icon: CompassIcon },
-  { href: "/pueblos", key: "villages", Icon: VillageIcon },
   { href: "/rutas", key: "routes", Icon: RouteIcon },
   { href: "/recorrido", key: "myTrip", Icon: BackpackIcon },
   { href: "/informacion", key: "info", Icon: InfoIcon },

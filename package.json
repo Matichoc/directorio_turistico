@@ -15,6 +15,7 @@
     "test:e2e": "playwright test",
     "db:seed": "tsx scripts/seed.ts",
     "fetch:google-photos": "tsx scripts/fetch-google-photos.ts",
+    "geocode:localities": "tsx scripts/geocode-localities.ts",
     "export:content-gaps": "tsx scripts/export-content-gaps.ts"
   },
   "dependencies": {

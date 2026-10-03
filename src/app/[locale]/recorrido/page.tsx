@@ -20,7 +20,7 @@ export default async function MyTripPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
-      <PageHero title={t("title")} subtitle={t("subtitle")} />
+      <PageHero title={t("title")} subtitle={t("subtitle")} scene="cerro" />
 
       <TripView locale={locale} />
     </main>

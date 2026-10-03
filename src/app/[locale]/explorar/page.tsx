@@ -14,6 +14,7 @@ import { LocalityBrowser } from "@/components/explore/locality-browser";
 import { ViewToggle } from "@/components/explore/view-toggle";
 import { MapView } from "@/components/map/map-view";
 import { buildExploreTree } from "@/lib/ui/build-explore-tree";
+import { getSceneForCategory } from "@/lib/ui/scene-backgrounds";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -72,7 +73,11 @@ export default async function ExplorePage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
-      <PageHero title={t("title")} subtitle={t("subtitle")} />
+      <PageHero
+        title={t("title")}
+        subtitle={t("subtitle")}
+        scene={getSceneForCategory(filters.categoria)}
+      />
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <FiltersDisclosure activeCount={filtersActiveCount}>

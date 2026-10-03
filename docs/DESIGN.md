@@ -212,6 +212,13 @@ así que un pueblo sin atractivos igual aparece (vacío); la cabecera comunal
 (el pueblo que lleva el nombre de la comuna) va primero; los lugares de una
 comuna sin pueblo van a un grupo "Otros lugares" al final de esa comuna.
 
+Las comunas son listas desplegables que arrancan **plegadas** (pedido del
+usuario: "deberían ser listas desplegables para que no se acumulen siempre
+todos en la pantalla"): cada encabezado resume cuántos pueblos y atractivos
+tiene, y un clic lo abre o cierra. Con filtros activos arrancan abiertas para
+mostrar de entrada lo que coincide (la página remonta el componente al
+cambiar los filtros, con `key`).
+
 Interacción (`LocalityBrowser`): pasar el mouse sobre un pueblo previsualiza
 sus atractivos; clic (o toque en celular) lo deja **fijo abierto** hasta
 volver a tocarlo, y se pueden dejar varios abiertos. El hover solo responde a

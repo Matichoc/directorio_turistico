@@ -5,13 +5,13 @@ import { RouteCard } from "@/components/route/route-card";
 import { MunicipalityBanner } from "@/components/home/municipality-banner";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { SparkleField } from "@/components/ui/sparkle-field";
-import { DevilMascot } from "@/components/ui/devil-mascot";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
 import { listRoutes } from "@/lib/data/routes";
 import { listMunicipalities } from "@/lib/data/communes";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
+import { SCENE_SRC } from "@/lib/ui/scene-backgrounds";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -46,8 +46,16 @@ export default async function HomePage({
           className="animate-glow-pulse bg-accent/50 pointer-events-none absolute -top-20 -right-16 h-64 w-64 rounded-full blur-3xl"
           aria-hidden="true"
         />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-cover [background-position:85%_70%]"
+          style={{ backgroundImage: `url(${SCENE_SRC.atardecer})` }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#07060c]/85 via-[#07060c]/45 via-60% to-transparent"
+        />
         <SparkleField />
-        <DevilMascot className="animate-devil-peek pointer-events-none absolute -right-1 bottom-2 h-20 w-20 text-white/15" />
 
         <header className="relative flex items-start justify-between gap-4">
           <p className="text-xs font-semibold tracking-wide text-amber-300 uppercase">

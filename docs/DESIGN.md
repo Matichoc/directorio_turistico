@@ -102,6 +102,22 @@ luz superior. Pendiente (no se tocó): el mapa base (OpenFreeMap "liberty")
 sigue claro — para un mapa oscuro, `NEXT_PUBLIC_MAP_STYLE_URL` con un estilo
 oscuro (p. ej. CARTO "dark-matter").
 
+## Fondos con el diablito (escenas)
+
+Pedido del usuario: fondos únicos con el diablo de la ilustración (casco
+minero con cuernos y linterna, poncho rojo, cola de flecha) "en la playa, en
+el cerro, con poncho, según cómo lo busquen y dónde naveguen". Son SVG en
+`public/fondos/` (`atardecer`, `playa`, `cerro`, `pueblo`, `dulces`,
+`tunel`), compuestos con el diablito a la derecha y el cielo a la izquierda
+para que el título de `PageHero` quede legible. La elección vive en un solo
+lugar, `src/lib/ui/scene-backgrounds.ts`: `getSceneForCategory` (playa →
+playa, naturaleza → cerro, cultura → pueblo, gastronomía → dulces, sin
+categoría → atardecer) y `getSceneForRoute`. `PageHero` acepta `scene`:
+`/explorar` la cambia con el filtro de categoría, la ficha de un pueblo usa la
+categoría que más se repite entre sus atractivos, y el hero del home usa el
+atardecer. Para cambiar un fondo por arte raster (webp, p. ej. generado con
+IA) basta reemplazar el archivo y su extensión en `SCENE_SRC`.
+
 ## Radios y espaciado
 
 - **Tarjetas** (`PlaceCard`, `RouteCard`): `rounded-2xl`, borde

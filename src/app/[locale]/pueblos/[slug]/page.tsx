@@ -6,6 +6,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { PlaceCard } from "@/components/place/place-card";
 import { MapView } from "@/components/map/map-view";
 import { getLocalityBySlug } from "@/lib/data/localities";
+import { getSceneForCategory } from "@/lib/ui/scene-backgrounds";
 
 export default async function LocalityDetailPage({
   params,
@@ -26,6 +27,20 @@ export default async function LocalityDetailPage({
   // 0021_locality_translations.sql: no se confirmó la de todos) — el pin
   // propio solo se agrega si se conoce; el mapa igual sirve con los pines
   // de sus lugares, que sí siempre tienen coordenada real.
+  // La escena sigue a la categoría que más se repite entre sus atractivos
+  // (Los Molles → playa, Alicahue → cerro…); sin atractivos, el pueblo genérico.
+  const categoryCounts = new Map<string, number>();
+  for (const place of locality.places) {
+    categoryCounts.set(
+      place.categorySlug,
+      (categoryCounts.get(place.categorySlug) ?? 0) + 1,
+    );
+  }
+  const topCategory = [...categoryCounts.entries()].sort(
+    (a, b) => b[1] - a[1],
+  )[0]?.[0];
+  const scene = topCategory ? getSceneForCategory(topCategory) : "pueblo";
+
   const markers = [
     ...(locality.latitude !== null && locality.longitude !== null
       ? [
@@ -58,6 +73,7 @@ export default async function LocalityDetailPage({
       <PageHero
         title={locality.name}
         subtitle={`${locality.communeName}${locality.summary ? ` — ${locality.summary}` : ""}`}
+        scene={scene}
       />
 
       {markers.length > 0 && (

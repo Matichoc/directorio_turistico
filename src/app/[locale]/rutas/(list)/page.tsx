@@ -25,7 +25,7 @@ export default async function RoutesPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
-      <PageHero title={tHome("featuredRoutes")} />
+      <PageHero title={tHome("featuredRoutes")} scene="tunel" />
       {routes.length === 0 ? (
         <EmptyState>{t("noResults")}</EmptyState>
       ) : (

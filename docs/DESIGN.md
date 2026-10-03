@@ -269,7 +269,12 @@ Los filtros (buscador, comuna, categoría, característica) quedan plegados
 detrás de un botón "Filtros" (`FiltersDisclosure`, con el conteo de filtros
 activos) para que el árbol sea lo primero que se ve; achican los atractivos
 dentro de cada pueblo, no esconden pueblos. La vista mapa (toggle
-lista/mapa) sigue mostrando pines sueltos, sin agrupar.
+lista/mapa) muestra pines sueltos, sin agrupar: los atractivos como gota por
+categoría y los **pueblos con coordenada confirmada** como círculo neón con
+casita (`MapPin variant="locality"`, link a `/pueblos/[slug]`); con un
+filtro de búsqueda/categoría/característica solo aparecen los pueblos que
+tienen atractivos que coinciden. Un pueblo sin coordenada no se dibuja (nunca
+un punto inventado).
 
 ## Resaltado cruzado mapa↔lista
 

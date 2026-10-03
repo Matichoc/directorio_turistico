@@ -49,6 +49,7 @@ export default async function LocalityDetailPage({
             name: locality.name,
             latitude: locality.latitude,
             longitude: locality.longitude,
+            kind: "locality" as const,
           },
         ]
       : []),

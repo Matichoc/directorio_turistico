@@ -31,6 +31,8 @@ const tree: ExploreCommuneNode[] = [
       {
         slug: "hierro-viejo",
         name: "Hierro Viejo",
+        latitude: -32.28,
+        longitude: -71,
         places: [
           {
             id: "1",
@@ -53,7 +55,13 @@ const tree: ExploreCommuneNode[] = [
           },
         ],
       },
-      { slug: "pedernal", name: "Pedernal", places: [] },
+      {
+        slug: "pedernal",
+        name: "Pedernal",
+        latitude: null,
+        longitude: null,
+        places: [],
+      },
     ],
   },
 ];

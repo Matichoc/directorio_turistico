@@ -647,6 +647,7 @@ const localities: {
 const places = [
   {
     slug: "playa-papudo",
+    localitySlug: null,
     communeSlug: "papudo",
     categorySlug: "playa",
     latitude: -32.5061,
@@ -676,6 +677,7 @@ const places = [
   },
   {
     slug: "playa-chica-papudo",
+    localitySlug: null,
     communeSlug: "papudo",
     categorySlug: "playa",
     latitude: -32.5075,
@@ -701,6 +703,7 @@ const places = [
   },
   {
     slug: "bahia-mirador-zapallar",
+    localitySlug: null,
     communeSlug: "zapallar",
     categorySlug: "naturaleza",
     latitude: -32.5522,
@@ -726,6 +729,7 @@ const places = [
   },
   {
     slug: "museo-de-la-ligua",
+    localitySlug: null,
     communeSlug: "la-ligua",
     categorySlug: "cultura",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
@@ -757,6 +761,7 @@ const places = [
   },
   {
     slug: "plaza-de-armas-la-ligua",
+    localitySlug: null,
     communeSlug: "la-ligua",
     categorySlug: "cultura",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
@@ -787,6 +792,7 @@ const places = [
   },
   {
     slug: "escalera-del-diablo",
+    localitySlug: "hierro-viejo",
     communeSlug: "petorca",
     categorySlug: "naturaleza",
     icon: "diablo",
@@ -814,6 +820,7 @@ const places = [
   },
   {
     slug: "iglesia-la-merced-petorca",
+    localitySlug: null,
     communeSlug: "petorca",
     categorySlug: "cultura",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
@@ -844,6 +851,7 @@ const places = [
   },
   {
     slug: "casa-natal-manuel-montt",
+    localitySlug: null,
     communeSlug: "petorca",
     categorySlug: "cultura",
     // Manuel Montt 845, a un costado de la plaza (no en el mismo punto):
@@ -873,6 +881,7 @@ const places = [
   },
   {
     slug: "cerro-chache",
+    localitySlug: null,
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
     latitude: -32.4275,
@@ -898,6 +907,7 @@ const places = [
   },
   {
     slug: "chocolateria-matichoc",
+    localitySlug: null,
     communeSlug: "la-ligua",
     categorySlug: "gastronomia",
     // Coordenadas exactas provistas por el usuario (dueño del local, pin
@@ -948,6 +958,7 @@ const places = [
   },
   {
     slug: "pedegua",
+    localitySlug: "pedegua",
     // Corregido a pedido del usuario: Pedegua pertenece a la comuna de
     // Petorca, no a Cabildo (quedó mal asignado desde el seed original).
     communeSlug: "petorca",
@@ -981,6 +992,7 @@ const places = [
   },
   {
     slug: "ruta-de-los-tuneles",
+    localitySlug: null,
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
     icon: "casco-minero",
@@ -1015,6 +1027,7 @@ const places = [
   // public/fotos/<slug>/ a la espera de que el usuario suba imágenes.
   {
     slug: "la-ligua-valle-hermoso",
+    localitySlug: "valle-hermoso",
     communeSlug: "la-ligua",
     categorySlug: "cultura",
     icon: "tejido",
@@ -1041,6 +1054,7 @@ const places = [
   },
   {
     slug: "la-ligua-area-de-dulces",
+    localitySlug: null,
     communeSlug: "la-ligua",
     categorySlug: "gastronomia",
     icon: "dulce",
@@ -1072,6 +1086,7 @@ const places = [
   },
   {
     slug: "la-ligua-la-chorreada",
+    localitySlug: null,
     communeSlug: "la-ligua",
     categorySlug: "naturaleza",
     latitude: -32.53980136909335,
@@ -1097,6 +1112,7 @@ const places = [
   },
   {
     slug: "la-ligua-los-molles",
+    localitySlug: "los-molles-pueblo",
     communeSlug: "la-ligua",
     categorySlug: "playa",
     icon: "surf",
@@ -1127,6 +1143,7 @@ const places = [
   },
   {
     slug: "la-ligua-pichicuy",
+    localitySlug: "pichicuy",
     communeSlug: "la-ligua",
     categorySlug: "playa",
     icon: "surf",
@@ -1157,6 +1174,7 @@ const places = [
     // distintos del mismo humedal. "Salinas de Pullally" pasa a su propia
     // entrada, en las coordenadas reales que dio el usuario.
     slug: "papudo-pullally",
+    localitySlug: "pullally",
     communeSlug: "papudo",
     categorySlug: "naturaleza",
     latitude: -32.43467097116685,
@@ -1185,6 +1203,7 @@ const places = [
     // la Laguna Pullally (ver nota arriba), dentro del mismo humedal/
     // santuario protegido.
     slug: "papudo-salinas-pullally",
+    localitySlug: "las-salinas-papudo",
     communeSlug: "papudo",
     categorySlug: "naturaleza",
     latitude: -32.41007831226611,
@@ -1210,6 +1229,7 @@ const places = [
   },
   {
     slug: "papudo-playa-los-lilenes",
+    localitySlug: null,
     communeSlug: "papudo",
     categorySlug: "playa",
     latitude: -32.49109919617068,
@@ -1235,6 +1255,7 @@ const places = [
   },
   {
     slug: "papudo-parque",
+    localitySlug: null,
     communeSlug: "papudo",
     categorySlug: "naturaleza",
     latitude: -32.50461851619594,
@@ -1260,6 +1281,7 @@ const places = [
   },
   {
     slug: "papudo-plaza",
+    localitySlug: null,
     communeSlug: "papudo",
     categorySlug: "cultura",
     latitude: -32.50745877114493,
@@ -1290,6 +1312,7 @@ const places = [
     // desde Google Maps — no se pudieron verificar desde este sandbox
     // (Wikiloc/Wikiexplora/OpenStreetMap/teresamoller.cl bloqueados).
     slug: "zapallar-punta-pite",
+    localitySlug: null,
     communeSlug: "zapallar",
     categorySlug: "naturaleza",
     latitude: -32.50429284866351,
@@ -1315,6 +1338,7 @@ const places = [
   },
   {
     slug: "zapallar-laguna",
+    localitySlug: null,
     communeSlug: "zapallar",
     categorySlug: "naturaleza",
     latitude: -32.628327059623025,
@@ -1340,6 +1364,7 @@ const places = [
   },
   {
     slug: "zapallar-cachagua",
+    localitySlug: "cachagua",
     communeSlug: "zapallar",
     categorySlug: "naturaleza",
     latitude: -32.5781610253271,
@@ -1365,6 +1390,7 @@ const places = [
   },
   {
     slug: "zapallar-catapilco",
+    localitySlug: "catapilco",
     communeSlug: "zapallar",
     categorySlug: "naturaleza",
     latitude: -32.63166740422701,
@@ -1390,6 +1416,7 @@ const places = [
   },
   {
     slug: "cabildo-plaza",
+    localitySlug: null,
     communeSlug: "cabildo",
     categorySlug: "cultura",
     latitude: -32.426628719411156,
@@ -1415,6 +1442,7 @@ const places = [
   },
   {
     slug: "cabildo-alicahue",
+    localitySlug: "alicahue",
     communeSlug: "cabildo",
     categorySlug: "cultura",
     latitude: -32.35112074114886,
@@ -1440,6 +1468,7 @@ const places = [
   },
   {
     slug: "cabildo-san-lorenzo",
+    localitySlug: "san-lorenzo-cabildo",
     communeSlug: "cabildo",
     categorySlug: "cultura",
     icon: "casco-minero",
@@ -1468,6 +1497,7 @@ const places = [
     // Coordenadas exactas provistas por el usuario; muy cerca de San
     // Lorenzo (a pedido del usuario, sumado a la Ruta Patrimonial).
     slug: "cabildo-puente-la-sirena",
+    localitySlug: null,
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
     latitude: -32.44042725165503,
@@ -1500,6 +1530,7 @@ const places = [
     // sin "source" y con verificationStatus "pending" en vez de
     // "verified" como el resto del catálogo.
     slug: "cabildo-castillo-del-diablo",
+    localitySlug: null,
     communeSlug: "cabildo",
     categorySlug: "cultura",
     icon: "diablo",
@@ -1519,6 +1550,7 @@ const places = [
   },
   {
     slug: "cabildo-la-vega",
+    localitySlug: null,
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
     latitude: -32.44805056182343,
@@ -1544,6 +1576,7 @@ const places = [
   },
   {
     slug: "cabildo-tunel-la-grupa",
+    localitySlug: null,
     communeSlug: "cabildo",
     categorySlug: "naturaleza",
     icon: "casco-minero",
@@ -1570,6 +1603,7 @@ const places = [
   },
   {
     slug: "pedegua-puente",
+    localitySlug: "pedegua",
     communeSlug: "petorca",
     categorySlug: "naturaleza",
     icon: "casco-minero",
@@ -1596,6 +1630,7 @@ const places = [
   },
   {
     slug: "petorca-tunel-las-palmas",
+    localitySlug: null,
     // Nota: geográficamente el túnel queda del lado de la Región de
     // Coquimbo (comuna de Los Vilos), no en la provincia de Petorca — pero
     // es parte del mismo corredor ferroviario histórico que Pedegua/La
@@ -1627,6 +1662,7 @@ const places = [
   },
   {
     slug: "petorca-plaza",
+    localitySlug: null,
     communeSlug: "petorca",
     categorySlug: "cultura",
     latitude: -32.25155652774576,
@@ -1652,6 +1688,7 @@ const places = [
   },
   {
     slug: "petorca-petroglifos-chincolco",
+    localitySlug: "chincolco",
     communeSlug: "petorca",
     categorySlug: "cultura",
     latitude: -32.16465513411942,
@@ -2052,6 +2089,7 @@ async function addSource(
 async function seedPlaces(
   communeIds: Record<string, string>,
   categoryIds: Record<string, string>,
+  localityIds: Record<string, string>,
 ) {
   const placeIds: Record<string, string> = {};
 
@@ -2063,6 +2101,13 @@ async function seedPlaces(
           slug: place.slug,
           commune_id: communeIds[place.communeSlug],
           category_id: categoryIds[place.categorySlug],
+          // Solo los lugares cuya propia descripción nombra el pueblo de
+          // forma explícita quedan asignados (ver scripts/seed.ts, arriba) —
+          // el resto queda sin pueblo en vez de adivinar uno por parecido
+          // de nombre.
+          locality_id: place.localitySlug
+            ? (localityIds[place.localitySlug] ?? null)
+            : null,
           latitude: place.latitude,
           longitude: place.longitude,
           address: "address" in place ? place.address : null,
@@ -2283,10 +2328,10 @@ async function main() {
   await seedSponsors();
   const communeIds = await seedCommunes();
   await seedCommuneLinks(communeIds);
-  await seedLocalities(communeIds);
+  const localityIds = await seedLocalities(communeIds);
   const categoryIds = await seedCategories();
   await seedTags();
-  const placeIds = await seedPlaces(communeIds, categoryIds);
+  const placeIds = await seedPlaces(communeIds, categoryIds, localityIds);
   await seedRoutes(placeIds);
   await removePlaces();
   console.log("Seed completo.");

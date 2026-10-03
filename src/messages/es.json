@@ -2,6 +2,7 @@
   "nav": {
     "home": "Inicio",
     "explore": "Explorar",
+    "villages": "Pueblos",
     "routes": "Rutas",
     "myTrip": "Mi recorrido",
     "info": "Información"
@@ -49,6 +50,7 @@
     "listView": "Listado",
     "resultsCount": "{count, plural, =0 {Sin resultados} one {# lugar} other {# lugares}}",
     "noResults": "No encontramos lugares con estos filtros.",
+    "otherPlaces": "Otros lugares",
     "filters": {
       "commune": "Comuna",
       "category": "Categoría",

@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
+import { Link } from "@/i18n/navigation";
 import { listPlaces } from "@/lib/data/places";
 import { listCommunes } from "@/lib/data/communes";
 import { listCategories } from "@/lib/data/categories";
@@ -11,6 +12,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { ExploreFilters } from "@/components/explore/explore-filters";
 import { ViewToggle } from "@/components/explore/view-toggle";
 import { MapView } from "@/components/map/map-view";
+import { groupPlacesByLocality } from "@/lib/ui/group-places-by-locality";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -91,13 +93,40 @@ export default async function ExplorePage({
           }))}
         />
       ) : (
-        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {places.map((place) => (
-            <li key={place.id}>
-              <PlaceCard place={place} />
-            </li>
+        <div className="flex flex-col gap-6">
+          {groupPlacesByLocality(places, locale).map((group) => (
+            <section
+              key={group.slug ?? "__other__"}
+              className="flex flex-col gap-2"
+            >
+              <h2 className="flex items-baseline gap-2 text-base font-semibold">
+                {group.slug ? (
+                  <Link
+                    href={{
+                      pathname: "/pueblos/[slug]",
+                      params: { slug: group.slug },
+                    }}
+                    className="hover:text-accent underline-offset-2 hover:underline"
+                  >
+                    {group.name}
+                  </Link>
+                ) : (
+                  <span className="text-foreground/60">{t("otherPlaces")}</span>
+                )}
+                <span className="text-foreground/40 text-xs font-normal">
+                  {group.places.length}
+                </span>
+              </h2>
+              <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                {group.places.map((place) => (
+                  <li key={place.id}>
+                    <PlaceCard place={place} />
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))}
-        </ul>
+        </div>
       )}
     </main>
   );

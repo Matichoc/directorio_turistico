@@ -26,6 +26,19 @@ function CompassIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function VillageIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.75" {...props}>
+      <path
+        d="M3 11.5 8 7l5 4.5M5 10.5V19h6v-7.5M14 19v-5.5l3.5-3L21 13.5V19h-7Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function RouteIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.75" {...props}>
@@ -70,7 +83,7 @@ function InfoIcon(props: SVGProps<SVGSVGElement>) {
 /**
  * Único lugar de verdad para los links de navegación principal (pedido de
  * diseño: un solo `Record`/lista, no duplicar a mano en cada componente
- * que necesite estos 5 links) — usado por `BottomNav` (celular) y `TopNav`
+ * que necesite estos links) — usado por `BottomNav` (celular) y `TopNav`
  * (escritorio, ver docs/PLAN.md: "el botón para ver las secciones no
  * está" en pantallas anchas, donde una barra fija al fondo de la ventana
  * pasa fácil desapercibida).
@@ -78,6 +91,7 @@ function InfoIcon(props: SVGProps<SVGSVGElement>) {
 export const NAV_ITEMS = [
   { href: "/", key: "home", Icon: HomeIcon },
   { href: "/explorar", key: "explore", Icon: CompassIcon },
+  { href: "/pueblos", key: "villages", Icon: VillageIcon },
   { href: "/rutas", key: "routes", Icon: RouteIcon },
   { href: "/recorrido", key: "myTrip", Icon: BackpackIcon },
   { href: "/informacion", key: "info", Icon: InfoIcon },

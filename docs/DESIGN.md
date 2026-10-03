@@ -185,8 +185,8 @@ usuario). Cualquier página nueva hereda este ancho solo, sin tener que
 ponerle un `max-w-*` a mano — si una sección puntual necesita salirse de
 ese ancho (como el hero del home), es la excepción, no la regla.
 
-Navegación entre las 5 secciones (Inicio/Explorar/Rutas/Mi recorrido/
-Información): un solo `NAV_ITEMS` (`components/ui/nav-items.tsx`, links +
+Navegación entre las 6 secciones (Inicio/Explorar/Pueblos/Rutas/Mi
+recorrido/Información): un solo `NAV_ITEMS` (`components/ui/nav-items.tsx`, links +
 íconos) alimenta dos componentes que se muestran según el ancho de
 pantalla, nunca los dos a la vez:
 
@@ -199,6 +199,20 @@ pantalla, nunca los dos a la vez:
 
 Agregar una sexta sección = un solo ítem nuevo en `NAV_ITEMS`, nunca
 duplicar el link a mano en cada uno de los dos componentes.
+
+## Explorar: agrupado por pueblo
+
+`/explorar` (vista lista) agrupa los resultados por pueblo en vez de una
+grilla plana — pedido del usuario ("enfocaría los pueblos y los atractivos
+dentro de ellos"). Cada sección es el nombre del pueblo (link a
+`/pueblos/[slug]`) + cantidad, con sus `PlaceCard` adentro; los lugares sin
+pueblo asignado (`place.localitySlug` null) van en una sección "Otros
+lugares" siempre al final, nunca intercalados a ojo entre los demás. La
+vista mapa no agrupa (son pines sueltos sobre el mapa, agrupar ahí no
+aporta nada visualmente). Una pantalla nueva que liste lugares y quiera el
+mismo agrupado reusa `groupPlacesByLocality()`
+(`src/lib/ui/group-places-by-locality.ts`) en vez de reimplementar el
+ordenamiento (pueblos primero por nombre, "Otros lugares" siempre último).
 
 ## Resaltado cruzado mapa↔lista
 

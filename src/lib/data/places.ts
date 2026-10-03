@@ -138,6 +138,7 @@ const PLACES_LIST_QUERY =
   `id, slug, latitude, longitude, featured_until, icon, verification_status,
    place_translations!inner(name, short_description, locale),
    communes!inner(slug, commune_translations!inner(name, locale)),
+   localities(slug, locality_translations(name, locale)),
    categories!inner(slug, category_translations!inner(name, locale)),
    place_tags(tags(slug)),
    place_images(storage_path, alt_text, position)` as const;
@@ -159,6 +160,10 @@ interface PlaceListQueryResult {
     slug: string;
     commune_translations: { name: string; locale: Locale }[];
   } | null;
+  localities: {
+    slug: string;
+    locality_translations: { name: string; locale: Locale }[];
+  } | null;
   categories: {
     slug: string;
     category_translations: { name: string; locale: Locale }[];
@@ -167,7 +172,7 @@ interface PlaceListQueryResult {
   place_images: PlaceImageResult[];
 }
 
-function mapPlaceCard(place: PlaceListQueryResult): PlaceCard {
+function mapPlaceCard(place: PlaceListQueryResult, locale: Locale): PlaceCard {
   const translation = place.place_translations[0];
   return {
     id: place.id,
@@ -175,6 +180,10 @@ function mapPlaceCard(place: PlaceListQueryResult): PlaceCard {
     name: translation?.name ?? place.slug,
     shortDescription: translation?.short_description ?? null,
     communeName: place.communes?.commune_translations[0]?.name ?? "",
+    localityName:
+      place.localities?.locality_translations.find((t) => t.locale === locale)
+        ?.name ?? null,
+    localitySlug: place.localities?.slug ?? null,
     categoryName: place.categories?.category_translations[0]?.name ?? "",
     categorySlug: place.categories?.slug ?? "",
     icon: place.icon,
@@ -229,7 +238,7 @@ export async function listPlaces(
   const query = filters.query?.trim().toLowerCase();
 
   return data
-    .map(mapPlaceCard)
+    .map((place) => mapPlaceCard(place, locale))
     .filter((place) => {
       if (filters.tagSlug && !place.tags.includes(filters.tagSlug)) {
         return false;
@@ -275,7 +284,7 @@ export async function listPlacesByLocalityId(
   }
 
   return data
-    .map(mapPlaceCard)
+    .map((place) => mapPlaceCard(place, locale))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
 
@@ -509,7 +518,7 @@ export async function getPlacesByIds(
     return [];
   }
 
-  return data.map(mapPlaceCard);
+  return data.map((place) => mapPlaceCard(place, locale));
 }
 
 export interface AdminPlaceExportRow {

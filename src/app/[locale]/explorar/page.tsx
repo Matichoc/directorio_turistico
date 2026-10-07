@@ -12,9 +12,11 @@ import { ExploreFilters } from "@/components/explore/explore-filters";
 import { FiltersDisclosure } from "@/components/explore/filters-disclosure";
 import { LocalityBrowser } from "@/components/explore/locality-browser";
 import { ViewToggle } from "@/components/explore/view-toggle";
-import { MapView } from "@/components/map/map-view";
+import { ExploreMap } from "@/components/explore/explore-map";
 import { TrackEvent } from "@/components/analytics/track-event";
 import { buildExploreTree } from "@/lib/ui/build-explore-tree";
+import { buildMapSectors } from "@/lib/ui/map-sectors";
+import { EXPLORE_SECTOR_MAX_ZOOM } from "@/lib/maps/config";
 import { getSceneForCategory } from "@/lib/ui/scene-backgrounds";
 import type { Metadata } from "next";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
@@ -59,7 +61,9 @@ export default async function ExplorePage({
   const t = await getTranslations("explore");
 
   const filters = await searchParams;
-  const view = filters.vista === "mapa" ? "mapa" : "lista";
+  // El mapa es la vista por defecto (pedido del usuario: el listado "se ve
+  // muy poco amigable para navegar"); el listado queda a un toque.
+  const view = filters.vista === "lista" ? "lista" : "mapa";
 
   const [places, communes, localities, categories, tags] = await Promise.all([
     listPlaces(locale, {
@@ -128,6 +132,18 @@ export default async function ExplorePage({
     })),
   ];
 
+  // Con el mapa alejado, la provincia por sectores (una burbuja por comuna
+  // con lo que ofrece). Con una búsqueda, comuna o característica los
+  // resultados son pocos y puntuales: ahí van directo los pines.
+  const sectors = buildMapSectors(communes, localities, places, {
+    includeEmpty: !narrowing,
+  });
+  const bySectors =
+    !filters.q &&
+    !filters.comuna &&
+    !filters.caracteristica &&
+    sectors.length > 1;
+
   // Qué busca la gente (texto de búsqueda y filtros), para el panel de
   // métricas del admin. Solo cuando hay algo: abrir /explorar a secas ya
   // no es una búsqueda.
@@ -184,9 +200,11 @@ export default async function ExplorePage({
           {mapMarkers.length === 0 ? (
             <EmptyState>{t("noResults")}</EmptyState>
           ) : (
-            <MapView
-              className="h-[60vh] w-full overflow-hidden rounded-xl"
+            <ExploreMap
               markers={mapMarkers}
+              places={places}
+              sectors={sectors}
+              sectorMaxZoom={bySectors ? EXPLORE_SECTOR_MAX_ZOOM : undefined}
             />
           )}
         </>

@@ -11,7 +11,8 @@ export function ViewToggle({ current }: { current: "lista" | "mapa" }) {
 
   function setView(view: "lista" | "mapa") {
     const params = new URLSearchParams(searchParams.toString());
-    if (view === "lista") {
+    // El mapa es la vista por defecto: solo el listado va en la URL.
+    if (view === "mapa") {
       params.delete("vista");
     } else {
       params.set("vista", view);
@@ -28,18 +29,6 @@ export function ViewToggle({ current }: { current: "lista" | "mapa" }) {
     >
       <button
         type="button"
-        aria-pressed={current === "lista"}
-        onClick={() => setView("lista")}
-        className={`rounded-full px-3 py-1 ${
-          current === "lista"
-            ? "bg-accent text-accent-foreground shadow-[0_0_14px_var(--accent-soft)]"
-            : "text-foreground/60"
-        }`}
-      >
-        {t("listView")}
-      </button>
-      <button
-        type="button"
         aria-pressed={current === "mapa"}
         onClick={() => setView("mapa")}
         className={`rounded-full px-3 py-1 ${
@@ -49,6 +38,18 @@ export function ViewToggle({ current }: { current: "lista" | "mapa" }) {
         }`}
       >
         {t("mapView")}
+      </button>
+      <button
+        type="button"
+        aria-pressed={current === "lista"}
+        onClick={() => setView("lista")}
+        className={`rounded-full px-3 py-1 ${
+          current === "lista"
+            ? "bg-accent text-accent-foreground shadow-[0_0_14px_var(--accent-soft)]"
+            : "text-foreground/60"
+        }`}
+      >
+        {t("listView")}
       </button>
     </div>
   );

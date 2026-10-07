@@ -54,6 +54,10 @@
   --animate-devil-peek: devil-peek 3.2s ease-in-out infinite;
   --animate-aurora-drift: aurora-drift 26s ease-in-out infinite alternate;
   --animate-shimmer: shimmer 6s linear infinite;
+  --animate-aura-ripple: aura-ripple 2.4s ease-out infinite;
+  --animate-aura-rise: aura-rise 2.4s ease-in infinite;
+  --animate-aura-flicker: aura-flicker 3s linear infinite;
+  --animate-aura-ember: aura-ember 1.8s ease-out infinite;
 }
 
 /* Pines del mapa (components/map/map-pin.tsx): aparición con rebote. */
@@ -158,6 +162,77 @@
   }
   to {
     background-position: -200% 0;
+  }
+}
+
+/* Temas del mapa de /explorar (components/map/theme-aura.tsx): cada lugar
+   "anima" lo que ofrece. Playa: ondas que se abren como en el agua. */
+@keyframes aura-ripple {
+  from {
+    transform: scale(0.35);
+    opacity: 0.85;
+  }
+  to {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+/* Dulces y sabores: burbujas/vapor que suben y se desvanecen. */
+@keyframes aura-rise {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-22px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Historia (y minería): luz de farol/linterna que titila. */
+@keyframes aura-flicker {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  12% {
+    opacity: 0.8;
+  }
+  20% {
+    opacity: 0.5;
+  }
+  48% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+  56% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.85;
+  }
+}
+
+/* Diablo: brasas que saltan hacia arriba, con un leve zigzag. */
+@keyframes aura-ember {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  60% {
+    transform: translate(4px, -14px) scale(0.8);
+  }
+  100% {
+    transform: translate(-3px, -26px) scale(0.4);
+    opacity: 0;
   }
 }
 

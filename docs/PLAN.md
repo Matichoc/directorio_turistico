@@ -415,7 +415,7 @@ Recomendaciones por historial, indicador de "reputación", rutas sugeridas por b
 ### 10.4 Riesgos que siguen abiertos
 
 - El e2e (`tests/e2e`) son solo 2 pruebas de humo, sin correr contra datos reales.
-- Pueblos sin material citable en internet siguen sin resumen (39 de 64): no se inventó nada.
+- Pueblos sin material citable en internet siguen sin resumen (38 de 63): no se inventó nada.
 - Los textos de pueblos son paráfrasis con fuente citada, no copia; si un municipio objeta alguno, se edita desde el admin.
 
 ## Bitácora de decisiones

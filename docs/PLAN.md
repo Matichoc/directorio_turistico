@@ -4,9 +4,10 @@
 
 ## Estado actual
 
-- Fase: **Fase 1 — completada** (mergeada a `main`). Proyecto Supabase real ya creado por el usuario, migraciones y seed aplicados y verificados en vivo.
-- **Backlog en curso** (ver sección 8): "me gusta" por lugar (vía identificador de sesión, sin esperar login OAuth), banner de las 5 municipalidades con sus links oficiales, y listado de contactos en `/informacion` — primera versión de los tres ya construida y en el PR abierto.
-- Última actualización: 2026-09-26
+- **Producto:** directorio funcional de punta a punta, publicado en Vercel con Supabase real: explorar por comuna → pueblo → atractivo (lista y mapa), fichas de lugar/ruta/pueblo, rutas con navegación en vivo, "Mi recorrido" con backend real (sesión anónima), "me gusta" y comentarios moderados, auspiciadores rotativos, 5 municipalidades con sus enlaces oficiales, es/en, PWA y look oscuro con el diablito.
+- **Administración real (sin tocar código):** CRUD de lugares, rutas, pueblos y comunas/categorías, carga y descarga CSV de lugares, activar/desactivar con fecha, verificación de datos por comuna (con registro de quién y cuándo), moderación de comentarios y métricas de uso.
+- **Lo que falta para presentarlo a turismo:** ver la sección 10 (hoja de ruta con lo hecho, lo que depende del usuario y lo que se difiere a propósito).
+- Última actualización: 2026-10-07
 - Lineamientos visuales (colores, radios, animaciones, íconos, patrones de componente) viven en `docs/DESIGN.md` — se carga automático en cada sesión de Claude Code vía `CLAUDE.md`, para que una página o componente nuevo siga la misma línea sin tener que pedirlo cada vez.
 
 ## 1. Arquitectura
@@ -227,7 +228,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 - [ ] Migrar los 2 links hoy hardcodeados en `/informacion` (Instagram y WhatsApp de Cristóbal) a esta misma tabla (`entity_type` necesitaría un valor para "el sitio/desarrollador" — no se hizo esta ronda para no forzar un caso de uso que aún no pidió nadie)
 - [ ] Agregar el Instagram real de Matichoc en cuanto se confirme la grafía exacta (pendiente desde la ronda anterior)
 - [ ] Ir sumando redes reales de lugares del catálogo a medida que el usuario las tenga
-- [ ] Los ~22 lugares que todavía no tienen `description` larga (ver Riesgos y Bitácora) — sigue pendiente material real del usuario o fuentes verificables
+- [x] Descripciones largas de los lugares (los 37 del seed las tienen)
 
 ## 9. Madurez para producción — seguridad, escala, datos por conectar (2026-09-26)
 
@@ -248,7 +249,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 
 - **Rate limiting distribuido real** (hoy es en memoria, por instancia — un atacante repartido entre varias funciones serverless lo esquiva). El usuario confirmó que quiere avanzar en esto ("Empezar a ver el rate limit para prevenir ataques") — la opción estándar en Vercel es Upstash Redis + `@upstash/ratelimit`: implica crear una cuenta en upstash.com (tiene tier gratis) y pasar `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` como variables de entorno — ninguna de las dos existe todavía en este proyecto, así que queda pendiente de que el usuario cree la cuenta y las comparta antes de escribir el código.
 - **`place_likes`/`analytics_events` aceptan escritura anónima sin verificar identidad real** (mismo diseño desde el día 1, documentado en `docs/DATA-MODEL.md`) — aceptable para un contador de bajo riesgo y telemetría anónima; dejaría de serlo si se le da más peso a los "me gusta" (por ejemplo, si algún día valen para destacar un lugar o cobrar por publicidad basada en popularidad).
-- **Panel admin sin CRUD real** (ver 9.3) es en sí mismo un tema de seguridad operativa: hoy el único modo de cambiar datos en producción es que el usuario corra `pnpm db:seed` con la `SUPABASE_SERVICE_ROLE_KEY` en su máquina — funciona, pero no queda registro de quién cambió qué ni cuándo (`verification_logs` existe en el esquema pero no se usa desde ningún flujo real).
+- ~~**Panel admin sin CRUD real**~~ — resuelto: hay CRUD real de lugares, rutas, pueblos y comunas/categorías, y desde 2026-10-07 `verification_logs` se usa de verdad (cada verificación de un lugar queda con quién, cuándo y nota (la acción `verifyEntity` existía desde antes, sin pantalla que la usara), ver sección 10). Lo que sigue sin registro es la edición de contenido en sí (solo hay fecha de cambio de estado, `status_changed_at`).
 
 ### 9.3 Escalabilidad — qué ya aguanta y qué no
 
@@ -260,7 +261,7 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 
 **El cuello de botella real hoy no es de tráfico, es de contenido/operación:**
 
-- El panel admin (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias`) sigue siendo un placeholder puro (~10 líneas cada uno) — `/admin/verificaciones` ya es real desde la ronda de comentarios. Mientras no exista el resto, **cada cambio de datos pasa por `scripts/seed.ts` + `pnpm db:seed` + esta sesión de Claude Code** — no escala a que el usuario (o alguien del municipio, o un futuro auspiciador) cargue/edite algo sin pedirlo acá. Es, con diferencia, la pieza que más limita crecer el catálogo o vender más destacados (Riesgo #21).
+- ~~El panel admin sigue siendo un placeholder~~ — resuelto: el CRUD real ya existe (ver "Estado actual"). Queda como limitación que **solo hay un rol de administrador global**: un municipio no puede entrar a validar solo sus lugares (ver sección 10, "diferido").
 - ~~`SponsorBanner` sigue siendo un slot fijo~~ — resuelto 2026-09-27: ahora es una tabla real (`sponsors`/`sponsor_translations`) que rota si hay más de uno, con Ember Accesorios sumado como segundo auspiciador (ver 9.7).
 
 ### 9.4 Datos que quedaron sin conectar — para priorizar con el usuario
@@ -268,10 +269,10 @@ next, react, typescript, tailwindcss, next-intl, @supabase/supabase-js, @supabas
 Tres piezas grandes, cada una una decisión de alcance en sí misma (no algo para elegir todas a la vez sin conversarlo):
 
 1. ~~Carrito de "Mi recorrido" → backend real~~ — **resuelto 2026-09-27** (el usuario lo pidió "ASAP"). Ver sección 9.8.
-2. **Panel admin real (CRUD).** El de mayor impacto en "qué pasa si esto crece": sin él, todo pasa por código + `pnpm db:seed`. `/admin/verificaciones` ya es real (cola de moderación de comentarios) — el resto (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias`) sigue sin CRUD.
+2. ~~**Panel admin real (CRUD).**~~ — resuelto (lugares, rutas, pueblos, comunas/categorías, verificaciones y métricas).
 3. ~~Categorías de POI en vivo~~ y ~~más de un auspiciador en `SponsorBanner`~~ — el segundo ya se resolvió esta ronda (Ember Accesorios, ver 9.7); POI en vivo (restaurantes/supermercados/gas/salud vía Google Places) sigue sin tocar.
 
-**Pregunta directa para el usuario**: ¿backend real de "Mi recorrido" o terminar el panel admin primero? Las dos son rondas grandes — mejor confirmar el orden que adivinar y construir la que no tocaba.
+~~Pregunta directa para el usuario: ¿backend real de "Mi recorrido" o terminar el panel admin primero?~~ — se hicieron las dos.
 
 ### 9.5 Comentarios de lugares con moderación (2026-09-26)
 
@@ -368,8 +369,8 @@ Con esas credenciales pegadas en Supabase (Authentication → Sign In / Provider
 
 - Rate limiting distribuido (Upstash) — falta que el usuario cree la cuenta (ver paso a paso arriba).
 - Login real Google/Facebook — falta que el usuario cree las credenciales OAuth (ver arriba).
-- Terminar el resto del panel admin (`/admin/lugares`, `/admin/rutas`, `/admin/comunas-categorias` siguen sin CRUD).
-- Las ~22 descripciones largas de lugares que faltan — se le mandó una planilla (`lugares-descripciones.csv`) para que aporte material real por lugar.
+- ~~Terminar el resto del panel admin~~ — hecho.
+- ~~Las ~22 descripciones largas de lugares que faltan~~ — hecho: los 37 lugares del seed tienen descripción larga (verificado el 2026-10-07 contando `scripts/seed.ts`).
 
 ### 9.8 Backend real de "Mi recorrido" (2026-09-27)
 
@@ -379,6 +380,43 @@ El usuario pidió esto "ASAP" en la misma ronda. Se construye completo:
 - `unique(user_id)`: un solo itinerario activo por visitante, igual que la UX de hoy (un carrito, no una lista de viajes guardados). `order_mode` (auto/manual) se muda de `localStorage` a una columna real en `itineraries`.
 - `lib/trip/storage.ts` reescrito completo: mismas funciones que antes (`getTripPlaceIds`, `addTripPlace`, `removeTripPlace`, `reorderTripPlaces`, etc.) pero ahora async contra Supabase en vez de síncronas contra `localStorage` — mismo `TRIP_EVENT` para que los componentes sigan sincronizados entre sí sin prop drilling. `TripView`, `AddToTripButton` y `AddRouteToTripButton` se actualizan para el nuevo flujo async.
 - Efecto práctico: el carrito ya no se pierde si el usuario borra el caché del navegador o cambia de dispositivo con la misma cuenta (una vez que exista login real con Google/Facebook, hoy es anónimo por navegador).
+
+## 10. Hoja de ruta hacia la propuesta a turismo (2026-10-07)
+
+> El usuario pidió revisar todos los planes y cerrar primero lo que más pesa para presentarle el directorio a los encargados de turismo de la zona. Esta sección ordena todo lo que sigue abierto; el resto del documento queda como historia.
+
+### 10.1 Hecho en esta ronda
+
+| Punto                   | Qué se hizo                                                                                                                                                                                                                                                                                                                            |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Compartir / SEO         | `lib/seo.ts` (`buildPageMetadata`): título, descripción, canonical, hreflang es/en y vista previa (Open Graph/Twitter) en todas las páginas públicas, con foto propia en lugares, rutas y pueblos. `sitemap.xml` (todo el catálogo, ambos idiomas) y `robots.txt`; `/admin` con `X-Robots-Tag: noindex`; `/recorrido` noindex.         |
+| CI                      | `.github/workflows/ci.yml`: typecheck, lint, test, format y build en cada PR (el build no necesita Supabase real).                                                                                                                                                                                                                     |
+| Verificación por comuna | `/admin/verificaciones` ahora muestra, por comuna, cuántos lugares están verificados y deja marcar Verificado / Desactualizado con una nota; cada cambio queda en `verification_logs` (quién y cuándo). Pensado para que cada municipio revise lo suyo.                                                                                |
+| Cobertura de pueblos    | `/admin/pueblos` muestra cuántos pueblos tienen resumen y coordenada, y marca los que no. Los resúmenes de los 25 pueblos que tienen texto ya están también en inglés.                                                                                                                                                                 |
+| Privacidad              | Página `/privacidad` (`/privacy`) que describe solo lo que el sitio realmente hace; enlazada desde Información.                                                                                                                                                                                                                        |
+| Créditos de fotos       | Se quitó la leyenda por defecto "Wikimedia Commons" (falsa para fotos de otra fuente): ahora solo se acredita lo que la foto trae (autor/fuente).                                                                                                                                                                                      |
+| Métricas                | `/admin/metricas` (últimos 30 días): vistas de lugares/rutas/pueblos, búsquedas, filtros, "me gusta" y agregados al recorrido. Hallazgo: los eventos `place_view`, `route_view`, `search_performed` y `filter_applied` existían en el tipo pero **nunca se emitían**; ahora sí (`TrackEvent`). Migración `0023_analytics_summary.sql`. |
+| Seed más seguro         | `pnpm db:seed` ya no pisa con `null` un resumen/fuente de pueblo cargado a mano desde el admin, y falla en voz alta si una escritura de traducción de pueblos da error (antes lo ignoraba).                                                                                                                                            |
+
+### 10.2 Depende del usuario (no se puede hacer desde acá)
+
+1. Mergear el PR, correr `supabase db push` (migraciones `0022` y `0023`) y `pnpm db:seed`.
+2. Definir y configurar **`NEXT_PUBLIC_SITE_URL`** en Vercel con el dominio real (de eso salen los links del sitemap y las vistas previas al compartir); sin dominio propio, el sitio usa el de Vercel.
+3. Elegir el **proveedor de mapas** definitivo (Riesgo #1): hoy es el estilo gratuito de OpenFreeMap; para producción conviene uno con acuerdo de servicio. Mapa oscuro: basta `NEXT_PUBLIC_MAP_STYLE_URL` con un estilo oscuro (p. ej. CARTO "dark-matter").
+4. Pedir a cada municipalidad que revise sus lugares desde `/admin/verificaciones` (o por el CSV de `/admin/lugares`) y que aporte textos y fuentes de los pueblos sin resumen (`/admin/pueblos` marca cuáles faltan).
+5. Abrir uno por uno los links de las 5 municipalidades (8.2) y confirmar que están bien.
+6. Revisar el texto de `/privacidad` (con quien corresponda) antes de la presentación formal: describe lo que el sitio hace hoy, no es asesoría legal.
+7. Con tráfico real: Upstash para el rate limit distribuido (9.2) y login Google/Facebook (8.1, Fase 1b) si lo quieren.
+
+### 10.3 Diferido a propósito
+
+Recomendaciones por historial, indicador de "reputación", rutas sugeridas por búsquedas (hay métricas desde ahora, pero falta volumen), eventos automáticos desde redes (no hay vía viable), POI en vivo, login con Instagram, **rol de administrador por comuna** (hoy el admin es global; requeriría `admin_users.commune_id` + RLS por comuna) y pruebas e2e contra datos reales.
+
+### 10.4 Riesgos que siguen abiertos
+
+- El e2e (`tests/e2e`) son solo 2 pruebas de humo, sin correr contra datos reales.
+- Pueblos sin material citable en internet siguen sin resumen (39 de 64): no se inventó nada.
+- Los textos de pueblos son paráfrasis con fuente citada, no copia; si un municipio objeta alguno, se edita desde el admin.
 
 ## Bitácora de decisiones
 
@@ -680,3 +718,11 @@ El usuario pidió esto "ASAP" en la misma ronda. Se construye completo:
 - 2026-10-03 (novena ronda del día): el usuario pide, con la ilustración del diablito que ya había mandado (la misma de los íconos PWA), "fondos relacionados con ese diablo en los distintos lugares por donde va pasando… únicos y de efecto wow, que el diablito aparezca en la playa, en el cerro, con poncho, según como lo busquen y donde naveguen". No hay generación de imágenes por IA disponible acá, y de la ilustración solo está el recorte cuadrado de 512 px (no el original), así que no se podía recortar al personaje para pegarlo sobre otros fondos: se dibujan 6 escenas vectoriales (SVG, `public/fondos/`) con un diablito propio fiel a los rasgos de la ilustración (casco minero con cuernos y linterna, poncho rojo a rayas con flecos, cola con punta de flecha): atardecer con tabla de surf y bocamina (home), playa con tabla y pingüino de Humboldt, cerro con bastón y cardones, pueblo con iglesia, banderines y poncho, puesto de dulces de La Ligua con canasta, y túnel ferroviario con linterna (Ruta del Diablo). Cada una pesa 12–17 KB. `PageHero` suma la prop `scene` y la elección vive en `lib/ui/scene-backgrounds.ts`: `/explorar` cambia de escena con el filtro de categoría, la ficha de pueblo toma la categoría dominante de sus atractivos, rutas/recorrido/información tienen la suya y el hero del home usa el atardecer (reemplaza al `DevilMascot` chico de esa esquina). Verificado con capturas reales contra el servidor mock en escritorio y celular. Límite dicho al usuario: es arte vectorial hecho a mano, no pintura al estilo de su ilustración; si quiere ese nivel, se generan las imágenes con una herramienta de IA y se reemplazan los archivos (ver docs/DESIGN.md, "Fondos con el diablito").
 
   `pnpm typecheck`/`lint`/`test` (44)/`build`/`format:check` verdes.
+
+- 2026-10-03 (décima ronda del día): el usuario corrió `pnpm geocode:localities` + `pnpm db:seed` ("sí están bien y cargaron las coordenadas"), pero "no se ven en la página". Causa real: las coordenadas de los pueblos estaban en la base pero **nada las dibujaba** — el mapa de `/explorar` solo recibía pines de atractivos, y el pin propio del pueblo en `/pueblos/[slug]` (agregado en la ronda de pueblos) era una gota genérica sin distinguirse y con el popup apuntando a `/lugares/[slug]` (habría dado 404). Se arregla: `MapMarkerData.kind` ("place" | "locality"), `MapPin variant="locality"` (círculo neón con casita, ícono nuevo `pueblo` en `ICON_PATHS`), popup de pueblo hacia `/pueblos/[slug]`, y `/explorar` en vista mapa suma los pueblos con coordenada (`buildExploreTree` ahora propaga `latitude`/`longitude`); con filtros de búsqueda/categoría/característica solo los pueblos con atractivos que coinciden. De paso, las claves y el resaltado de `MapView` incluyen el `kind`: un lugar y un pueblo pueden compartir slug (ej. "pedegua") y se pisaban. El encabezado del mapa suma "N pueblos en el mapa". Verificado con capturas contra el mock (pines violeta de pueblo junto a las gotas de atractivos; los tiles del mapa base no cargan en este sandbox). Tests: 45.
+
+  `pnpm typecheck`/`lint`/`test` (45)/`build`/`format:check` verdes.
+
+- 2026-10-03 (undécima ronda del día): "en redes sociales y en todo internet hay muchas publicaciones sobre estos pueblos… sería bueno buscar esas descripciones ya usadas, para no reescribir todo, para dar vida a cada página siempre". Se buscó en la web (Wikipedia, Sercotec, revistas locales, censo); Facebook/Instagram no se pueden consultar desde acá. Resultado honesto: solo ~12 pueblos más tienen material citable (Pichicuy, Los Molles, Huaquén, Longotoma, Pullally, La Higuera, Cachagua, Catapilco, San Lorenzo, Valle Hermoso, El Ingenio, Montegrande); el resto de los ~37 pueblos chicos no tiene nada confiable en línea y **se queda sin resumen** (la UI simplemente no muestra el bloque — nunca texto inventado). Los textos están **parafraseados** en español (no copiados) y cada uno cita **una** fuente: migración `0022_locality_summary_source.sql` agrega `localities.summary_source_url`/`summary_source_label` (`sources` solo admite place/route/commune, por eso columnas propias). La ficha del pueblo (`/pueblos/[slug]`) ahora tiene un bloque "Sobre {pueblo}" con "Fuente: …" enlazada (antes el resumen se apretaba en el subtítulo del hero), `/explorar` muestra el resumen al abrir un pueblo, y `/admin/pueblos` permite pegar texto + fuente a mano. En inglés los resúmenes quedan en `null` (no se tradujeron). En `seed.ts` la fuente va en campos planos (`sourceUrl`/`sourceLabel`) porque `geocode-localities.ts` parsea cada pueblo con una regex sin llaves anidadas. Pendiente del usuario: `supabase db push` (0022) + `pnpm db:seed`.
+
+- 2026-10-07 (duodécima ronda): "revisar todos los planes y ver qué tarea nos conviene ir cerrando para que el directorio sea una propuesta sólida para los encargados de turismo" → "vamos con el orden clave, cerrar lo más rápido posible cada punto y dejar actualizado todo". Se revisó el PLAN completo (estaba desactualizado: decía "Fase 1, 2026-09-26" y listaba como pendiente el CRUD admin, las descripciones y el backend de "Mi recorrido", todo ya hecho) y se armó la sección 10 con lo hecho, lo que depende del usuario y lo diferido. Construido: SEO/vista previa al compartir + sitemap + robots, CI, verificación por comuna con registro, cobertura de pueblos en el admin, resúmenes de pueblos en inglés, página de privacidad, atribución de fotos sin leyenda falsa y panel de métricas (con los eventos que faltaba emitir). Hallazgos de paso: el seed pisaba resúmenes cargados a mano (corregido); la lista de nombres de evento estaba duplicada entre cliente y servidor (ahora una sola fuente, `ANALYTICS_EVENT_NAMES`, el mismo tipo de drift que causó el bug de `place_liked`); un `??` con variable de entorno vacía en `getSiteUrl` (cubierto por test).

@@ -7,6 +7,27 @@ import { PlaceCard } from "@/components/place/place-card";
 import { MapView } from "@/components/map/map-view";
 import { getLocalityBySlug } from "@/lib/data/localities";
 import { getSceneForCategory } from "@/lib/ui/scene-backgrounds";
+import type { Metadata } from "next";
+import { buildPageMetadata, truncateDescription } from "@/lib/seo";
+import { TrackEvent } from "@/components/analytics/track-event";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale: rawLocale, slug } = await params;
+  const locale = resolveLocale(rawLocale);
+  const locality = await getLocalityBySlug(slug, locale);
+  if (!locality) return {};
+  return buildPageMetadata({
+    locale,
+    href: { pathname: "/pueblos/[slug]", params: { slug } },
+    title: `${locality.name} — ${locality.communeName}`,
+    description: truncateDescription(locality.summary),
+    image: locality.places.find((place) => place.photoUrl)?.photoUrl,
+  });
+}
 
 export default async function LocalityDetailPage({
   params,
@@ -49,6 +70,7 @@ export default async function LocalityDetailPage({
             name: locality.name,
             latitude: locality.latitude,
             longitude: locality.longitude,
+            kind: "locality" as const,
           },
         ]
       : []),
@@ -64,6 +86,7 @@ export default async function LocalityDetailPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
+      <TrackEvent event={{ name: "locality_view", properties: { slug } }} />
       <Link
         href="/explorar"
         className="text-foreground/60 hover:text-accent w-fit text-sm underline-offset-2 hover:underline"
@@ -72,9 +95,33 @@ export default async function LocalityDetailPage({
       </Link>
       <PageHero
         title={locality.name}
-        subtitle={`${locality.communeName}${locality.summary ? ` — ${locality.summary}` : ""}`}
+        subtitle={locality.communeName}
         scene={scene}
       />
+
+      {locality.summary && (
+        <section className="surface-glass flex flex-col gap-2 rounded-2xl p-4">
+          <h2 className="text-lg font-medium">
+            {t("aboutTitle", { name: locality.name })}
+          </h2>
+          <p className="text-foreground/80 text-sm leading-relaxed">
+            {locality.summary}
+          </p>
+          {locality.summarySourceUrl && (
+            <p className="text-foreground/50 text-xs">
+              {t("source")}:{" "}
+              <a
+                href={locality.summarySourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent underline underline-offset-2"
+              >
+                {locality.summarySourceLabel ?? locality.summarySourceUrl}
+              </a>
+            </p>
+          )}
+        </section>
+      )}
 
       {markers.length > 0 && (
         <MapView

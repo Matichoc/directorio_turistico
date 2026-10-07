@@ -13,6 +13,8 @@ function locality(slug: string, name: string, communeName: string): Locality {
     slug,
     name,
     summary: null,
+    summarySourceUrl: null,
+    summarySourceLabel: null,
     communeId: communeName,
     communeName,
     latitude: null,
@@ -69,7 +71,14 @@ describe("buildExploreTree", () => {
     );
 
     expect(tree[0].localities).toEqual([
-      { slug: "pedernal", name: "Pedernal", places: [] },
+      {
+        slug: "pedernal",
+        name: "Pedernal",
+        summary: null,
+        latitude: null,
+        longitude: null,
+        places: [],
+      },
     ]);
   });
 
@@ -119,6 +128,20 @@ describe("buildExploreTree", () => {
       "hierro-viejo",
       "pedernal",
     ]);
+  });
+
+  it("carries each village's confirmed coordinates for the map view", () => {
+    const withCoords = {
+      ...locality("pullally", "Pullally", "Papudo"),
+      latitude: -32.43,
+      longitude: -71.32,
+    };
+    const tree = buildExploreTree(communes, [withCoords], []);
+
+    expect(tree[0].localities[0]).toMatchObject({
+      latitude: -32.43,
+      longitude: -71.32,
+    });
   });
 
   it("drops communes with nothing to show", () => {

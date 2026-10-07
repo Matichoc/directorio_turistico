@@ -190,6 +190,9 @@ string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
   `place_images` (Wikimedia, Google Places vía proxy, o subida a mano),
   con `PhotoOrIcon` como envoltorio único que decide foto-vs-ícono y maneja
   el `onError` — no reimplementar ese fallback en un componente nuevo.
+- **Crédito de foto**: la leyenda abajo-derecha de `PlacePhotoHero` solo
+  muestra lo que la foto trae (`place_images.alt_text`: autor/fuente/
+  licencia). Sin dato no hay leyenda — nunca una atribución por defecto.
 - **Rutas** (`RouteCard`, hero de la ficha de ruta): `routes.cover_image`
   (portada curada a mano, hoy ilustraciones generadas con IA en
   `public/rutas/`) tiene prioridad; si una ruta no tiene portada propia,
@@ -265,11 +268,21 @@ volver a tocarlo, y se pueden dejar varios abiertos. El hover solo responde a
 toque dejarían el pueblo pegado abierto. Cada pueblo real trae un link "Ver
 pueblo" a su ficha.
 
+Un pueblo con resumen real lo muestra al abrirse (3 líneas); la ficha
+(`/pueblos/[slug]`) lo muestra completo en un bloque "Sobre {pueblo}" con
+"Fuente: …" enlazada. Sin resumen, ninguno de los dos muestra nada — nunca
+un texto de relleno.
+
 Los filtros (buscador, comuna, categoría, característica) quedan plegados
 detrás de un botón "Filtros" (`FiltersDisclosure`, con el conteo de filtros
 activos) para que el árbol sea lo primero que se ve; achican los atractivos
 dentro de cada pueblo, no esconden pueblos. La vista mapa (toggle
-lista/mapa) sigue mostrando pines sueltos, sin agrupar.
+lista/mapa) muestra pines sueltos, sin agrupar: los atractivos como gota por
+categoría y los **pueblos con coordenada confirmada** como círculo neón con
+casita (`MapPin variant="locality"`, link a `/pueblos/[slug]`); con un
+filtro de búsqueda/categoría/característica solo aparecen los pueblos que
+tienen atractivos que coinciden. Un pueblo sin coordenada no se dibuja (nunca
+un punto inventado).
 
 ## Resaltado cruzado mapa↔lista
 

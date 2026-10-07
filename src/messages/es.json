@@ -13,7 +13,8 @@
     "developerTagline": "Apoya tus proyectos de IA y con IA.",
     "developerInstagram": "Instagram: @el.cristo.cl",
     "developerWhatsapp": "WhatsApp",
-    "sponsorNote": "Auspiciado por Chocolatería Matichoc — chocolate artesanal hecho en La Ligua."
+    "sponsorNote": "Auspiciado por Chocolatería Matichoc — chocolate artesanal hecho en La Ligua.",
+    "privacyLink": "Privacidad"
   },
   "home": {
     "title": "El diablo murió en Petorca y en La Ligua lo enterraron",
@@ -50,6 +51,7 @@
     "resultsCount": "{count, plural, =0 {Sin resultados} one {# lugar} other {# lugares}}",
     "noResults": "No encontramos lugares con estos filtros.",
     "otherPlaces": "Otros lugares",
+    "villagesOnMap": "{count, plural, one {# pueblo} other {# pueblos}} en el mapa",
     "subtitle": "Comuna por comuna, pueblo por pueblo: pasa el mouse sobre uno para ver sus atractivos, toca para dejarlo abierto.",
     "communeSummary": "{villages, plural, =0 {sin pueblos} one {# pueblo} other {# pueblos}} · {places, plural, =0 {sin atractivos} one {# atractivo} other {# atractivos}}",
     "filtersButton": "Filtros",
@@ -67,7 +69,6 @@
     "verified": "Verificado",
     "featured": "Destacado",
     "photosComingSoon": "Galería de fotos: próximamente",
-    "photoCredit": "Foto: Wikimedia Commons",
     "previousPhoto": "Foto anterior",
     "nextPhoto": "Foto siguiente",
     "goToPhoto": "Ir a la foto {number}",
@@ -126,6 +127,8 @@
   "locality": {
     "placesTitle": "Lugares en {name}",
     "noPlacesYet": "Todavía no hay lugares cargados en este pueblo.",
+    "aboutTitle": "Sobre {name}",
+    "source": "Fuente",
     "backToList": "Volver a explorar"
   },
   "trip": {
@@ -161,6 +164,37 @@
       "tagline": "Chocolate artesanal hecho en La Ligua",
       "cta": "Visitar sitio web",
       "instagram": "Instagram"
+    }
+  },
+  "privacy": {
+    "title": "Privacidad",
+    "intro": "Este sitio no pide que crees una cuenta ni que dejes tu nombre o correo. Esto es lo que sí pasa cuando lo usas.",
+    "updated": "Última actualización: 7 de octubre de 2026.",
+    "sections": {
+      "session": {
+        "title": "Sesión anónima",
+        "body": "Si das \"me gusta\", comentas o armas \"Mi recorrido\", se crea una sesión anónima con un identificador aleatorio, guardado en tu navegador. Sirve para recordar tu recorrido y tus \"me gusta\" y que nadie más pueda modificarlos. No incluye tu nombre, correo ni teléfono."
+      },
+      "comments": {
+        "title": "Comentarios",
+        "body": "Lo que escribas en un comentario se guarda tal cual, sin tu nombre, y solo se publica después de que un administrador lo revisa."
+      },
+      "analytics": {
+        "title": "Estadísticas de uso",
+        "body": "Registramos eventos anónimos: qué lugares, rutas y pueblos se miran, qué se busca y qué filtros se usan. No guardamos quién fue ni tu dirección IP. Sirven para saber qué le interesa a la gente de la zona."
+      },
+      "location": {
+        "title": "Ubicación",
+        "body": "Tu ubicación solo se usa si activas la navegación en vivo, y se muestra en el mapa de tu dispositivo."
+      },
+      "thirdParties": {
+        "title": "Servicios que usamos",
+        "body": "El sitio funciona con Supabase (base de datos), Vercel (alojamiento), Google (fotos de lugares y cálculo de rutas por calle) y un proveedor de mapas. Para mostrarte esos contenidos, esos servicios reciben las solicitudes de tu navegador y, con ellas, tu dirección IP. Para evitar abusos, el servidor cuenta momentáneamente las solicitudes por IP, sin guardarlas."
+      },
+      "contact": {
+        "title": "Contacto",
+        "body": "Para dudas, correcciones o pedir que se elimine un dato, escribe a quien desarrolla el sitio (ver Información)."
+      }
     }
   }
 }

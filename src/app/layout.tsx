@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono, Cinzel } from "next/font/google";
 import { getLocale } from "next-intl/server";
+import { SITE_NAME, getSiteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,7 +29,11 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  title: "El diablo murió en Petorca y en La Ligua lo enterraron",
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: SITE_NAME,
+    template: "%s · El diablo en Petorca",
+  },
   description: "Directorio turístico y planificador de rutas para Petorca.",
   manifest: "/manifest.webmanifest",
 };

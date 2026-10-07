@@ -35,7 +35,7 @@ src/
 
 - **Lectura pública** (`lib/data/*`): usa el cliente Supabase "server" (anon key + cookies de sesión), sujeto a RLS. Nunca usa el service role.
 - **Escritura desde admin** (`lib/server/content/*`, futuras acciones de `app/admin`): usa el mismo cliente "server" autenticado — el usuario admin debe estar en `public.admin_users` para que las políticas RLS permitan el insert/update.
-- **Analítica y seed**: usan el cliente "admin" (`lib/supabase/admin.ts`, service role), porque escriben sin sesión de usuario. `admin.ts` está marcado `server-only` para evitar que se filtre al bundle del navegador.
+- **Analítica**: `/api/analytics` usa el cliente normal (anon key; la RLS permite insert anónimo). **Seed**: usa el cliente "admin" (`lib/supabase/admin.ts`, service role), porque corre fuera de la app. `admin.ts` está marcado `server-only` para evitar que se filtre al bundle del navegador.
 - **Itinerarios anónimos**: por diseño, RLS los deniega a `anon`/`authenticated` directamente (ver `docs/DATA-MODEL.md`). Cualquier lectura/escritura debe pasar por un server action que valide la sesión anónima (cookie/localStorage) antes de usar el cliente admin. Esto evita que cualquiera pueda enumerar itinerarios ajenos vía PostgREST.
 
 ## i18n
@@ -43,6 +43,10 @@ src/
 - `next-intl` con `localePrefix: "always"` (`/es`, `/en`) y rutas localizadas por `pathnames` (p. ej. `/rutas` ↔ `/routes`).
 - `src/middleware.ts` combina el middleware de locale con el refresco de sesión de Supabase Auth para `/admin`, que queda excluido del ruteo por locale.
 - El layout raíz (`app/layout.tsx`) obtiene el locale con `getLocale()` para fijar `<html lang>`, ya que debe cubrir tanto `[locale]` como `admin`/`api`.
+
+## SEO y compartir
+
+`lib/seo.ts` es el único lugar que arma la metadata de una página pública (`buildPageMetadata`: título, descripción, canonical, hreflang, Open Graph/Twitter, `noIndex`). Cada página exporta `generateMetadata` y la llama; `app/layout.tsx` fija `metadataBase` y el título por defecto/plantilla. `app/sitemap.ts` (todo el catálogo, ambos idiomas, siempre dinámico) y `app/robots.ts` salen de la misma fuente. La URL pública base sale de `NEXT_PUBLIC_SITE_URL` (o del dominio de Vercel como respaldo, `getSiteUrl`).
 
 ## Panel admin
 
@@ -57,7 +61,7 @@ src/
 ItineraryEngine.build(input: ItineraryBuildInput): Itinerary
 ```
 
-Implementación base (Fase 0): heurística de vecino más cercano sobre distancia Haversine, con topes de paradas/duración. Es determinista y no depende del reloj del sistema, lo que la hace fácil de testear (`tests/unit/itinerary-engine.test.ts`) y reutilizable desde una futura interfaz conversacional sin cambios.
+Implementación: con hasta `EXACT_ORDER_STOPS_LIMIT` paradas prueba todos los órdenes y usa el óptimo exacto; con más, vecino más cercano sobre distancia Haversine, con topes de paradas/duración. Es determinista y no depende del reloj del sistema, lo que la hace fácil de testear (`tests/unit/itinerary-engine.test.ts`) y reutilizable desde una futura interfaz conversacional sin cambios.
 
 ## PWA
 

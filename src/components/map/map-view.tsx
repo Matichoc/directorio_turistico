@@ -53,6 +53,12 @@ export interface MapMarkerData {
   categorySlug?: string | null;
   /** Ícono puntual del lugar (ver migración 0010_place_icon.sql). */
   icon?: string | null;
+  /** "locality" = pueblo (ficha en `/pueblos/[slug]`); por defecto un atractivo. */
+  kind?: "place" | "locality";
+}
+
+function markerKey(marker: Pick<MapMarkerData, "slug" | "kind">) {
+  return `${marker.kind ?? "place"}:${marker.slug}`;
 }
 
 export interface MapViewProps {
@@ -191,7 +197,7 @@ export function MapView({
 
           return (
             <Marker
-              key={marker.slug}
+              key={markerKey(marker)}
               latitude={marker.latitude}
               longitude={marker.longitude}
               anchor="bottom"
@@ -205,11 +211,14 @@ export function MapView({
                 }}
               >
                 <MapPin
+                  variant={marker.kind}
                   categorySlug={marker.categorySlug}
                   placeIcon={marker.icon}
                   selected={
-                    selected?.slug === marker.slug ||
-                    highlightedSlug === marker.slug
+                    (selected !== null &&
+                      markerKey(selected) === markerKey(marker)) ||
+                    (marker.kind !== "locality" &&
+                      highlightedSlug === marker.slug)
                   }
                   near={isNear}
                   delayMs={Math.min(index * 60, 600)}
@@ -229,20 +238,34 @@ export function MapView({
             className="[&_.maplibregl-popup-content]:rounded-xl [&_.maplibregl-popup-content]:p-0 [&_.maplibregl-popup-content]:shadow-lg"
           >
             <Link
-              href={{
-                pathname: "/lugares/[slug]",
-                params: { slug: selected.slug },
-              }}
+              href={
+                selected.kind === "locality"
+                  ? {
+                      pathname: "/pueblos/[slug]",
+                      params: { slug: selected.slug },
+                    }
+                  : {
+                      pathname: "/lugares/[slug]",
+                      params: { slug: selected.slug },
+                    }
+              }
               className="flex max-w-56 items-start gap-2 px-3 py-2"
             >
               <span
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white"
                 style={{
-                  backgroundColor: getCategoryPinColor(selected.categorySlug),
+                  backgroundColor:
+                    selected.kind === "locality"
+                      ? "var(--neon)"
+                      : getCategoryPinColor(selected.categorySlug),
                 }}
               >
                 <CategoryIcon
-                  icon={getPlaceIcon(selected.categorySlug, selected.icon)}
+                  icon={
+                    selected.kind === "locality"
+                      ? "pueblo"
+                      : getPlaceIcon(selected.categorySlug, selected.icon)
+                  }
                   className="h-3.5 w-3.5"
                 />
               </span>

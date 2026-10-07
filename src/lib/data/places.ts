@@ -620,3 +620,42 @@ export async function listAdminPlacesForExport(): Promise<
     };
   });
 }
+
+export interface PlaceVerificationLog {
+  verifiedAt: string;
+  notes: string | null;
+}
+
+/**
+ * Último registro de verificación de cada lugar (`verification_logs`),
+ * por `placeId`. Un lugar verificado antes de que existiera el registro
+ * (p. ej. por el seed) simplemente no aparece acá.
+ */
+export async function listLatestPlaceVerifications(): Promise<
+  Record<string, PlaceVerificationLog>
+> {
+  if (!isSupabaseConfigured()) {
+    return {};
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("verification_logs")
+    .select("entity_id, notes, verified_at")
+    .eq("entity_type", "place")
+    .order("verified_at", { ascending: false });
+
+  if (error || !data) {
+    return {};
+  }
+
+  const latest: Record<string, PlaceVerificationLog> = {};
+  for (const row of data) {
+    // Ordenado de más nuevo a más viejo: el primero de cada lugar gana.
+    latest[row.entity_id] ??= {
+      verifiedAt: row.verified_at,
+      notes: row.notes,
+    };
+  }
+  return latest;
+}

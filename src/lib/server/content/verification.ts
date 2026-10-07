@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { EntityType, VerificationStatus } from "@/types/database";
 
@@ -57,4 +58,22 @@ export async function verifyEntity(input: VerifyEntityInput) {
       `No se pudo actualizar el estado de verificación: ${updateError.message}`,
     );
   }
+}
+
+/**
+ * Variante para `<form action>` de `/admin/verificaciones`: lee `placeId`,
+ * `status` y `notes` y revalida las pantallas del panel. La nota vacía no se
+ * guarda (queda `null`).
+ */
+export async function submitPlaceVerificationForm(formData: FormData) {
+  const notes = String(formData.get("notes") ?? "").trim();
+  await verifyEntity({
+    entityType: "place",
+    entityId: String(formData.get("placeId") ?? ""),
+    status: String(formData.get("status") ?? "") as VerificationStatus,
+    notes: notes === "" ? undefined : notes,
+  });
+
+  revalidatePath("/admin/verificaciones");
+  revalidatePath("/admin/lugares");
 }

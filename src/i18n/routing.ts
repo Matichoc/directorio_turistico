@@ -39,6 +39,10 @@ export const routing = defineRouting({
       es: "/informacion",
       en: "/info",
     },
+    "/privacidad": {
+      es: "/privacidad",
+      en: "/privacy",
+    },
     "/pueblos": {
       es: "/pueblos",
       en: "/villages",

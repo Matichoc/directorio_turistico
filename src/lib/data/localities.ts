@@ -5,7 +5,8 @@ import { listPlacesByLocalityId } from "@/lib/data/places";
 import type { Locale } from "@/types/database";
 import type { Locality, LocalityWithPlaces } from "@/types/domain";
 
-const LOCALITIES_QUERY = `id, slug, latitude, longitude,
+const LOCALITIES_QUERY =
+  `id, slug, latitude, longitude, summary_source_url, summary_source_label,
    locality_translations!inner(name, summary, locale),
    communes!inner(id, commune_translations!inner(name, locale))` as const;
 
@@ -14,6 +15,8 @@ interface LocalityQueryResult {
   slug: string;
   latitude: number | null;
   longitude: number | null;
+  summary_source_url: string | null;
+  summary_source_label: string | null;
   locality_translations: {
     name: string;
     summary: string | null;
@@ -32,6 +35,10 @@ function mapLocality(row: LocalityQueryResult): Locality {
     slug: row.slug,
     name: translation?.name ?? row.slug,
     summary: translation?.summary ?? null,
+    // La fuente describe el resumen: sin resumen en este idioma no hay
+    // nada que citar (los resúmenes se cargan solo en español).
+    summarySourceUrl: translation?.summary ? row.summary_source_url : null,
+    summarySourceLabel: translation?.summary ? row.summary_source_label : null,
     communeId: row.communes?.id ?? "",
     communeName: row.communes?.commune_translations[0]?.name ?? "",
     latitude: row.latitude,
@@ -94,17 +101,26 @@ export interface AdminLocalityListItem {
   name: string;
   communeName: string;
   placesCount: number;
+  /** Cobertura de contenido: qué le falta todavía a la ficha del pueblo. */
+  hasSummary: boolean;
+  hasCoordinates: boolean;
 }
 
-const ADMIN_LOCALITIES_LIST_QUERY = `id, slug,
-   locality_translations!inner(name, locale),
+const ADMIN_LOCALITIES_LIST_QUERY = `id, slug, latitude, longitude,
+   locality_translations!inner(name, summary, locale),
    communes!inner(commune_translations!inner(name, locale)),
    places(id)` as const;
 
 interface AdminLocalityListQueryResult {
   id: string;
   slug: string;
-  locality_translations: { name: string; locale: Locale }[];
+  latitude: number | null;
+  longitude: number | null;
+  locality_translations: {
+    name: string;
+    summary: string | null;
+    locale: Locale;
+  }[];
   communes: { commune_translations: { name: string; locale: Locale }[] } | null;
   places: { id: string }[];
 }
@@ -136,6 +152,8 @@ export async function listAdminLocalities(): Promise<AdminLocalityListItem[]> {
       name: row.locality_translations[0]?.name ?? row.slug,
       communeName: row.communes?.commune_translations[0]?.name ?? "",
       placesCount: row.places?.length ?? 0,
+      hasSummary: Boolean(row.locality_translations[0]?.summary),
+      hasCoordinates: row.latitude !== null && row.longitude !== null,
     }))
     .sort((a, b) => a.name.localeCompare(b.name, "es"));
 }
@@ -151,10 +169,13 @@ export interface AdminLocalityDetail {
   communeId: string;
   latitude: number | null;
   longitude: number | null;
+  summarySourceUrl: string | null;
+  summarySourceLabel: string | null;
   translations: Record<Locale, AdminLocalityTranslation>;
 }
 
 const ADMIN_LOCALITY_DETAIL_QUERY = `id, slug, commune_id, latitude, longitude,
+   summary_source_url, summary_source_label,
    locality_translations(locale, name, summary)` as const;
 
 interface AdminLocalityDetailQueryResult {
@@ -163,6 +184,8 @@ interface AdminLocalityDetailQueryResult {
   commune_id: string;
   latitude: number | null;
   longitude: number | null;
+  summary_source_url: string | null;
+  summary_source_label: string | null;
   locality_translations: {
     locale: Locale;
     name: string;
@@ -212,6 +235,8 @@ export async function getAdminLocalityById(
     communeId: data.commune_id,
     latitude: data.latitude,
     longitude: data.longitude,
+    summarySourceUrl: data.summary_source_url,
+    summarySourceLabel: data.summary_source_label,
     translations,
   };
 }

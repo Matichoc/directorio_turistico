@@ -42,17 +42,26 @@ confirme.
 
 ## Scripts
 
-| Comando                        | Descripción                                               |
-| ------------------------------ | --------------------------------------------------------- |
-| `pnpm dev`                     | Servidor de desarrollo                                    |
-| `pnpm build`                   | Build de producción                                       |
-| `pnpm start`                   | Sirve el build de producción                              |
-| `pnpm lint`                    | ESLint                                                    |
-| `pnpm format` / `format:check` | Prettier                                                  |
-| `pnpm typecheck`               | `tsc --noEmit`                                            |
-| `pnpm test` / `test:watch`     | Tests unitarios/integración (Vitest)                      |
-| `pnpm test:e2e`                | Tests end-to-end (Playwright)                             |
-| `pnpm db:seed`                 | Seed de lugares/rutas reales (pendientes de verificación) |
+| Comando                        | Descripción                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------------- |
+| `pnpm dev`                     | Servidor de desarrollo                                                           |
+| `pnpm build`                   | Build de producción                                                              |
+| `pnpm start`                   | Sirve el build de producción                                                     |
+| `pnpm lint`                    | ESLint                                                                           |
+| `pnpm format` / `format:check` | Prettier                                                                         |
+| `pnpm typecheck`               | `tsc --noEmit`                                                                   |
+| `pnpm test` / `test:watch`     | Tests unitarios/integración (Vitest)                                             |
+| `pnpm test:e2e`                | Tests end-to-end (Playwright)                                                    |
+| `pnpm db:seed`                 | Seed de lugares/rutas reales (pendientes de verificación)                        |
+| `pnpm geocode:localities`      | Busca coordenadas de pueblos en Google Places (requiere `GOOGLE_PLACES_API_KEY`) |
+| `pnpm fetch:google-photos`     | Trae fotos de Google Places a lugares que no tienen                              |
+
+## Producción
+
+- **CI:** `.github/workflows/ci.yml` corre typecheck, lint, tests, formato y build en cada PR.
+- **Variable clave:** `NEXT_PUBLIC_SITE_URL` (dominio real) — de ahí salen el sitemap, los canonical y las vistas previas al compartir.
+- **Administración:** `/admin` (usuario en `public.admin_users`): lugares, rutas, pueblos, comunas/categorías, verificaciones por comuna, comentarios y métricas.
+- **Hoja de ruta hacia la propuesta a turismo:** `docs/PLAN.md`, sección 10.
 
 ## Estructura
 

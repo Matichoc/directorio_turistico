@@ -16,6 +16,11 @@ export function getMapStyleUrl(): string {
   return "https://tiles.openfreemap.org/styles/liberty";
 }
 
+/** ¿Se está usando el estilo por defecto (claro)? Ver `.map-dark` en globals.css. */
+export function isDefaultMapStyle(): boolean {
+  return !process.env.NEXT_PUBLIC_MAP_STYLE_URL;
+}
+
 export const PETORCA_CENTER = { latitude: -32.25, longitude: -70.93 } as const;
 export const PETORCA_DEFAULT_ZOOM = 10;
 /** Zoom para un mapa con un solo marcador (ficha de lugar): a nivel calle,

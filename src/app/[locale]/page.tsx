@@ -9,7 +9,11 @@ import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
 import { listRoutes } from "@/lib/data/routes";
-import { listMunicipalities } from "@/lib/data/communes";
+import { listCommunes, listMunicipalities } from "@/lib/data/communes";
+import { listLocalities } from "@/lib/data/localities";
+import { listPlaces } from "@/lib/data/places";
+import { buildProvinceFlyover } from "@/lib/ui/province-flyover";
+import { ProvinceFlyover } from "@/components/home/province-flyover";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import { SCENE_SRC } from "@/lib/ui/scene-backgrounds";
 import type { Metadata } from "next";
@@ -51,11 +55,17 @@ export default async function HomePage({
   const locale = resolveLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [t, routes, municipalities] = await Promise.all([
-    getTranslations("home"),
-    listRoutes(locale, 3),
-    listMunicipalities(locale),
-  ]);
+  const [t, tRoute, routes, municipalities, communes, localities, places] =
+    await Promise.all([
+      getTranslations("home"),
+      getTranslations("route"),
+      listRoutes(locale, 3),
+      listMunicipalities(locale),
+      listCommunes(locale),
+      listLocalities(locale),
+      listPlaces(locale),
+    ]);
+  const flyover = buildProvinceFlyover(communes, localities, places);
 
   return (
     <main className="flex flex-1 flex-col gap-8">
@@ -73,6 +83,12 @@ export default async function HomePage({
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#07060c]/85 via-[#07060c]/45 via-60% to-transparent"
         />
+        {/* En celular el título cae encima del diablito: un velo extra solo
+            ahí, para que el texto se lea siempre. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[#07060c]/45 sm:hidden"
+        />
         <SparkleField />
 
         <header className="relative flex items-start justify-between gap-4">
@@ -82,7 +98,7 @@ export default async function HomePage({
           <LocaleSwitcher />
         </header>
 
-        <h1 className="font-display relative text-3xl leading-tight font-semibold tracking-wide text-balance">
+        <h1 className="font-display relative text-3xl leading-tight font-semibold tracking-wide text-balance [text-shadow:0_2px_18px_rgba(7,6,12,0.85)] sm:text-4xl">
           {t("title")}
         </h1>
         <p className="relative max-w-prose text-white/70">{t("subtitle")}</p>
@@ -90,7 +106,9 @@ export default async function HomePage({
         <HomeSearchForm />
       </div>
 
-      <section className="px-4">
+      <ProvinceFlyover data={flyover} />
+
+      <section className="reveal px-4">
         <h2 className="mb-3 text-lg font-medium">{t("intent.title")}</h2>
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {INTENT_CATEGORIES.map((intent) => (
@@ -118,17 +136,17 @@ export default async function HomePage({
 
       <MunicipalityBanner municipalities={municipalities} />
 
-      <section className="px-4 pb-4">
+      <section className="reveal px-4 pb-4">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-medium">{t("featuredRoutes")}</h2>
           <Link href="/rutas" className="text-accent text-sm underline">
-            {t("featuredRoutes")} →
+            {tRoute("viewAll")} →
           </Link>
         </div>
         {routes.length > 0 && (
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {routes.map((route) => (
-              <li key={route.id}>
+              <li key={route.id} className="reveal">
                 <RouteCard route={route} />
               </li>
             ))}

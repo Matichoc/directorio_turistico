@@ -98,9 +98,49 @@ sueltos:
   encabezados de comuna).
 
 `PageHero` suma cuadrícula, tres halos (brasa/violeta/cian) y una línea de
-luz superior. Pendiente (no se tocó): el mapa base (OpenFreeMap "liberty")
-sigue claro — para un mapa oscuro, `NEXT_PUBLIC_MAP_STYLE_URL` con un estilo
-oscuro (p. ej. CARTO "dark-matter").
+luz superior.
+
+**Mapa base oscuro**: `MapView` agrega la clase `map-dark` (en `globals.css`)
+cuando se usa el estilo por defecto (OpenFreeMap "liberty", claro): invierte
+el canvas y le devuelve el tono, así el mapa queda oscuro a juego con el
+sitio y el agua sigue azul. Solo afecta al canvas — los pines son HTML y
+conservan sus colores. Con un estilo propio (`NEXT_PUBLIC_MAP_STYLE_URL`,
+p. ej. uno oscuro de un proveedor comercial) no se aplica.
+
+## Vuelo 3D por la provincia (home)
+
+El "efecto wow" del inicio (`ProvinceFlyover`, `components/home/`): el
+relieve real de la provincia en 3D, del mar a la cordillera, con la cámara
+recorriendo las cinco comunas. Sin mapa de calles: el estilo se arma solo con
+el modelo de elevación abierto de AWS (Terrain Tiles, formato Terrarium, sin
+API key) — terreno 3D + sombreado de laderas + color por altura en la paleta
+del sitio (mar azul noche → valles violeta → cordillera brasa). Reglas:
+
+- **Datos reales**: `buildProvinceFlyover` (`lib/ui/province-flyover.ts`)
+  ubica cada comuna en su cabecera (o en otro pueblo de la comuna con
+  coordenada) y cuenta pueblos y atractivos reales; una comuna sin ninguna
+  coordenada queda fuera. Los puntos de luz son los pueblos con coordenada
+  (los de cabecera, más grandes y con nombre) y llevan a su ficha.
+- **Recorrido**: arranca solo la primera vez que la sección entra en
+  pantalla, vuela de oeste a este (del mar a la cordillera) mostrando una
+  tarjeta por comuna con link a `/explorar?comuna=…`, y vuelve a la vista
+  general. Cualquier gesto del usuario lo detiene; sin interacción la cámara
+  gira lento.
+- **Costo**: MapLibre se descarga recién cuando la sección está por verse
+  (`next/dynamic` + `IntersectionObserver`); fuera de pantalla no se anima
+  nada. Sin WebGL la sección no se muestra. Con movimiento reducido no hay
+  vuelo ni giro (saltos directos). `cooperativeGestures`: en celular el mapa
+  no secuestra el scroll de la página (se mueve con dos dedos).
+
+## Aparición al hacer scroll
+
+Clase `reveal` (en `globals.css`): las secciones y tarjetas suben y aparecen
+al entrar en pantalla, con animaciones guiadas por el scroll de CSS — sin
+JavaScript. Navegadores sin soporte, o con movimiento reducido, ven el
+contenido normal desde el principio (nunca queda algo invisible). Se usa en
+las secciones del home, las comunas de `/explorar` y las tarjetas de rutas.
+No ponerla en un contenedor con hijos `position: fixed` (la transformación
+los rompería).
 
 ## Fondos con el diablito (escenas)
 
@@ -160,6 +200,7 @@ Todas las animaciones viven en `globals.css` como `@keyframes` +
 | `animate-sparkle-twinkle` | Parpadeo de chispa                      | `SparkleField` (hero del home y `PageHero`)          |
 | `animate-glow-pulse`      | Halo que "respira"                      | Fondo del hero del home, `PageHero`, `PlayerToken`   |
 | `animate-devil-peek`      | Vaivén curioso                          | `DevilMascot`                                        |
+| `reveal` (`reveal-up`)    | Aparición guiada por el scroll          | Secciones del home, comunas de `/explorar`, rutas    |
 
 Antes de escribir un `@keyframes` nuevo: revisa si alguno de estos ya sirve
 para el efecto que quieres (una aparición, un pulso, un rebote) en vez de

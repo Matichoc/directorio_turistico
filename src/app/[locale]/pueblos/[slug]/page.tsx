@@ -136,7 +136,7 @@ export default async function LocalityDetailPage({
       {locality.places.length === 0 ? (
         <p className="text-foreground/60 text-sm">{t("noPlacesYet")}</p>
       ) : (
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {locality.places.map((place) => (
             <li key={place.id}>
               <PlaceCard place={place} />

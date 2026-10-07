@@ -43,7 +43,7 @@ export default async function RoutesPage({
       ) : (
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {routes.map((route) => (
-            <li key={route.id}>
+            <li key={route.id} className="reveal">
               <RouteCard route={route} />
             </li>
           ))}

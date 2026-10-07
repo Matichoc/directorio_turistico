@@ -60,6 +60,9 @@ export async function listLocalities(locale: Locale): Promise<Locality[]> {
     .eq("communes.commune_translations.locale", locale);
 
   if (error || !data) {
+    // Sin este log, una columna que falta en la base (migración sin aplicar)
+    // se ve como "no hay pueblos" sin ninguna pista en los logs de Vercel.
+    if (error) console.error("listLocalities:", error.message);
     return [];
   }
 
@@ -86,6 +89,7 @@ export async function getLocalityBySlug(
     .maybeSingle();
 
   if (error || !data) {
+    if (error) console.error("getLocalityBySlug:", error.message);
     return null;
   }
 

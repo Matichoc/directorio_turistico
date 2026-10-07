@@ -2,17 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { ANALYTICS_EVENT_NAMES } from "@/lib/analytics/events";
 
 const eventSchema = z.object({
-  name: z.enum([
-    "place_view",
-    "route_view",
-    "route_added_to_trip",
-    "place_added_to_trip",
-    "place_liked",
-    "search_performed",
-    "filter_applied",
-  ]),
+  name: z.enum(ANALYTICS_EVENT_NAMES),
   properties: z
     .record(
       z.string(),

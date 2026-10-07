@@ -11,6 +11,29 @@ import { AddToTripButton } from "@/components/trip/add-to-trip-button";
 import { MapView } from "@/components/map/map-view";
 import { PlacePhotoHero } from "@/components/place/place-photo-hero";
 import { RouteStopNav } from "@/components/route/route-stop-nav";
+import type { Metadata } from "next";
+import { buildPageMetadata, truncateDescription } from "@/lib/seo";
+import { TrackEvent } from "@/components/analytics/track-event";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale: rawLocale, slug } = await params;
+  const locale = resolveLocale(rawLocale);
+  const place = await getPlaceBySlug(slug, locale);
+  if (!place) return {};
+  return buildPageMetadata({
+    locale,
+    href: { pathname: "/lugares/[slug]", params: { slug } },
+    title: `${place.name} — ${place.communeName}`,
+    description: truncateDescription(
+      place.shortDescription ?? place.description,
+    ),
+    image: place.photos[0]?.url,
+  });
+}
 
 export default async function PlaceDetailPage({
   params,
@@ -34,6 +57,7 @@ export default async function PlaceDetailPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
+      <TrackEvent event={{ name: "place_view", properties: { slug } }} />
       {routeSlug && (
         <RouteStopNav routeSlug={routeSlug} placeSlug={slug} locale={locale} />
       )}

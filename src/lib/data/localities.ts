@@ -101,17 +101,26 @@ export interface AdminLocalityListItem {
   name: string;
   communeName: string;
   placesCount: number;
+  /** Cobertura de contenido: qué le falta todavía a la ficha del pueblo. */
+  hasSummary: boolean;
+  hasCoordinates: boolean;
 }
 
-const ADMIN_LOCALITIES_LIST_QUERY = `id, slug,
-   locality_translations!inner(name, locale),
+const ADMIN_LOCALITIES_LIST_QUERY = `id, slug, latitude, longitude,
+   locality_translations!inner(name, summary, locale),
    communes!inner(commune_translations!inner(name, locale)),
    places(id)` as const;
 
 interface AdminLocalityListQueryResult {
   id: string;
   slug: string;
-  locality_translations: { name: string; locale: Locale }[];
+  latitude: number | null;
+  longitude: number | null;
+  locality_translations: {
+    name: string;
+    summary: string | null;
+    locale: Locale;
+  }[];
   communes: { commune_translations: { name: string; locale: Locale }[] } | null;
   places: { id: string }[];
 }
@@ -143,6 +152,8 @@ export async function listAdminLocalities(): Promise<AdminLocalityListItem[]> {
       name: row.locality_translations[0]?.name ?? row.slug,
       communeName: row.communes?.commune_translations[0]?.name ?? "",
       placesCount: row.places?.length ?? 0,
+      hasSummary: Boolean(row.locality_translations[0]?.summary),
+      hasCoordinates: row.latitude !== null && row.longitude !== null,
     }))
     .sort((a, b) => a.name.localeCompare(b.name, "es"));
 }

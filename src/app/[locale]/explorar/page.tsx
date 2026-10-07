@@ -13,8 +13,11 @@ import { FiltersDisclosure } from "@/components/explore/filters-disclosure";
 import { LocalityBrowser } from "@/components/explore/locality-browser";
 import { ViewToggle } from "@/components/explore/view-toggle";
 import { MapView } from "@/components/map/map-view";
+import { TrackEvent } from "@/components/analytics/track-event";
 import { buildExploreTree } from "@/lib/ui/build-explore-tree";
 import { getSceneForCategory } from "@/lib/ui/scene-backgrounds";
+import type { Metadata } from "next";
+import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -29,6 +32,21 @@ interface ExplorePageProps {
     caracteristica?: string;
     vista?: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = resolveLocale((await params).locale);
+  const t = await getTranslations({ locale, namespace: "explore" });
+  return buildPageMetadata({
+    locale,
+    href: "/explorar",
+    title: t("title"),
+    description: truncateDescription(t("subtitle")),
+  });
 }
 
 export default async function ExplorePage({
@@ -110,8 +128,29 @@ export default async function ExplorePage({
     })),
   ];
 
+  // Qué busca la gente (texto de búsqueda y filtros), para el panel de
+  // métricas del admin. Solo cuando hay algo: abrir /explorar a secas ya
+  // no es una búsqueda.
+  const searchTerm = filters.q?.trim().toLowerCase().slice(0, 80);
+  const appliedFilters = {
+    comuna: filters.comuna ?? null,
+    categoria: filters.categoria ?? null,
+    caracteristica: filters.caracteristica ?? null,
+  };
+  const hasFilters = Object.values(appliedFilters).some(Boolean);
+
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
+      {searchTerm && (
+        <TrackEvent
+          event={{ name: "search_performed", properties: { q: searchTerm } }}
+        />
+      )}
+      {hasFilters && (
+        <TrackEvent
+          event={{ name: "filter_applied", properties: appliedFilters }}
+        />
+      )}
       <PageHero
         title={t("title")}
         subtitle={t("subtitle")}

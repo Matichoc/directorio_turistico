@@ -190,6 +190,9 @@ string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
   `place_images` (Wikimedia, Google Places vía proxy, o subida a mano),
   con `PhotoOrIcon` como envoltorio único que decide foto-vs-ícono y maneja
   el `onError` — no reimplementar ese fallback en un componente nuevo.
+- **Crédito de foto**: la leyenda abajo-derecha de `PlacePhotoHero` solo
+  muestra lo que la foto trae (`place_images.alt_text`: autor/fuente/
+  licencia). Sin dato no hay leyenda — nunca una atribución por defecto.
 - **Rutas** (`RouteCard`, hero de la ficha de ruta): `routes.cover_image`
   (portada curada a mano, hoy ilustraciones generadas con IA en
   `public/rutas/`) tiene prioridad; si una ruta no tiene portada propia,

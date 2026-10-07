@@ -5,9 +5,21 @@ import { listRoutes } from "@/lib/data/routes";
 import { RouteCard } from "@/components/route/route-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHero } from "@/components/ui/page-hero";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = resolveLocale((await params).locale);
+  const t = await getTranslations({ locale, namespace: "nav" });
+  return buildPageMetadata({ locale, href: "/rutas", title: t("routes") });
 }
 
 export default async function RoutesPage({

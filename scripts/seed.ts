@@ -145,6 +145,8 @@ const localities: {
   latitude: number | null;
   longitude: number | null;
   summary?: string;
+  /** Misma idea que `summary`, en inglés — sin esto, la página en inglés no muestra resumen. */
+  summaryEn?: string;
   /**
    * De dónde salió `summary` (se muestra como "Fuente: …" en la ficha del
    * pueblo). Campos planos, no un objeto anidado: `geocode-localities.ts`
@@ -163,6 +165,8 @@ const localities: {
     longitude: null,
     summary:
       "Capital de la provincia de Petorca y su comuna más poblada (35.390 habitantes, Censo 2017). Aquí están la Plaza de Armas y el Museo de La Ligua, en el corazón de la tradición del tejido y de los dulces típicos, declarados Patrimonio Cultural Inmaterial de Chile en 2019.",
+    summaryEn:
+      "Capital of Petorca province and its most populous commune (35,390 inhabitants, 2017 Census). It is home to the Plaza de Armas and the La Ligua Museum, at the heart of the knitwear and traditional sweets heritage, recognized as Intangible Cultural Heritage of Chile in 2019.",
   },
   {
     slug: "longotoma",
@@ -173,6 +177,8 @@ const localities: {
     longitude: null,
     summary:
       "Da nombre al campo dunar de Longotoma (unas 653 hectáreas), entre La Ligua y Papudo, que forma parte del Santuario de la Naturaleza Humedal Salinas de Pullally y Dunas de Longotoma. El río Petorca lo separa del humedal.",
+    summaryEn:
+      "It gives its name to the Longotoma dune field (about 653 hectares) between La Ligua and Papudo, part of the Salinas de Pullally Wetland and Longotoma Dunes Nature Sanctuary. The Petorca River separates it from the wetland.",
     sourceUrl:
       "https://es.wikipedia.org/wiki/Humedal_Salinas_de_Pullally_y_Dunas_de_Longotoma",
     sourceLabel: "Wikipedia — Humedal Salinas de Pullally y Dunas de Longotoma",
@@ -186,6 +192,8 @@ const localities: {
     longitude: null,
     summary:
       "Considerado la cuna del tejido de La Ligua: su barrio comercial reúne cerca de 150 tiendas y talleres y es sede de la Fiesta del Tejido.",
+    summaryEn:
+      "Considered the cradle of La Ligua knitwear: its shopping district gathers about 150 shops and workshops and hosts the Fiesta del Tejido (knitwear festival).",
     sourceUrl:
       "https://www.sercotec.cl/barrios-comerciales/barrio-comercial-valle-hermoso-la-ligua/",
     sourceLabel: "Sercotec — Barrio Comercial Valle Hermoso",
@@ -207,6 +215,8 @@ const localities: {
     longitude: null,
     summary:
       "Balneario y caleta de pescadores de la costa de La Ligua, a unos 25 km de la ciudad y 174 km de Santiago. Su nombre viene del mapudungún. Vive de la pesca artesanal y del surf: su ola La Marmola puede alcanzar hasta 13 metros. En el sector hay un predio de la Escuela Militar.",
+    summaryEn:
+      "Seaside resort and fishing cove on the La Ligua coast, about 25 km from the town and 174 km from Santiago. Its name comes from Mapudungun. It lives off artisanal fishing and surfing: its La Marmola wave can reach 13 meters. A Military School property is located in the area.",
     sourceUrl: "https://es.wikipedia.org/wiki/Pichicuy",
     sourceLabel: "Wikipedia — Pichicuy",
   },
@@ -219,6 +229,8 @@ const localities: {
     longitude: null,
     summary:
       "Caleta fundada en los años 60, a unos 187 km de Santiago. Además de la pesca, en la zona se cultivan flores, sobre todo claveles. Es un destino de buceo conocido por La Lobera, Tres Islas y la Piedra del Bilagay.",
+    summaryEn:
+      "Fishing cove founded in the 1960s, about 187 km from Santiago. Besides fishing, flowers are grown in the area, mainly carnations. It is a diving destination known for La Lobera, Tres Islas and the Piedra del Bilagay.",
     sourceUrl: "https://es.wikipedia.org/wiki/Los_Molles_(Chile)",
     sourceLabel: "Wikipedia — Los Molles (Chile)",
   },
@@ -239,6 +251,8 @@ const localities: {
     longitude: null,
     summary:
       "Villa Huaquén nació de una antigua hacienda de 34.713 hectáreas que perteneció a los padres mercedarios. Fue expropiada entre 1969 y 1970, durante la reforma agraria, y se dividió en 1994.",
+    summaryEn:
+      "Villa Huaquén grew out of an old 34,713-hectare estate that belonged to the Mercedarian fathers. It was expropriated between 1969 and 1970, during the agrarian reform, and subdivided in 1994.",
     sourceUrl: "https://es.wikipedia.org/wiki/Los_Molles_(Chile)",
     sourceLabel: "Wikipedia — Los Molles (Chile)",
   },
@@ -259,6 +273,8 @@ const localities: {
     longitude: null,
     summary:
       "Localidad de la comuna de La Ligua que contaba con 1.370 habitantes según el Censo 2017.",
+    summaryEn:
+      "Village in the La Ligua commune that had 1,370 inhabitants according to the 2017 Census.",
     sourceUrl:
       "https://telencuestas.com/censos-de-poblacion/chile/2017/valparaiso/petorca/la-ligua",
     sourceLabel: "Censo 2017 (vía Telencuestas)",
@@ -272,6 +288,8 @@ const localities: {
     longitude: null,
     summary:
       "Sector costero de La Ligua, en el km 180 de la Ruta 5 Norte, a pocas cuadras del centro y minutos de Los Molles, Pichidangui, Pichicuy y Salinas de Pullally.",
+    summaryEn:
+      "Coastal area of La Ligua, at km 180 of Ruta 5 Norte, a few blocks from the center and minutes from Los Molles, Pichidangui, Pichicuy and Salinas de Pullally.",
   },
   {
     slug: "la-engorda",
@@ -323,6 +341,8 @@ const localities: {
     longitude: null,
     summary:
       "Cabecera de la comuna de Petorca (9.826 habitantes, Censo 2017). Su centro se construyó a mediados del siglo XVIII donde antes había una huerta parroquial; en la plaza están la Iglesia La Merced (construida por los jesuitas en 1640) y, a un costado, la casa donde nació el presidente Manuel Montt.",
+    summaryEn:
+      "Seat of the Petorca commune (9,826 inhabitants, 2017 Census). Its center was built in the mid-18th century where a parish orchard used to be; on the plaza stand the La Merced Church (built by the Jesuits in 1640) and, next to it, the house where President Manuel Montt was born.",
   },
   {
     slug: "chincolco",
@@ -333,6 +353,8 @@ const localities: {
     longitude: null,
     summary:
       "Pueblo en la parte alta del valle del río Petorca, a unos 6,5 km al noreste de la ciudad de Petorca. Fue comuna propia hasta 1928, cuando se anexó a la comuna de Petorca.",
+    summaryEn:
+      "Village in the upper Petorca River valley, about 6.5 km northeast of the town of Petorca. It was its own commune until 1928, when it was annexed to the Petorca commune.",
   },
   {
     slug: "hierro-viejo",
@@ -343,6 +365,8 @@ const localities: {
     longitude: null,
     summary:
       "Sector donde se descubrió en 1730 un rico yacimiento de oro ('Los Tornos'), que atrajo a los primeros ocupantes de tierras de la hacienda Pedegua.",
+    summaryEn:
+      "Area where a rich gold deposit ('Los Tornos') was discovered in 1730, attracting the first settlers on the lands of the Pedegua estate.",
   },
   {
     slug: "el-sobrante",
@@ -353,6 +377,8 @@ const localities: {
     longitude: null,
     summary:
       "El río Petorca nace en la cordillera de los Andes con el nombre de río Sobrante; al recibir la confluencia del estero Pedernal, a la altura de Chincolco, pasa a llamarse río Petorca.",
+    summaryEn:
+      "The Petorca River rises in the Andes under the name Sobrante River; where the Pedernal stream joins it, near Chincolco, it becomes the Petorca River.",
   },
   {
     slug: "pedernal",
@@ -387,6 +413,8 @@ const localities: {
     longitude: null,
     summary:
       "Antigua hacienda de la comunidad religiosa agustina; al descubrirse oro en 1730 en el sector de Hierro Viejo, trabajadores y aventureros mineros ocuparon tierras de la hacienda. En 1924 se inauguró un ramal ferroviario que la conectó con la estación de Petorca.",
+    summaryEn:
+      "Former estate of the Augustinian religious community; when gold was found in 1730 in the Hierro Viejo area, miners and adventurers settled on the estate's lands. In 1924 a railway branch connecting it to the Petorca station was opened.",
   },
   {
     slug: "palquico",
@@ -446,6 +474,8 @@ const localities: {
     longitude: null,
     summary:
       "Cabecera de la comuna de Cabildo (19.388 habitantes, Censo 2017). Su plaza es el punto de partida habitual para recorrer los atractivos de la comuna, desde el valle de Alicahue hasta los túneles del antiguo ferrocarril; desde aquí se asciende también al Cerro Chache.",
+    summaryEn:
+      "Seat of the Cabildo commune (19,388 inhabitants, 2017 Census). Its plaza is the usual starting point for exploring the commune's attractions, from the Alicahue valley to the old railway tunnels; Cerro Chache is also climbed from here.",
   },
   {
     slug: "alicahue",
@@ -456,6 +486,8 @@ const localities: {
     longitude: null,
     summary:
       "Localidad rural en el precordillera, a unos 35 km al interior de la ciudad de Cabildo.",
+    summaryEn:
+      "Rural village in the Andean foothills, about 35 km inland from the town of Cabildo.",
   },
   {
     slug: "artificio",
@@ -498,6 +530,8 @@ const localities: {
     longitude: null,
     summary:
       "Sector de Cabildo que surgió de la hacienda formada al dividirse el Mayorazgo de los Cerda, junto con La Higuera, San José, San Lorenzo y Los Ángeles.",
+    summaryEn:
+      "Area of Cabildo that grew out of the estate formed when the Cerda family entail was divided, together with La Higuera, San José, San Lorenzo and Los Ángeles.",
     sourceUrl: "https://es.wikipedia.org/wiki/Cabildo_(Chile)",
     sourceLabel: "Wikipedia — Cabildo (Chile)",
   },
@@ -566,6 +600,8 @@ const localities: {
     longitude: null,
     summary:
       "Localidad rural a unos 10 km de Cabildo, con cerca de 2.800 habitantes. Cada 10 de agosto celebra a su patrono con bailes religiosos. Su parroquia se independizó en 1633 con el apoyo de Catalina de los Ríos (La Quintrala).",
+    summaryEn:
+      "Rural village about 10 km from Cabildo, with around 2,800 inhabitants. Every August 10 it celebrates its patron saint with religious dances. Its parish became independent in 1633 with the support of Catalina de los Ríos (La Quintrala).",
     sourceUrl:
       "https://revista.cenizas.cl/san-lorenzo-riqueza-patrimonial-y-religiosa-en-la-comuna-de-cabildo/",
     sourceLabel:
@@ -580,6 +616,8 @@ const localities: {
     longitude: null,
     summary:
       'Su nombre alude a lo montañoso del lugar. Según la tradición recogida, ahí se reunían los indígenas a planear su resistencia contra el encomendero, por lo que se lo recuerda como "El Cabildo de los Indios".',
+    summaryEn:
+      'Its name alludes to the mountainous terrain. According to the tradition, the indigenous people used to meet there to plan their resistance against the encomendero, which is why it is remembered as "El Cabildo de los Indios".',
     sourceUrl: "https://es.wikipedia.org/wiki/Cabildo_(Chile)",
     sourceLabel: "Wikipedia — Cabildo (Chile)",
   },
@@ -649,6 +687,8 @@ const localities: {
     longitude: null,
     summary:
       "Cabecera de la comuna de Zapallar (7.339 habitantes, Censo 2017), uno de los balnearios más tradicionales de Chile central; su bahía resguardada mantiene el oleaje suave todo el año.",
+    summaryEn:
+      "Seat of the Zapallar commune (7,339 inhabitants, 2017 Census), one of the most traditional seaside resorts in central Chile; its sheltered bay keeps the waves gentle all year.",
   },
   {
     slug: "cachagua",
@@ -659,6 +699,8 @@ const localities: {
     longitude: null,
     summary:
       'Su nombre viene de Kachuwe, "lugar de pastos". Tiene una playa de unos 5 km y casas de troncos con techo de coirón y estuco a la cal. Frente a la costa está la Isla Cachagua, Monumento Natural desde el 27 de junio de 1989 (4,5 hectáreas), donde vive cerca del 15 % del pingüino de Humboldt del país.',
+    summaryEn:
+      'Its name comes from Kachuwe, "place of pastures". It has a beach of about 5 km and log houses with coirón-thatch roofs and lime stucco. Off the coast lies Isla Cachagua, a Natural Monument since June 27, 1989 (4.5 hectares), home to about 15% of the country\'s Humboldt penguins.',
     sourceUrl: "https://www.ecured.cu/Cachagua_(Chile)",
     sourceLabel: "EcuRed — Cachagua (Chile)",
   },
@@ -671,6 +713,8 @@ const localities: {
     longitude: null,
     summary:
       "Su origen está en una hacienda otorgada en 1590 a Francisco Hernández de Herrera, quien tomó posesión el 3 de junio de 1599; antes esas tierras pertenecían al cacique Gaspar de Catapilco. En 1847 fue habilitado como puerto menor.",
+    summaryEn:
+      "Its origin lies in an estate granted in 1590 to Francisco Hernández de Herrera, who took possession on June 3, 1599; before that the lands belonged to the chief Gaspar de Catapilco. In 1847 it was authorized as a minor port.",
     sourceUrl: "https://es.wikipedia.org/wiki/Zapallar",
     sourceLabel: "Wikipedia — Zapallar",
   },
@@ -691,6 +735,8 @@ const localities: {
     longitude: null,
     summary:
       "También conocida como Laguna de Zapallar, junto a Maitencillo, en la ribera norte de la laguna que conecta con la desembocadura del estero Catapilco; su playa se une con las de Maitencillo, Las Ágatas y Cachagua.",
+    summaryEn:
+      "Also known as Laguna de Zapallar, next to Maitencillo, on the north bank of the lagoon that connects with the mouth of the Catapilco stream; its beach joins those of Maitencillo, Las Ágatas and Cachagua.",
   },
   {
     slug: "la-hacienda-zapallar",
@@ -718,6 +764,8 @@ const localities: {
     longitude: null,
     summary:
       "Cabecera de la comuna de Papudo (6.356 habitantes, Censo 2017), balneario con el paseo peatonal La Terraza, que bordea Playa Chica y Playa Grande y es el punto de encuentro del pueblo en verano.",
+    summaryEn:
+      "Seat of the Papudo commune (6,356 inhabitants, 2017 Census), a seaside resort with the pedestrian promenade La Terraza, which runs along Playa Chica and Playa Grande and is the town's gathering place in summer.",
   },
   {
     slug: "pullally",
@@ -728,6 +776,8 @@ const localities: {
     longitude: null,
     summary:
       "Da nombre al humedal Salinas de Pullally, Santuario de la Naturaleza que se extiende junto a las dunas de Longotoma, entre La Ligua y Papudo.",
+    summaryEn:
+      "It gives its name to the Salinas de Pullally wetland, a Nature Sanctuary that extends alongside the Longotoma dunes, between La Ligua and Papudo.",
     sourceUrl:
       "https://es.wikipedia.org/wiki/Humedal_Salinas_de_Pullally_y_Dunas_de_Longotoma",
     sourceLabel: "Wikipedia — Humedal Salinas de Pullally y Dunas de Longotoma",
@@ -741,6 +791,8 @@ const localities: {
     longitude: null,
     summary:
       "Localidad rural a 12 km de la playa, con familias dedicadas a la agricultura y una pequeña caleta de pesca artesanal en la desembocadura del río La Ligua. Se han encontrado restos arqueológicos changos en las dunas de Salinas de Pullally.",
+    summaryEn:
+      "Rural village 12 km from the beach, with families dedicated to farming and a small artisanal fishing cove at the mouth of the La Ligua River. Chango archaeological remains have been found in the Salinas de Pullally dunes.",
   },
 ];
 
@@ -2089,6 +2141,9 @@ async function seedLocalities(communeIds: Record<string, string>) {
     const communeId = communeIds[locality.communeSlug];
     if (!communeId) continue;
 
+    // Los campos de contenido (resumen, fuente) solo se escriben cuando el
+    // seed los trae: si no, `pnpm db:seed` pisaría con `null` un resumen que
+    // alguien cargó a mano desde `/admin/pueblos`.
     const { data, error } = await supabase
       .from("localities")
       .upsert(
@@ -2097,8 +2152,12 @@ async function seedLocalities(communeIds: Record<string, string>) {
           commune_id: communeId,
           latitude: locality.latitude,
           longitude: locality.longitude,
-          summary_source_url: locality.sourceUrl ?? null,
-          summary_source_label: locality.sourceLabel ?? null,
+          ...(locality.sourceUrl
+            ? {
+                summary_source_url: locality.sourceUrl,
+                summary_source_label: locality.sourceLabel ?? null,
+              }
+            : {}),
         },
         { onConflict: "commune_id,slug" },
       )
@@ -2108,25 +2167,27 @@ async function seedLocalities(communeIds: Record<string, string>) {
     if (error || !data) throw error ?? new Error("No se pudo crear el pueblo");
     localityIds[locality.slug] = data.id;
 
-    await supabase.from("locality_translations").upsert(
-      [
-        {
-          locality_id: data.id,
-          locale: "es",
-          name: locality.es,
-          summary: locality.summary ?? null,
-        },
-        {
-          // El resumen solo se investigó en español — mostrarlo igual en
-          // "en" sería mostrar texto en español en la página en inglés.
-          locality_id: data.id,
-          locale: "en",
-          name: locality.en,
-          summary: null,
-        },
-      ],
-      { onConflict: "locality_id,locale" },
-    );
+    // Una llamada por idioma (no un arreglo): con filas de forma distinta
+    // supabase-js rellena las columnas faltantes con `null`. El resumen en
+    // inglés solo existe si se tradujo (`summaryEn`) — mostrar el español en
+    // la página en inglés sería mezclar idiomas.
+    for (const [loc, name, summary] of [
+      ["es", locality.es, locality.summary],
+      ["en", locality.en, locality.summaryEn],
+    ] as const) {
+      const { error: translationError } = await supabase
+        .from("locality_translations")
+        .upsert(
+          {
+            locality_id: data.id,
+            locale: loc,
+            name,
+            ...(summary ? { summary } : {}),
+          },
+          { onConflict: "locality_id,locale" },
+        );
+      if (translationError) throw translationError;
+    }
   }
 
   console.log(`✔ ${localities.length} pueblos`);

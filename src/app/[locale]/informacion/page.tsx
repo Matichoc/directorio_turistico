@@ -1,12 +1,33 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
+import { Link } from "@/i18n/navigation";
 import { PageHero } from "@/components/ui/page-hero";
 import { MunicipalityBanner } from "@/components/home/municipality-banner";
 import { listMunicipalities } from "@/lib/data/communes";
+import type { Metadata } from "next";
+import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = resolveLocale((await params).locale);
+  const [nav, info] = await Promise.all([
+    getTranslations({ locale, namespace: "nav" }),
+    getTranslations({ locale, namespace: "info" }),
+  ]);
+  return buildPageMetadata({
+    locale,
+    href: "/informacion",
+    title: nav("info"),
+    description: truncateDescription(info("about")),
+  });
 }
 
 export default async function InfoPage({
@@ -35,6 +56,13 @@ export default async function InfoPage({
 
       <div className="flex flex-col gap-6 px-4">
         <p className="text-foreground/60 text-sm">{info("sponsorNote")}</p>
+
+        <Link
+          href="/privacidad"
+          className="text-foreground/60 hover:text-accent w-fit text-sm underline underline-offset-2"
+        >
+          {info("privacyLink")}
+        </Link>
 
         <section className="flex flex-col gap-1">
           <h2 className="text-foreground/50 text-sm font-medium">

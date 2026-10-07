@@ -13,7 +13,8 @@
     "developerTagline": "Support your AI projects, and projects built with AI.",
     "developerInstagram": "Instagram: @el.cristo.cl",
     "developerWhatsapp": "WhatsApp",
-    "sponsorNote": "Sponsored by Chocolatería Matichoc — artisan chocolate made in La Ligua."
+    "sponsorNote": "Sponsored by Chocolatería Matichoc — artisan chocolate made in La Ligua.",
+    "privacyLink": "Privacy"
   },
   "home": {
     "title": "El diablo murió en Petorca y en La Ligua lo enterraron",
@@ -68,7 +69,6 @@
     "verified": "Verified",
     "featured": "Featured",
     "photosComingSoon": "Photo gallery: coming soon",
-    "photoCredit": "Photo: Wikimedia Commons",
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
     "goToPhoto": "Go to photo {number}",
@@ -164,6 +164,37 @@
       "tagline": "Artisanal chocolate made in La Ligua",
       "cta": "Visit website",
       "instagram": "Instagram"
+    }
+  },
+  "privacy": {
+    "title": "Privacy",
+    "intro": "This site does not ask you to create an account or leave your name or email. Here is what does happen when you use it.",
+    "updated": "Last updated: October 7, 2026.",
+    "sections": {
+      "session": {
+        "title": "Anonymous session",
+        "body": "If you like a place, comment or build \"My trip\", an anonymous session with a random identifier is created and stored in your browser. It lets us remember your trip and likes and keeps anyone else from changing them. It does not include your name, email or phone."
+      },
+      "comments": {
+        "title": "Comments",
+        "body": "Whatever you write in a comment is stored as-is, without your name, and is only published after an administrator reviews it."
+      },
+      "analytics": {
+        "title": "Usage statistics",
+        "body": "We record anonymous events: which places, routes and villages are viewed, what is searched and which filters are used. We do not store who you are or your IP address. They help us learn what people are interested in across the area."
+      },
+      "location": {
+        "title": "Location",
+        "body": "Your location is only used if you turn on live navigation, and it is shown on the map on your own device."
+      },
+      "thirdParties": {
+        "title": "Services we use",
+        "body": "The site runs on Supabase (database), Vercel (hosting), Google (place photos and street-route calculation) and a map provider. To show you that content, those services receive your browser's requests and, with them, your IP address. To prevent abuse, the server briefly counts requests per IP without storing them."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "For questions, corrections or to ask for data to be removed, write to the site's developer (see Info)."
+      }
     }
   }
 }

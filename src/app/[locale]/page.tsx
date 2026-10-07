@@ -12,6 +12,8 @@ import { listRoutes } from "@/lib/data/routes";
 import { listMunicipalities } from "@/lib/data/communes";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import { SCENE_SRC } from "@/lib/ui/scene-backgrounds";
+import type { Metadata } from "next";
+import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -23,6 +25,22 @@ const INTENT_CATEGORIES = [
   { slug: "cultura", key: "culture" as const, icon: "landmark" },
   { slug: "playa", key: "beach" as const, icon: "waves" },
 ];
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = resolveLocale((await params).locale);
+  const t = await getTranslations({ locale, namespace: "home" });
+  return buildPageMetadata({
+    locale,
+    href: "/",
+    title: t("title"),
+    description: truncateDescription(t("subtitle")),
+    absoluteTitle: true,
+  });
+}
 
 export default async function HomePage({
   params,

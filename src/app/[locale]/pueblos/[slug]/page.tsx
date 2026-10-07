@@ -7,6 +7,27 @@ import { PlaceCard } from "@/components/place/place-card";
 import { MapView } from "@/components/map/map-view";
 import { getLocalityBySlug } from "@/lib/data/localities";
 import { getSceneForCategory } from "@/lib/ui/scene-backgrounds";
+import type { Metadata } from "next";
+import { buildPageMetadata, truncateDescription } from "@/lib/seo";
+import { TrackEvent } from "@/components/analytics/track-event";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale: rawLocale, slug } = await params;
+  const locale = resolveLocale(rawLocale);
+  const locality = await getLocalityBySlug(slug, locale);
+  if (!locality) return {};
+  return buildPageMetadata({
+    locale,
+    href: { pathname: "/pueblos/[slug]", params: { slug } },
+    title: `${locality.name} — ${locality.communeName}`,
+    description: truncateDescription(locality.summary),
+    image: locality.places.find((place) => place.photoUrl)?.photoUrl,
+  });
+}
 
 export default async function LocalityDetailPage({
   params,
@@ -65,6 +86,7 @@ export default async function LocalityDetailPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
+      <TrackEvent event={{ name: "locality_view", properties: { slug } }} />
       <Link
         href="/explorar"
         className="text-foreground/60 hover:text-accent w-fit text-sm underline-offset-2 hover:underline"

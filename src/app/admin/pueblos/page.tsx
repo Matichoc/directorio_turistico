@@ -4,12 +4,14 @@ import { listAdminLocalities } from "@/lib/data/localities";
 
 export default async function AdminLocalitiesPage() {
   const localities = await listAdminLocalities();
+  const withSummary = localities.filter((l) => l.hasSummary).length;
+  const withCoordinates = localities.filter((l) => l.hasCoordinates).length;
 
   return (
     <div className="flex flex-col gap-6">
       <PageHero
         title="Pueblos"
-        subtitle={`${localities.length} pueblo${localities.length === 1 ? "" : "s"} en el catálogo.`}
+        subtitle={`${localities.length} pueblo${localities.length === 1 ? "" : "s"} en el catálogo: ${withSummary} con resumen, ${withCoordinates} con coordenada.`}
       >
         <Link
           href="/admin/pueblos/nuevo"
@@ -35,10 +37,26 @@ export default async function AdminLocalitiesPage() {
                     {locality.communeName}
                   </span>
                 </div>
-                <span className="text-foreground/50 shrink-0 text-xs">
-                  {locality.placesCount} lugar
-                  {locality.placesCount === 1 ? "" : "es"}
-                </span>
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <span className="text-foreground/50 text-xs">
+                    {locality.placesCount} lugar
+                    {locality.placesCount === 1 ? "" : "es"}
+                  </span>
+                  {(!locality.hasSummary || !locality.hasCoordinates) && (
+                    <span className="flex gap-1 text-[11px] text-amber-300">
+                      {!locality.hasSummary && (
+                        <span className="rounded-full bg-amber-900/30 px-2 py-0.5">
+                          sin resumen
+                        </span>
+                      )}
+                      {!locality.hasCoordinates && (
+                        <span className="rounded-full bg-amber-900/30 px-2 py-0.5">
+                          sin coordenada
+                        </span>
+                      )}
+                    </span>
+                  )}
+                </div>
               </Link>
             </li>
           ))}

@@ -11,6 +11,16 @@ const withSerwist = withSerwistInit({
 });
 
 const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        // El panel no debe indexarse (es un layout de cliente, así que no
+        // puede exportar `metadata`; el header cubre todas sus páginas).
+        source: "/admin/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

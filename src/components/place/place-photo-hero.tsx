@@ -141,11 +141,14 @@ export function PlacePhotoHero({
         </>
       )}
 
-      <span className="absolute right-1.5 bottom-1.5 max-w-[70%] truncate rounded-full bg-black/40 px-1.5 py-0.5 text-[9px] text-white/90 backdrop-blur-sm">
-        {current
-          ? (current.attribution ?? t("photoCredit"))
-          : t("photosComingSoon")}
-      </span>
+      {/* Solo se acredita lo que la foto realmente trae (autor/fuente/
+          licencia): antes, sin dato, decía "Wikimedia Commons" aunque la
+          foto fuera de otra fuente — una atribución falsa. */}
+      {(!current || current.attribution) && (
+        <span className="absolute right-1.5 bottom-1.5 max-w-[70%] truncate rounded-full bg-black/40 px-1.5 py-0.5 text-[9px] text-white/90 backdrop-blur-sm">
+          {current ? current.attribution : t("photosComingSoon")}
+        </span>
+      )}
 
       {lightboxOpen && current && (
         <PhotoLightbox

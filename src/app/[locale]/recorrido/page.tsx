@@ -3,9 +3,27 @@ import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
 import { TripView } from "@/components/trip/trip-view";
 import { PageHero } from "@/components/ui/page-hero";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = resolveLocale((await params).locale);
+  const t = await getTranslations({ locale, namespace: "trip" });
+  return buildPageMetadata({
+    locale,
+    href: "/recorrido",
+    title: t("title"),
+    // Es el carrito personal de cada visitante: nada que indexar.
+    noIndex: true,
+  });
 }
 
 export default async function MyTripPage({

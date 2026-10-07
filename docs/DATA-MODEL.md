@@ -149,6 +149,10 @@ del sitio (`--accent`) para no inventar un color de marca sin verificar.
 
 ## Analítica
 
+Funciones de resumen para el panel de métricas (migración `0023`): `analytics_top(p_name, p_key, p_days, p_limit)` (valores más repetidos de una propiedad de un evento) y `analytics_totals(p_days)` (total por tipo de evento). Son `security invoker`: la RLS de lectura solo-admin de `analytics_events` sigue aplicando. Agregar en la base (no en la app) evita el corte de 1.000 filas de PostgREST. Los nombres de evento válidos viven en `lib/analytics/events.ts` (`ANALYTICS_EVENT_NAMES`), fuente única para el tipo y para la validación de `/api/analytics`.
+
+`verification_logs` se escribe desde `/admin/verificaciones` (`setPlaceVerification`): una fila por cada cambio de verificación de un lugar, con `verified_by` y nota.
+
 `analytics_events` acepta `insert` anónimo (para telemetría de la app pública)
 pero solo lectura de administrador. No debe contener PII: `properties` es un
 `jsonb` libre, validado con `zod` en `/api/analytics` (lista cerrada de

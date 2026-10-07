@@ -263,6 +263,19 @@ export interface Database {
         Args: Record<string, never>;
         Returns: { place_id: string; likes_count: number }[];
       };
+      analytics_top: {
+        Args: {
+          p_name: string;
+          p_key: string;
+          p_days?: number;
+          p_limit?: number;
+        };
+        Returns: { value: string; total: number }[];
+      };
+      analytics_totals: {
+        Args: { p_days?: number };
+        Returns: { name: string; total: number }[];
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

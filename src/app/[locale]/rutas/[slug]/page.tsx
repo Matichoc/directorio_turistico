@@ -6,6 +6,27 @@ import { resolveLocale } from "@/i18n/utils";
 import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
 import { RouteMapWithStops } from "@/components/route/route-map-with-stops";
 import { DevilMascot } from "@/components/ui/devil-mascot";
+import type { Metadata } from "next";
+import { buildPageMetadata, truncateDescription } from "@/lib/seo";
+import { TrackEvent } from "@/components/analytics/track-event";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale: rawLocale, slug } = await params;
+  const locale = resolveLocale(rawLocale);
+  const route = await getRouteBySlug(slug, locale);
+  if (!route) return {};
+  return buildPageMetadata({
+    locale,
+    href: { pathname: "/rutas/[slug]", params: { slug } },
+    title: route.name,
+    description: truncateDescription(route.description),
+    image: route.coverImageUrl ?? route.stops[0]?.placePhotoUrl,
+  });
+}
 
 export default async function RouteDetailPage({
   params,
@@ -28,6 +49,7 @@ export default async function RouteDetailPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
+      <TrackEvent event={{ name: "route_view", properties: { slug } }} />
       {route.coverImageUrl && (
         <div className="relative h-48 w-full overflow-hidden rounded-xl sm:h-64">
           <Image

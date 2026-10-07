@@ -41,6 +41,18 @@
         "phone": "Phone",
         "email": "Email"
       }
+    },
+    "flyover": {
+      "title": "Fly over the province",
+      "subtitle": "Petorca's real terrain in 3D: from the sea to the Andes, commune by commune.",
+      "play": "▶ Tour the province",
+      "pause": "❚❚ Pause",
+      "overview": "Whole province",
+      "overviewTitle": "From the sea to the Andes",
+      "overviewText": "Five communes between the coast of Papudo and Zapallar and the hills of Petorca and Cabildo. Tap one to fly there, or any point of light to open that village.",
+      "stats": "{villages, plural, =0 {no villages} one {# village} other {# villages}} · {places, plural, =0 {no attractions} one {# attraction} other {# attractions}}",
+      "explore": "Explore {name}",
+      "hint": "Use two fingers (or Ctrl + scroll) to move the map. Terrain: AWS Terrain Tiles."
     }
   },
   "explore": {

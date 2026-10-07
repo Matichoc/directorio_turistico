@@ -31,6 +31,7 @@ import {
 } from "@/lib/navigation/avatar-storage";
 import {
   getMapStyleUrl,
+  isDefaultMapStyle,
   PETORCA_CENTER,
   PETORCA_DEFAULT_ZOOM,
   PLACE_DETAIL_ZOOM,
@@ -128,7 +129,9 @@ export function MapView({
   }
 
   return (
-    <div className={className}>
+    <div
+      className={`${className ?? ""} relative overflow-hidden ${isDefaultMapStyle() ? "map-dark" : ""}`}
+    >
       <Map
         ref={mapRef}
         onLoad={handleLoad}

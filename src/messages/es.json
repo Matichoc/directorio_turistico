@@ -41,6 +41,18 @@
         "phone": "Teléfono",
         "email": "Email"
       }
+    },
+    "flyover": {
+      "title": "Vuela por la provincia",
+      "subtitle": "El relieve real de Petorca en 3D: del mar a la cordillera, comuna por comuna.",
+      "play": "▶ Recorrer la provincia",
+      "pause": "❚❚ Pausar",
+      "overview": "Toda la provincia",
+      "overviewTitle": "Del mar a la cordillera",
+      "overviewText": "Cinco comunas entre la costa de Papudo y Zapallar y los cerros de Petorca y Cabildo. Toca una para volar hasta ella, o cualquier punto de luz para abrir ese pueblo.",
+      "stats": "{villages, plural, =0 {sin pueblos} one {# pueblo} other {# pueblos}} · {places, plural, =0 {sin atractivos} one {# atractivo} other {# atractivos}}",
+      "explore": "Explorar {name}",
+      "hint": "Usa dos dedos (o Ctrl + rueda) para mover el mapa. Relieve: Terrain Tiles de AWS."
     }
   },
   "explore": {

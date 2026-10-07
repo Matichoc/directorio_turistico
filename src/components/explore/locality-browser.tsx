@@ -75,7 +75,7 @@ export function LocalityBrowser({ tree, filtersActive }: LocalityBrowserProps) {
         );
 
         return (
-          <section key={commune.slug} className="flex flex-col gap-2">
+          <section key={commune.slug} className="reveal flex flex-col gap-2">
             <h2>
               <button
                 type="button"

@@ -107,6 +107,22 @@ sitio y el agua sigue azul. Solo afecta al canvas — los pines son HTML y
 conservan sus colores. Con un estilo propio (`NEXT_PUBLIC_MAP_STYLE_URL`,
 p. ej. uno oscuro de un proveedor comercial) no se aplica.
 
+**Globos y controles del mapa**: MapLibre los trae blancos; en `globals.css`
+van en la paleta oscura (fondo `#120c1c`, texto `--foreground`, controles e
+íconos invertidos) para todo mapa del sitio — antes el globo de un pin
+mostraba texto claro sobre fondo blanco, ilegible (feedback real). Los
+selectores llevan `.maplibregl-map` delante porque `maplibre-gl.css` se carga
+después de `globals.css` y ganaría.
+
+## Postales "¿Qué buscas hoy?" (home)
+
+Cada categoría es una postal alta con la escena del diablito que le toca
+(`getSceneForCategory`), un degradado oscuro abajo para que el texto se
+lea, un halo del color de la categoría y la cantidad real de lugares (sin
+número si no hay ninguno). Al pasar el mouse la escena se acerca lento y la
+tarjeta se enciende con el glow de siempre. Pedido del usuario: las tarjetas
+planas con un ícono "no me gustan".
+
 ## Vuelo 3D por la provincia (home)
 
 El "efecto wow" del inicio (`ProvinceFlyover`, `components/home/`): el
@@ -274,6 +290,13 @@ sienta propia de Petorca/La Ligua). `AvatarPicker` (junto al botón
 "Iniciar navegación") deja elegirla; `PlayerToken` la dibuja en el mapa;
 `MapView` pasa `showUserLocation={false}` a `GeolocateControl` para que
 `PlayerToken` sea la única marca de posición, no las dos a la vez.
+
+Las fichas se ven como **piezas de metal de verdad** (`GameToken`,
+`components/ui/game-token.tsx`; pedido del usuario: "más realistas"): disco
+de peltre con canto en relieve, cara hundida, ícono "grabado" y brillo
+especular; la elegida (y tu posición en el mapa) es de oro y se levanta del
+tablero. Los metales viven en `globals.css` (`token-pewter`, `token-gold`,
+`token-face`, `token-engrave`) — no repetir esos degradados a mano.
 
 ## Ancho de página y navegación (mobile-first, pero también web)
 

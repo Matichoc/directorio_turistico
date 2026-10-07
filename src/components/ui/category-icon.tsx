@@ -28,9 +28,12 @@ export const ICON_KEYS = Object.keys(ICON_PATHS);
 export function CategoryIcon({
   icon,
   className = "h-5 w-5",
+  strokeWidth = 1.75,
 }: {
   icon: string | null | undefined;
   className?: string;
+  /** Grosor del trazo: más grueso en las fichas metálicas, que lo "graban". */
+  strokeWidth?: number;
 }) {
   const path = (icon && ICON_PATHS[icon]) || ICON_PATHS.landmark;
 
@@ -39,7 +42,7 @@ export function CategoryIcon({
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.75"
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}

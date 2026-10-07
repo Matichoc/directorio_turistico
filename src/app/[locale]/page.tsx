@@ -15,7 +15,7 @@ import { listPlaces } from "@/lib/data/places";
 import { buildProvinceFlyover } from "@/lib/ui/province-flyover";
 import { ProvinceFlyover } from "@/components/home/province-flyover";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
-import { SCENE_SRC } from "@/lib/ui/scene-backgrounds";
+import { SCENE_SRC, getSceneForCategory } from "@/lib/ui/scene-backgrounds";
 import type { Metadata } from "next";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 
@@ -55,16 +55,25 @@ export default async function HomePage({
   const locale = resolveLocale(rawLocale);
   setRequestLocale(locale);
 
-  const [t, tRoute, routes, municipalities, communes, localities, places] =
-    await Promise.all([
-      getTranslations("home"),
-      getTranslations("route"),
-      listRoutes(locale, 3),
-      listMunicipalities(locale),
-      listCommunes(locale),
-      listLocalities(locale),
-      listPlaces(locale),
-    ]);
+  const [
+    t,
+    tRoute,
+    tExplore,
+    routes,
+    municipalities,
+    communes,
+    localities,
+    places,
+  ] = await Promise.all([
+    getTranslations("home"),
+    getTranslations("route"),
+    getTranslations("explore"),
+    listRoutes(locale, 3),
+    listMunicipalities(locale),
+    listCommunes(locale),
+    listLocalities(locale),
+    listPlaces(locale),
+  ]);
   const flyover = buildProvinceFlyover(communes, localities, places);
 
   return (
@@ -110,27 +119,62 @@ export default async function HomePage({
 
       <section className="reveal px-4">
         <h2 className="mb-3 text-lg font-medium">{t("intent.title")}</h2>
+        {/* Postales por categoría: cada una con la escena del diablito que le
+            corresponde (playa, cerro, pueblo, dulces — ver
+            lib/ui/scene-backgrounds.ts) y cuántos lugares reales tiene. */}
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {INTENT_CATEGORIES.map((intent) => (
-            <li key={intent.slug}>
-              <Link
-                href={{
-                  pathname: "/explorar",
-                  query: { categoria: intent.slug },
-                }}
-                className="border-accent-soft hover:border-accent surface-glass flex flex-col items-center gap-2 rounded-2xl border p-4 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_2px_var(--accent-soft)] dark:border-white/10"
-              >
-                <span
-                  className={`flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br text-white ${getCategoryGradient(intent.slug)}`}
+          {INTENT_CATEGORIES.map((intent) => {
+            const count = places.filter(
+              (place) => place.categorySlug === intent.slug,
+            ).length;
+            return (
+              <li key={intent.slug}>
+                <Link
+                  href={{
+                    pathname: "/explorar",
+                    query: { categoria: intent.slug },
+                  }}
+                  className="group hover:border-accent relative flex h-40 flex-col justify-end overflow-hidden rounded-2xl border border-white/10 p-3 text-white shadow-[0_8px_30px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_28px_2px_var(--accent-soft)] sm:h-48"
                 >
-                  <CategoryIcon icon={intent.icon} className="h-5 w-5" />
-                </span>
-                <span className="text-sm font-medium">
-                  {t(`intent.${intent.key}`)}
-                </span>
-              </Link>
-            </li>
-          ))}
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-cover [background-position:78%_75%] transition-transform duration-700 ease-out group-hover:scale-110"
+                    style={{
+                      backgroundImage: `url(${SCENE_SRC[getSceneForCategory(intent.slug)]})`,
+                    }}
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-gradient-to-t from-[#07060c] via-[#07060c]/55 to-transparent"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className={`absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-gradient-to-br opacity-50 blur-2xl transition-opacity duration-300 group-hover:opacity-80 ${getCategoryGradient(intent.slug)}`}
+                  />
+                  <span className="relative flex items-center gap-2">
+                    <span
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br shadow-lg ring-1 ring-white/30 ${getCategoryGradient(intent.slug)}`}
+                    >
+                      <CategoryIcon
+                        icon={intent.icon}
+                        className="h-4.5 w-4.5"
+                      />
+                    </span>
+                    <span className="flex flex-col leading-tight">
+                      <span className="text-base font-semibold [text-shadow:0_1px_8px_rgba(0,0,0,0.8)]">
+                        {t(`intent.${intent.key}`)}
+                      </span>
+                      {count > 0 && (
+                        <span className="text-xs text-white/75">
+                          {tExplore("resultsCount", { count })}
+                        </span>
+                      )}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </section>
 

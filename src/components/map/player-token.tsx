@@ -1,4 +1,4 @@
-import { CategoryIcon } from "@/components/ui/category-icon";
+import { GameToken } from "@/components/ui/game-token";
 import type { AvatarIcon } from "@/lib/navigation/avatar-storage";
 
 /**
@@ -9,10 +9,10 @@ import type { AvatarIcon } from "@/lib/navigation/avatar-storage";
  */
 export function PlayerToken({ icon }: { icon: AvatarIcon }) {
   return (
-    <span className="relative flex h-11 w-11 items-center justify-center">
-      <span className="animate-glow-pulse bg-accent absolute h-11 w-11 rounded-full opacity-50" />
-      <span className="animate-pin-pop border-accent bg-foreground relative flex h-9 w-9 items-center justify-center rounded-full border-2 shadow-lg">
-        <CategoryIcon icon={icon} className="text-background h-5 w-5" />
+    <span className="relative flex h-12 w-12 items-center justify-center">
+      <span className="animate-glow-pulse bg-accent absolute h-12 w-12 rounded-full opacity-50 blur-sm" />
+      <span className="animate-pin-pop relative">
+        <GameToken icon={icon} metal="gold" />
       </span>
     </span>
   );

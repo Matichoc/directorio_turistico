@@ -238,6 +238,9 @@ export function MapView({
             offset={16}
             onClose={() => setSelected(null)}
             closeOnClick={false}
+            // Sin foco automático: si no, el link del globo aparecía con un
+            // recuadro blanco de foco apenas se abría.
+            focusAfterOpen={false}
             className="[&_.maplibregl-popup-content]:rounded-xl [&_.maplibregl-popup-content]:p-0 [&_.maplibregl-popup-content]:shadow-lg"
           >
             <Link
@@ -277,7 +280,7 @@ export function MapView({
                   {selected.name} →
                 </span>
                 {selected.shortDescription && (
-                  <span className="text-foreground/60 line-clamp-2 text-xs">
+                  <span className="text-foreground/75 line-clamp-2 text-xs">
                     {selected.shortDescription}
                   </span>
                 )}

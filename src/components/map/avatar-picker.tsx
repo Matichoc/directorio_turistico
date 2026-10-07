@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { CategoryIcon } from "@/components/ui/category-icon";
+import { GameToken } from "@/components/ui/game-token";
 import {
   AVATAR_EVENT,
   AVATAR_ICONS,
@@ -45,13 +45,19 @@ export function AvatarPicker() {
             title={label}
             aria-label={label}
             aria-pressed={selected === icon}
-            className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all ${
+            // La elegida se levanta del tablero y pasa a oro; las demás son
+            // peltre y se levantan un poco al pasar el mouse.
+            className={`rounded-full transition-transform duration-200 ${
               selected === icon
-                ? "animate-check-pop border-accent bg-accent text-accent-foreground shadow-[0_0_16px_2px_var(--accent-soft)]"
-                : "border-accent-soft text-foreground/60 hover:border-accent hover:shadow-[0_0_12px_1px_var(--accent-soft)] dark:border-white/15"
+                ? "animate-check-pop -translate-y-1"
+                : "opacity-80 hover:-translate-y-0.5 hover:opacity-100"
             }`}
           >
-            <CategoryIcon icon={icon} className="h-5 w-5" />
+            <GameToken
+              icon={icon}
+              size="sm"
+              metal={selected === icon ? "gold" : "pewter"}
+            />
           </button>
         );
       })}

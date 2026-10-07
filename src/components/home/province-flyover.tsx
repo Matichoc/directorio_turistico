@@ -40,19 +40,29 @@ export function ProvinceFlyover({ data }: { data: ProvinceFlyoverData }) {
   useEffect(() => {
     const node = sectionRef.current;
     if (!node) return;
-    const observer = new IntersectionObserver(
+    // Dos observadores: uno carga el mapa con bastante anticipación, el otro
+    // decide si la sección está de verdad a la vista (recién ahí se anima y
+    // arranca el recorrido).
+    const preload = new IntersectionObserver(
       ([entry]) => {
-        setVisible(entry.isIntersecting);
         if (entry.isIntersecting && !mountedRef.current) {
           mountedRef.current = true;
           setWebgl(supportsWebGL());
           setMounted(true);
         }
       },
-      { rootMargin: "200px 0px" },
+      { rootMargin: "900px 0px" },
     );
-    observer.observe(node);
-    return () => observer.disconnect();
+    const onScreen = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.35 },
+    );
+    preload.observe(node);
+    onScreen.observe(node);
+    return () => {
+      preload.disconnect();
+      onScreen.disconnect();
+    };
   }, []);
 
   if (data.stops.length === 0 || !webgl) return null;
@@ -65,7 +75,9 @@ export function ProvinceFlyover({ data }: { data: ProvinceFlyoverData }) {
         </h2>
         <p className="text-foreground/60 text-sm">{t("subtitle")}</p>
       </div>
-      <div className="glow-edge surface-glass relative h-[460px] overflow-hidden rounded-2xl sm:h-[540px]">
+      {/* Sin `surface-glass` acá: su desenfoque de fondo (backdrop-filter)
+          sobre un mapa que se anima en cada cuadro le costaba fluidez. */}
+      <div className="glow-edge relative h-[460px] overflow-hidden rounded-2xl border border-white/10 bg-[#07060c] sm:h-[540px]">
         {mounted ? (
           <ProvinceFlyoverMap data={data} active={visible} />
         ) : (

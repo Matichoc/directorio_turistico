@@ -1,122 +1,132 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import Map, {
   AttributionControl,
+  Layer,
   Marker,
+  Source,
+  type MapLayerMouseEvent,
   type MapRef,
 } from "react-map-gl/maplibre";
 import type { StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import type { ProvinceFlyoverData } from "@/lib/ui/province-flyover";
+import {
+  TERRAIN_BOUNDS,
+  TERRAIN_MAX_ZOOM,
+  TERRAIN_MIN_ZOOM,
+  TERRAIN_TILE_PATH,
+  terrainTilesAround,
+} from "@/lib/maps/terrain";
 
 /**
  * Relieve real de la provincia: modelo de elevación abierto de AWS (Terrain
- * Tiles, formato Terrarium) — gratis, sin API key, y pensado para usarse así.
- * Con él se dibujan tres cosas a la vez: el terreno en 3D, el sombreado de
- * las laderas y un color por altura (mar → valle → cordillera) en la paleta
- * del sitio (brasa/violeta), sin necesidad de un mapa base de calles.
+ * Tiles, formato Terrarium), servido desde el propio sitio (`public/terrain`,
+ * ver `lib/maps/terrain.ts`) — desde el bucket de AWS en EE.UU. llegaba tarde
+ * y el vuelo se veía sin detalle. Con él se dibujan tres cosas a la vez: el
+ * terreno en 3D, el sombreado de las laderas y un color por altura (mar →
+ * valle → cordillera) en la paleta del sitio, sin mapa base de calles.
  */
-const TERRAIN_TILES = [
-  "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
-];
 const TERRAIN_ATTRIBUTION =
   '<a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">Terrain Tiles (AWS, Mapzen)</a>';
 
-const FLYOVER_STYLE: StyleSpecification = {
-  version: 8,
-  sources: {
-    // Fuentes separadas para el 3D y para el sombreado: MapLibre recomienda
-    // no compartir una misma fuente raster-dem entre `terrain` y capas.
-    terrainSource: {
-      type: "raster-dem",
-      tiles: TERRAIN_TILES,
-      encoding: "terrarium",
-      tileSize: 256,
-      maxzoom: 13,
-      attribution: TERRAIN_ATTRIBUTION,
+function buildFlyoverStyle(origin: string): StyleSpecification {
+  const dem = {
+    type: "raster-dem" as const,
+    // MapLibre necesita URLs absolutas para las teselas.
+    tiles: [`${origin}${TERRAIN_TILE_PATH}`],
+    encoding: "terrarium" as const,
+    tileSize: 256,
+    minzoom: TERRAIN_MIN_ZOOM,
+    maxzoom: TERRAIN_MAX_ZOOM,
+    // Fuera de esto no hay teselas: no se piden (ni fallan) en vano.
+    bounds: TERRAIN_BOUNDS,
+  };
+  return {
+    version: 8,
+    sources: {
+      // Fuentes separadas para el 3D y para el sombreado (recomendación de
+      // MapLibre); como son la misma URL, la segunda sale de la caché.
+      terrainSource: { ...dem, attribution: TERRAIN_ATTRIBUTION },
+      reliefSource: dem,
     },
-    reliefSource: {
-      type: "raster-dem",
-      tiles: TERRAIN_TILES,
-      encoding: "terrarium",
-      tileSize: 256,
-      maxzoom: 13,
-    },
-  },
-  layers: [
-    {
-      id: "background",
-      type: "background",
-      paint: { "background-color": "#07060c" },
-    },
-    {
-      id: "relief-color",
-      type: "color-relief",
-      source: "reliefSource",
-      paint: {
-        "color-relief-color": [
-          "interpolate",
-          ["linear"],
-          ["elevation"],
-          0,
-          "#081a2e",
-          2,
-          "#120a1c",
-          300,
-          "#1f0f2e",
-          900,
-          "#3a1638",
-          1600,
-          "#6b2335",
-          2400,
-          "#b4472c",
-          3400,
-          "#f0a57a",
-          4500,
-          "#fbe7d6",
-        ],
-        "color-relief-opacity": 0.95,
+    layers: [
+      {
+        id: "background",
+        type: "background",
+        paint: { "background-color": "#07060c" },
       },
-    },
-    {
-      id: "relief-shade",
-      type: "hillshade",
-      source: "reliefSource",
-      paint: {
-        "hillshade-shadow-color": "#05030a",
-        "hillshade-highlight-color": "rgba(255, 122, 69, 0.45)",
-        "hillshade-accent-color": "#8b5cf6",
-        "hillshade-exaggeration": 0.65,
-        "hillshade-illumination-direction": 300,
+      {
+        id: "relief-color",
+        type: "color-relief",
+        source: "reliefSource",
+        paint: {
+          "color-relief-color": [
+            "interpolate",
+            ["linear"],
+            ["elevation"],
+            0,
+            "#081a2e",
+            2,
+            "#120a1c",
+            300,
+            "#1f0f2e",
+            900,
+            "#3a1638",
+            1600,
+            "#6b2335",
+            2400,
+            "#b4472c",
+            3400,
+            "#f0a57a",
+            4500,
+            "#fbe7d6",
+          ],
+          "color-relief-opacity": 0.95,
+        },
       },
+      {
+        id: "relief-shade",
+        type: "hillshade",
+        source: "reliefSource",
+        paint: {
+          "hillshade-shadow-color": "#05030a",
+          "hillshade-highlight-color": "rgba(255, 122, 69, 0.45)",
+          "hillshade-accent-color": "#8b5cf6",
+          "hillshade-exaggeration": 0.65,
+          "hillshade-illumination-direction": 300,
+        },
+      },
+    ],
+    terrain: { source: "terrainSource", exaggeration: 1.6 },
+    sky: {
+      "sky-color": "#120a1f",
+      "horizon-color": "#ff7a45",
+      "fog-color": "#07060c",
+      "sky-horizon-blend": 0.55,
+      "horizon-fog-blend": 0.7,
+      "fog-ground-blend": 0.35,
+      "atmosphere-blend": 0.8,
     },
-  ],
-  terrain: { source: "terrainSource", exaggeration: 1.6 },
-  sky: {
-    "sky-color": "#120a1f",
-    "horizon-color": "#ff7a45",
-    "fog-color": "#07060c",
-    "sky-horizon-blend": 0.55,
-    "horizon-fog-blend": 0.7,
-    "fog-ground-blend": 0.35,
-    "atmosphere-blend": 0.8,
-  },
-};
+  };
+}
 
 /** Vista de toda la provincia: desde el mar, mirando hacia la cordillera. */
 const OVERVIEW = {
   longitude: -71.12,
   latitude: -32.4,
-  zoom: 8.9,
-  pitch: 62,
+  zoom: 9.2,
+  pitch: 60,
   bearing: 72,
 };
 
-const FLY_MS = 5200;
-const HOLD_MS = 3800;
+/** Zoom de cada parada: cerca, pero dentro del detalle que hay (zoom 12). */
+const STOP_ZOOM = 11.6;
+const FLY_MS = 4200;
+const HOLD_MS = 4200;
 /** Grados por segundo de la rotación lenta cuando nadie toca el mapa. */
 const IDLE_SPIN_DEG_PER_S = 2.2;
 /** Tras interactuar, la rotación vuelve a arrancar recién después de esto. */
@@ -140,6 +150,16 @@ export function ProvinceFlyoverMap({
   const t = useTranslations("home.flyover");
   const mapRef = useRef<MapRef>(null);
   const [loaded, setLoaded] = useState(false);
+  /** Ya se dibujó el relieve visible por primera vez (o se agotó la espera). */
+  const [ready, setReady] = useState(false);
+  const router = useRouter();
+  const [origin] = useState(() => window.location.origin);
+  const mapStyle = useMemo(() => buildFlyoverStyle(origin), [origin]);
+  // En pantallas de alta densidad (3x) dibujar a resolución completa cuesta
+  // el triple sin que se note la diferencia en un relieve: tope en 2x.
+  const [pixelRatio] = useState(() =>
+    Math.min(window.devicePixelRatio || 1, 2),
+  );
   const [index, setIndex] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const autoplayedRef = useRef(false);
@@ -148,6 +168,27 @@ export function ProvinceFlyoverMap({
 
   const { stops, villages } = data;
   const current = index === null ? null : stops[index];
+
+  // Los pueblos (menos las cabeceras, que van como marcador con nombre) se
+  // dibujan como una capa del mapa, en la GPU: 60 marcadores HTML moviéndose
+  // en cada cuadro del vuelo eran caros, sobre todo en celular.
+  const villageGeoJson = useMemo(
+    () => ({
+      type: "FeatureCollection" as const,
+      features: villages
+        .filter((village) => !village.isSeat)
+        .map((village) => ({
+          type: "Feature" as const,
+          properties: { slug: village.slug, name: village.name },
+          geometry: {
+            type: "Point" as const,
+            coordinates: [village.longitude, village.latitude],
+          },
+        })),
+    }),
+    [villages],
+  );
+  const seats = villages.filter((village) => village.isSeat);
 
   const goTo = useCallback(
     (next: number | null) => {
@@ -158,8 +199,8 @@ export function ProvinceFlyoverMap({
       const camera = stop
         ? {
             center: [stop.longitude, stop.latitude] as [number, number],
-            zoom: 12.2,
-            pitch: 68,
+            zoom: STOP_ZOOM,
+            pitch: 62,
             // Cada parada entra con un ángulo distinto, siempre mirando hacia
             // el interior (la cordillera queda al fondo).
             bearing: 55 + ((next ?? 0) % 3) * 22,
@@ -173,7 +214,10 @@ export function ProvinceFlyoverMap({
       if (reducedMotion) {
         map.jumpTo(camera);
       } else {
-        map.flyTo({ ...camera, duration: FLY_MS, essential: true, curve: 1.6 });
+        // `curve` bajo: la cámara viaja casi sin alejarse, así no pide el
+        // relieve de muchos zooms distintos en el camino (lo que se veía como
+        // manchas sin detalle durante el vuelo).
+        map.flyTo({ ...camera, duration: FLY_MS, essential: true, curve: 1.1 });
       }
     },
     [stops, reducedMotion],
@@ -199,7 +243,7 @@ export function ProvinceFlyoverMap({
   // La primera vez que la sección aparece en pantalla, el recorrido arranca
   // solo (el efecto "wow"); con movimiento reducido, nunca.
   useEffect(() => {
-    if (!active || !loaded || autoplayedRef.current || reducedMotion) return;
+    if (!active || !ready || autoplayedRef.current || reducedMotion) return;
     if (stops.length === 0) return;
     // Un respiro para que se vea la vista general antes de despegar. La marca
     // de "ya arrancó" se pone recién al despegar: si la sección sale de
@@ -209,9 +253,47 @@ export function ProvinceFlyoverMap({
       if (autoplayedRef.current) return;
       autoplayedRef.current = true;
       setPlaying(true);
-    }, 900);
+    }, 700);
     return () => window.clearTimeout(timer);
-  }, [active, loaded, reducedMotion, stops.length]);
+  }, [active, ready, reducedMotion, stops.length]);
+
+  // Si el relieve tarda demasiado en terminar de llegar, no se espera más:
+  // el recorrido igual arranca (las teselas siguen llegando mientras vuela).
+  useEffect(() => {
+    if (!loaded || ready) return;
+    const timer = window.setTimeout(() => setReady(true), 5000);
+    return () => window.clearTimeout(timer);
+  }, [loaded, ready]);
+
+  // Precarga, en segundo plano, el relieve con detalle de cada parada: cuando
+  // la cámara aterriza, ya está en la caché del navegador. No con "ahorro de
+  // datos" activo.
+  useEffect(() => {
+    if (!loaded) return;
+    const connection = (
+      navigator as Navigator & { connection?: { saveData?: boolean } }
+    ).connection;
+    if (connection?.saveData) return;
+    const urls = [
+      ...terrainTilesAround(stops, 11, origin),
+      ...terrainTilesAround(stops, 12, origin),
+    ];
+    let cancelled = false;
+    const idle =
+      window.requestIdleCallback ??
+      ((cb: () => void) => window.setTimeout(cb, 1500));
+    idle(() => {
+      if (cancelled) return;
+      for (const url of urls) {
+        const image = new Image();
+        image.decoding = "async";
+        image.src = url;
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [loaded, stops, origin]);
 
   // Rotación lenta de la cámara mientras nadie interactúa ni hay recorrido.
   useEffect(() => {
@@ -248,6 +330,17 @@ export function ProvinceFlyoverMap({
     setPlaying(false);
   }
 
+  function setCursor(cursor: string) {
+    const canvas = mapRef.current?.getCanvas();
+    if (canvas) canvas.style.cursor = cursor;
+  }
+
+  function openVillage(event: MapLayerMouseEvent) {
+    const slug = event.features?.[0]?.properties?.slug;
+    if (typeof slug !== "string") return;
+    router.push({ pathname: "/pueblos/[slug]", params: { slug } });
+  }
+
   function togglePlay() {
     markInteraction();
     if (playing) {
@@ -268,8 +361,14 @@ export function ProvinceFlyoverMap({
     <div className="relative h-full w-full">
       <Map
         ref={mapRef}
-        mapStyle={FLYOVER_STYLE}
+        mapStyle={mapStyle}
         initialViewState={OVERVIEW}
+        pixelRatio={pixelRatio}
+        interactiveLayerIds={["villages"]}
+        onClick={openVillage}
+        onMouseEnter={() => setCursor("pointer")}
+        onMouseLeave={() => setCursor("")}
+        onIdle={() => setReady(true)}
         maxPitch={78}
         cooperativeGestures
         attributionControl={false}
@@ -292,10 +391,32 @@ export function ProvinceFlyoverMap({
         style={{ width: "100%", height: "100%" }}
       >
         <AttributionControl compact position="top-right" />
-        {villages.map((village) => {
+        <Source id="villages-source" type="geojson" data={villageGeoJson}>
+          <Layer
+            id="villages-glow"
+            type="circle"
+            paint={{
+              "circle-radius": 9,
+              "circle-color": "#29d3f0",
+              "circle-opacity": 0.18,
+              "circle-blur": 0.8,
+            }}
+          />
+          <Layer
+            id="villages"
+            type="circle"
+            paint={{
+              "circle-radius": 4,
+              "circle-color": "#29d3f0",
+              "circle-stroke-color": "#ffffff",
+              "circle-stroke-width": 1,
+              "circle-stroke-opacity": 0.8,
+            }}
+          />
+        </Source>
+        {seats.map((village) => {
           const isCurrent =
             current !== null &&
-            village.isSeat &&
             village.latitude === current.latitude &&
             village.longitude === current.longitude;
           return (
@@ -314,25 +435,15 @@ export function ProvinceFlyoverMap({
                 title={village.name}
                 className="group relative flex items-center justify-center"
               >
+                <span className="bg-accent absolute h-6 w-6 animate-ping rounded-full opacity-40" />
                 <span
-                  className={`absolute rounded-full ${
-                    village.isSeat
-                      ? "bg-accent h-6 w-6 animate-ping opacity-40"
-                      : "bg-neon-2 h-3 w-3 opacity-0 group-hover:animate-ping group-hover:opacity-40"
+                  className={`bg-accent relative h-3.5 w-3.5 rounded-full border border-white/80 shadow-[0_0_12px_2px_var(--accent-soft)] transition-transform group-hover:scale-150 ${
+                    isCurrent ? "scale-150" : ""
                   }`}
                 />
-                <span
-                  className={`relative rounded-full border border-white/80 shadow-[0_0_12px_2px_var(--accent-soft)] transition-transform group-hover:scale-150 ${
-                    village.isSeat
-                      ? `bg-accent h-3.5 w-3.5 ${isCurrent ? "scale-150" : ""}`
-                      : "bg-neon-2 h-2 w-2"
-                  }`}
-                />
-                {village.isSeat && (
-                  <span className="pointer-events-none absolute top-full mt-1 rounded-full bg-black/60 px-2 py-0.5 text-[11px] font-medium whitespace-nowrap text-white backdrop-blur-sm">
-                    {village.name}
-                  </span>
-                )}
+                <span className="pointer-events-none absolute top-full mt-1 rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-medium whitespace-nowrap text-white">
+                  {village.name}
+                </span>
               </Link>
             </Marker>
           );
@@ -349,7 +460,7 @@ export function ProvinceFlyoverMap({
         <div
           key={current?.communeSlug ?? "overview"}
           aria-live="polite"
-          className="surface-glass animate-stop-in pointer-events-auto max-w-sm rounded-2xl p-3 text-white sm:p-4"
+          className="animate-stop-in pointer-events-auto max-w-sm rounded-2xl border border-white/10 bg-[#0b0814]/85 p-3 text-white shadow-[0_8px_30px_-12px_rgba(0,0,0,0.7)] sm:p-4"
         >
           {current ? (
             <>
@@ -403,10 +514,10 @@ export function ProvinceFlyoverMap({
             type="button"
             onClick={() => jump(null)}
             aria-pressed={index === null}
-            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs backdrop-blur-sm ${
+            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs ${
               index === null
-                ? "border-accent bg-black/60 text-white"
-                : "border-white/20 bg-black/40 text-white/80"
+                ? "border-accent bg-black/75 text-white"
+                : "border-white/20 bg-black/60 text-white/85"
             }`}
           >
             {t("overview")}
@@ -417,10 +528,10 @@ export function ProvinceFlyoverMap({
               type="button"
               onClick={() => jump(stopIndex)}
               aria-pressed={index === stopIndex}
-              className={`shrink-0 rounded-full border px-3 py-1.5 text-xs backdrop-blur-sm ${
+              className={`shrink-0 rounded-full border px-3 py-1.5 text-xs ${
                 index === stopIndex
-                  ? "border-accent bg-black/60 text-white"
-                  : "border-white/20 bg-black/40 text-white/80"
+                  ? "border-accent bg-black/75 text-white"
+                  : "border-white/20 bg-black/60 text-white/85"
               }`}
             >
               {stop.name}

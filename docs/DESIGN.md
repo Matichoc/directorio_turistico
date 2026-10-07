@@ -116,6 +116,24 @@ el modelo de elevación abierto de AWS (Terrain Tiles, formato Terrarium, sin
 API key) — terreno 3D + sombreado de laderas + color por altura en la paleta
 del sitio (mar azul noche → valles violeta → cordillera brasa). Reglas:
 
+- **Relieve servido desde el propio sitio** (`public/terrain/{z}/{x}/{y}.webp`,
+  generado con `scripts/build-terrain-tiles.py`, límites en
+  `lib/maps/terrain.ts`): pedido directo al bucket de AWS en EE.UU. llegaba
+  tarde (≈0,5 s por tesela desde Chile, de a 6 por vez) y el vuelo se veía
+  lento y sin detalle — feedback real del usuario. Ahora sale de la caché de
+  Vercel, por HTTP/2, cacheado para siempre; WebP **sin pérdida** porque las
+  alturas van codificadas en los colores. Detalle (zoom 11-12) solo en la
+  provincia; margen con menos detalle hasta el mar y la cordillera para el
+  horizonte. Si se agranda la cobertura, cambiar el script **y**
+  `TERRAIN_BOUNDS` juntos.
+- **Fluidez**: la cámara vuela casi sin alejarse (`curve` bajo, zoom de
+  parada 11,6 dentro del detalle disponible); el relieve de las paradas se
+  precarga en segundo plano (no con "ahorro de datos"); los pueblos son una
+  capa del mapa (GPU) y solo las cabeceras son marcadores HTML; resolución
+  tope 2x; y nada con `backdrop-filter` encima del mapa (el desenfoque de
+  fondo se recalcula en cada cuadro). El recorrido arranca cuando el relieve
+  visible ya se dibujó (o a los 5 s, lo que pase primero).
+
 - **Datos reales**: `buildProvinceFlyover` (`lib/ui/province-flyover.ts`)
   ubica cada comuna en su cabecera (o en otro pueblo de la comuna con
   coordenada) y cuenta pueblos y atractivos reales; una comuna sin ninguna

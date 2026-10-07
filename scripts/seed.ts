@@ -2141,8 +2141,8 @@ async function seedLocalities(communeIds: Record<string, string>) {
     const communeId = communeIds[locality.communeSlug];
     if (!communeId) continue;
 
-    // Los campos de contenido (resumen, fuente) solo se escriben cuando el
-    // seed los trae: si no, `pnpm db:seed` pisaría con `null` un resumen que
+    // Los campos opcionales (coordenada, resumen, fuente) solo se escriben
+    // cuando el seed los trae: si no, `pnpm db:seed` pisaría con `null` lo que
     // alguien cargó a mano desde `/admin/pueblos`.
     const { data, error } = await supabase
       .from("localities")
@@ -2150,8 +2150,13 @@ async function seedLocalities(communeIds: Record<string, string>) {
         {
           slug: locality.slug,
           commune_id: communeId,
-          latitude: locality.latitude,
-          longitude: locality.longitude,
+          // Coordenada solo si el seed la trae: un `null` acá pisaría la que
+          // ya está en la base (geocodificada con `pnpm geocode:localities`
+          // o puesta a mano desde `/admin/pueblos`) y los pueblos
+          // desaparecerían del mapa.
+          ...(locality.latitude !== null && locality.longitude !== null
+            ? { latitude: locality.latitude, longitude: locality.longitude }
+            : {}),
           ...(locality.sourceUrl
             ? {
                 summary_source_url: locality.sourceUrl,

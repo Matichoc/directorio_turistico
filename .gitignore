@@ -49,3 +49,6 @@ next-env.d.ts
 /public/sw.js
 /public/sw.js.map
 /public/swe-worker-*.js
+
+# Archivos temporales del CLI de Supabase (project-ref, versiones)
+/supabase/.temp/

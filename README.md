@@ -42,19 +42,20 @@ confirme.
 
 ## Scripts
 
-| Comando                        | Descripción                                                                      |
-| ------------------------------ | -------------------------------------------------------------------------------- |
-| `pnpm dev`                     | Servidor de desarrollo                                                           |
-| `pnpm build`                   | Build de producción                                                              |
-| `pnpm start`                   | Sirve el build de producción                                                     |
-| `pnpm lint`                    | ESLint                                                                           |
-| `pnpm format` / `format:check` | Prettier                                                                         |
-| `pnpm typecheck`               | `tsc --noEmit`                                                                   |
-| `pnpm test` / `test:watch`     | Tests unitarios/integración (Vitest)                                             |
-| `pnpm test:e2e`                | Tests end-to-end (Playwright)                                                    |
-| `pnpm db:seed`                 | Seed de lugares/rutas reales (pendientes de verificación)                        |
-| `pnpm geocode:localities`      | Busca coordenadas de pueblos en Google Places (requiere `GOOGLE_PLACES_API_KEY`) |
-| `pnpm fetch:google-photos`     | Trae fotos de Google Places a lugares que no tienen                              |
+| Comando                                 | Descripción                                                                        |
+| --------------------------------------- | ---------------------------------------------------------------------------------- |
+| `pnpm dev`                              | Servidor de desarrollo                                                             |
+| `pnpm build`                            | Build de producción                                                                |
+| `pnpm start`                            | Sirve el build de producción                                                       |
+| `pnpm lint`                             | ESLint                                                                             |
+| `pnpm format` / `format:check`          | Prettier                                                                           |
+| `pnpm typecheck`                        | `tsc --noEmit`                                                                     |
+| `pnpm test` / `test:watch`              | Tests unitarios/integración (Vitest)                                               |
+| `pnpm test:e2e`                         | Tests end-to-end (Playwright)                                                      |
+| `pnpm db:seed`                          | Seed de lugares/rutas reales (pendientes de verificación)                          |
+| `pnpm geocode:localities`               | Busca coordenadas de pueblos en Google Places (requiere `GOOGLE_PLACES_API_KEY`)   |
+| `pnpm fetch:google-photos`              | Trae fotos de Google Places a lugares que no tienen                                |
+| `python scripts/build-terrain-tiles.py` | Regenera el relieve del vuelo 3D (`public/terrain`, requiere `pip install pillow`) |
 
 ## Producción
 

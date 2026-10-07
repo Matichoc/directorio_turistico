@@ -19,6 +19,17 @@ const nextConfig: NextConfig = {
         source: "/admin/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
+      {
+        // Relieve del vuelo 3D (scripts/build-terrain-tiles.py): no cambia
+        // nunca, así que el navegador lo guarda para siempre.
+        source: "/terrain/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
     ];
   },
   images: {

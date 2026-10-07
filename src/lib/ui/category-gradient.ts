@@ -62,3 +62,55 @@ export function getPlaceIcon(
 ) {
   return placeIcon || getCategoryIcon(categorySlug);
 }
+
+/**
+ * Lo que "ofrece" un lugar en el mapa de /explorar (pedido del usuario: un
+ * mapa con animaciones de playa, de dulces, de historias, de diablos). Sale
+ * siempre de datos reales — la categoría del lugar y su `places.icon` —,
+ * nunca de una asignación decorativa: un lugar de "dulces" es uno cuyo ícono
+ * real es `dulce`, y "diablo" solo los que tienen el ícono `diablo` en la
+ * base. Cada tema trae su ícono, su color y su animación (`MapThemeAura`).
+ */
+export type PlaceTheme =
+  "playa" | "dulces" | "sabores" | "historia" | "naturaleza" | "diablo";
+
+const THEME_BY_ICON: Record<string, PlaceTheme> = {
+  diablo: "diablo",
+  dulce: "dulces",
+  surf: "playa",
+  waves: "playa",
+  "casco-minero": "historia",
+  tejido: "historia",
+  landmark: "historia",
+  mountain: "naturaleza",
+  palta: "naturaleza",
+  utensils: "sabores",
+};
+
+const THEME_BY_CATEGORY: Record<string, PlaceTheme> = {
+  playa: "playa",
+  gastronomia: "sabores",
+  cultura: "historia",
+  naturaleza: "naturaleza",
+};
+
+export function getPlaceTheme(
+  categorySlug: string | null | undefined,
+  placeIcon: string | null | undefined,
+): PlaceTheme {
+  return (
+    (placeIcon && THEME_BY_ICON[placeIcon]) ||
+    (categorySlug && THEME_BY_CATEGORY[categorySlug]) ||
+    "historia"
+  );
+}
+
+export const THEME_STYLE: Record<PlaceTheme, { icon: string; color: string }> =
+  {
+    playa: { icon: "waves", color: PIN_COLORS.playa },
+    dulces: { icon: "dulce", color: "#ec4899" }, // pink-500 — dulces de La Ligua
+    sabores: { icon: "utensils", color: PIN_COLORS.gastronomia },
+    historia: { icon: "landmark", color: PIN_COLORS.cultura },
+    naturaleza: { icon: "mountain", color: PIN_COLORS.naturaleza },
+    diablo: { icon: "diablo", color: "#dc2626" }, // red-600 — el diablo de la zona
+  };

@@ -1,12 +1,18 @@
 import { CategoryIcon } from "@/components/ui/category-icon";
-import { getCategoryPinColor, getPlaceIcon } from "@/lib/ui/category-gradient";
+import { ThemeAura } from "@/components/map/theme-aura";
+import {
+  getCategoryPinColor,
+  getPlaceIcon,
+  getPlaceTheme,
+} from "@/lib/ui/category-gradient";
 
 /**
  * Pin temático por categoría (forma de gota, ícono blanco al centro, halo
- * pulsante detrás) en vez del círculo genérico anterior — a pedido del
- * usuario, para que el mapa se vea vivo y alusivo a cada lugar en vez de
- * "plomo". `style.animationDelay` se pasa por marcador para que no todos
- * aparezcan/pulsen sincronizados.
+ * animado detrás según lo que ofrece el lugar — `ThemeAura`: ondas de playa,
+ * dulces que suben, farol de historia, brasas del diablo) en vez del círculo
+ * genérico anterior — a pedido del usuario, para que el mapa se vea vivo y
+ * alusivo a cada lugar en vez de "plomo". `style.animationDelay` se pasa por
+ * marcador para que no todos aparezcan/pulsen sincronizados.
  */
 export function MapPin({
   categorySlug,
@@ -29,6 +35,7 @@ export function MapPin({
   variant?: "place" | "locality";
 }) {
   const color = getCategoryPinColor(categorySlug);
+  const theme = getPlaceTheme(categorySlug, placeIcon);
 
   if (variant === "locality") {
     return (
@@ -63,10 +70,7 @@ export function MapPin({
           style={{ animationDuration: "1s" }}
         />
       )}
-      <span
-        className="absolute h-6 w-6 animate-ping rounded-full opacity-40"
-        style={{ backgroundColor: color, animationDelay: `${delayMs}ms` }}
-      />
+      <ThemeAura theme={theme} size={40} delayMs={delayMs} />
       <span
         className={`animate-pin-pop relative block h-8 w-8 -rotate-45 rounded-[50%_50%_50%_0] border-2 shadow-lg transition-transform duration-150 hover:scale-110 ${
           near
@@ -80,7 +84,9 @@ export function MapPin({
         <span className="flex h-full w-full rotate-45 items-center justify-center">
           <CategoryIcon
             icon={getPlaceIcon(categorySlug, placeIcon)}
-            className="h-4 w-4 text-white"
+            className={`h-4 w-4 text-white ${
+              theme === "diablo" ? "motion-safe:animate-devil-peek" : ""
+            }`}
           />
         </span>
       </span>

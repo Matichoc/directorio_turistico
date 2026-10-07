@@ -64,7 +64,7 @@
     "noResults": "We couldn't find places matching these filters.",
     "otherPlaces": "Other places",
     "villagesOnMap": "{count, plural, one {# village} other {# villages}} on the map",
-    "subtitle": "Commune by commune, village by village: hover one to see its attractions, tap to keep it open.",
+    "subtitle": "Tap a sector on the map to see what it offers: beaches, sweets, history, hills and the devil's haunts. Prefer a list? Switch to List.",
     "communeSummary": "{villages, plural, =0 {no villages} one {# village} other {# villages}} · {places, plural, =0 {no attractions} one {# attraction} other {# attractions}}",
     "filtersButton": "Filters",
     "placesCount": "{count, plural, =0 {No attractions} one {# attraction} other {# attractions}}",
@@ -74,6 +74,17 @@
       "commune": "Commune",
       "category": "Category",
       "features": "Features"
+    },
+    "sectorZoom": "Zoom into {name}",
+    "showOnMap": "Show {name} on the map",
+    "themesLegend": "What each place offers",
+    "themes": {
+      "playa": "Beach",
+      "dulces": "Sweets",
+      "sabores": "Food",
+      "historia": "History",
+      "naturaleza": "Nature",
+      "diablo": "The devil"
     }
   },
   "place": {

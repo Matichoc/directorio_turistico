@@ -26,3 +26,12 @@ export const PETORCA_DEFAULT_ZOOM = 10;
 /** Zoom para un mapa con un solo marcador (ficha de lugar): a nivel calle,
  * no de toda la provincia — si no, se ve "genérico" sin mostrar el lugar. */
 export const PLACE_DETAIL_ZOOM = 15;
+
+/**
+ * Mapa de /explorar: bajo este zoom se ve la provincia por sectores (una
+ * burbuja por comuna con lo que ofrece); desde acá, los pines de cada lugar y
+ * pueblo. La provincia entera encuadra entre zoom ~7,5 (celular) y ~8,7
+ * (escritorio); una comuna, desde ~9 — al tocar un sector se acerca por lo
+ * menos un poco más allá de este umbral para que aparezcan sus pines.
+ */
+export const EXPLORE_SECTOR_MAX_ZOOM = 9.6;

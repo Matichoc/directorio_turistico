@@ -26,6 +26,30 @@ export interface ProvinceFlyoverData {
   villages: FlyoverVillage[];
 }
 
+type LocatedLocality = Locality & { latitude: number; longitude: number };
+
+export function isLocated(locality: Locality): locality is LocatedLocality {
+  return locality.latitude !== null && locality.longitude !== null;
+}
+
+/**
+ * Dónde se ubica una comuna en un mapa: su cabecera (el pueblo que lleva el
+ * nombre de la comuna) o, si esa no tiene coordenada, el primer pueblo de la
+ * comuna que sí la tenga. Sin ninguno, `undefined`: nunca se inventa un punto.
+ */
+export function findCommuneAnchor(
+  commune: Commune,
+  localities: Locality[],
+): LocatedLocality | undefined {
+  const located = localities.filter(isLocated);
+  return (
+    located.find(
+      (locality) =>
+        locality.communeName === commune.name && locality.name === commune.name,
+    ) ?? located.find((locality) => locality.communeName === commune.name)
+  );
+}
+
 /**
  * Arma los datos del vuelo 3D del home (ver docs/DESIGN.md, "Vuelo 3D por la
  * provincia") a partir del catálogo real: una parada por comuna, ubicada en
@@ -41,12 +65,7 @@ export function buildProvinceFlyover(
   localities: Locality[],
   places: PlaceCard[],
 ): ProvinceFlyoverData {
-  const located = localities.filter(
-    (
-      locality,
-    ): locality is Locality & { latitude: number; longitude: number } =>
-      locality.latitude !== null && locality.longitude !== null,
-  );
+  const located = localities.filter(isLocated);
 
   const stops: FlyoverStop[] = [];
   const seatSlugs = new Set<string>();
@@ -55,12 +74,7 @@ export function buildProvinceFlyover(
     const communeVillages = localities.filter(
       (locality) => locality.communeName === commune.name,
     );
-    const anchor =
-      located.find(
-        (locality) =>
-          locality.communeName === commune.name &&
-          locality.name === commune.name,
-      ) ?? located.find((locality) => locality.communeName === commune.name);
+    const anchor = findCommuneAnchor(commune, localities);
     if (!anchor) continue;
 
     seatSlugs.add(anchor.slug);

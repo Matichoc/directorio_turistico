@@ -235,6 +235,10 @@ Todas las animaciones viven en `globals.css` como `@keyframes` +
 | `animate-glow-pulse`      | Halo que "respira"                      | Fondo del hero del home, `PageHero`, `PlayerToken`   |
 | `animate-devil-peek`      | Vaivén curioso                          | `DevilMascot`                                        |
 | `reveal` (`reveal-up`)    | Aparición guiada por el scroll          | Secciones del home, comunas de `/explorar`, rutas    |
+| `animate-aura-ripple`     | Ondas que se abren                      | Tema playa (`ThemeAura`)                             |
+| `animate-aura-rise`       | Burbujas que suben                      | Temas dulces y sabores (`ThemeAura`)                 |
+| `animate-aura-flicker`    | Luz de farol que titila                 | Temas historia y diablo (`ThemeAura`)                |
+| `animate-aura-ember`      | Brasas que saltan                       | Tema diablo (`ThemeAura`)                            |
 
 Antes de escribir un `@keyframes` nuevo: revisa si alguno de estos ya sirve
 para el efecto que quieres (una aparición, un pulso, un rebote) en vez de
@@ -329,7 +333,10 @@ duplicar el link a mano en cada uno de los dos componentes.
 `/explorar` es la **única** pantalla para recorrer el catálogo por pueblos
 (pedido del usuario: "no tendría dos pantallas para lo mismo"; `/pueblos`
 solo redirige acá para no romper links viejos — la ficha de un pueblo,
-`/pueblos/[slug]`, sigue existiendo). La vista lista es un árbol ordenado
+`/pueblos/[slug]`, sigue existiendo). Arranca en la **vista mapa** (ver
+"Mapa de /explorar" abajo; pedido del usuario: el listado "se ve muy poco
+amigable para navegar"); el listado queda a un toque (`?vista=lista`). La
+vista lista es un árbol ordenado
 por comuna y, dentro, por pueblo (`buildExploreTree`,
 `src/lib/ui/build-explore-tree.ts`): el catálogo completo de pueblos manda,
 así que un pueblo sin atractivos igual aparece (vacío); la cabecera comunal
@@ -357,14 +364,45 @@ un texto de relleno.
 
 Los filtros (buscador, comuna, categoría, característica) quedan plegados
 detrás de un botón "Filtros" (`FiltersDisclosure`, con el conteo de filtros
-activos) para que el árbol sea lo primero que se ve; achican los atractivos
-dentro de cada pueblo, no esconden pueblos. La vista mapa (toggle
-lista/mapa) muestra pines sueltos, sin agrupar: los atractivos como gota por
-categoría y los **pueblos con coordenada confirmada** como círculo neón con
-casita (`MapPin variant="locality"`, link a `/pueblos/[slug]`); con un
-filtro de búsqueda/categoría/característica solo aparecen los pueblos que
-tienen atractivos que coinciden. Un pueblo sin coordenada no se dibuja (nunca
-un punto inventado).
+activos) para que el mapa o el árbol sea lo primero que se ve; achican los
+atractivos dentro de cada pueblo, no esconden pueblos.
+
+## Mapa de /explorar (vista por defecto)
+
+Pedido del usuario: "un mapa asociado a lo que ofrece el sector, con
+animaciones de playa, de dulces, de historias, diablos". `ExploreMap`
+(`components/explore/explore-map.tsx`):
+
+- **Temas** (`getPlaceTheme` + `THEME_STYLE` en `lib/ui/category-gradient.ts`,
+  fuente única): playa, dulces, sabores, historia, naturaleza y diablo. Salen
+  del dato real del lugar — primero `places.icon` (`dulce` → dulces, `diablo`
+  → diablo, `surf` → playa, `casco-minero`/`tejido` → historia), si no su
+  categoría. Nunca se asigna un tema "porque se ve bien".
+- **Animación por tema** (`ThemeAura`, keyframes `aura-*` en `globals.css`):
+  ondas que se abren (playa), confites/vapor que suben (dulces/sabores), farol
+  que titila (historia), halo que respira (naturaleza), brasas y el diablito
+  meciéndose (diablo). Va detrás de cada pin (`MapPin`, así que se replica en
+  todo mapa del sitio), en las burbujas de sector y en la leyenda (que solo
+  lista los temas presentes). `motion-safe:`: con movimiento reducido, quieto.
+- **Sectores**: con el mapa alejado (bajo `EXPLORE_SECTOR_MAX_ZOOM`,
+  `lib/maps/config.ts`) se ve una burbuja por comuna (`SectorMarkers`,
+  datos de `buildMapSectors`, `lib/ui/map-sectors.ts`) con la escena del
+  diablito de lo que más ofrece (`getSceneForTheme`), sus tres temas
+  principales y la cantidad real de atractivos; al tocarla la cámara vuela a
+  la comuna y aparecen los pines (`MapView markersMinZoom`). Las burbujas no
+  se tapan entre sí: si chocan, se corren arriba/abajo y un punto de luz
+  marca la cabecera real. Con búsqueda, comuna o característica no hay
+  sectores: van directo los pines.
+- **Pines**: los atractivos como gota por categoría y los **pueblos con
+  coordenada confirmada** como círculo neón con casita (`MapPin
+variant="locality"`, link a `/pueblos/[slug]`); con un filtro de
+  búsqueda/categoría/característica solo aparecen los pueblos que tienen
+  atractivos que coinciden. Un pueblo sin coordenada no se dibuja (nunca un
+  punto inventado).
+- **Tira de tarjetas** bajo el mapa (de la costa a la cordillera), con el
+  resaltado cruzado de siempre: tocar la foto de una tarjeta vuela a su pin
+  (y sube el mapa a la vista si quedó arriba), tocar un pin centra su
+  tarjeta, el nombre lleva a la ficha.
 
 ## Resaltado cruzado mapa↔lista
 

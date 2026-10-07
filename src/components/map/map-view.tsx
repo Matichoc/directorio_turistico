@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Map, {
   GeolocateControl,
   Layer,
@@ -77,6 +77,11 @@ export interface MapViewProps {
   /** Avisa al padre qué pin se tocó, para que la lista pueda resaltar la
    * parada correspondiente (el mismo resaltado cruzado, en el otro sentido). */
   onMarkerClick?: (slug: string) => void;
+  /** Bajo este zoom no se dibujan los pines (el mapa de /explorar muestra
+   * ahí los sectores por comuna, ver `SectorMarkers`); sin valor, siempre. */
+  markersMinZoom?: number;
+  /** Capas extra dentro del mapa (pueden usar `useMap()` de react-map-gl). */
+  children?: ReactNode;
 }
 
 export function MapView({
@@ -86,8 +91,11 @@ export function MapView({
   showLiveLocation = false,
   highlightedSlug = null,
   onMarkerClick,
+  markersMinZoom,
+  children,
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
+  const [showMarkers, setShowMarkers] = useState(markersMinZoom === undefined);
   const [selected, setSelected] = useState<MapMarkerData | null>(null);
   const [livePosition, setLivePosition] = useState<{
     latitude: number;
@@ -105,13 +113,31 @@ export function MapView({
     return () => window.removeEventListener(AVATAR_EVENT, sync);
   }, []);
 
-  const center = markers[0]
-    ? { latitude: markers[0].latitude, longitude: markers[0].longitude }
-    : PETORCA_CENTER;
+  // Con sectores (`markersMinZoom`), arranca alejado sobre la provincia: así
+  // se ven los sectores aunque el estilo tarde o no cargue (sin `onLoad` no
+  // hay encuadre).
+  const center =
+    markers[0] && markersMinZoom === undefined
+      ? { latitude: markers[0].latitude, longitude: markers[0].longitude }
+      : PETORCA_CENTER;
   const initialZoom =
-    markers.length === 1 ? PLACE_DETAIL_ZOOM : PETORCA_DEFAULT_ZOOM;
+    markersMinZoom !== undefined
+      ? Math.min(PETORCA_DEFAULT_ZOOM, markersMinZoom - 1)
+      : markers.length === 1
+        ? PLACE_DETAIL_ZOOM
+        : PETORCA_DEFAULT_ZOOM;
+
+  function syncZoom() {
+    if (markersMinZoom === undefined || !mapRef.current) return;
+    setShowMarkers(mapRef.current.getZoom() >= markersMinZoom);
+  }
 
   function handleLoad() {
+    fitToMarkers();
+    syncZoom();
+  }
+
+  function fitToMarkers() {
     // Con 2+ marcadores, encuadra el mapa a su extensión real en vez de
     // dejar el zoom fijo de toda la provincia — así cada vista muestra
     // dónde están realmente los lugares en vez de un mapa "genérico".
@@ -135,6 +161,7 @@ export function MapView({
       <Map
         ref={mapRef}
         onLoad={handleLoad}
+        onZoom={syncZoom}
         mapStyle={getMapStyleUrl()}
         initialViewState={{
           latitude: center.latitude,
@@ -192,44 +219,46 @@ export function MapView({
             />
           </Source>
         )}
-        {markers.map((marker, index) => {
-          const isNear =
-            showLiveLocation &&
-            livePosition !== null &&
-            haversineDistanceKm(livePosition, marker) < NEAR_STOP_KM;
+        {children}
+        {showMarkers &&
+          markers.map((marker, index) => {
+            const isNear =
+              showLiveLocation &&
+              livePosition !== null &&
+              haversineDistanceKm(livePosition, marker) < NEAR_STOP_KM;
 
-          return (
-            <Marker
-              key={markerKey(marker)}
-              latitude={marker.latitude}
-              longitude={marker.longitude}
-              anchor="bottom"
-            >
-              <button
-                type="button"
-                aria-label={marker.name}
-                onClick={() => {
-                  setSelected(marker);
-                  onMarkerClick?.(marker.slug);
-                }}
+            return (
+              <Marker
+                key={markerKey(marker)}
+                latitude={marker.latitude}
+                longitude={marker.longitude}
+                anchor="bottom"
               >
-                <MapPin
-                  variant={marker.kind}
-                  categorySlug={marker.categorySlug}
-                  placeIcon={marker.icon}
-                  selected={
-                    (selected !== null &&
-                      markerKey(selected) === markerKey(marker)) ||
-                    (marker.kind !== "locality" &&
-                      highlightedSlug === marker.slug)
-                  }
-                  near={isNear}
-                  delayMs={Math.min(index * 60, 600)}
-                />
-              </button>
-            </Marker>
-          );
-        })}
+                <button
+                  type="button"
+                  aria-label={marker.name}
+                  onClick={() => {
+                    setSelected(marker);
+                    onMarkerClick?.(marker.slug);
+                  }}
+                >
+                  <MapPin
+                    variant={marker.kind}
+                    categorySlug={marker.categorySlug}
+                    placeIcon={marker.icon}
+                    selected={
+                      (selected !== null &&
+                        markerKey(selected) === markerKey(marker)) ||
+                      (marker.kind !== "locality" &&
+                        highlightedSlug === marker.slug)
+                    }
+                    near={isNear}
+                    delayMs={Math.min(index * 60, 600)}
+                  />
+                </button>
+              </Marker>
+            );
+          })}
         {selected && (
           <Popup
             latitude={selected.latitude}

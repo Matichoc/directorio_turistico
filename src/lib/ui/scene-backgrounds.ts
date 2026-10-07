@@ -1,3 +1,5 @@
+import type { PlaceTheme } from "@/lib/ui/category-gradient";
+
 /**
  * Fondos ilustrados con el diablito (casco minero con linterna, poncho,
  * cola de flecha) en distintos escenarios de la zona — pedido del usuario:
@@ -38,4 +40,18 @@ export function getSceneForRoute(routeSlug?: string | null): SceneId {
   if (routeSlug.includes("patrimonial")) return "pueblo";
   if (routeSlug.includes("diablo")) return "tunel";
   return "atardecer";
+}
+
+const SCENE_BY_THEME: Record<PlaceTheme, SceneId> = {
+  playa: "playa",
+  dulces: "dulces",
+  sabores: "dulces",
+  historia: "pueblo",
+  naturaleza: "cerro",
+  diablo: "tunel",
+};
+
+/** Escena del tema que más ofrece un sector del mapa de /explorar. */
+export function getSceneForTheme(theme?: PlaceTheme | null): SceneId {
+  return (theme && SCENE_BY_THEME[theme]) || "atardecer";
 }

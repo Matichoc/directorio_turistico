@@ -61,6 +61,7 @@ confirme.
 
 - **CI:** `.github/workflows/ci.yml` corre typecheck, lint, tests, formato y build en cada PR.
 - **Variable clave:** `NEXT_PUBLIC_SITE_URL` (dominio real) — de ahí salen el sitemap, los canonical y las vistas previas al compartir.
+- **Dominio propio y un solo proyecto de Vercel:** guía paso a paso en `docs/DOMINIO.md` (NIC Chile, DNS, Vercel, Supabase, Search Console, correo y checklist final).
 - **Administración:** `/admin` (usuario en `public.admin_users`): lugares, rutas, pueblos, comunas/categorías, verificaciones por comuna, comentarios y métricas.
 - **Hoja de ruta hacia la propuesta a turismo:** `docs/PLAN.md`, sección 10.
 

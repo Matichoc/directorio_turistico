@@ -4,6 +4,7 @@ import {
   getSupabaseAnonKey,
   getSupabaseUrl,
   isSupabaseConfigured,
+  supabaseDbOptions,
 } from "@/lib/supabase/env";
 
 /**
@@ -27,6 +28,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   const supabase = createServerClient(getSupabaseUrl(), getSupabaseAnonKey(), {
+    ...supabaseDbOptions(),
     cookies: {
       getAll() {
         return request.cookies.getAll();

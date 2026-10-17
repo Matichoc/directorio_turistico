@@ -12,6 +12,7 @@
 import { config } from "dotenv";
 import { writeFileSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
+import { getSupabaseSchema, supabaseDbOptions } from "../src/lib/supabase/env";
 import type { Database } from "../src/types/database";
 
 config({ path: ".env.local" });
@@ -26,9 +27,14 @@ if (!supabaseUrl || !serviceRoleKey) {
   process.exit(1);
 }
 
+// En el proyecto compartido con Papudo, el directorio vive en el esquema
+// `legacy` (ver docs/SUPABASE-LEGACY.md): `supabaseDbOptions()` lo elige solo
+// y se niega a apuntar a `public` ahí.
 const supabase = createClient<Database>(supabaseUrl, serviceRoleKey, {
+  ...supabaseDbOptions(),
   auth: { autoRefreshToken: false, persistSession: false },
 });
+console.log(`Esquema de Supabase: ${getSupabaseSchema()}`);
 
 function csvCell(value: string): string {
   return `"${value.replaceAll('"', '""')}"`;

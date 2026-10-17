@@ -1,7 +1,11 @@
 import "server-only";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
-import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/supabase/env";
+import {
+  getSupabaseServiceRoleKey,
+  getSupabaseUrl,
+  supabaseDbOptions,
+} from "@/lib/supabase/env";
 
 /**
  * Cliente con service role: solo para server actions/route handlers de
@@ -11,6 +15,9 @@ export function createAdminClient() {
   return createSupabaseClient<Database>(
     getSupabaseUrl(),
     getSupabaseServiceRoleKey(),
-    { auth: { autoRefreshToken: false, persistSession: false } },
+    {
+      ...supabaseDbOptions(),
+      auth: { autoRefreshToken: false, persistSession: false },
+    },
   );
 }

@@ -44,3 +44,52 @@ export function isSupabaseConfigured(): boolean {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   );
 }
+
+/**
+ * Proyecto de Supabase compartido con el sitio de Papudo: ahí el esquema
+ * `public` es de Papudo y todo lo del diablo vive en `legacy` (ver
+ * docs/SUPABASE-LEGACY.md). Nunca se debe leer ni escribir `public` de ese
+ * proyecto desde este repo.
+ */
+export const SHARED_SUPABASE_PROJECT_REF = "qbfvsnkywlvozvxeujgh";
+
+/**
+ * Esquema de Postgres donde viven las tablas del directorio. Se puede fijar
+ * con `NEXT_PUBLIC_SUPABASE_SCHEMA`; sin esa variable, en el proyecto
+ * compartido es `legacy` y en cualquier otro proyecto, `public`. Apuntar al
+ * proyecto compartido con `public` sería leer (y, desde el admin, escribir)
+ * las tablas de Papudo: se rechaza.
+ */
+export function resolveSupabaseSchema(
+  url: string | undefined,
+  explicit: string | undefined,
+): string {
+  const isShared = Boolean(url?.includes(SHARED_SUPABASE_PROJECT_REF));
+  if (explicit && explicit !== "public") return explicit;
+  if (isShared) {
+    if (explicit === "public") {
+      throw new Error(
+        "NEXT_PUBLIC_SUPABASE_SCHEMA=public apunta a las tablas de Papudo en el proyecto compartido. Usa legacy (o quita la variable).",
+      );
+    }
+    return "legacy";
+  }
+  return "public";
+}
+
+// Acceso literal (`process.env.NEXT_PUBLIC_...`), por la misma razón de arriba.
+export function getSupabaseSchema(): string {
+  return resolveSupabaseSchema(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_SCHEMA,
+  );
+}
+
+/**
+ * Opción `db` de los clientes de Supabase. El tipo `Database` solo declara
+ * `public`, así que el nombre se afirma como tal: en ejecución es el
+ * esquema real (`legacy` en el proyecto compartido).
+ */
+export function supabaseDbOptions() {
+  return { db: { schema: getSupabaseSchema() as "public" } };
+}

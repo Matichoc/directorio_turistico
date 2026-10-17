@@ -131,21 +131,45 @@ Termina con `✓ Copia guardada en el proyecto nuevo.`
 
 ### Qué garantiza el script (`scripts/copy-from-legacy.ts`)
 
-- **El origen es de solo lectura**: la sesión con el proyecto compartido se
-  pone en modo solo lectura (Postgres rechaza cualquier escritura) y solo lee
-  el esquema `legacy`. `public` (Papudo) ni se consulta.
+**Nombres repetidos.** `public` (Papudo) y `legacy` (diablo) tienen tablas
+con el mismo nombre (`places`, `localities`, `routes`, `categories`,
+`sources`, `place_translations`…). El script nunca usa un nombre de tabla
+sin su esquema y tiene tres candados sobre el proyecto compartido:
+
+1. **Sesión en solo lectura**: Postgres rechaza cualquier escritura, venga de
+   donde venga.
+2. **`search_path` solo en `legacy`**: aunque un nombre quedara sin esquema,
+   nunca podría resolverse a `public`.
+3. **Revisión previa de cada consulta**: si una consulta al proyecto
+   compartido menciona `public` o no es una lectura, el script se detiene
+   **sin enviarla**.
+
+Además:
+
 - **El destino no puede ser el proyecto compartido**: si
   `TARGET_DATABASE_URL` trae `qbfvsnkywlvozvxeujgh`, se detiene sin hacer
   nada. Tampoco corre si origen y destino son la misma base.
 - **El destino tiene que tener las tablas del diablo** (paso 3) y **estar
   vacío**. Para repetir la copia sobre el proyecto nuevo: `pnpm
 db:copy-legacy --reemplazar --aplicar` (vacía antes las tablas del
-  directorio del destino).
+  directorio **del destino**).
 - **Todo o nada**: si una tabla falla o una cantidad no calza, se deshace
   completo.
-- Probado contra una copia local que imita la situación (diablo en `legacy`,
-  Papudo en `public`): datos idénticos tabla por tabla y la base compartida sin
-  ningún cambio (misma huella antes y después).
+
+**Cómo se probó** (Postgres 16 + PostGIS local, imitando la situación real):
+el diablo en `legacy` y tablas de "Papudo" en `public` **con los mismos
+nombres** (`places`, `localities`, `routes`, `categories`, `sources`,
+`place_translations`) y filas marcadas `PAPUDO-…`. Resultado:
+
+- Datos del diablo idénticos tabla por tabla en el destino.
+- **Cero filas de Papudo** en el destino.
+- **La base compartida sin ningún cambio**: misma huella (md5 de todas sus
+  tablas, en `public`, `legacy` y `auth`) antes y después.
+- Registro de Postgres con **todo** lo que el script le mandó a la base
+  compartida: solo `set` (solo lectura y `search_path`), `begin transaction
+read only`, `select … from legacy."…"`, consultas al catálogo con
+  parámetro `'legacy'` y `rollback`. Ni una escritura, ni una mención a
+  `public`.
 
 ### Lo que no se copia (queda en `legacy`, intacto)
 

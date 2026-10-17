@@ -63,6 +63,40 @@ interface ForeignKey {
   notNull: boolean;
 }
 
+/** Lo mínimo para consultar: un cliente de Postgres o el lector vigilado. */
+interface Queryable {
+  query<R extends pg.QueryResultRow>(
+    sql: string,
+    params?: unknown[],
+  ): Promise<pg.QueryResult<R>>;
+}
+
+/**
+ * Único acceso al proyecto compartido. Además de la sesión en solo lectura
+ * y del `search_path` en `legacy`, revisa cada consulta antes de mandarla:
+ * si menciona `public` (el esquema de Papudo, que tiene tablas con los
+ * mismos nombres: places, localities, routes…) o no es una lectura, se
+ * detiene sin enviarla.
+ */
+function legacyReader(client: pg.Client): Queryable {
+  return {
+    query<R extends pg.QueryResultRow>(sql: string, params: unknown[] = []) {
+      const text = [sql, ...params.map(String)].join(" ");
+      if (/\bpublic\b/i.test(text)) {
+        fail(
+          `Bloqueado: una consulta al proyecto compartido mencionaba "public" (Papudo). No se envió.\n  ${sql}`,
+        );
+      }
+      if (!/^\s*(select|begin|set|rollback)\b/i.test(sql)) {
+        fail(
+          `Bloqueado: al proyecto compartido solo se le hacen lecturas. No se envió.\n  ${sql}`,
+        );
+      }
+      return client.query<R>(sql, params);
+    },
+  };
+}
+
 function fail(message: string): never {
   console.error(`\n✖ ${message}\n`);
   process.exit(1);
@@ -85,7 +119,7 @@ function hostAndDb(url: string) {
   return `${parsed.hostname}:${parsed.port || "5432"}${parsed.pathname}|${decodeURIComponent(parsed.username)}`;
 }
 
-async function listTables(client: pg.Client, schema: string) {
+async function listTables(client: Queryable, schema: string) {
   const { rows } = await client.query<{ table_name: string }>(
     `select table_name from information_schema.tables
       where table_schema = $1 and table_type = 'BASE TABLE'
@@ -95,7 +129,7 @@ async function listTables(client: pg.Client, schema: string) {
   return rows.map((row) => row.table_name);
 }
 
-async function listColumns(client: pg.Client, schema: string, table: string) {
+async function listColumns(client: Queryable, schema: string, table: string) {
   const { rows } = await client.query<{
     name: string;
     type: string;
@@ -233,14 +267,18 @@ async function main() {
   });
   await source.connect();
   await target.connect();
-  // Origen en solo lectura para toda la sesión (además de la transacción
-  // READ ONLY de abajo): cualquier escritura por error la rechaza Postgres.
-  await source.query("set session characteristics as transaction read only");
+  // Tres candados sobre el proyecto compartido: (1) sesión en solo lectura
+  // (Postgres rechaza cualquier escritura), (2) `search_path` solo en
+  // `legacy` (un nombre sin esquema nunca puede caer en `public` de Papudo)
+  // y (3) `legacyReader`, que revisa cada consulta antes de enviarla.
+  const legacy = legacyReader(source);
+  await legacy.query("set session characteristics as transaction read only");
+  await legacy.query("set search_path to legacy");
 
   try {
-    await source.query("begin transaction read only");
+    await legacy.query("begin transaction read only");
 
-    const sourceTables = await listTables(source, SOURCE_SCHEMA);
+    const sourceTables = await listTables(legacy, SOURCE_SCHEMA);
     if (sourceTables.length === 0) {
       fail(`El origen no tiene tablas en el esquema "${SOURCE_SCHEMA}".`);
     }
@@ -326,7 +364,7 @@ async function main() {
         await listColumns(target, TARGET_SCHEMA, table)
       ).filter((column) => !column.generated);
       const sourceColumnNames = new Set(
-        (await listColumns(source, SOURCE_SCHEMA, table)).map((c) => c.name),
+        (await listColumns(legacy, SOURCE_SCHEMA, table)).map((c) => c.name),
       );
       const columns = targetColumns.filter((c) =>
         sourceColumnNames.has(c.name),
@@ -342,7 +380,7 @@ async function main() {
         );
       }
 
-      const { rows: sourceRows } = await source.query<Record<string, unknown>>(
+      const { rows: sourceRows } = await legacy.query<Record<string, unknown>>(
         `select ${columns.map((c) => quote(c.name)).join(", ")} from ${SOURCE_SCHEMA}.${quote(table)}`,
       );
       const selfFk = foreignKeys.find(
@@ -454,7 +492,7 @@ async function main() {
     await target.query("rollback").catch(() => {});
     throw error;
   } finally {
-    await source.query("rollback").catch(() => {});
+    await legacy.query("rollback").catch(() => {});
     await source.end();
     await target.end();
   }

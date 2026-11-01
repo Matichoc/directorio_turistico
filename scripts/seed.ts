@@ -2012,19 +2012,22 @@ const places = [
     categorySlug: "gastronomia",
     latitude: -32.22599,
     longitude: -70.84923,
+    address: "Pedro Montt 720, Chincolco",
+    phone: "+56972790432",
+    website: "https://miranchocriollo.cl/",
     es: {
       name: "El Rincón Criollo",
       short:
-        "Restaurante típico de Chincolco, conocido por sus parrilladas y su vino casero.",
+        "Restaurante de campo chileno en Chincolco: parrilladas, pastel de choclo, porotos granados, prieta asada y postres como mote con huesillo y leche asada. Con registro vigente en Sernatur.",
     },
     en: {
       name: "El Rincón Criollo",
       short:
-        "Traditional restaurant in Chincolco, known for its grilled meats and homemade wine.",
+        "Chilean country-style restaurant in Chincolco: grilled meats, pastel de choclo, porotos granados, blood sausage and desserts such as mote con huesillo and leche asada. Registered with Sernatur.",
     },
     source: {
-      url: "https://www.classicistranieri.com/es/articles/p/e/t/Petorca.html",
-      label: "Petorca (artículo enciclopédico, versión antigua)",
+      url: "https://miranchocriollo.cl/",
+      label: "Rincón Criollo (sitio oficial)",
     },
   },
   {
@@ -2166,6 +2169,61 @@ const places = [
       url: "https://repositorio.uchile.cl/handle/2250/201561",
       label:
         "Universidad de Chile — tesis sobre arte rupestre del valle de Petorca (2022)",
+    },
+  },
+  // Segunda tanda (2026-11-01): recomendados del catálogo con ubicación de
+  // una fuente que se puede guardar (supabase/manual/lugares-petorca-2026-11-b.sql).
+  {
+    slug: "panal-de-hierro-viejo",
+    localitySlug: "hierro-viejo",
+    communeSlug: "petorca",
+    categorySlug: "gastronomia",
+    // Dato real, sin confirmar en terreno; ubicación aproximada (OSM).
+    verificationStatus: "pending",
+    latitude: -32.27736,
+    longitude: -71.0034,
+    address: "Comercio 763, Hierro Viejo",
+    phone: "+56985394079",
+    es: {
+      name: "Panal de Hierro Viejo",
+      short:
+        "Productos agroelaborados de Hierro Viejo, como la miel, con registro vigente en Sernatur.",
+    },
+    en: {
+      name: "Panal de Hierro Viejo",
+      short:
+        "Farm-made products from Hierro Viejo, such as honey, registered with Sernatur.",
+    },
+    source: {
+      url: "https://serviciosturisticos.sernatur.cl/96237-panal-de-hierro-viejo",
+      label:
+        "Sernatur — Registro de servicios turísticos: Panal de Hierro Viejo",
+    },
+  },
+  {
+    slug: "vina-el-sobrante",
+    localitySlug: "el-sobrante",
+    communeSlug: "petorca",
+    categorySlug: "gastronomia",
+    extraCategorySlugs: ["cultura"],
+    // Dato real, sin confirmar en terreno; ubicación aproximada (OSM).
+    verificationStatus: "pending",
+    latitude: -32.2254,
+    longitude: -70.80767,
+    es: {
+      name: "Viña El Sobrante",
+      short:
+        "Bodega de la Hacienda El Sobrante, que guarda la herencia de las primeras vides del valle: chicha, chacolí y vinos, con sala de ventas. Fue el final de la ruta «Donde el Diablo perdió el poncho», con degustación.",
+    },
+    en: {
+      name: "Viña El Sobrante",
+      short:
+        "Winery of Hacienda El Sobrante, heir to the valley's first vines: chicha, chacolí and wines, with a sales room. It was the end of the «Donde el Diablo perdió el poncho» route, with a tasting.",
+    },
+    source: {
+      url: "https://www.radioagricultura.cl/programas/el-agro/desempolvan-la-olvidada-tradicion-vitivinicola-del-valle-petorca_20161201/",
+      label:
+        "Radio Agricultura — La olvidada tradición vitivinícola del valle de Petorca (2016)",
     },
   },
 ] as const;

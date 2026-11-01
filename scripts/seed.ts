@@ -1925,21 +1925,22 @@ const routes = [
   // con lo que ya dicen las fichas de cada parada y sus fuentes. Duración sin
   // estimar todavía (null): se completa desde /admin/rutas tras recorrerlas.
   //
-  // La primera se llamó al principio "Donde el diablo perdió el poncho", pero
-  // ese es el nombre de una ruta turística real de Petorca (Municipalidad e
-  // INDAP, 2018; ver docs/PROPUESTA-CONTENIDO-PETORCA.md): se renombró a
-  // pedido del usuario para no usar su nombre sin su permiso.
+  // Nombre: "Donde el Diablo perdió el poncho", decisión del usuario
+  // (2026-11-01). Es también el nombre de una ruta turística real de Petorca
+  // (Municipalidad e INDAP, 2018; ver docs/PROPUESTA-CONTENIDO-PETORCA.md);
+  // por un rato se llamó "Ruta del Diablo: de Pedegua a Chincolco" y el
+  // usuario pidió volver al nombre original. El slug quedó de esa vuelta.
   {
     slug: "ruta-del-diablo-pedegua-chincolco",
     durationMinutes: null,
     coverImage: "/rutas/ruta-del-diablo.webp",
     es: {
-      name: "Ruta del Diablo: de Pedegua a Chincolco",
+      name: "Donde el Diablo perdió el poncho",
       description:
         'Por los lugares del dicho "el diablo murió en Petorca y en La Ligua lo enterraron": parte en la antigua estación y el puente de Pedegua, y sigue valle arriba por la Escalera del Diablo en Hierro Viejo y la Iglesia La Merced de Petorca hasta los petroglifos de Chincolco.',
     },
     en: {
-      name: "Devil's Route: Pedegua to Chincolco",
+      name: "Where the Devil Lost His Poncho",
       description:
         "Through the places of the old saying \"the Devil died in Petorca and was buried in La Ligua\": it starts at Pedegua's old railway station and bridge, then heads up the valley through the Devil's Staircase in Hierro Viejo and La Merced Church in Petorca to the Chincolco petroglyphs.",
     },

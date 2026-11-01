@@ -37,9 +37,9 @@ allá de una línea en una ruta.
 Nuestra ruta nueva se llama igual. Publicarla así puede parecer que es la de
 ellos, o que hablamos en su nombre. **Propuesta:**
 
-1. ✅ Hecho (2026-11-01): la nuestra se llama ahora **"Ruta del Diablo: de
-   Pedegua a Chincolco"** (`ruta-del-diablo-pedegua-chincolco`), y no se usa
-   su nombre ni su marca hasta hablar con ellos.
+1. Se probó renombrar la nuestra a "Ruta del Diablo: de Pedegua a Chincolco",
+   pero el usuario decidió (2026-11-01) que se llame **"Donde el Diablo perdió
+   el poncho"**. Sigue siendo recomendable hablar con la ruta oficial.
 2. **Contactar a la ruta** (Nataly Muñoz) para ofrecerles aparecer en el sitio
    con sus emprendedores, sus paradas reales y sus eventos — con su permiso y
    sus datos. Es la alianza más natural para el sitio: ya hacen lo que el sitio
@@ -162,7 +162,7 @@ Las fechas exactas de cada año se confirman con la Municipalidad.
 
 ## Orden sugerido
 
-1. ~~Renombrar nuestra ruta~~ (hecho) y escribirle a la ruta oficial.
+1. Escribirle a la ruta oficial (nuestra ruta usa su mismo nombre).
 2. Página de la leyenda (con lo que ya hay, marcando las fuentes).
 3. Viña El Sobrante y los 3 sitios de petroglifos (tienen fuente sólida).
 4. Calendario de fiestas.

@@ -1,12 +1,14 @@
 -- Las dos rutas del sitio de la comuna de Petorca (rama `petorca`, ver
 -- src/lib/site-scope.ts), en el esquema `legacy` del proyecto compartido:
---   - "Ruta del Diablo: de Pedegua a Chincolco"
+--   - "Donde el Diablo perdió el poncho"
 --   - "Ruta Ferroviaria: de Pedegua a Las Palmas"
 --
--- La primera se llamó al principio "Donde el diablo perdió el poncho" (slug
--- `donde-el-diablo-perdio-el-poncho`), pero ese es el nombre de una ruta
--- turística real de Petorca: se renombró. Si este script ya se había corrido
--- con el nombre viejo, el paso 1 renombra esa misma ruta (no crea otra).
+-- La primera se cargó al principio con el slug
+-- `donde-el-diablo-perdio-el-poncho`; hoy su slug es
+-- `ruta-del-diablo-pedegua-chincolco` y su nombre, por decisión del usuario,
+-- "Donde el Diablo perdió el poncho". Si quedó cargada con el slug viejo, el
+-- paso 1 la renombra (no crea otra). Volver a correr el script actualiza el
+-- nombre y la descripción.
 --
 -- Mismo contenido que `routes` en scripts/seed.ts (la fuente de verdad);
 -- este script existe para cargarlas sin correr `pnpm db:seed`, que haría
@@ -73,9 +75,9 @@ begin
       (
         'ruta-del-diablo-pedegua-chincolco',
         '/rutas/ruta-del-diablo.webp',
-        'Ruta del Diablo: de Pedegua a Chincolco',
+        'Donde el Diablo perdió el poncho',
         'Por los lugares del dicho "el diablo murió en Petorca y en La Ligua lo enterraron": parte en la antigua estación y el puente de Pedegua, y sigue valle arriba por la Escalera del Diablo en Hierro Viejo y la Iglesia La Merced de Petorca hasta los petroglifos de Chincolco.',
-        'Devil''s Route: Pedegua to Chincolco',
+        'Where the Devil Lost His Poncho',
         'Through the places of the old saying "the Devil died in Petorca and was buried in La Ligua": it starts at Pedegua''s old railway station and bridge, then heads up the valley through the Devil''s Staircase in Hierro Viejo and La Merced Church in Petorca to the Chincolco petroglyphs.',
         array['pedegua', 'pedegua-puente', 'escalera-del-diablo',
               'iglesia-la-merced-petorca', 'petorca-petroglifos-chincolco'],

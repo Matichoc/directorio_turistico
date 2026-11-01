@@ -165,10 +165,11 @@ Las cuentas de usuario (`auth.users`) también son compartidas:
 
 El sitio acotado a Petorca (rama `petorca`) muestra solo rutas con todas sus
 paradas en la comuna. `supabase/manual/petorca-rutas.sql` carga las dos:
-"Ruta del Diablo: de Pedegua a Chincolco" y "Ruta Ferroviaria: de Pedegua a
-Las Palmas". (La primera se llamó al principio "Donde el diablo perdió el
-poncho", pero ese es el nombre de una ruta turística real de Petorca; si el
-script ya se corrió con ese nombre, al correrlo de nuevo la renombra.) Solo toca esas 2 rutas en `legacy`, verifica antes
+"Donde el Diablo perdió el poncho" (Pedegua → Chincolco, slug
+`ruta-del-diablo-pedegua-chincolco`) y "Ruta Ferroviaria: de Pedegua a Las
+Palmas". El nombre de la primera lo decidió el usuario (2026-11-01, después de
+probar "Ruta del Diablo: de Pedegua a Chincolco"); para cambiarlo en la base
+basta volver a correr el script. Solo toca esas 2 rutas en `legacy`, verifica antes
 que las 6 paradas existan en Petorca y es repetible. Se corre igual que el
 paso 2 (SQL Editor → pegar → Run). Estado: **hecho (2026-11-01)**. Comprobado
 desde fuera con la llave pública: las 2 rutas están publicadas y verificadas,

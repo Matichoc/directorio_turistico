@@ -1924,77 +1924,85 @@ const places = [
       label: "Chilevisión — Sabingo: misterios y leyendas de Petorca",
     },
   },
-  // Lugares nuevos de la comuna de Petorca (2026-11-01): ubicación de
-  // OpenStreetMap y fuente propia; "pending" hasta confirmarlos en terreno
+  // Lugares nuevos de la comuna de Petorca (2026-11-01), con fuente propia.
+  // Turismo Rural La Nina y El Rincón Criollo los conoce el usuario; el
+  // resto queda "pending" hasta confirmarlo en terreno
   // (supabase/manual/lugares-petorca-2026-11.sql carga lo mismo).
   {
-    slug: "betzabe-petorca",
-    localitySlug: "petorca",
+    slug: "turismo-rural-la-nina",
+    localitySlug: "pedegua",
     communeSlug: "petorca",
     categorySlug: "gastronomia",
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
-    verificationStatus: "pending",
-    latitude: -32.25189,
-    longitude: -70.93152,
-    address: "La Matriz, Petorca",
-    phone: "+56962999380",
+    latitude: -32.367683,
+    longitude: -71.076079,
+    address: "Ruta E-35 km 37,5, Pedegua",
+    phone: "+56999593235",
     es: {
-      name: "Betzabé",
+      name: "Turismo Rural La Nina",
       short:
-        "Restaurante de cocina regional en Petorca, en la calle La Matriz, a pasos de la plaza.",
+        "Restorán al paso en la entrada de Pedegua, punto de partida de la ruta «Donde el Diablo perdió el poncho»: empanadas de pino con mote con huesillo o jugos naturales, y en verano humitas y pastel de choclo. Lo llevan César Arancibia y su madre, Cristina Delgado.",
     },
     en: {
-      name: "Betzabé",
+      name: "Turismo Rural La Nina",
       short:
-        "Regional-cuisine restaurant in Petorca, on La Matriz street, steps from the main square.",
+        "Roadside eatery at the entrance to Pedegua, starting point of the «Donde el Diablo perdió el poncho» route: beef empanadas with mote con huesillo or fresh juices, and humitas and pastel de choclo in summer. Run by César Arancibia and his mother, Cristina Delgado.",
     },
     source: {
-      url: "https://www.openstreetmap.org/way/768284459",
-      label: "OpenStreetMap — Betzabé",
+      url: "https://www.indap.gob.cl/noticias/emprendedor-de-turismo-rural-de-petorca-enfrenta-crisis-con-delivery-de-empanadas-caseras",
+      label:
+        "INDAP — Emprendedor de turismo rural de Petorca (Turismo Rural La Nina)",
     },
   },
   {
-    slug: "amancay-petorca",
-    localitySlug: "petorca",
+    slug: "hostal-el-rio-pedegua",
+    localitySlug: "pedegua",
     communeSlug: "petorca",
-    categorySlug: "gastronomia",
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
+    categorySlug: "alojamiento",
+    // Dato real, sin confirmar en terreno todavía.
     verificationStatus: "pending",
-    latitude: -32.25167,
-    longitude: -70.93191,
+    latitude: -32.35448,
+    longitude: -71.06973,
+    address: "Ferroviario 507, Pedegua",
     es: {
-      name: "Amancay",
-      short: "Restaurante en el centro de Petorca, a pasos de la plaza.",
+      name: "Hostal El Río",
+      short:
+        "Hostal en Pedegua, en la calle Ferroviario: jardín, terraza, sala de estar, cocina compartida y chimenea; admite mascotas.",
     },
     en: {
-      name: "Amancay",
-      short: "Restaurant in downtown Petorca, steps from the main square.",
+      name: "Hostal El Río",
+      short:
+        "Hostel in Pedegua, on Ferroviario street: garden, terrace, lounge, shared kitchen and fireplace; pets allowed.",
     },
     source: {
-      url: "https://www.openstreetmap.org/node/1217228865",
-      label: "OpenStreetMap — Amancay",
+      url: "https://destinia.com/es/hoteles/america-del-sur/chile/valparaiso/petorca/hostal-el-rio/ho-5484611",
+      label: "Destinia — Albergue Hostal El Río (Pedegua)",
     },
   },
   {
-    slug: "la-travesia-petorca",
-    localitySlug: "petorca",
+    slug: "tinajas-chincolco",
+    localitySlug: "chincolco",
     communeSlug: "petorca",
-    categorySlug: "gastronomia",
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
+    categorySlug: "alojamiento",
+    extraCategorySlugs: ["recreacion"],
+    // Dato real, sin confirmar en terreno todavía.
     verificationStatus: "pending",
-    latitude: -32.25113,
-    longitude: -70.93099,
+    latitude: -32.2171,
+    longitude: -70.8462,
+    phone: "+56996240044",
+    website: "https://tinajaschincolco.cl/",
     es: {
-      name: "La Travesía",
-      short: "Restaurante en el centro de Petorca, junto a la plaza.",
+      name: "Tinajas Chincolco",
+      short:
+        "Refugio natural en Chincolco con hospedaje y tinajas termales con hidromasaje; también se puede ir solo por la tinaja (3 horas).",
     },
     en: {
-      name: "La Travesía",
-      short: "Restaurant in downtown Petorca, next to the main square.",
+      name: "Tinajas Chincolco",
+      short:
+        "Nature retreat in Chincolco with lodging and hot tubs with hydromassage; you can also book just the hot tub (3 hours).",
     },
     source: {
-      url: "https://www.openstreetmap.org/node/1217228888",
-      label: "OpenStreetMap — La Travesía",
+      url: "https://tinajaschincolco.cl/",
+      label: "Tinajas Chincolco (sitio oficial)",
     },
   },
   {
@@ -2002,8 +2010,6 @@ const places = [
     localitySlug: "chincolco",
     communeSlug: "petorca",
     categorySlug: "gastronomia",
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
-    verificationStatus: "pending",
     latitude: -32.22599,
     longitude: -70.84923,
     es: {
@@ -2026,7 +2032,7 @@ const places = [
     localitySlug: "chincolco",
     communeSlug: "petorca",
     categorySlug: "cultura",
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
+    // Dato real, sin confirmar en terreno todavía.
     verificationStatus: "pending",
     latitude: -32.2243,
     longitude: -70.84318,
@@ -2050,7 +2056,7 @@ const places = [
     communeSlug: "petorca",
     categorySlug: "recreacion",
     extraCategorySlugs: ["cultura"],
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
+    // Dato real, sin confirmar en terreno todavía.
     verificationStatus: "pending",
     latitude: -32.22272,
     longitude: -70.83635,
@@ -2076,7 +2082,7 @@ const places = [
     communeSlug: "petorca",
     categorySlug: "recreacion",
     extraCategorySlugs: ["cultura"],
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
+    // Dato real, sin confirmar en terreno todavía.
     verificationStatus: "pending",
     latitude: -32.23125,
     longitude: -70.85333,
@@ -2098,7 +2104,7 @@ const places = [
     localitySlug: "hierro-viejo",
     communeSlug: "petorca",
     categorySlug: "recreacion",
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
+    // Dato real, sin confirmar en terreno todavía.
     verificationStatus: "pending",
     latitude: -32.28123,
     longitude: -71.01388,
@@ -2119,7 +2125,7 @@ const places = [
     localitySlug: "hierro-viejo",
     communeSlug: "petorca",
     categorySlug: "recreacion",
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
+    // Dato real, sin confirmar en terreno todavía.
     verificationStatus: "pending",
     latitude: -32.2796,
     longitude: -71.0103,
@@ -2142,7 +2148,7 @@ const places = [
     communeSlug: "petorca",
     categorySlug: "cultura",
     extraCategorySlugs: ["naturaleza"],
-    // Ubicación de OpenStreetMap; dato real sin confirmar en terreno.
+    // Dato real, sin confirmar en terreno todavía.
     verificationStatus: "pending",
     latitude: -32.10853,
     longitude: -70.79644,

@@ -35,6 +35,10 @@ export const routing = defineRouting({
       es: "/recorrido",
       en: "/my-trip",
     },
+    "/recorrido/compartido": {
+      es: "/recorrido/compartido",
+      en: "/my-trip/shared",
+    },
     "/informacion": {
       es: "/informacion",
       en: "/info",

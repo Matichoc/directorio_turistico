@@ -216,7 +216,10 @@
     "optimizeAuto": "Optimize automatically",
     "startAt": "Starts at",
     "returnToStart": "Return to the starting point at the end",
-    "returnLeg": "Return to {place}: {duration} · {distance} km"
+    "returnLeg": "Return to {place}: {duration} · {distance} km",
+    "share": "Share trip",
+    "shareTitle": "My trip around Petorca",
+    "shareHint": "Send the link on WhatsApp: whoever opens it will see these stops in order and can follow them with the guide."
   },
   "common": {
     "loading": "Loading…",
@@ -271,5 +274,16 @@
     "noVoice": "Your phone has no English voice.",
     "stopsIntro": "Stops: {stops}.",
     "attractionsIntro": "Attractions: {places}."
+  },
+  "sharedTrip": {
+    "title": "Shared trip",
+    "subtitle": "Someone shared this trip around the commune of Petorca with you: {count, plural, one {# stop} other {# stops}}, in order.",
+    "emptySubtitle": "A trip someone shared with you by link.",
+    "metaDescription": "A trip around the commune of Petorca, with its stops in order and step-by-step guidance.",
+    "empty": "This link doesn't include any stops we can show.",
+    "explore": "Explore Petorca",
+    "stopsTitle": "Stops in order",
+    "shareAgain": "Share this trip",
+    "saveHint": "Save it to keep it in My trip and make it your own."
   }
 }

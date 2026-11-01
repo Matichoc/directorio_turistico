@@ -161,6 +161,18 @@ Las cuentas de usuario (`auth.users`) también son compartidas:
 - [ ] "Mi recorrido": agregar un lugar funciona.
 - [ ] El sitio de Papudo sigue exactamente igual.
 
+## Rutas de la comuna de Petorca (`petorca-rutas.sql`)
+
+El sitio acotado a Petorca (rama `petorca`) muestra solo rutas con todas sus
+paradas en la comuna. `supabase/manual/petorca-rutas.sql` carga las dos:
+"Donde el diablo perdió el poncho" (Pedegua → Chincolco) y "Ruta Ferroviaria:
+de Pedegua a Las Palmas". Solo toca esas 2 rutas en `legacy`, verifica antes
+que las 6 paradas existan en Petorca y es repetible. Se corre igual que el
+paso 2 (SQL Editor → pegar → Run). Estado al 2026-11-01: **por correr**.
+
+Ojo: como la base es una sola, mientras el sitio de la provincia siga
+publicado también va a mostrar estas 2 rutas (junto a la Ruta del Diablo).
+
 ## Cambios futuros en la base del diablo
 
 Cada cambio de tablas se escribe como un archivo SQL en `supabase/manual/`,

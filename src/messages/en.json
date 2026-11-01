@@ -7,7 +7,7 @@
     "info": "Info"
   },
   "info": {
-    "about": "A tourism directory for Petorca province: real places, routes and trips, made by people from the area.",
+    "about": "A tourism directory for the commune of Petorca: real places, routes and trips, made by people from the area.",
     "developmentTitle": "Development",
     "developmentCredit": "Built by Cristóbal Roco, CTO of Matichoc.",
     "developerTagline": "Support your AI projects, and projects built with AI.",
@@ -18,8 +18,8 @@
   },
   "home": {
     "title": "El diablo murió en Petorca y en La Ligua lo enterraron",
-    "provinceLabel": "Petorca Province: La Ligua · Petorca · Cabildo · Papudo · Zapallar",
-    "subtitle": "An old local saying about Petorca and La Ligua — discover places and plan your trip across the Petorca province.",
+    "provinceLabel": "Commune of Petorca: Pedegua · Petorca · Chincolco · Hierro Viejo",
+    "subtitle": "An old local saying about Petorca and La Ligua — discover places and plan your trip across the commune of Petorca.",
     "searchPlaceholder": "Search a place or town",
     "featuredRoutes": "Featured routes",
     "intent": {
@@ -30,7 +30,7 @@
       "beach": "Beach"
     },
     "municipality": {
-      "title": "Municipalities of the province",
+      "title": "Municipality of Petorca",
       "noLinksYet": "No links added yet.",
       "goTo": "Go to {name}",
       "linkKinds": {
@@ -43,15 +43,16 @@
       }
     },
     "flyover": {
-      "title": "Fly over the province",
-      "subtitle": "Petorca's real terrain in 3D: from the sea to the Andes, commune by commune.",
-      "play": "▶ Tour the province",
+      "title": "Fly over Petorca",
+      "subtitle": "The commune's real terrain in 3D, village by village: from Pedegua to Chincolco.",
+      "play": "▶ Tour the commune",
       "pause": "❚❚ Pause",
-      "overview": "Whole province",
-      "overviewTitle": "From the sea to the Andes",
-      "overviewText": "Five communes between the coast of Papudo and Zapallar and the hills of Petorca and Cabildo. Tap one to fly there, or any point of light to open that village.",
+      "overview": "Whole commune",
+      "overviewTitle": "The Petorca river valley",
+      "overviewText": "From Pedegua's old railway station to the Chincolco petroglyphs. Tap a village to fly there, or any point of light to open its page.",
       "stats": "{villages, plural, =0 {no villages} one {# village} other {# villages}} · {places, plural, =0 {no attractions} one {# attraction} other {# attractions}}",
-      "explore": "Explore {name}",
+      "attractions": "{places, plural, =0 {No attractions yet} one {# attraction} other {# attractions}}",
+      "explore": "See {name}",
       "hint": "Use two fingers (or Ctrl + scroll) to move the map. Terrain: AWS Terrain Tiles."
     }
   },
@@ -64,7 +65,7 @@
     "noResults": "We couldn't find places matching these filters.",
     "otherPlaces": "Other places",
     "villagesOnMap": "{count, plural, one {# village} other {# villages}} on the map",
-    "subtitle": "Tap a sector on the map to see what it offers: beaches, sweets, history, hills and the devil's haunts. Prefer a list? Switch to List.",
+    "subtitle": "Tap a pin on the map to see what it offers: history, hills, the railway and the devil's haunts. Prefer a list? Switch to List.",
     "communeSummary": "{villages, plural, =0 {no villages} one {# village} other {# villages}} · {places, plural, =0 {no attractions} one {# attraction} other {# attractions}}",
     "filtersButton": "Filters",
     "placesCount": "{count, plural, =0 {No attractions} one {# attraction} other {# attractions}}",

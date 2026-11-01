@@ -22,6 +22,15 @@ pnpm dev
 
 Abre [http://localhost:3000](http://localhost:3000) — redirige a `/es`.
 
+## Alcance: comuna de Petorca
+
+Esta rama muestra solo la **comuna de Petorca**: la lista
+`SITE_COMMUNE_SLUGS` (`src/lib/site-scope.ts`) filtra lugares, pueblos,
+comunas y rutas al leerlos (una ruta entra solo si todas sus paradas son de
+la comuna). La base no se toca. La versión con las 5 comunas de la provincia
+queda en la rama `provincia-completa`; dejar la lista vacía también vuelve a
+mostrar la provincia.
+
 ## Base de datos
 
 **Producción (desde 2026-10-17):** el diablo vive en el esquema **`legacy`**

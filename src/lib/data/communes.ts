@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { isSiteScoped, SITE_COMMUNE_SLUGS } from "@/lib/site-scope";
 import type { Locale } from "@/types/database";
 import type { Commune, Municipality } from "@/types/domain";
 
@@ -19,11 +20,15 @@ export async function listCommunes(locale: Locale): Promise<Commune[]> {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("communes")
     .select<typeof COMMUNES_QUERY, CommuneQueryResult>(COMMUNES_QUERY)
     .eq("commune_translations.locale", locale)
     .order("slug");
+  if (isSiteScoped()) {
+    builder = builder.in("slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
 
   if (error || !data) {
     return [];

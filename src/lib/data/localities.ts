@@ -2,13 +2,14 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { listPlacesByLocalityId } from "@/lib/data/places";
+import { isSiteScoped, SITE_COMMUNE_SLUGS } from "@/lib/site-scope";
 import type { Locale } from "@/types/database";
 import type { Locality, LocalityWithPlaces } from "@/types/domain";
 
 const LOCALITIES_QUERY =
   `id, slug, latitude, longitude, summary_source_url, summary_source_label,
    locality_translations!inner(name, summary, locale),
-   communes!inner(id, commune_translations!inner(name, locale))` as const;
+   communes!inner(id, slug, commune_translations!inner(name, locale))` as const;
 
 interface LocalityQueryResult {
   id: string;
@@ -24,6 +25,7 @@ interface LocalityQueryResult {
   }[];
   communes: {
     id: string;
+    slug: string;
     commune_translations: { name: string; locale: Locale }[];
   } | null;
 }
@@ -53,11 +55,15 @@ export async function listLocalities(locale: Locale): Promise<Locality[]> {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("localities")
     .select<typeof LOCALITIES_QUERY, LocalityQueryResult>(LOCALITIES_QUERY)
     .eq("locality_translations.locale", locale)
     .eq("communes.commune_translations.locale", locale);
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
 
   if (error || !data) {
     // Sin este log, una columna que falta en la base (migración sin aplicar)
@@ -80,13 +86,16 @@ export async function getLocalityBySlug(
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("localities")
     .select<typeof LOCALITIES_QUERY, LocalityQueryResult>(LOCALITIES_QUERY)
     .eq("slug", slug)
     .eq("locality_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .maybeSingle();
+    .eq("communes.commune_translations.locale", locale);
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder.maybeSingle();
 
   if (error || !data) {
     if (error) console.error("getLocalityBySlug:", error.message);

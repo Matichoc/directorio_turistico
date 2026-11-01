@@ -1,47 +1,68 @@
-# Arquitectura — Petorca en Ruta
+# Arquitectura — El diablo murió en Petorca y en La Ligua lo enterraron
 
 Aplicación única Next.js 16 (App Router) con TypeScript, sin monorepo.
+(Árbol revisado contra el código el 2026-11-01.)
 
 ## Capas
 
 ```
 src/
 ├── app/
-│   ├── [locale]/        interfaz pública (es/en), localizada con next-intl
-│   ├── admin/            panel administrativo, protegido por Supabase Auth
-│   │                      (fuera de [locale]: sin i18n, sin bottom nav)
-│   ├── api/               route handlers (p. ej. /api/analytics)
+│   ├── [locale]/          interfaz pública (es/en), localizada con next-intl:
+│   │                      inicio, explorar, lugares, pueblos, rutas,
+│   │                      recorrido, informacion, privacidad
+│   ├── admin/             panel administrativo, protegido por Supabase Auth
+│   │                      (fuera de [locale]: sin i18n, sin bottom nav):
+│   │                      lugares (+ CSV), rutas, pueblos, comunas-categorias,
+│   │                      verificaciones, metricas, login
+│   ├── api/               route handlers: analytics, place-photo (proxy de
+│   │                      fotos de Google), directions (rutas por calle),
+│   │                      trip/places
 │   ├── manifest.ts        manifest PWA
-│   └── sw.ts               service worker (Serwist)
+│   ├── sitemap.ts / robots.ts
+│   └── sw.ts              service worker (Serwist)
 ├── components/
-│   ├── ui/                componentes genéricos (nav, selectores)
-│   ├── map/                MapLibre/react-map-gl
-│   ├── place/               tarjetas/ficha de lugar
-│   ├── route/                tarjetas/detalle de ruta
-│   └── itinerary/             UI de "mi recorrido"
+│   ├── ui/                genéricos (nav, PageHero, íconos, fichas, auspicio)
+│   ├── home/              portada (vuelo 3D, banner de municipios, buscador)
+│   ├── explore/           /explorar (mapa por sectores, árbol, filtros)
+│   ├── map/               MapLibre/react-map-gl (pines, sectores, ficha del jugador)
+│   ├── place/             tarjetas/ficha de lugar (fotos, me gusta, comentarios)
+│   ├── route/             tarjetas/detalle de ruta (checklist, navegación)
+│   ├── trip/              UI de "Mi recorrido"
+│   ├── admin/             formularios del panel
+│   └── analytics/         TrackEvent
 ├── lib/
-│   ├── data/                lectura de datos públicos (Supabase, RLS anon/auth)
-│   ├── server/content/       server actions de escritura (verificación, fuentes)
-│   ├── supabase/               clientes: browser, server (SSR/cookies), admin (service role)
-│   ├── itinerary-engine/        módulo TS puro: build(input) → Itinerary
-│   ├── maps/                     config de proveedor de tiles
-│   └── analytics/                  tracking de eventos anónimos
-├── i18n/                     routing/navigation/request config de next-intl
-├── messages/                  es.json / en.json
-└── types/                      database.ts (esquema) + domain.ts (modelos de UI)
+│   ├── data/              lectura de datos públicos (Supabase, RLS anon/auth)
+│   ├── server/content/    server actions de escritura (contenido, verificación, comentarios)
+│   ├── supabase/          clientes: browser, server (SSR/cookies), admin (service
+│   │                      role), middleware; env.ts elige el esquema
+│   ├── itinerary-engine/  módulo TS puro: build(input) → Itinerary
+│   ├── maps/              estilo de mapa, relieve 3D, direcciones
+│   ├── ui/                lógica de UI pura (árbol de explorar, sectores,
+│   │                      escenas, gradientes por categoría)
+│   ├── trip/, likes/, route-progress/, navigation/, session/
+│   │                      estado del visitante (recorrido, me gusta,
+│   │                      progreso de ruta, ficha, sesión anónima)
+│   ├── http/              rate limit (en memoria, por instancia)
+│   └── analytics/         nombres de evento + envío
+├── i18n/                  routing/navigation/request config de next-intl
+├── messages/              es.json / en.json
+├── proxy.ts               middleware (Next 16 lo llama proxy): locale + sesión de /admin
+└── types/                 database.ts (esquema) + domain.ts (modelos de UI)
 ```
 
 ## Flujo de datos
 
+- **Esquema de la base**: todos los clientes (y los scripts) pasan por `supabaseDbOptions()` de `lib/supabase/env.ts`. En el proyecto compartido con Papudo (city_tour) usan `legacy`, y `public` se rechaza; en cualquier otro proyecto, `public`. Ver `docs/SUPABASE-LEGACY.md`. Abajo, "`admin_users`"/"`is_admin()`" son las de ese esquema (`legacy.*` en producción).
 - **Lectura pública** (`lib/data/*`): usa el cliente Supabase "server" (anon key + cookies de sesión), sujeto a RLS. Nunca usa el service role.
-- **Escritura desde admin** (`lib/server/content/*`, futuras acciones de `app/admin`): usa el mismo cliente "server" autenticado — el usuario admin debe estar en `public.admin_users` para que las políticas RLS permitan el insert/update.
+- **Escritura desde admin** (`lib/server/content/*`, server actions de `app/admin`): usa el mismo cliente "server" autenticado — el usuario admin debe estar en `admin_users` para que las políticas RLS permitan el insert/update.
 - **Analítica**: `/api/analytics` usa el cliente normal (anon key; la RLS permite insert anónimo). **Seed**: usa el cliente "admin" (`lib/supabase/admin.ts`, service role), porque corre fuera de la app. `admin.ts` está marcado `server-only` para evitar que se filtre al bundle del navegador.
-- **Itinerarios anónimos**: por diseño, RLS los deniega a `anon`/`authenticated` directamente (ver `docs/DATA-MODEL.md`). Cualquier lectura/escritura debe pasar por un server action que valide la sesión anónima (cookie/localStorage) antes de usar el cliente admin. Esto evita que cualquiera pueda enumerar itinerarios ajenos vía PostgREST.
+- **Visitante (me gusta, comentarios, Mi recorrido)**: sesión anónima real de Supabase Auth (`lib/session/visitor-session.ts`, `signInAnonymously()`). La RLS exige `user_id = auth.uid()`, así que el navegador lee y escribe lo suyo directo, sin cliente admin, y nadie puede enumerar recorridos ajenos (ver `docs/DATA-MODEL.md`, migración `0018`).
 
 ## i18n
 
 - `next-intl` con `localePrefix: "always"` (`/es`, `/en`) y rutas localizadas por `pathnames` (p. ej. `/rutas` ↔ `/routes`).
-- `src/middleware.ts` combina el middleware de locale con el refresco de sesión de Supabase Auth para `/admin`, que queda excluido del ruteo por locale.
+- `src/proxy.ts` (en Next 16 el middleware se llama "proxy") combina el middleware de locale con el refresco de sesión de Supabase Auth para `/admin`, que queda excluido del ruteo por locale.
 - El layout raíz (`app/layout.tsx`) obtiene el locale con `getLocale()` para fijar `<html lang>`, ya que debe cubrir tanto `[locale]` como `admin`/`api`.
 
 ## SEO y compartir
@@ -50,8 +71,8 @@ src/
 
 ## Panel admin
 
-- `app/admin/*` está protegido por `middleware.ts` → `lib/supabase/middleware.ts`, que redirige a `/admin/login` si no hay sesión.
-- Autorización fina (qué puede hacer un usuario autenticado) vive en RLS vía `public.is_admin()`, no solo en el middleware.
+- `app/admin/*` está protegido por `proxy.ts` → `lib/supabase/middleware.ts`, que redirige a `/admin/login` si no hay sesión, y cierra la sesión si la cuenta no está en `admin_users` (una sesión anónima de visitante no basta).
+- Autorización fina (qué puede hacer un usuario autenticado) vive en RLS vía `is_admin()`, no solo en el middleware.
 
 ## Motor de itinerarios
 
@@ -69,4 +90,4 @@ Implementación: con hasta `EXACT_ORDER_STOPS_LIMIT` paradas prueba todos los ó
 
 ## Mapas
 
-MapLibre GL + `react-map-gl`, con el estilo de mapa resuelto por `NEXT_PUBLIC_MAP_STYLE_URL` (`lib/maps/config.ts`). Sin esa variable, usa el estilo demo gratuito de MapLibre — solo para desarrollo, no para producción.
+MapLibre GL (fijado en v5, ver Riesgo #15 de `docs/PLAN.md`) + `react-map-gl`, con el estilo de mapa resuelto por `NEXT_PUBLIC_MAP_STYLE_URL` (`lib/maps/config.ts`). Sin esa variable, usa OpenFreeMap "liberty" (gratis, sin API key), oscurecido con la clase `map-dark` para ir a juego con el sitio. El relieve del vuelo 3D del inicio se sirve desde el propio sitio (`public/terrain`, `lib/maps/terrain.ts`).

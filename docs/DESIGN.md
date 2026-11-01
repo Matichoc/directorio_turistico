@@ -316,6 +316,12 @@ string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
   `place_images` (Wikimedia, Google Places vía proxy, o subida a mano),
   con `PhotoOrIcon` como envoltorio único que decide foto-vs-ícono y maneja
   el `onError` — no reimplementar ese fallback en un componente nuevo.
+- **Fotos de Google** (`/api/place-photo`): el `name` de una foto de Google
+  vence, así que el proxy pide en el momento las fotos vigentes del lugar
+  (cacheadas una hora) y sirve la del mismo autor que dice el crédito
+  guardado (`lib/google/place-photo-ref.ts`). Si ese autor ya no está, no
+  sirve otra foto con su nombre: cae al ícono. Antes de este arreglo
+  (2026-11-01) no cargaba ninguna; ahora cargan 35 de las 38 de Petorca.
 - **Crédito de foto**: la leyenda abajo-derecha de `PlacePhotoHero` solo
   muestra lo que la foto trae (`place_images.alt_text`: autor/fuente/
   licencia). Sin dato no hay leyenda — nunca una atribución por defecto.

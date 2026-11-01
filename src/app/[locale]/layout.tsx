@@ -5,6 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { BottomNav } from "@/components/ui/bottom-nav";
 import { TopNav } from "@/components/ui/top-nav";
+import { MobileHeader } from "@/components/ui/mobile-header";
 import { SponsorBanner } from "@/components/ui/sponsor-banner";
 import { DevEnvironmentBanner } from "@/components/ui/dev-environment-banner";
 import { ServiceWorkerRegister } from "@/components/offline/service-worker-register";
@@ -37,6 +38,7 @@ export default async function LocaleLayout({
         <DevEnvironmentBanner />
         <ServiceWorkerRegister />
         <TopNav />
+        <MobileHeader />
         {/* Mismo `max-w-3xl` que `TopNav`/`BottomNav`/`SponsorBanner`: sin
             esto, el contenido de cada página se estiraba a todo el ancho
             de la ventana en monitores anchos mientras el nav y el auspicio

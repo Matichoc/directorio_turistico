@@ -7,7 +7,7 @@
     "info": "Info"
   },
   "info": {
-    "about": "A tourism directory for the commune of Petorca, the land where, as the saying goes, the Devil died: real places, routes and trips, made by people from the area.",
+    "about": "A guide made in Petorca, with real information and its sources: so visitors fall in love with the valley, and locals can show it off with pride.",
     "developmentTitle": "Development",
     "developmentCredit": "Built by Cristóbal Roco, CTO of Matichoc.",
     "developerTagline": "Support your AI projects, and projects built with AI.",
@@ -19,11 +19,11 @@
   "home": {
     "title": "El diablo murió en Petorca",
     "provinceLabel": "Commune of Petorca: Pedegua · Petorca · Chincolco · Hierro Viejo",
-    "subtitle": "Explore the land where the Devil died: its villages, the route where he lost his poncho, the old railway and the Las Palmas Tunnel.",
+    "subtitle": "The valley where the devil danced the cueca, lost his poncho and stayed for good. Old railway tunnels, petroglyphs over 800 years old, a church from 1640, chicha and country empanadas. Come and discover it… or rediscover it if you live here.",
     "searchPlaceholder": "Search a place or town",
     "featuredRoutes": "Featured routes",
     "intent": {
-      "title": "What are you looking for today?",
+      "title": "What are you in the mood for?",
       "nature": "Nature & adventure",
       "gastronomy": "Food & drink",
       "culture": "Heritage & culture",
@@ -45,8 +45,8 @@
       }
     },
     "flyover": {
-      "title": "Fly over Petorca",
-      "subtitle": "The commune's real terrain in 3D, village by village: from Pedegua to Chincolco.",
+      "title": "Fly over the valley",
+      "subtitle": "From Pedegua to Chincolco, up the valley toward the Andes: the commune's real terrain in 3D, village by village.",
       "play": "▶ Tour the commune",
       "pause": "❚❚ Pause",
       "overview": "Whole commune",
@@ -67,7 +67,7 @@
     "noResults": "We couldn't find places matching these filters.",
     "otherPlaces": "Other places",
     "villagesOnMap": "{count, plural, one {# village} other {# villages}} on the map",
-    "subtitle": "Tap a pin on the map to see what it offers: history, hills, the railway and the devil's haunts. Prefer a list? Switch to List.",
+    "subtitle": "Hills, history, country flavors and corners with a legend. Tap a pin to see what each village hides, or switch to List.",
     "communeSummary": "{villages, plural, =0 {no villages} one {# village} other {# villages}} · {places, plural, =0 {no attractions} one {# attraction} other {# attractions}}",
     "filtersButton": "Filters",
     "placesCount": "{count, plural, =0 {No attractions} one {# attraction} other {# attractions}}",
@@ -133,6 +133,7 @@
     "addToTrip": "Add full route",
     "addedToTrip": "Route added to your trip",
     "viewAll": "View all routes",
+    "listSubtitle": "Follow the devil's trail or the old railway line: stops in order, step-by-step voice guidance and a map that works without signal.",
     "noResults": "No published routes yet.",
     "viewOnMap": "View route on map",
     "checklistProgress": "{visited}/{total} stops visited",
@@ -224,7 +225,7 @@
   },
   "trip": {
     "title": "My trip",
-    "subtitle": "Build your itinerary by adding places and routes from the site; it's saved only on this device.",
+    "subtitle": "Plan your getaway your way: add places and routes, put them in order and share them on WhatsApp. Saved on this phone.",
     "empty": "You haven't added any places to your trip yet.",
     "emptyCta": "Explore places",
     "loading": "Building your itinerary…",
@@ -357,7 +358,7 @@
     },
     "home": {
       "title": "The legend of the Devil",
-      "body": "He lost his poncho in Chalaco, died in Petorca and was buried in La Ligua. Read it or listen to it.",
+      "body": "They say he danced the cueca with the miners, lost his poncho in Chalaco and died in Petorca. Listen to the legend behind this valley's name.",
       "cta": "Discover the legend"
     }
   },

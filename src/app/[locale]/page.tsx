@@ -1,5 +1,4 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { HomeSearchForm } from "@/components/home/home-search-form";
 import { RouteCard } from "@/components/route/route-card";
 import { MunicipalityBanner } from "@/components/home/municipality-banner";
@@ -118,12 +117,9 @@ export default async function HomePage({
         />
         <SparkleField />
 
-        <header className="relative flex items-start justify-between gap-4">
-          <p className="text-xs font-semibold tracking-wide text-amber-300 uppercase">
-            {t("provinceLabel")}
-          </p>
-          <LocaleSwitcher />
-        </header>
+        <p className="relative text-xs font-semibold tracking-wide text-amber-300 uppercase">
+          {t("provinceLabel")}
+        </p>
 
         {/* Desde sm: el texto ocupa la mitad izquierda; la derecha es del
             diablo de la escena (sin taparle la cara). */}

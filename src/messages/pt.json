@@ -14,6 +14,7 @@
     "developerInstagram": "Instagram: @el.cristo.cl",
     "developerWhatsapp": "WhatsApp",
     "sponsorNote": "Patrocinado pela Chocolatería Matichoc — chocolate artesanal feito em La Ligua.",
+    "legendLink": "A lenda do diabo",
     "privacyLink": "Privacidade"
   },
   "home": {
@@ -93,6 +94,7 @@
       "label": "Categorias",
       "all": "Tudo",
       "routes": "Rotas",
+      "legend": "A lenda",
       "empty": "Ainda não há lugares de {category} na comuna. Estamos adicionando: se você conhece algum, conte para nós em Informações."
     }
   },
@@ -155,6 +157,7 @@
     "tripError": "Não conseguimos adicionar a rota ao seu roteiro. Tente novamente daqui a pouco.",
     "official": {
       "instagram": "Siga no Instagram",
+      "legend": "Conheça a lenda",
       "routes": {
         "poncho": {
           "badge": "Rota turística oficial",

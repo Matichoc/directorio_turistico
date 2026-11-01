@@ -14,6 +14,7 @@
     "developerInstagram": "Instagram: @el.cristo.cl",
     "developerWhatsapp": "WhatsApp",
     "sponsorNote": "Sponsored by Chocolatería Matichoc — artisan chocolate made in La Ligua.",
+    "legendLink": "The legend of the devil",
     "privacyLink": "Privacy"
   },
   "home": {
@@ -93,6 +94,7 @@
       "label": "Categories",
       "all": "All",
       "routes": "Routes",
+      "legend": "The legend",
       "empty": "There are no {category} places in the commune yet. We're adding them: if you know one, tell us from Information."
     }
   },
@@ -155,6 +157,7 @@
     "tripError": "We couldn't add the route to your trip. Please try again in a while.",
     "official": {
       "instagram": "Follow it on Instagram",
+      "legend": "Read the legend",
       "routes": {
         "poncho": {
           "badge": "Official tourist route",

@@ -58,6 +58,13 @@ export default async function InfoPage({
         <p className="text-foreground/60 text-sm">{info("sponsorNote")}</p>
 
         <Link
+          href="/leyenda"
+          className="text-accent hover:text-foreground w-fit text-sm font-medium underline underline-offset-2"
+        >
+          {info("legendLink")} →
+        </Link>
+
+        <Link
           href="/privacidad"
           className="text-foreground/60 hover:text-accent w-fit text-sm underline underline-offset-2"
         >

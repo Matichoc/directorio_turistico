@@ -22,6 +22,13 @@ pnpm dev
 
 Abre [http://localhost:3000](http://localhost:3000) — redirige a `/es`.
 
+## Ambientes
+
+- **Producción**: rama `main`, datos reales (`legacy`).
+- **Desarrollo**: rama `develop` y vistas previas de cada PR, sobre una copia
+  de prueba (`legacy_dev`) con franja amarilla de aviso. Puesta en marcha y
+  reglas: `docs/DESARROLLO.md`.
+
 ## Alcance: comuna de Petorca
 
 Esta rama muestra solo la **comuna de Petorca**: la lista

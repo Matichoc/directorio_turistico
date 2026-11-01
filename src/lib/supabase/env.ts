@@ -86,6 +86,15 @@ export function getSupabaseSchema(): string {
 }
 
 /**
+ * ¿El sitio está leyendo una copia de prueba de los datos? Es el ambiente de
+ * desarrollo (`legacy_dev`, ver docs/DESARROLLO.md): la rama `develop` y las
+ * vistas previas de Vercel. Se usa para mostrar un aviso bien visible.
+ */
+export function isDevelopmentSchema(schema: string): boolean {
+  return schema.endsWith("_dev");
+}
+
+/**
  * Opción `db` de los clientes de Supabase. El tipo `Database` solo declara
  * `public`, así que el nombre se afirma como tal: en ejecución es el
  * esquema real (`legacy` en el proyecto compartido).

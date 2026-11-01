@@ -38,13 +38,20 @@ function isCurrentlyFeatured(featuredUntil: string | null): boolean {
   );
 }
 
+/**
+ * Las consultas nombran la llave de la categoría principal
+ * (`places_category_id_fkey`): si otra tabla llegara a unir lugares y
+ * categorías (como pasó con `place_secondary_categories`, ver
+ * supabase/manual/arreglo-categorias-ambiguas.sql), la API no sabría cuál
+ * usar y el sitio se quedaba sin lugares.
+ */
 const PLACE_QUERY =
   `id, slug, commune_id, category_id, locality_id, latitude, longitude, address,
    phone, website, featured_until, icon, publication_status, verification_status,
    place_translations!inner(name, short_description, description, locale),
    communes!inner(slug, commune_translations!inner(name, locale)),
    localities(slug, locality_translations(name, locale)),
-   categories!inner(slug, category_translations!inner(name, locale)),
+   categories!places_category_id_fkey!inner(slug, category_translations!inner(name, locale)),
    place_tags(tags(slug)),
    place_images(storage_path, alt_text, position)` as const;
 
@@ -148,7 +155,7 @@ const PLACES_LIST_QUERY =
    place_translations!inner(name, short_description, locale),
    communes!inner(slug, commune_translations!inner(name, locale)),
    localities(slug, locality_translations(name, locale)),
-   categories!inner(slug, category_translations!inner(name, locale)),
+   categories!places_category_id_fkey!inner(slug, category_translations!inner(name, locale)),
    place_tags(tags(slug)),
    place_images(storage_path, alt_text, position)` as const;
 
@@ -371,7 +378,7 @@ const ADMIN_PLACES_LIST_QUERY =
   `id, slug, publication_status, verification_status, status_changed_at,
    place_translations!inner(name, locale),
    communes!inner(commune_translations!inner(name, locale)),
-   categories!inner(category_translations!inner(name, locale))` as const;
+   categories!places_category_id_fkey!inner(category_translations!inner(name, locale))` as const;
 
 interface AdminPlaceListQueryResult {
   id: string;
@@ -659,7 +666,7 @@ const ADMIN_PLACES_EXPORT_QUERY =
    place_translations(locale, name, short_description, description),
    communes!inner(commune_translations!inner(name, locale)),
    localities(locality_translations(name, locale)),
-   categories!inner(category_translations!inner(name, locale))` as const;
+   categories!places_category_id_fkey!inner(category_translations!inner(name, locale))` as const;
 
 interface AdminPlaceExportQueryResult {
   slug: string;

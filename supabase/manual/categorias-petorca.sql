@@ -62,9 +62,15 @@ begin
     end loop;
 
     -- 2) Categorías adicionales por lugar
+    -- Sin llave hacia `places` a propósito: con llaves a `places` y a
+    -- `categories` la API (PostgREST) ve un segundo camino entre lugares y
+    -- categorías y la consulta "lugar con su categoría" se vuelve ambigua
+    -- (pasó el 2026-11-01: el sitio quedó sin lugares). Ver
+    -- arreglo-categorias-ambiguas.sql, que además borra las filas de un
+    -- lugar eliminado con un disparador.
     execute format(
       'create table if not exists %1$I.place_secondary_categories (
-         place_id uuid not null references %1$I.places (id) on delete cascade,
+         place_id uuid not null,
          category_id uuid not null references %1$I.categories (id) on delete cascade,
          primary key (place_id, category_id)
        )', s);

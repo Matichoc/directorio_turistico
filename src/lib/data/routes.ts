@@ -17,7 +17,7 @@ const ROUTE_QUERY = `id, slug, estimated_duration_minutes, cover_image,
      places(slug, latitude, longitude, icon,
        place_translations(name, short_description, locale),
        place_images(storage_path, position),
-       categories(slug),
+       categories!places_category_id_fkey(slug),
        communes(slug)))` as const;
 
 interface RouteQueryResult {

@@ -123,6 +123,27 @@ número si no hay ninguno). Al pasar el mouse la escena se acerca lento y la
 tarjeta se enciende con el glow de siempre. Pedido del usuario: las tarjetas
 planas con un ícono "no me gustan".
 
+## Sitio acotado a una comuna (`lib/site-scope.ts`)
+
+Desde 2026-11-01 (rama `petorca`) el sitio muestra solo la comuna de
+Petorca, sin perder el look ni el folclore. Lo visual que dependía de "varias
+comunas" se adapta solo cuando hay una:
+
+- **Vuelo 3D**: con una sola comuna, la cámara va de **pueblo en pueblo** (los
+  que tienen atractivos, más la cabecera, de oeste a este: Pedegua → Hierro
+  Viejo → Petorca → Chincolco) y el botón lleva a la ficha del pueblo; la vista
+  general encuadra esas paradas en vez de la provincia.
+- **Mapa de `/explorar`**: con una sola comuna no hay sectores (burbujas por
+  comuna); arranca directo en los pines.
+- **Postales "¿Qué buscas hoy?"**: solo las categorías con lugares reales
+  (en Petorca: naturaleza y cultura) — nunca una postal que lleve a una lista
+  vacía.
+- **Rutas**: solo las que tienen todas sus paradas en la comuna.
+
+Los textos (`messages/*.json`) hablan de "la comuna de Petorca". Volver a la
+provincia es vaciar `SITE_COMMUNE_SLUGS` (y los textos están en la rama
+`provincia-completa`).
+
 ## Vuelo 3D por la provincia (home)
 
 El "efecto wow" del inicio (`ProvinceFlyover`, `components/home/`): el

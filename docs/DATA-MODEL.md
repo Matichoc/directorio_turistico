@@ -1,9 +1,18 @@
-# Modelo de datos — Petorca en Ruta
+# Modelo de datos — El diablo murió en Petorca y en La Ligua lo enterraron
 
-Fuente de verdad: `supabase/migrations/*.sql`. Este documento es un resumen legible;
-ante cualquier discrepancia, las migraciones mandan. El tipo TypeScript espejo
-vive en `src/types/database.ts` (a reemplazar por `supabase gen types typescript`
-cuando exista un proyecto real).
+Fuente de verdad del esquema: `supabase/migrations/*.sql` (más los scripts
+manuales de `supabase/manual/`). Este documento es un resumen legible; ante
+cualquier discrepancia, las migraciones mandan. El tipo TypeScript espejo vive
+en `src/types/database.ts`, escrito a mano.
+
+> **Dónde vive (desde 2026-10-17):** en producción todas estas tablas y
+> funciones están en el esquema **`legacy`** del proyecto de Supabase
+> compartido con Papudo (city_tour), no en `public`. Donde abajo dice
+> `public.is_admin()` o `public.admin_users`, en producción es
+> `legacy.is_admin()` / `legacy.admin_users`. Las migraciones numeradas son
+> historial (escritas para `public`): **no se aplican a ese proyecto**; los
+> cambios nuevos van como SQL con `legacy.` en `supabase/manual/`. Ver
+> `docs/SUPABASE-LEGACY.md`.
 
 ## Tipos enumerados
 
@@ -163,8 +172,10 @@ pero solo lectura de administrador. No debe contener PII: `properties` es un
 `admin_users(user_id)` mapea usuarios de `auth.users` a rol de administrador.
 `public.is_admin()` es una función `security definer` que evalúa
 `auth.uid()` contra esa tabla; todas las políticas de escritura la usan.
-Alta de administradores: manual (insert directo con service role), no hay UI
-todavía.
+Alta de administradores: manual, sin pantalla — crear el usuario en
+Authentication → Users y luego, en el SQL Editor,
+`insert into legacy.admin_users (user_id) values ('<UID>');` (en el
+proyecto compartido; nunca en `public`, que es de Papudo).
 
 ## Pendientes / no confirmado con el cliente
 

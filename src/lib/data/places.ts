@@ -1,6 +1,11 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import {
+  isCommuneInScope,
+  isSiteScoped,
+  SITE_COMMUNE_SLUGS,
+} from "@/lib/site-scope";
 import type {
   Locale,
   PublicationStatus,
@@ -37,7 +42,7 @@ const PLACE_QUERY =
   `id, slug, commune_id, category_id, locality_id, latitude, longitude, address,
    phone, website, featured_until, icon, publication_status, verification_status,
    place_translations!inner(name, short_description, description, locale),
-   communes!inner(commune_translations!inner(name, locale)),
+   communes!inner(slug, commune_translations!inner(name, locale)),
    localities(slug, locality_translations(name, locale)),
    categories!inner(slug, category_translations!inner(name, locale)),
    place_tags(tags(slug)),
@@ -64,7 +69,10 @@ interface PlaceQueryResult {
     description: string | null;
     locale: Locale;
   }[];
-  communes: { commune_translations: { name: string; locale: Locale }[] } | null;
+  communes: {
+    slug: string;
+    commune_translations: { name: string; locale: Locale }[];
+  } | null;
   localities: {
     slug: string;
     locality_translations: { name: string; locale: Locale }[];
@@ -96,7 +104,8 @@ export async function getPlaceBySlug(
     .eq("publication_status", "published")
     .maybeSingle();
 
-  if (error || !data) {
+  // Fuera del alcance del sitio (ver lib/site-scope.ts): como si no existiera.
+  if (error || !data || !isCommuneInScope(data.communes?.slug)) {
     return null;
   }
 
@@ -228,6 +237,9 @@ export async function listPlaces(
   if (filters.categorySlug) {
     builder = builder.eq("categories.slug", filters.categorySlug);
   }
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
 
   const { data, error } = await builder;
 
@@ -270,7 +282,7 @@ export async function listPlacesByLocalityId(
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("places")
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
     .eq("locality_id", localityId)
@@ -278,6 +290,10 @@ export async function listPlacesByLocalityId(
     .eq("place_translations.locale", locale)
     .eq("communes.commune_translations.locale", locale)
     .eq("categories.category_translations.locale", locale);
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
 
   if (error || !data) {
     return [];
@@ -505,7 +521,9 @@ export async function getPlacesByIds(
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  // Un recorrido armado antes de acotar el sitio puede traer lugares de otra
+  // comuna: quedan fuera, igual que en el resto del sitio.
+  let builder = supabase
     .from("places")
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
     .in("id", ids)
@@ -513,6 +531,10 @@ export async function getPlacesByIds(
     .eq("place_translations.locale", locale)
     .eq("communes.commune_translations.locale", locale)
     .eq("categories.category_translations.locale", locale);
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
 
   if (error || !data) {
     return [];

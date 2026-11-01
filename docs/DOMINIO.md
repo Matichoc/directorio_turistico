@@ -41,7 +41,9 @@ variable, `NEXT_PUBLIC_SITE_URL` (ver `getSiteUrl` en `src/lib/seo.ts`).
    trámite aparte.
 3. **Cuenta de Vercel definitiva.** El sitio hoy se publica en **dos
    proyectos**: `directorio-turistico` y `directorio-turistico-bgl3` (los dos
-   se reconstruyen con cada cambio en `main`). Hay que quedarse con uno solo,
+   se reconstruyen con cada cambio en `main`). Al 2026-11-01,
+   `directorio-turistico-bgl3.vercel.app` es el que responde con datos;
+   `directorio-turistico.vercel.app` devolvía 404. Hay que quedarse con uno solo,
    en la cuenta o equipo que va a pagar y administrar el sitio (por ejemplo,
    un equipo "Matichoc").
 4. **Plan de Vercel.** El plan gratis (Hobby) es solo para uso personal y
@@ -66,14 +68,15 @@ Quédate con ese. Anota su link actual por si alguien lo tiene guardado.
 Variables que debe tener (en **Production**, y idealmente también en
 Preview):
 
-| Variable                        | Para qué                                                    | ¿Secreta? |
-| ------------------------------- | ----------------------------------------------------------- | --------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Dirección de la base de datos                               | No        |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Llave pública de Supabase                                   | No        |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Llave de administrador (solo servidor)                      | **Sí**    |
-| `GOOGLE_PLACES_API_KEY`         | Fotos de Google y rutas por calle (solo servidor)           | **Sí**    |
-| `NEXT_PUBLIC_SITE_URL`          | El dominio propio (paso 5)                                  | No        |
-| `NEXT_PUBLIC_MAP_STYLE_URL`     | Opcional: estilo de mapa propio; vacío = OpenFreeMap oscuro | No        |
+| Variable                        | Para qué                                                      | ¿Secreta? |
+| ------------------------------- | ------------------------------------------------------------- | --------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Dirección de la base de datos                                 | No        |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Llave pública de Supabase                                     | No        |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Llave de administrador (solo servidor)                        | **Sí**    |
+| `GOOGLE_PLACES_API_KEY`         | Fotos de Google y rutas por calle (solo servidor)             | **Sí**    |
+| `NEXT_PUBLIC_SITE_URL`          | El dominio propio (paso 5)                                    | No        |
+| `NEXT_PUBLIC_MAP_STYLE_URL`     | Opcional: estilo de mapa propio; vacío = OpenFreeMap oscuro   | No        |
+| `NEXT_PUBLIC_SUPABASE_SCHEMA`   | Opcional: vacía o `legacy`; **nunca `public`** (es de Papudo) | No        |
 
 Las llaves de Supabase están en Supabase → Project Settings → API.
 
@@ -173,8 +176,13 @@ compartir usan el dominio nuevo.
 
 ## 6. Supabase: el login del admin con el dominio nuevo
 
-1. Supabase → tu proyecto → **Authentication → URL Configuration**.
-2. **Site URL**: `https://tudominio.cl`.
+> Desde el 2026-10-17 el diablo comparte el proyecto de Supabase (city_tour)
+> con el sitio de Papudo (ver `docs/SUPABASE-LEGACY.md`). La configuración de
+> Authentication es **una sola para los dos sitios**: el **Site URL es de
+> Papudo y no se cambia**.
+
+1. Supabase → proyecto city_tour → **Authentication → URL Configuration**.
+2. **Site URL**: no tocar (es el de Papudo).
 3. **Redirect URLs**: agrega `https://tudominio.cl/**` (y
    `https://www.tudominio.cl/**` si vas a usar www). Deja el link
    `*.vercel.app` también mientras haya gente usándolo.
@@ -191,7 +199,9 @@ pueblos. Se puede reanudar desde el panel, pero no conviene que pase justo
 cuando un municipio entra a mirar.
 
 - Recomendado antes de presentarlo: **Supabase → Organization → Billing →
-  plan Pro** (los proyectos pagados no se pausan).
+  plan Pro** (los proyectos pagados no se pausan). Como el proyecto es
+  compartido con Papudo, pasarlo a Pro beneficia a los dos sitios: es una
+  decisión conjunta.
 - Mientras tanto: revisa el correo del dueño de Supabase; si llega el
   aviso, entra al proyecto y se cancela la pausa.
 
@@ -249,7 +259,7 @@ Para escribirle a los encargados de turismo desde
 | Vercel sigue en "Invalid Configuration"     | El DNS aún se propaga (espera unas horas) o los nameservers en NIC no quedaron guardados.                                                |
 | El sitio abre pero sin candado              | Vercel aún emite el certificado; tarda unos minutos después de validar el dominio.                                                       |
 | WhatsApp muestra el link viejo o sin imagen | Falta el redeploy tras `NEXT_PUBLIC_SITE_URL`, o WhatsApp tiene la vista previa en caché (prueba con otro chat o agrega `?v=2` al link). |
-| `/admin` vuelve al link `vercel.app`        | Falta el paso 6 (Site URL / Redirect URLs en Supabase).                                                                                  |
+| `/admin` vuelve al link `vercel.app`        | Falta el paso 6 (Redirect URLs en Supabase; el Site URL es de Papudo y no se cambia).                                                    |
 | El sitio abre pero sin lugares ni pueblos   | Supabase pausado (paso 7) o variables de Supabase faltantes en el proyecto elegido (paso 1a).                                            |
 | El celular muestra una versión vieja        | Cerrar y abrir la pestaña o la app instalada; la versión nueva se carga al recargar.                                                     |
 

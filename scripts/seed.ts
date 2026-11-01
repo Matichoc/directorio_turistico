@@ -1917,6 +1917,68 @@ const routes = [
       label: "Cavando en Petorca y su Minería — El Diablo murió en Petorca",
     },
   },
+  // Las dos rutas del sitio acotado a la comuna de Petorca (pedido del
+  // usuario, 2026-11-01): Pedegua → Chincolco y la ferroviaria (Pedegua
+  // hacia Las Palmas). Todas sus paradas son de la comuna de Petorca — la
+  // Ruta del Diablo de arriba pasa por Ruta de los Túneles (Cabildo), así que
+  // ese sitio no la muestra (ver src/lib/site-scope.ts). Textos armados solo
+  // con lo que ya dicen las fichas de cada parada y sus fuentes. Duración sin
+  // estimar todavía (null): se completa desde /admin/rutas tras recorrerlas.
+  //
+  // Nombre: "Donde el Diablo perdió el poncho", decisión del usuario
+  // (2026-11-01). Es también el nombre de una ruta turística real de Petorca
+  // (Municipalidad e INDAP, 2018; ver docs/PROPUESTA-CONTENIDO-PETORCA.md);
+  // por un rato se llamó "Ruta del Diablo: de Pedegua a Chincolco" y el
+  // usuario pidió volver al nombre original. El slug quedó de esa vuelta.
+  {
+    slug: "ruta-del-diablo-pedegua-chincolco",
+    durationMinutes: null,
+    coverImage: "/rutas/ruta-del-diablo.webp",
+    es: {
+      name: "Donde el Diablo perdió el poncho",
+      description:
+        'Por los lugares del dicho "el diablo murió en Petorca y en La Ligua lo enterraron": parte en la antigua estación y el puente de Pedegua, y sigue valle arriba por la Escalera del Diablo en Hierro Viejo y la Iglesia La Merced de Petorca hasta los petroglifos de Chincolco.',
+    },
+    en: {
+      name: "Where the Devil Lost His Poncho",
+      description:
+        "Through the places of the old saying \"the Devil died in Petorca and was buried in La Ligua\": it starts at Pedegua's old railway station and bridge, then heads up the valley through the Devil's Staircase in Hierro Viejo and La Merced Church in Petorca to the Chincolco petroglyphs.",
+    },
+    // De oeste a este, siguiendo el valle: Pedegua → Hierro Viejo →
+    // Petorca → Chincolco.
+    stopSlugs: [
+      "pedegua",
+      "pedegua-puente",
+      "escalera-del-diablo",
+      "iglesia-la-merced-petorca",
+      "petorca-petroglifos-chincolco",
+    ],
+    source: {
+      url: "https://petorcaminera.wordpress.com/2016/12/13/el-diablo-murio-en-petorca/",
+      label: "Cavando en Petorca y su Minería — El Diablo murió en Petorca",
+    },
+  },
+  {
+    slug: "ruta-ferroviaria-pedegua-las-palmas",
+    durationMinutes: null,
+    // Sin portada propia todavía: cae a la foto de la primera parada
+    // (Pedegua), ver pickRouteCoverPhoto.
+    es: {
+      name: "Ruta Ferroviaria: de Pedegua a Las Palmas",
+      description:
+        "Por el antiguo trazado del ferrocarril: desde la estación de Pedegua, que conserva su fachada y bodegas restauradas, por el puente sobre el río Petorca, hasta el Túnel Las Palmas: 966 m inaugurados en 1914 como parte de la red Longitudinal Norte, Monumento Histórico desde 2011.",
+    },
+    en: {
+      name: "Railway Route: Pedegua to Las Palmas",
+      description:
+        "Along the old railway line: from Pedegua station, which keeps its restored façade and warehouses, across the bridge over the Río Petorca, to the Túnel Las Palmas: 966 m opened in 1914 as part of the Northern Longitudinal network, a National Historic Monument since 2011.",
+    },
+    stopSlugs: ["pedegua", "pedegua-puente", "petorca-tunel-las-palmas"],
+    source: {
+      url: "https://www.monumentos.gob.cl/monumentos/monumentos-historicos/tunel-las-palmas",
+      label: "Consejo de Monumentos Nacionales — Túnel Las Palmas",
+    },
+  },
   {
     slug: "ruta-costera-papudo-zapallar",
     // Se suman Los Molles, Pichicuy (tramo costero de La Ligua) y Salinas

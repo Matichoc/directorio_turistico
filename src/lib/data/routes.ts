@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { isCommuneInScope } from "@/lib/site-scope";
 import type {
   Locale,
   PublicationStatus,
@@ -16,7 +17,8 @@ const ROUTE_QUERY = `id, slug, estimated_duration_minutes, cover_image,
      places(slug, latitude, longitude, icon,
        place_translations(name, short_description, locale),
        place_images(storage_path, position),
-       categories(slug)))` as const;
+       categories(slug),
+       communes(slug)))` as const;
 
 interface RouteQueryResult {
   id: string;
@@ -46,8 +48,23 @@ interface RouteQueryResult {
       }[];
       place_images: { storage_path: string; position: number }[];
       categories: { slug: string } | null;
+      communes: { slug: string } | null;
     } | null;
   }[];
+}
+
+/**
+ * Una ruta entra al sitio solo si todas sus paradas están en las comunas del
+ * sitio (`lib/site-scope.ts`): una ruta a medias, con paradas que el sitio
+ * no muestra, confundiría más de lo que ayuda.
+ */
+function isRouteInScope(
+  stops: { places: { communes: { slug: string } | null } | null }[],
+): boolean {
+  return (
+    stops.length > 0 &&
+    stops.every((stop) => isCommuneInScope(stop.places?.communes?.slug))
+  );
 }
 
 export async function getRouteBySlug(
@@ -67,7 +84,7 @@ export async function getRouteBySlug(
     .eq("publication_status", "published")
     .maybeSingle();
 
-  if (error || !data) {
+  if (error || !data || !isRouteInScope(data.route_stops ?? [])) {
     return null;
   }
 
@@ -117,7 +134,7 @@ export async function getRouteBySlug(
 const ROUTES_LIST_QUERY = `id, slug, estimated_duration_minutes, cover_image,
    route_translations!inner(name, description, locale),
    route_stops(id, position,
-     places(place_images(storage_path, position)))` as const;
+     places(communes(slug), place_images(storage_path, position)))` as const;
 
 interface RouteListQueryResult {
   id: string;
@@ -133,6 +150,7 @@ interface RouteListQueryResult {
     id: string;
     position: number;
     places: {
+      communes: { slug: string } | null;
       place_images: { storage_path: string; position: number }[];
     } | null;
   }[];
@@ -321,24 +339,24 @@ export async function listRoutes(
   }
 
   const supabase = await createClient();
-  let builder = supabase
+  const { data, error } = await supabase
     .from("routes")
     .select<typeof ROUTES_LIST_QUERY, RouteListQueryResult>(ROUTES_LIST_QUERY)
     .eq("publication_status", "published")
     .eq("route_translations.locale", locale)
     .order("slug");
 
-  if (limit) {
-    builder = builder.limit(limit);
-  }
-
-  const { data, error } = await builder;
-
   if (error || !data) {
     return [];
   }
 
-  return data.map((route) => {
+  // El tope se aplica después de filtrar por alcance: antes, podría dejar
+  // fuera rutas válidas por contar las de otras comunas.
+  const inScope = data.filter((route) =>
+    isRouteInScope(route.route_stops ?? []),
+  );
+
+  return (limit ? inScope.slice(0, limit) : inScope).map((route) => {
     const translation = route.route_translations[0];
     return {
       id: route.id,

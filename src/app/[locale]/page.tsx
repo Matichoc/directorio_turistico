@@ -75,6 +75,12 @@ export default async function HomePage({
     listPlaces(locale),
   ]);
   const flyover = buildProvinceFlyover(communes, localities, places);
+  // Solo las categorías con lugares reales: en un sitio acotado a una comuna
+  // (lib/site-scope.ts) una postal que lleva a una lista vacía confunde.
+  const intents = INTENT_CATEGORIES.map((intent) => ({
+    ...intent,
+    count: places.filter((place) => place.categorySlug === intent.slug).length,
+  })).filter((intent) => intent.count > 0);
 
   return (
     <main className="flex flex-1 flex-col gap-8">
@@ -122,11 +128,11 @@ export default async function HomePage({
         {/* Postales por categoría: cada una con la escena del diablito que le
             corresponde (playa, cerro, pueblo, dulces — ver
             lib/ui/scene-backgrounds.ts) y cuántos lugares reales tiene. */}
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {INTENT_CATEGORIES.map((intent) => {
-            const count = places.filter(
-              (place) => place.categorySlug === intent.slug,
-            ).length;
+        <ul
+          className={`grid grid-cols-2 gap-3 ${intents.length > 2 ? "sm:grid-cols-4" : ""}`}
+        >
+          {intents.map((intent) => {
+            const { count } = intent;
             return (
               <li key={intent.slug}>
                 <Link

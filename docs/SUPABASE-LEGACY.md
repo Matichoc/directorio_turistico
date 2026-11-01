@@ -26,14 +26,16 @@
 
 ## Estado
 
-| #   | Paso                                                       | Estado     |
-| --- | ---------------------------------------------------------- | ---------- |
-| 1   | Exponer `legacy` en la API (Exposed schemas)               | Hecho      |
-| 2   | Permisos y funciones de `legacy` (`legacy-acceso-api.sql`) | Por correr |
-| 3   | Código del diablo con el esquema `legacy`                  | Hecho (PR) |
-| 4   | Variables y Redeploy en Vercel                             | Por hacer  |
-| 5   | Revisar auth (inicio de sesión anónimo y URL del sitio)    | Por hacer  |
-| 6   | Revisión final                                             | Por hacer  |
+Revisado el 2026-11-01 desde fuera, con la llave pública (solo lectura):
+
+| #   | Paso                                                       | Estado                                                      |
+| --- | ---------------------------------------------------------- | ----------------------------------------------------------- |
+| 1   | Exponer `legacy` en la API (Exposed schemas)               | Hecho                                                       |
+| 2   | Permisos y funciones de `legacy` (`legacy-acceso-api.sql`) | Hecho (comprobado 2026-11-01, ver abajo)                    |
+| 3   | Código del diablo con el esquema `legacy`                  | Hecho (PR #49, en `main`)                                   |
+| 4   | Variables y Redeploy en Vercel                             | Hecho en `directorio-turistico-bgl3.vercel.app` (ver abajo) |
+| 5   | Revisar auth (inicio de sesión anónimo y URL del sitio)    | Por revisar                                                 |
+| 6   | Revisión final                                             | Por hacer                                                   |
 
 ## Paso 1 · Exponer `legacy` en la API (hecho)
 
@@ -41,11 +43,22 @@ Supabase → Integrations → Data API → Settings → **Exposed schemas**: mar
 `public`, `legacy` y `graphql_public`. No tocar "Automatically expose new
 tables" (afecta a Papudo).
 
-## Paso 2 · Permisos y funciones de `legacy`
+## Paso 2 · Permisos y funciones de `legacy` (hecho)
 
-El esquema `legacy` todavía no deja entrar a la API (`permission denied for
-schema legacy`), y las funciones del diablo, al moverse de esquema, **siguen
-diciendo `public.` por dentro**: `legacy.is_admin()` consultaría
+**Comprobado el 2026-11-01** con la llave pública: `legacy` responde a la API
+con 37 lugares (36 verificados), 63 pueblos (todos con coordenada, 25 con
+resumen en es y en), 3 rutas, 168 fotos, 5 comunas, 4 categorías, 2
+auspiciadores y 24 enlaces de contacto; `legacy.is_admin()` responde (`false`
+sin sesión) y `legacy.place_like_counts()` devuelve los "me gusta" del diablo
+— y `public.place_likes` ni existe, así que la función ya lee `legacy`, no
+`public`. `public` sigue con los 21 lugares de Papudo. Lo que no se puede ver
+con la llave pública es el cuerpo de las funciones; si alguna vez hay dudas,
+correr de nuevo el script es seguro (es repetible).
+
+Lo que sigue es el detalle de qué hacía el script (por si hay que repetirlo).
+Antes de correrlo, el esquema `legacy` no dejaba entrar a la API
+(`permission denied for schema legacy`), y las funciones del diablo, al
+moverse de esquema, **seguían diciendo `public.` por dentro**: `legacy.is_admin()` consultaría
 `public.admin_users` (de Papudo, si existe), y `analytics_top/totals` y
 `place_like_counts` leerían tablas de Papudo.
 
@@ -87,11 +100,11 @@ tabla…" o "…no tiene RLS activa…", no se cambió nada: mándame el mensaje
   no es accesible; el disparador de estado funciona; si una tabla no tiene
   RLS, aborta sin dejar nada a medias.
 
-**Después de correrlo** me avisas y compruebo desde fuera, con la llave
-pública (solo lectura), que `legacy` responde y que Papudo (`public`) sigue
-igual.
+**Después de correrlo** se comprueba desde fuera, con la llave pública (solo
+lectura), que `legacy` responde y que Papudo (`public`) sigue igual — es lo
+que se hizo el 2026-11-01 (arriba).
 
-## Paso 3 · Código del diablo (hecho en este PR)
+## Paso 3 · Código del diablo (hecho, PR #49)
 
 Todos los clientes de Supabase (servidor, navegador, admin, middleware y los
 scripts `db:seed`, `fetch:google-photos`, `export:content-gaps`) usan
@@ -114,7 +127,11 @@ falta: el seed hace `upsert` y pisaría ediciones hechas desde `/admin`.)
 ## Paso 4 · Vercel
 
 No hace falta ninguna variable nueva (el esquema se elige solo por la URL).
-Después de mezclar el PR, Vercel publica solo. Si quieres dejarlo explícito,
+Después de mezclar el PR, Vercel publica solo. **Comprobado el 2026-11-01**:
+`https://directorio-turistico-bgl3.vercel.app/es/rutas` muestra las 3 rutas
+con datos de `legacy`. El otro proyecto (`directorio-turistico.vercel.app`)
+respondió 404 en su link `*.vercel.app`: confirmar en Vercel cuál queda y
+apagar el otro (`docs/DOMINIO.md`, paso 1). Si quieres dejarlo explícito,
 agrega `NEXT_PUBLIC_SUPABASE_SCHEMA=legacy` en los proyectos de Vercel del
 diablo y haz Redeploy; **nunca `public`**.
 
@@ -143,6 +160,24 @@ Las cuentas de usuario (`auth.users`) también son compartidas:
 - [ ] `/admin` deja entrar y guardar un cambio.
 - [ ] "Mi recorrido": agregar un lugar funciona.
 - [ ] El sitio de Papudo sigue exactamente igual.
+
+## Rutas de la comuna de Petorca (`petorca-rutas.sql`)
+
+El sitio acotado a Petorca (rama `petorca`) muestra solo rutas con todas sus
+paradas en la comuna. `supabase/manual/petorca-rutas.sql` carga las dos:
+"Donde el Diablo perdió el poncho" (Pedegua → Chincolco, slug
+`ruta-del-diablo-pedegua-chincolco`) y "Ruta Ferroviaria: de Pedegua a Las
+Palmas". El nombre de la primera lo decidió el usuario (2026-11-01, después de
+probar "Ruta del Diablo: de Pedegua a Chincolco"); para cambiarlo en la base
+basta volver a correr el script. Solo toca esas 2 rutas en `legacy`, verifica antes
+que las 6 paradas existan en Petorca y es repetible. Se corre igual que el
+paso 2 (SQL Editor → pegar → Run). Estado: **hecho (2026-11-01)**. Comprobado
+desde fuera con la llave pública: las 2 rutas están publicadas y verificadas,
+con sus paradas en orden (5 y 3), sin ruta con el nombre viejo; las 3 rutas de
+la provincia y los 21 lugares de Papudo (`public`) siguen iguales.
+
+Ojo: como la base es una sola, mientras el sitio de la provincia siga
+publicado también va a mostrar estas 2 rutas (junto a la Ruta del Diablo).
 
 ## Cambios futuros en la base del diablo
 

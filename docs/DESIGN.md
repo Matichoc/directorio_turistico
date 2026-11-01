@@ -139,6 +139,10 @@ comunas" se adapta solo cuando hay una:
   (en Petorca: naturaleza y cultura) — nunca una postal que lleve a una lista
   vacía.
 - **Rutas**: solo las que tienen todas sus paradas en la comuna.
+- **Panel (`/admin`)**: Lugares, Pueblos, Rutas, Verificaciones, Métricas,
+  la exportación CSV y los selectores de pueblo usan el mismo alcance (pedido
+  del usuario: no ver los lugares de otras comunas guardados en la base).
+  Nada se borra; una ruta nueva sin paradas sí se lista.
 
 Los textos (`messages/*.json`) hablan de "la comuna de Petorca". Volver a la
 provincia es vaciar `SITE_COMMUNE_SLUGS` (y los textos están en la rama

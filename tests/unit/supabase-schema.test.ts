@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   SHARED_SUPABASE_PROJECT_REF,
   getSupabaseSchema,
+  isDevelopmentSchema,
   resolveSupabaseSchema,
   supabaseDbOptions,
 } from "@/lib/supabase/env";
@@ -20,6 +21,13 @@ describe("resolveSupabaseSchema", () => {
 
   it("refuses public in the shared project (those tables are Papudo's)", () => {
     expect(() => resolveSupabaseSchema(SHARED_URL, "public")).toThrow(/Papudo/);
+  });
+
+  it("lets the development copy (legacy_dev) be chosen in the shared project", () => {
+    expect(resolveSupabaseSchema(SHARED_URL, "legacy_dev")).toBe("legacy_dev");
+    expect(isDevelopmentSchema("legacy_dev")).toBe(true);
+    expect(isDevelopmentSchema("legacy")).toBe(false);
+    expect(isDevelopmentSchema("public")).toBe(false);
   });
 
   it("uses public in any other project unless told otherwise", () => {

@@ -190,6 +190,12 @@ la provincia y los 21 lugares de Papudo (`public`) siguen iguales.
 Ojo: como la base es una sola, mientras el sitio de la provincia siga
 publicado también va a mostrar estas 2 rutas (junto a la Ruta del Diablo).
 
+## Copia de desarrollo (`legacy_dev`)
+
+`supabase/manual/crear-legacy-dev.sql` crea en el mismo proyecto el esquema
+`legacy_dev`, copia completa de `legacy` para el ambiente de desarrollo
+(rama `develop` y vistas previas). Pasos y reglas en `docs/DESARROLLO.md`.
+
 ## Cambios futuros en la base del diablo
 
 Cada cambio de tablas se escribe como un archivo SQL en `supabase/manual/`,

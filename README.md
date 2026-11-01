@@ -90,6 +90,7 @@ fuente pública en `sources`). Hace `upsert`: **pisa lo editado desde
 - **Dominio propio y un solo proyecto de Vercel:** guía paso a paso en `docs/DOMINIO.md` (NIC Chile, DNS, Vercel, Supabase, Search Console, correo y checklist final).
 - **Sitio publicado:** `https://directorio-turistico-bgl3.vercel.app` (hay un segundo proyecto de Vercel por apagar; ver `docs/DOMINIO.md`).
 - **Administración:** `/admin` (usuario en `legacy.admin_users` del proyecto compartido): lugares, rutas, pueblos, comunas/categorías, verificaciones por comuna, comentarios y métricas.
+- **Cómo usar el panel (qué se edita y qué no) y guion de la reunión:** `docs/GUIA-PANEL.md`.
 - **Hoja de ruta hacia la propuesta a turismo:** `docs/PLAN.md`, sección 10.
 - **Diseño:** `docs/DESIGN.md` (tokens, componentes y patrones visuales).
 - **Arte del diablo:** `docs/PROMPTS-IMAGENES.md` (personaje aprobado, estado, cómo integrar imágenes nuevas).

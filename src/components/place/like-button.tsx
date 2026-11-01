@@ -50,6 +50,7 @@ export function LikeButton({ placeId }: { placeId: string }) {
   const [liked, setLiked] = useState(false);
   const [count, setCount] = useState<number | null>(null);
   const [pending, setPending] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     function syncLiked() {
@@ -85,6 +86,7 @@ export function LikeButton({ placeId }: { placeId: string }) {
   async function toggle() {
     if (pending) return;
     setPending(true);
+    setFailed(false);
 
     // Optimista: el corazón se marca al toque, antes de esperar la
     // respuesta de Supabase — si la escritura falla (tabla sin migrar
@@ -114,28 +116,38 @@ export function LikeButton({ placeId }: { placeId: string }) {
     } catch (error) {
       console.error('[LikeButton] no se pudo guardar el "me gusta"', error);
       applyLiked(wasLiked);
+      // Sin aviso, el corazón se marcaba y desmarcaba solo: parecía que el
+      // botón no funcionaba (bug real reportado por el usuario).
+      setFailed(true);
     } finally {
       setPending(false);
     }
   }
 
   return (
-    <button
-      type="button"
-      aria-pressed={liked}
-      disabled={pending}
-      onClick={() => void toggle()}
-      className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60 ${
-        liked
-          ? "border-accent bg-accent-soft text-accent"
-          : "border-black/10 dark:border-white/20"
-      }`}
-    >
-      <HeartIcon filled={liked} className="h-4 w-4" />
-      {liked ? t("liked") : t("like")}
-      {count !== null && count > 0 && (
-        <span className="text-foreground/50">· {count}</span>
+    <div className="flex flex-col gap-1">
+      <button
+        type="button"
+        aria-pressed={liked}
+        disabled={pending}
+        onClick={() => void toggle()}
+        className={`flex w-fit items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60 ${
+          liked
+            ? "border-accent bg-accent-soft text-accent"
+            : "border-black/10 dark:border-white/20"
+        }`}
+      >
+        <HeartIcon filled={liked} className="h-4 w-4" />
+        {liked ? t("liked") : t("like")}
+        {count !== null && count > 0 && (
+          <span className="text-foreground/50">· {count}</span>
+        )}
+      </button>
+      {failed && (
+        <p role="alert" className="text-xs text-amber-300">
+          {t("likeError")}
+        </p>
       )}
-    </button>
+    </div>
   );
 }

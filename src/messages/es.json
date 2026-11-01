@@ -216,7 +216,10 @@
     "optimizeAuto": "Optimizar automáticamente",
     "startAt": "Empieza en",
     "returnToStart": "Volver al punto de partida al terminar",
-    "returnLeg": "Vuelta a {place}: {duration} · {distance} km"
+    "returnLeg": "Vuelta a {place}: {duration} · {distance} km",
+    "share": "Compartir recorrido",
+    "shareTitle": "Mi recorrido por Petorca",
+    "shareHint": "Manda el link por WhatsApp: quien lo abra verá estas paradas en orden y podrá seguirlas con la guía."
   },
   "common": {
     "loading": "Cargando…",
@@ -271,5 +274,16 @@
     "noVoice": "Tu teléfono no tiene una voz en español.",
     "stopsIntro": "Paradas: {stops}.",
     "attractionsIntro": "Atractivos: {places}."
+  },
+  "sharedTrip": {
+    "title": "Recorrido compartido",
+    "subtitle": "Te compartieron este recorrido por la comuna de Petorca: {count, plural, one {# parada} other {# paradas}}, en orden.",
+    "emptySubtitle": "Un recorrido que alguien te compartió por link.",
+    "metaDescription": "Un recorrido por la comuna de Petorca, con sus paradas en orden y guía paso a paso.",
+    "empty": "Este link no trae paradas que podamos mostrar.",
+    "explore": "Explorar Petorca",
+    "stopsTitle": "Paradas en orden",
+    "shareAgain": "Compartir este recorrido",
+    "saveHint": "Guárdalo para tenerlo en Mi recorrido y armarlo a tu manera."
   }
 }

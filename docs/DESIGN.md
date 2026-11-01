@@ -341,6 +341,17 @@ pausa, sigue, detiene y cambia velocidad (1×, 1,25×, 0,8×). Para sumarlo a
 otra página: pasarle `segments` con textos reales de esa página — nunca un
 texto escrito solo para la voz.
 
+## Compartir un recorrido
+
+"Compartir recorrido" (Mi recorrido) arma un link con las paradas en orden
+(`/recorrido/compartido?paradas=a,b,c`, `lib/trip/share-link.ts`) y lo
+manda con el menú de compartir del teléfono (o lo copia). Quien lo abre ve
+la página "Recorrido compartido" — `PageHero`, Escuchar, el mapa con la
+guía paso a paso, las paradas numeradas y "Agregar ruta completa" para
+guardarlo en su Mi recorrido. Sin cuentas ni tablas nuevas: todo va en el
+link. Paradas inexistentes o de otra comuna se omiten; sin ninguna, un
+`EmptyState` con link a Explorar. `noIndex` (es el recorrido de una persona).
+
 ## Ficha del jugador en el mapa en vivo
 
 Pedido del usuario: que su posición real en el mapa de navegación se vea

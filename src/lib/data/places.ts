@@ -543,6 +543,46 @@ export async function getPlacesByIds(
   return data.map((place) => mapPlaceCard(place, locale));
 }
 
+/**
+ * Lugares publicados por `slug`, en el mismo orden pedido — para un
+ * recorrido compartido por link (`/recorrido/compartido?paradas=a,b,c`). Lo
+ * que no existe o queda fuera del sitio (`lib/site-scope.ts`) se omite.
+ */
+export async function getPlacesBySlugs(
+  slugs: string[],
+  locale: Locale,
+): Promise<PlaceCard[]> {
+  if (!isSupabaseConfigured() || slugs.length === 0) {
+    return [];
+  }
+
+  const supabase = await createClient();
+  let builder = supabase
+    .from("places")
+    .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
+    .in("slug", slugs)
+    .eq("publication_status", "published")
+    .eq("place_translations.locale", locale)
+    .eq("communes.commune_translations.locale", locale)
+    .eq("categories.category_translations.locale", locale);
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
+
+  if (error || !data) {
+    return [];
+  }
+
+  const bySlug = new Map(
+    data.map((place) => [place.slug, mapPlaceCard(place, locale)]),
+  );
+  return slugs.flatMap((slug) => {
+    const place = bySlug.get(slug);
+    return place ? [place] : [];
+  });
+}
+
 export interface AdminPlaceExportRow {
   slug: string;
   communeName: string;

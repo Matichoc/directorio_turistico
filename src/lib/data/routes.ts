@@ -8,6 +8,7 @@ import type {
   VerificationStatus,
 } from "@/types/database";
 import type { Route, RouteCard, RouteStop } from "@/types/domain";
+import { contentLocales, pickTranslation } from "@/i18n/content";
 
 const ROUTE_QUERY = `id, slug, estimated_duration_minutes, cover_image,
    publication_status,
@@ -80,7 +81,7 @@ export async function getRouteBySlug(
     .from("routes")
     .select<typeof ROUTE_QUERY, RouteQueryResult>(ROUTE_QUERY)
     .eq("slug", slug)
-    .eq("route_translations.locale", locale)
+    .in("route_translations.locale", contentLocales(locale))
     .eq("publication_status", "published")
     .maybeSingle();
 
@@ -88,7 +89,7 @@ export async function getRouteBySlug(
     return null;
   }
 
-  const translation = data.route_translations[0];
+  const translation = pickTranslation(data.route_translations, locale);
   const stops: RouteStop[] = (data.route_stops ?? [])
     .slice()
     .sort((a, b) => a.position - b.position)
@@ -102,10 +103,9 @@ export async function getRouteBySlug(
         placeId: stop.place_id,
         placeSlug: stop.places?.slug ?? "",
         placeName:
-          stop.places?.place_translations.find((t) => t.locale === locale)
-            ?.name ?? "",
+          pickTranslation(stop.places?.place_translations, locale)?.name ?? "",
         placeShortDescription:
-          stop.places?.place_translations.find((t) => t.locale === locale)
+          pickTranslation(stop.places?.place_translations, locale)
             ?.short_description ?? null,
         placePhotoUrl: firstPhoto?.storage_path ?? null,
         categorySlug: stop.places?.categories?.slug ?? null,
@@ -114,8 +114,7 @@ export async function getRouteBySlug(
         longitude: stop.places?.longitude ?? 0,
         position: stop.position,
         notes:
-          stop.route_stop_translations.find((t) => t.locale === locale)
-            ?.notes ?? null,
+          pickTranslation(stop.route_stop_translations, locale)?.notes ?? null,
       };
     });
 
@@ -309,6 +308,7 @@ export async function getAdminRouteById(
   const translations: Record<Locale, AdminRouteTranslation> = {
     es: { ...EMPTY_ROUTE_TRANSLATION },
     en: { ...EMPTY_ROUTE_TRANSLATION },
+    pt: { ...EMPTY_ROUTE_TRANSLATION },
   };
   for (const translation of data.route_translations) {
     translations[translation.locale] = {
@@ -354,7 +354,7 @@ export async function listRoutes(
     .from("routes")
     .select<typeof ROUTES_LIST_QUERY, RouteListQueryResult>(ROUTES_LIST_QUERY)
     .eq("publication_status", "published")
-    .eq("route_translations.locale", locale)
+    .in("route_translations.locale", contentLocales(locale))
     .order("slug");
 
   if (error || !data) {
@@ -368,7 +368,7 @@ export async function listRoutes(
   );
 
   return (limit ? inScope.slice(0, limit) : inScope).map((route) => {
-    const translation = route.route_translations[0];
+    const translation = pickTranslation(route.route_translations, locale);
     return {
       id: route.id,
       slug: route.slug,

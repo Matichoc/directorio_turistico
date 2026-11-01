@@ -46,7 +46,13 @@ const inputClassName =
   "border-accent-soft focus:border-accent rounded-xl border bg-transparent px-3 py-2 text-sm outline-none dark:border-white/15";
 const labelClassName = "flex flex-col gap-1 text-sm";
 
-function readTranslation(formData: FormData, locale: "es" | "en") {
+const LOCALE_LABELS = {
+  es: "Español",
+  en: "English",
+  pt: "Português (opcional: vacío = el sitio en portugués usa el español)",
+} as const;
+
+function readTranslation(formData: FormData, locale: "es" | "en" | "pt") {
   return {
     name: String(formData.get(`${locale}.name`) ?? ""),
     shortDescription: String(formData.get(`${locale}.shortDescription`) ?? ""),
@@ -111,6 +117,7 @@ export function PlaceForm({
       translations: {
         es: readTranslation(formData, "es"),
         en: readTranslation(formData, "en"),
+        pt: readTranslation(formData, "pt"),
       },
     };
 
@@ -335,19 +342,19 @@ export function PlaceForm({
         </label>
       </div>
 
-      {(["es", "en"] as const).map((locale) => (
+      {(["es", "en", "pt"] as const).map((locale) => (
         <fieldset
           key={locale}
           className="border-accent-soft flex flex-col gap-3 rounded-xl border p-3 dark:border-white/10"
         >
           <legend className="text-foreground/60 px-1 text-xs font-medium tracking-wide uppercase">
-            {locale === "es" ? "Español" : "English"}
+            {LOCALE_LABELS[locale]}
           </legend>
           <label className={labelClassName}>
             Nombre
             <input
               name={`${locale}.name`}
-              required
+              required={locale !== "pt"}
               defaultValue={place?.translations[locale].name}
               onChange={locale === "es" ? handleNameEsChange : undefined}
               className={inputClassName}

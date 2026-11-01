@@ -8,7 +8,7 @@
 // de `.select<Query, Result>()`, en vez de depender de la inferencia
 // automática de PostgREST (que si requiere `Relationships`).
 
-export type Locale = "es" | "en";
+export type Locale = "es" | "en" | "pt";
 export type PublicationStatus = "draft" | "published" | "archived";
 export type VerificationStatus = "pending" | "verified" | "outdated";
 export type EntityType = "place" | "route" | "commune";

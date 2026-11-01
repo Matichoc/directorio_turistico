@@ -361,6 +361,17 @@ donde estás hasta la próxima parada (`/api/ruta`, OSRM de OpenStreetMap, ver
 - Al llegar ofrece seguir a la siguiente parada; tocar otra parada en el
   mapa cambia el destino. Siempre queda el link a Google Maps.
 
+## Idiomas: español, inglés y portugués
+
+`/es`, `/en` y `/pt` (portugués de Brasil, desde 2026-11-01; pedido del
+usuario). Textos fijos en `src/messages/{es,en,pt}.json` (mismas claves) y
+rutas traducidas en `src/i18n/routing.ts` (`/pt/rotas`, `/pt/lenda`…). El
+contenido de la base sigue `src/i18n/content.ts`: en portugués, lo que no
+tenga traducción se muestra en español en vez de desaparecer. Voz y fechas
+en `pt-BR`. Un idioma nuevo = su archivo de mensajes, sus rutas, su entrada
+en `CONTENT_LOCALES`, `SPEECH_LANG` y `OG_LOCALE`, y su valor en el tipo
+`locale` de la base (script manual, como `portugues-1-idioma.sql`).
+
 ## Escuchar la página
 
 `ListenButton` (`components/ui/listen-button.tsx`): botón "▶ Escuchar"

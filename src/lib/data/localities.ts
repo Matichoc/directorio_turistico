@@ -5,6 +5,7 @@ import { listPlacesByLocalityId } from "@/lib/data/places";
 import { isSiteScoped, SITE_COMMUNE_SLUGS } from "@/lib/site-scope";
 import type { Locale } from "@/types/database";
 import type { Locality, LocalityWithPlaces } from "@/types/domain";
+import { contentLocales, pickTranslation } from "@/i18n/content";
 
 const LOCALITIES_QUERY =
   `id, slug, latitude, longitude, summary_source_url, summary_source_label,
@@ -30,8 +31,8 @@ interface LocalityQueryResult {
   } | null;
 }
 
-function mapLocality(row: LocalityQueryResult): Locality {
-  const translation = row.locality_translations[0];
+function mapLocality(row: LocalityQueryResult, locale: Locale): Locality {
+  const translation = pickTranslation(row.locality_translations, locale);
   return {
     id: row.id,
     slug: row.slug,
@@ -42,7 +43,8 @@ function mapLocality(row: LocalityQueryResult): Locality {
     summarySourceUrl: translation?.summary ? row.summary_source_url : null,
     summarySourceLabel: translation?.summary ? row.summary_source_label : null,
     communeId: row.communes?.id ?? "",
-    communeName: row.communes?.commune_translations[0]?.name ?? "",
+    communeName:
+      pickTranslation(row.communes?.commune_translations, locale)?.name ?? "",
     latitude: row.latitude,
     longitude: row.longitude,
   };
@@ -58,8 +60,8 @@ export async function listLocalities(locale: Locale): Promise<Locality[]> {
   let builder = supabase
     .from("localities")
     .select<typeof LOCALITIES_QUERY, LocalityQueryResult>(LOCALITIES_QUERY)
-    .eq("locality_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale);
+    .in("locality_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale));
   if (isSiteScoped()) {
     builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
   }
@@ -73,7 +75,7 @@ export async function listLocalities(locale: Locale): Promise<Locality[]> {
   }
 
   return data
-    .map(mapLocality)
+    .map((row) => mapLocality(row, locale))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
 
@@ -90,8 +92,8 @@ export async function getLocalityBySlug(
     .from("localities")
     .select<typeof LOCALITIES_QUERY, LocalityQueryResult>(LOCALITIES_QUERY)
     .eq("slug", slug)
-    .eq("locality_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale);
+    .in("locality_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale));
   if (isSiteScoped()) {
     builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
   }
@@ -102,7 +104,7 @@ export async function getLocalityBySlug(
     return null;
   }
 
-  const locality = mapLocality(data);
+  const locality = mapLocality(data, locale);
   const places = await listPlacesByLocalityId(locality.id, locale);
 
   return { ...locality, places };
@@ -238,6 +240,7 @@ export async function getAdminLocalityById(
   const translations: Record<Locale, AdminLocalityTranslation> = {
     es: { ...EMPTY_LOCALITY_TRANSLATION },
     en: { ...EMPTY_LOCALITY_TRANSLATION },
+    pt: { ...EMPTY_LOCALITY_TRANSLATION },
   };
   for (const translation of data.locality_translations) {
     translations[translation.locale] = {

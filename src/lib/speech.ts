@@ -7,7 +7,7 @@
  */
 
 /** Idioma de la voz para cada idioma del sitio (español de Chile primero). */
-export const SPEECH_LANG = { es: "es-CL", en: "en-US" } as const;
+export const SPEECH_LANG = { es: "es-CL", en: "en-US", pt: "pt-BR" } as const;
 
 export function isSpeechSupported(): boolean {
   return (

@@ -3,11 +3,17 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { portugueseCleared, savedTranslations } from "./translations";
 
 const localeContentSchema = z.object({
   name: z.string().trim().min(1, "Falta el nombre"),
   shortDescription: z.string().trim().max(200).optional().or(z.literal("")),
   description: z.string().trim().optional().or(z.literal("")),
+});
+
+/** Portugués: opcional; sin nombre no se guarda (ver translations.ts). */
+const optionalLocaleContentSchema = localeContentSchema.extend({
+  name: z.string().trim(),
 });
 
 const placeFormSchema = z.object({
@@ -35,6 +41,7 @@ const placeFormSchema = z.object({
   translations: z.object({
     es: localeContentSchema,
     en: localeContentSchema,
+    pt: optionalLocaleContentSchema.optional(),
   }),
 });
 
@@ -123,14 +130,12 @@ export async function createPlace(
   const { error: translationsError } = await supabase
     .from("place_translations")
     .insert(
-      (["es", "en"] as const).map((locale) => ({
+      savedTranslations(parsed.translations).map(([locale, content]) => ({
         place_id: place.id,
         locale,
-        name: parsed.translations[locale].name,
-        short_description: normalize(
-          parsed.translations[locale].shortDescription,
-        ),
-        description: normalize(parsed.translations[locale].description),
+        name: content.name,
+        short_description: normalize(content.shortDescription),
+        description: normalize(content.description),
       })),
     );
 
@@ -183,14 +188,12 @@ export async function updatePlace(
   const { error: translationsError } = await supabase
     .from("place_translations")
     .upsert(
-      (["es", "en"] as const).map((locale) => ({
+      savedTranslations(parsed.translations).map(([locale, content]) => ({
         place_id: id,
         locale,
-        name: parsed.translations[locale].name,
-        short_description: normalize(
-          parsed.translations[locale].shortDescription,
-        ),
-        description: normalize(parsed.translations[locale].description),
+        name: content.name,
+        short_description: normalize(content.shortDescription),
+        description: normalize(content.description),
       })),
       { onConflict: "place_id,locale" },
     );
@@ -199,6 +202,14 @@ export async function updatePlace(
     throw new Error(
       `No se pudo actualizar la traducción: ${translationsError.message}`,
     );
+  }
+
+  if (portugueseCleared(parsed.translations)) {
+    await supabase
+      .from("place_translations")
+      .delete()
+      .eq("place_id", id)
+      .eq("locale", "pt");
   }
 
   await saveSecondaryCategories(

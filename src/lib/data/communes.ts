@@ -4,6 +4,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { isSiteScoped, SITE_COMMUNE_SLUGS } from "@/lib/site-scope";
 import type { Locale } from "@/types/database";
 import type { Commune, Municipality } from "@/types/domain";
+import { contentLocales, pickTranslation } from "@/i18n/content";
 
 const COMMUNES_QUERY =
   `id, slug, commune_translations!inner(name, locale)` as const;
@@ -23,7 +24,7 @@ export async function listCommunes(locale: Locale): Promise<Commune[]> {
   let builder = supabase
     .from("communes")
     .select<typeof COMMUNES_QUERY, CommuneQueryResult>(COMMUNES_QUERY)
-    .eq("commune_translations.locale", locale)
+    .in("commune_translations.locale", contentLocales(locale))
     .order("slug");
   if (isSiteScoped()) {
     builder = builder.in("slug", SITE_COMMUNE_SLUGS);
@@ -38,7 +39,9 @@ export async function listCommunes(locale: Locale): Promise<Commune[]> {
     .map((commune) => ({
       id: commune.id,
       slug: commune.slug,
-      name: commune.commune_translations[0]?.name ?? commune.slug,
+      name:
+        pickTranslation(commune.commune_translations, locale)?.name ??
+        commune.slug,
     }))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }

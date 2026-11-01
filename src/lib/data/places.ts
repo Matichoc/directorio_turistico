@@ -12,6 +12,7 @@ import type {
   VerificationStatus,
 } from "@/types/database";
 import type { Place, PlaceCard, PlaceFilters } from "@/types/domain";
+import { contentLocales, pickTranslation } from "@/i18n/content";
 
 interface PlaceImageResult {
   storage_path: string;
@@ -105,9 +106,9 @@ export async function getPlaceBySlug(
     .from("places")
     .select<typeof PLACE_QUERY, PlaceQueryResult>(PLACE_QUERY)
     .eq("slug", slug)
-    .eq("place_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .eq("categories.category_translations.locale", locale)
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale))
     .eq("publication_status", "published")
     .maybeSingle();
 
@@ -116,7 +117,7 @@ export async function getPlaceBySlug(
     return null;
   }
 
-  const translation = data.place_translations[0];
+  const translation = pickTranslation(data.place_translations, locale);
 
   return {
     id: data.id,
@@ -125,14 +126,17 @@ export async function getPlaceBySlug(
     description: translation?.description ?? null,
     shortDescription: translation?.short_description ?? null,
     communeId: data.commune_id,
-    communeName: data.communes?.commune_translations[0]?.name ?? "",
+    communeName:
+      pickTranslation(data.communes?.commune_translations, locale)?.name ?? "",
     localityId: data.locality_id,
     localityName:
-      data.localities?.locality_translations.find((t) => t.locale === locale)
-        ?.name ?? null,
+      pickTranslation(data.localities?.locality_translations, locale)?.name ??
+      null,
     localitySlug: data.localities?.slug ?? null,
     categoryId: data.category_id,
-    categoryName: data.categories?.category_translations[0]?.name ?? "",
+    categoryName:
+      pickTranslation(data.categories?.category_translations, locale)?.name ??
+      "",
     categorySlug: data.categories?.slug ?? "",
     icon: data.icon,
     latitude: data.latitude,
@@ -225,18 +229,21 @@ function mapPlaceCard(
   locale: Locale,
   secondary: Map<string, string[]> = new Map(),
 ): PlaceCard {
-  const translation = place.place_translations[0];
+  const translation = pickTranslation(place.place_translations, locale);
   return {
     id: place.id,
     slug: place.slug,
     name: translation?.name ?? place.slug,
     shortDescription: translation?.short_description ?? null,
-    communeName: place.communes?.commune_translations[0]?.name ?? "",
+    communeName:
+      pickTranslation(place.communes?.commune_translations, locale)?.name ?? "",
     localityName:
-      place.localities?.locality_translations.find((t) => t.locale === locale)
-        ?.name ?? null,
+      pickTranslation(place.localities?.locality_translations, locale)?.name ??
+      null,
     localitySlug: place.localities?.slug ?? null,
-    categoryName: place.categories?.category_translations[0]?.name ?? "",
+    categoryName:
+      pickTranslation(place.categories?.category_translations, locale)?.name ??
+      "",
     categorySlug: place.categories?.slug ?? "",
     categorySlugs: allCategorySlugs(
       place.categories?.slug ?? "",
@@ -275,9 +282,9 @@ export async function listPlaces(
     .from("places")
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
     .eq("publication_status", "published")
-    .eq("place_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .eq("categories.category_translations.locale", locale);
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale));
 
   if (filters.communeSlug) {
     builder = builder.eq("communes.slug", filters.communeSlug);
@@ -341,9 +348,9 @@ export async function listPlacesByLocalityId(
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
     .eq("locality_id", localityId)
     .eq("publication_status", "published")
-    .eq("place_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .eq("categories.category_translations.locale", locale);
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale));
   if (isSiteScoped()) {
     builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
   }
@@ -552,6 +559,7 @@ export async function getAdminPlaceById(
   const translations: Record<Locale, AdminPlaceTranslation> = {
     es: { ...EMPTY_TRANSLATION },
     en: { ...EMPTY_TRANSLATION },
+    pt: { ...EMPTY_TRANSLATION },
   };
   for (const translation of data.place_translations) {
     translations[translation.locale] = {
@@ -596,9 +604,9 @@ export async function getPlacesByIds(
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
     .in("id", ids)
     .eq("publication_status", "published")
-    .eq("place_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .eq("categories.category_translations.locale", locale);
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale));
   if (isSiteScoped()) {
     builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
   }
@@ -630,9 +638,9 @@ export async function getPlacesBySlugs(
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
     .in("slug", slugs)
     .eq("publication_status", "published")
-    .eq("place_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .eq("categories.category_translations.locale", locale);
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale));
   if (isSiteScoped()) {
     builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
   }
@@ -726,6 +734,7 @@ export async function listAdminPlacesForExport(): Promise<
     const translations: Record<Locale, AdminPlaceTranslation> = {
       es: { ...EMPTY_TRANSLATION },
       en: { ...EMPTY_TRANSLATION },
+      pt: { ...EMPTY_TRANSLATION },
     };
     for (const translation of place.place_translations) {
       translations[translation.locale] = {

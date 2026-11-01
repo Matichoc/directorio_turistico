@@ -36,7 +36,8 @@ export function ListenButton({
 }) {
   const t = useTranslations("listen");
   const locale = useLocale();
-  const lang = SPEECH_LANG[locale === "en" ? "en" : "es"];
+  const lang =
+    SPEECH_LANG[locale as keyof typeof SPEECH_LANG] ?? SPEECH_LANG.es;
   const supported = useSyncExternalStore(noop, isSpeechSupported, () => false);
   const [status, setStatus] = useState<Status>("idle");
   const [rate, setRate] = useState<number>(RATES[0]);

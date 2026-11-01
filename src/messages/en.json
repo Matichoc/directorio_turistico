@@ -115,7 +115,9 @@
     "commentSubmit": "Send comment",
     "commentSending": "Sending…",
     "commentSent": "Thanks! Your comment will show up once we review it.",
-    "commentError": "Couldn't send the comment, try again."
+    "commentError": "Couldn't send the comment, try again.",
+    "likeError": "We couldn't save your like. Please try again in a while.",
+    "tripError": "We couldn't update your trip. Please try again in a while."
   },
   "route": {
     "stops": "Stops",
@@ -140,7 +142,8 @@
       "surf": "Surfboard",
       "casco-minero": "Miner's helmet",
       "palta": "Avocado"
-    }
+    },
+    "tripError": "We couldn't add the route to your trip. Please try again in a while."
   },
   "guide": {
     "start": "Start guidance",

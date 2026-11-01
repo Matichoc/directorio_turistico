@@ -115,7 +115,9 @@
     "commentSubmit": "Enviar comentario",
     "commentSending": "Enviando…",
     "commentSent": "¡Gracias! Tu comentario quedará visible cuando lo revisemos.",
-    "commentError": "No se pudo enviar el comentario, intenta de nuevo."
+    "commentError": "No se pudo enviar el comentario, intenta de nuevo.",
+    "likeError": "No pudimos guardar tu «me gusta». Inténtalo de nuevo en un rato.",
+    "tripError": "No pudimos actualizar tu recorrido. Inténtalo de nuevo en un rato."
   },
   "route": {
     "stops": "Paradas",
@@ -140,7 +142,8 @@
       "surf": "Tabla de surf",
       "casco-minero": "Casco minero",
       "palta": "Palta"
-    }
+    },
+    "tripError": "No pudimos agregar la ruta a tu recorrido. Inténtalo de nuevo en un rato."
   },
   "guide": {
     "start": "Iniciar guía",

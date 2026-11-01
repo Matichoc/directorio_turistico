@@ -143,9 +143,19 @@ Las cuentas de usuario (`auth.users`) también son compartidas:
   siendo la misma cuenta: entra a `/admin` con el mismo correo y contraseña.
 - **Inicio de sesión anónimo** (lo usan "Mi recorrido" y los "me gusta"):
   Authentication → Sign In / Providers → **Allow anonymous sign-ins** tiene
-  que estar activado. Es una opción del proyecto entero: si Papudo ya la usa,
-  ya está activa. Antes de activarla, confirma que no cambia nada que Papudo
-  necesite.
+  que estar activado. Es una opción del proyecto entero. **Al 2026-11-01 está
+  apagada**, y por eso Mi recorrido, los "me gusta" y los comentarios no
+  funcionan (el sitio ya lo avisa en vez de fallar en silencio).
+  **Revisado el 2026-11-01 contra el repo de Papudo** (`directorio_papudo`,
+  migraciones 0001–0029): activarla no le da permisos de más a nadie en
+  Papudo. Una sesión anónima entra como `authenticated`, pero en Papudo todo
+  permiso de escritura o moderación pasa por `has_role(...)`, que exige una
+  fila activa en `public.profiles` (un visitante anónimo no la tiene), y
+  `verify_entity()` también lo revisa; lo que queda abierto a cualquiera
+  (lecturas públicas) ya lo estaba para `anon`. En el diablo, `/admin` exige
+  estar en `legacy.admin_users`. Recomendado al activarla: el límite de
+  inicios anónimos por IP de Supabase (Authentication → Rate Limits) y, más
+  adelante, CAPTCHA.
 - **URL Configuration:** agrega el link del sitio del diablo a **Redirect
   URLs** (`https://<sitio-del-diablo>/**`) **sin cambiar el Site URL**, que
   hoy es de Papudo.

@@ -112,9 +112,12 @@ export async function addTripPlace(placeId: string): Promise<void> {
   const itineraryId = await getOrCreateItineraryId();
   const position = await getNextPosition(itineraryId);
   const supabase = createClient();
-  await supabase
+  const { error } = await supabase
     .from("itinerary_stops")
     .insert({ itinerary_id: itineraryId, place_id: placeId, position });
+  // Antes se ignoraba: el botón parecía no hacer nada (bug real reportado
+  // por el usuario). Quien llama muestra el aviso.
+  if (error) throw error;
   notify();
 }
 
@@ -132,7 +135,8 @@ export async function addTripPlaces(placeIds: string[]): Promise<void> {
   }));
 
   const supabase = createClient();
-  await supabase.from("itinerary_stops").insert(rows);
+  const { error } = await supabase.from("itinerary_stops").insert(rows);
+  if (error) throw error;
   notify();
 }
 

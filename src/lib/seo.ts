@@ -5,8 +5,11 @@ import { routing, type Locale } from "@/i18n/routing";
 export const SITE_NAME =
   "El diablo murió en Petorca y en La Ligua lo enterraron";
 
-/** Imagen de vista previa cuando una página no tiene foto propia. */
-export const DEFAULT_OG_IMAGE = "/icons/icon-512.png";
+/**
+ * Imagen de vista previa cuando una página no tiene foto propia (logo y
+ * nombre, 1200×630; sale de `scripts/build-brand-png.mjs`).
+ */
+export const DEFAULT_OG_IMAGE = "/brand/og.png";
 
 const OG_LOCALE: Record<Locale, string> = { es: "es_CL", en: "en_US" };
 

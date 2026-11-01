@@ -187,6 +187,21 @@ del sitio (mar azul noche → valles violeta → cordillera brasa). Reglas:
   vuelo ni giro (saltos directos). `cooperativeGestures`: en celular el mapa
   no secuestra el scroll de la página (se mueve con dos dedos).
 
+## Logo e íconos
+
+Un solo origen: `public/brand/logo.png` + `icono.png` (arte final, hecho con
+GPT según `docs/PROMPTS-IMAGENES.md`) o, mientras no existan, los SVG
+provisorios `logo.svg` + `icono.svg`. `node scripts/build-brand-png.mjs` arma
+desde ahí todo lo demás — nunca editar a mano los archivos generados:
+
+| Archivo generado                      | Dónde se ve                                    |
+| ------------------------------------- | ---------------------------------------------- |
+| `src/app/favicon.ico`, `icon.svg/png` | Pestaña del navegador                          |
+| `src/app/apple-icon.png`              | Ícono al agregar a inicio en iPhone            |
+| `public/icons/icon-192/512.png`       | App instalable (manifiesto) y barra de arriba  |
+| `public/icons/icon-maskable-512.png`  | App instalable en Android (recorte en círculo) |
+| `public/brand/og.png`                 | Vista previa al compartir un link sin foto     |
+
 ## Aparición al hacer scroll
 
 Clase `reveal` (en `globals.css`): las secciones y tarjetas suben y aparecen
@@ -199,12 +214,21 @@ los rompería).
 
 ## Fondos con el diablito (escenas)
 
-Pedido del usuario: fondos únicos con el diablo de la ilustración (casco
-minero con cuernos y linterna, poncho rojo, cola de flecha) "en la playa, en
-el cerro, con poncho, según cómo lo busquen y dónde naveguen". Son SVG en
+Pedido del usuario: fondos únicos con el diablo "en la playa, en el cerro,
+con poncho, según cómo lo busquen y dónde naveguen". Son SVG en
 `public/fondos/` (`atardecer`, `playa`, `cerro`, `pueblo`, `dulces`,
 `tunel`), compuestos con el diablito a la derecha y el cielo a la izquierda
-para que el título de `PageHero` quede legible. La elección vive en un solo
+para que el título de `PageHero` quede legible.
+
+**El diablo de Petorca** (desde 2026-11-01): el de antes llevaba casco minero
+(Cabildo) y aparecía con tabla de surf y dulces (La Ligua) — era de la
+provincia. El de ahora sale de la leyenda de la ruta de Petorca: frac negro,
+humita roja, diente de oro, pañuelo de cueca y el poncho rojo resbalándose
+del hombro (el que pierde). Formas redondeadas, nada triangular (pedido del
+usuario). Lo dibuja `scripts/build-scene-devil.py` en todas las escenas (cada
+una con su gesto: cueca, bastón, saludo, farol). Es provisorio: el arte final
+se pide a GPT con `docs/PROMPTS-IMAGENES.md`, y nunca se vuelven a poner
+casco minero, playa ni dulces en el personaje. La elección vive en un solo
 lugar, `src/lib/ui/scene-backgrounds.ts`: `getSceneForCategory` (playa →
 playa, naturaleza → cerro, cultura → pueblo, gastronomía → dulces, sin
 categoría → atardecer) y `getSceneForRoute`. `PageHero` acepta `scene`:

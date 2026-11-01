@@ -62,21 +62,23 @@ fuente pública en `sources`). Hace `upsert`: **pisa lo editado desde
 
 ## Scripts
 
-| Comando                                 | Descripción                                                                        |
-| --------------------------------------- | ---------------------------------------------------------------------------------- |
-| `pnpm dev`                              | Servidor de desarrollo                                                             |
-| `pnpm build`                            | Build de producción                                                                |
-| `pnpm start`                            | Sirve el build de producción                                                       |
-| `pnpm lint`                             | ESLint                                                                             |
-| `pnpm format` / `format:check`          | Prettier                                                                           |
-| `pnpm typecheck`                        | `tsc --noEmit`                                                                     |
-| `pnpm test` / `test:watch`              | Tests unitarios/integración (Vitest)                                               |
-| `pnpm test:e2e`                         | Tests end-to-end (Playwright)                                                      |
-| `pnpm db:seed`                          | Seed de lugares/rutas reales (pisa ediciones del admin, ver arriba)                |
-| `pnpm export:content-gaps`              | CSV con lugares sin descripción larga o sin foto (lee la base real)                |
-| `pnpm geocode:localities`               | Busca coordenadas de pueblos en Google Places (requiere `GOOGLE_PLACES_API_KEY`)   |
-| `pnpm fetch:google-photos`              | Trae fotos de Google Places a lugares que no tienen                                |
-| `python scripts/build-terrain-tiles.py` | Regenera el relieve del vuelo 3D (`public/terrain`, requiere `pip install pillow`) |
+| Comando                                 | Descripción                                                                           |
+| --------------------------------------- | ------------------------------------------------------------------------------------- |
+| `pnpm dev`                              | Servidor de desarrollo                                                                |
+| `pnpm build`                            | Build de producción                                                                   |
+| `pnpm start`                            | Sirve el build de producción                                                          |
+| `pnpm lint`                             | ESLint                                                                                |
+| `pnpm format` / `format:check`          | Prettier                                                                              |
+| `pnpm typecheck`                        | `tsc --noEmit`                                                                        |
+| `pnpm test` / `test:watch`              | Tests unitarios/integración (Vitest)                                                  |
+| `pnpm test:e2e`                         | Tests end-to-end (Playwright)                                                         |
+| `pnpm db:seed`                          | Seed de lugares/rutas reales (pisa ediciones del admin, ver arriba)                   |
+| `pnpm export:content-gaps`              | CSV con lugares sin descripción larga o sin foto (lee la base real)                   |
+| `pnpm geocode:localities`               | Busca coordenadas de pueblos en Google Places (requiere `GOOGLE_PLACES_API_KEY`)      |
+| `pnpm fetch:google-photos`              | Trae fotos de Google Places a lugares que no tienen                                   |
+| `python scripts/build-terrain-tiles.py` | Regenera el relieve del vuelo 3D (`public/terrain`, requiere `pip install pillow`)    |
+| `python scripts/build-scene-devil.py`   | Redibuja el diablo de Petorca en los fondos y el logo/ícono provisorios (SVG)         |
+| `node scripts/build-brand-png.mjs`      | Arma favicon, íconos de la app e imagen para compartir desde el logo (`public/brand`) |
 
 ## Producción
 
@@ -88,6 +90,7 @@ fuente pública en `sources`). Hace `upsert`: **pisa lo editado desde
 - **Administración:** `/admin` (usuario en `legacy.admin_users` del proyecto compartido): lugares, rutas, pueblos, comunas/categorías, verificaciones por comuna, comentarios y métricas.
 - **Hoja de ruta hacia la propuesta a turismo:** `docs/PLAN.md`, sección 10.
 - **Diseño:** `docs/DESIGN.md` (tokens, componentes y patrones visuales).
+- **Imágenes con GPT:** `docs/PROMPTS-IMAGENES.md` (personaje, logo, fondos y portadas).
 
 ## Estructura
 

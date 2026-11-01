@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { usePathname, Link } from "@/i18n/navigation";
 import { NAV_ITEMS } from "@/components/ui/nav-items";
@@ -19,28 +20,39 @@ export function TopNav() {
       aria-label={t("home")}
       className="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-40 hidden border-b border-black/10 backdrop-blur sm:block dark:border-white/10"
     >
-      <ul className="mx-auto flex max-w-3xl items-center justify-between px-4">
-        {NAV_ITEMS.map(({ href, key, Icon }) => {
-          const active =
-            pathname === href || (href !== "/" && pathname.startsWith(href));
-          return (
-            <li key={href}>
-              <Link
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-2 border-b-2 px-3 py-3 text-sm font-medium transition-colors ${
-                  active
-                    ? "border-accent text-accent [text-shadow:0_0_14px_var(--accent)]"
-                    : "text-foreground/60 hover:text-foreground/80 border-transparent"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                {t(key)}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="mx-auto flex max-w-3xl items-center gap-2 px-4">
+        <Link href="/" aria-label={t("home")} className="shrink-0">
+          <Image
+            src="/icons/icon-192.png"
+            alt=""
+            width={32}
+            height={32}
+            className="h-8 w-8 drop-shadow-[0_0_8px_var(--accent-soft)]"
+          />
+        </Link>
+        <ul className="flex flex-1 items-center justify-between">
+          {NAV_ITEMS.map(({ href, key, Icon }) => {
+            const active =
+              pathname === href || (href !== "/" && pathname.startsWith(href));
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  aria-current={active ? "page" : undefined}
+                  className={`flex items-center gap-2 border-b-2 px-3 py-3 text-sm font-medium transition-colors ${
+                    active
+                      ? "border-accent text-accent [text-shadow:0_0_14px_var(--accent)]"
+                      : "text-foreground/60 hover:text-foreground/80 border-transparent"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {t(key)}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </nav>
   );
 }

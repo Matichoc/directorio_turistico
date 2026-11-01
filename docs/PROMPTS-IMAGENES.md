@@ -24,9 +24,13 @@
   retratos de un edificio en particular.
 - **Ojo con la ruta oficial.** Ya existe una ruta turística llamada "Donde el
   Diablo perdió el poncho" (Nataly Muñoz; ver
-  `docs/PROPUESTA-CONTENIDO-PETORCA.md`). Nuestro diablo y nuestro logo no
-  deben parecerse a los de ellos: si conoces su imagen, compárala antes de
-  usar el resultado.
+  `docs/PROPUESTA-CONTENIDO-PETORCA.md`). Su logo (`public/brand/ruta-oficial-poncho.webp`)
+  es un círculo azul y blanco con el título en letras negras y la silueta
+  plana de un diablo rojo **tirando de un poncho**. Lo mostramos en la ficha
+  de la ruta como "Ruta turística oficial", así que lo nuestro **no debe
+  parecerse**: nada de silueta plana tirando del poncho, nada de azul y
+  blanco, sin título. Se puede adjuntar su logo a ChatGPT diciendo _"que no se
+  parezca a este"_.
 - **Al terminar**: guarda cada imagen con el **nombre de archivo** indicado
   (PNG sirve) en la carpeta indicada y avísale a Claude. Él las convierte a
   WebP, regenera los íconos (`node scripts/build-brand-png.mjs`) y las
@@ -70,7 +74,7 @@ Proporciones de mascota: cabeza grande, cuerpo bajo, gestos expresivos.
 ```text
 Logo circular tipo insignia para un sitio de turismo de la comuna de Petorca (Chile), usando el personaje de la imagen adjunta.
 Dentro del círculo: el diablo de busto (cabeza y hombros), sonriendo con el diente de oro, el pañuelo de cueca en alto y el poncho rojo resbalando de un hombro. Detrás, los cerros suaves del valle de Petorca de noche, con algunas estrellas y un halo de brasa detrás de la cabeza. Un aro exterior grueso en degradado naranja brasa.
-Debe leerse bien en tamaño chico (64 px): siluetas claras, pocos detalles finos, buen contraste. Fondo exterior transparente. Sin texto.
+Debe leerse bien en tamaño chico (64 px): siluetas claras, pocos detalles finos, buen contraste. Fondo exterior transparente. Sin texto. Que no parezca el logo de otra ruta turística: nada de fondo azul y blanco, nada de silueta plana de diablo ni de diablo tirando de un poncho.
 [pega aquí el bloque de estilo]
 ```
 
@@ -160,7 +164,7 @@ provincia (con el diablo viejo).
 
 ```text
 Ilustración de portada para una ruta turística por el valle de Petorca, Chile, de Pedegua a Chincolco. Un camino rural serpentea por el valle entre cerros secos, quiscos y pequeños pueblos de adobe, con la cordillera al fondo al atardecer.
-El diablo de la imagen adjunta corre por el camino persiguiendo su poncho rojo, que el viento se lleva volando por el aire hacia los cerros. Escena alegre y en movimiento.
+El diablo de la imagen adjunta, sentado en una piedra a la orilla del camino, mira el valle con una sonrisa pícara mientras se acomoda el poncho rojo al hombro, con el pañuelo de cueca en la otra mano. Que no sea un diablo tirando del poncho ni persiguiéndolo (eso es el logo de otra ruta).
 Composición horizontal centrada. Sin texto.
 [pega aquí el bloque de estilo]
 ```

@@ -365,6 +365,14 @@ pausa, sigue, detiene y cambia velocidad (1×, 1,25×, 0,8×). Para sumarlo a
 otra página: pasarle `segments` con textos reales de esa página — nunca un
 texto escrito solo para la voz.
 
+## Ruta turística oficial
+
+Si una ruta del sitio corresponde a una ruta real de la comuna, su ficha
+muestra `OfficialRouteCard` (`components/route/`): el logo de la ruta oficial,
+de dónde viene (con fuente) y su Instagram, en una tarjeta `surface-glass`.
+Los datos viven en `lib/official-routes.ts`, por slug. Solo con permiso de los
+dueños, y nuestro arte nunca imita su logo (`docs/PROMPTS-IMAGENES.md`).
+
 ## Compartir un recorrido
 
 "Compartir recorrido" (Mi recorrido) arma un link con las paradas en orden

@@ -143,7 +143,13 @@
       "casco-minero": "Casco minero",
       "palta": "Palta"
     },
-    "tripError": "No pudimos agregar la ruta a tu recorrido. Inténtalo de nuevo en un rato."
+    "tripError": "No pudimos agregar la ruta a tu recorrido. Inténtalo de nuevo en un rato.",
+    "official": {
+      "badge": "Ruta turística oficial",
+      "body": "Este recorrido lleva el nombre de la ruta turística que crearon en 2018 la Municipalidad de Petorca e INDAP con emprendedores de turismo rural: va de Pedegua a Chalaco, con 20 señaléticas en el camino.",
+      "instagram": "Síguela en Instagram",
+      "logoAlt": "Logo de la ruta turística Donde el Diablo perdió el poncho"
+    }
   },
   "guide": {
     "start": "Iniciar guía",

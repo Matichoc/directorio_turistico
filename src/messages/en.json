@@ -143,7 +143,13 @@
       "casco-minero": "Miner's helmet",
       "palta": "Avocado"
     },
-    "tripError": "We couldn't add the route to your trip. Please try again in a while."
+    "tripError": "We couldn't add the route to your trip. Please try again in a while.",
+    "official": {
+      "badge": "Official tourist route",
+      "body": "This trip is named after the tourist route created in 2018 by the Municipality of Petorca and INDAP with local rural tourism businesses: it runs from Pedegua to Chalaco, with 20 signposts along the way.",
+      "instagram": "Follow it on Instagram",
+      "logoAlt": "Logo of the Donde el Diablo perdió el poncho tourist route"
+    }
   },
   "guide": {
     "start": "Start guidance",

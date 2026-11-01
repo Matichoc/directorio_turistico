@@ -1,7 +1,12 @@
 -- Las dos rutas del sitio de la comuna de Petorca (rama `petorca`, ver
 -- src/lib/site-scope.ts), en el esquema `legacy` del proyecto compartido:
---   - "Donde el diablo perdió el poncho" (Pedegua → Chincolco)
+--   - "Ruta del Diablo: de Pedegua a Chincolco"
 --   - "Ruta Ferroviaria: de Pedegua a Las Palmas"
+--
+-- La primera se llamó al principio "Donde el diablo perdió el poncho" (slug
+-- `donde-el-diablo-perdio-el-poncho`), pero ese es el nombre de una ruta
+-- turística real de Petorca: se renombró. Si este script ya se había corrido
+-- con el nombre viejo, el paso 1 renombra esa misma ruta (no crea otra).
 --
 -- Mismo contenido que `routes` en scripts/seed.ts (la fuente de verdad);
 -- este script existe para cargarlas sin correr `pnpm db:seed`, que haría
@@ -10,10 +15,11 @@
 -- Qué hace (todo dentro de `legacy`, en una sola transacción):
 --   0. Verifica que las 6 paradas existan y sean de la comuna de Petorca.
 --      Si algo no calza, aborta sin cambiar nada.
---   1. Crea (o actualiza) las 2 rutas, publicadas y verificadas, con sus
+--   1. Si la primera ruta quedó cargada con su nombre viejo, la renombra.
+--   2. Crea (o actualiza) las 2 rutas, publicadas y verificadas, con sus
 --      textos en español e inglés.
---   2. Rehace sus paradas en orden.
---   3. Agrega su fuente (si no estaba).
+--   3. Rehace sus paradas en orden.
+--   4. Agrega su fuente (si no estaba).
 --
 -- Qué NO hace: no toca `public` (Papudo), ni otras rutas (la Ruta del
 -- Diablo de la provincia sigue igual), ni lugares.
@@ -46,7 +52,16 @@ begin
   end loop;
 end $$;
 
--- 1-3) Rutas, textos, paradas y fuente ---------------------------------------
+-- 1) Nombre viejo → nombre nuevo (solo si quedó cargada con el viejo) -------
+update legacy.routes
+set slug = 'ruta-del-diablo-pedegua-chincolco', updated_at = now()
+where slug = 'donde-el-diablo-perdio-el-poncho'
+  and not exists (
+    select 1 from legacy.routes
+    where slug = 'ruta-del-diablo-pedegua-chincolco'
+  );
+
+-- 2-4) Rutas, textos, paradas y fuente ---------------------------------------
 do $$
 declare
   r record;
@@ -56,12 +71,12 @@ begin
   for r in
     select * from (values
       (
-        'donde-el-diablo-perdio-el-poncho',
+        'ruta-del-diablo-pedegua-chincolco',
         '/rutas/ruta-del-diablo.webp',
-        'Donde el diablo perdió el poncho',
-        'Del dicho "el diablo murió en Petorca y en La Ligua lo enterraron": parte bien metida en el campo —"donde el diablo perdió el poncho"—, en la antigua estación y el puente de Pedegua, y sigue por la Escalera del Diablo en Hierro Viejo y la Iglesia La Merced de Petorca hasta los petroglifos de Chincolco.',
-        'Where the Devil Lost His Poncho',
-        'From the old saying "the Devil died in Petorca and was buried in La Ligua": it starts out deep in the countryside — "where the devil lost his poncho" — at Pedegua''s old railway station and bridge, then goes on through the Devil''s Staircase in Hierro Viejo and La Merced Church in Petorca to the Chincolco petroglyphs.',
+        'Ruta del Diablo: de Pedegua a Chincolco',
+        'Por los lugares del dicho "el diablo murió en Petorca y en La Ligua lo enterraron": parte en la antigua estación y el puente de Pedegua, y sigue valle arriba por la Escalera del Diablo en Hierro Viejo y la Iglesia La Merced de Petorca hasta los petroglifos de Chincolco.',
+        'Devil''s Route: Pedegua to Chincolco',
+        'Through the places of the old saying "the Devil died in Petorca and was buried in La Ligua": it starts at Pedegua''s old railway station and bridge, then heads up the valley through the Devil''s Staircase in Hierro Viejo and La Merced Church in Petorca to the Chincolco petroglyphs.',
         array['pedegua', 'pedegua-puente', 'escalera-del-diablo',
               'iglesia-la-merced-petorca', 'petorca-petroglifos-chincolco'],
         'https://petorcaminera.wordpress.com/2016/12/13/el-diablo-murio-en-petorca/',

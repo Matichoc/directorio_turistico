@@ -303,6 +303,32 @@ string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
   "solo lo listado" — un bug real ya se dio dos veces en esta sesión por
   olvidar este paso).
 
+## Guía paso a paso (a pie y en auto)
+
+Pedido del usuario (2026-11-01): "no quiero una brújula, quiero una guía de
+vete por aquí, vete por allá… con la cámara abierta, que me muestre la ruta
+hacia dónde tengo que ir". `RouteNavigationMap` (ficha de ruta y Mi
+recorrido) ya no usa Google: "Iniciar guía" pide el camino por calle desde
+donde estás hasta la próxima parada (`/api/ruta`, OSRM de OpenStreetMap, ver
+`lib/navigation/osrm.ts`) y lo sigue con el GPS:
+
+- **Tarjeta de giro**: ícono del giro (`ManeuverIcon`, mismas reglas que
+  `CategoryIcon`, en `category-icon.tsx`) + "En 80 m · Dobla a la derecha por
+  Serrano" + lo que falta. Los textos salen de `guide.action.*` (es/en); la
+  lógica, de `lib/navigation/guidance.ts` (funciones puras, con pruebas).
+- **Modo**: a pie o en auto, sugerido por la distancia (hasta 1,5 km, a pie)
+  y elegible a mano.
+- **Voz** (activada por defecto, con botón para apagarla): dice cada giro al
+  volverse el próximo, al acercarse y en la esquina ("ahora, dobla…"), y la
+  llegada. Usa la voz del teléfono (`lib/speech.ts`).
+- **Cámara** (solo a pie, `GuideCamera`): la flecha no apunta al destino,
+  sino a un punto de la calle unos metros más adelante sobre el camino
+  (`LOOKAHEAD_M`), que al acercarse a una esquina ya está doblando.
+- **Desvío**: lejos del camino se muestra "recalculando" (sin giros viejos) y
+  se pide uno nuevo (como mucho cada 10 s).
+- Al llegar ofrece seguir a la siguiente parada; tocar otra parada en el
+  mapa cambia el destino. Siempre queda el link a Google Maps.
+
 ## Ficha del jugador en el mapa en vivo
 
 Pedido del usuario: que su posición real en el mapa de navegación se vea

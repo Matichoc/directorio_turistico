@@ -52,3 +52,46 @@ export function CategoryIcon({
     </svg>
   );
 }
+
+/**
+ * Flechas de giro de la guía paso a paso (`LiveGuide`, `GuideCamera`): mismo
+ * archivo que el resto de los íconos (ver docs/DESIGN.md), pero en su propio
+ * `Record` — no son íconos de lugar, así que no entran en `ICON_KEYS`.
+ */
+const MANEUVER_PATHS: Record<string, string> = {
+  straight: "M12 21V4M6 10l6-6 6 6",
+  left: "M17 21v-7a4 4 0 0 0-4-4H5M9 6l-4 4 4 4",
+  right: "M7 21v-7a4 4 0 0 1 4-4h8M15 6l4 4-4 4",
+  slightLeft: "M15 21v-6L7.5 7.5M7 13V7h6",
+  slightRight: "M9 21v-6l7.5-7.5M11 7h6v6",
+  sharpLeft: "M16 21V8L7 17M7 11v6h6",
+  sharpRight: "M8 21V8l9 9M17 11v6h-6",
+  keepLeft: "M15 21v-6L7.5 7.5M7 13V7h6M17 21v-9",
+  keepRight: "M9 21v-6l7.5-7.5M11 7h6v6M7 21v-9",
+  uturn: "M8 21V9a4 4 0 0 1 8 0v7M12 12l4 4 4-4",
+  roundabout: "M12 21v-5M12 16a4 4 0 1 1 4-4M16 12h-4M14.5 9.5 16 12l2.5-1.5",
+  arrive: "M6 21V4M6 4h11l-2.5 4 2.5 4H6",
+};
+
+export function ManeuverIcon({
+  action,
+  className = "h-6 w-6",
+}: {
+  action: string;
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.25}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d={MANEUVER_PATHS[action] ?? MANEUVER_PATHS.straight} />
+    </svg>
+  );
+}

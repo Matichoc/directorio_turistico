@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import { getPathname } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 
-export const SITE_NAME =
-  "El diablo murió en Petorca y en La Ligua lo enterraron";
+/** Nombre del sitio: la parte del dicho que es de la comuna (ver docs/PLAN.md, 2026-11-01). */
+export const SITE_NAME = "El diablo murió en Petorca";
 
-/** Imagen de vista previa cuando una página no tiene foto propia. */
-export const DEFAULT_OG_IMAGE = "/icons/icon-512.png";
+/**
+ * Imagen de vista previa cuando una página no tiene foto propia (logo y
+ * nombre, 1200×630; sale de `scripts/build-brand-png.mjs`).
+ */
+export const DEFAULT_OG_IMAGE = "/brand/og.png";
 
 const OG_LOCALE: Record<Locale, string> = { es: "es_CL", en: "en_US" };
 

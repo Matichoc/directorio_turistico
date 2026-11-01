@@ -74,6 +74,11 @@ const nextConfig: NextConfig = {
         search: "",
       },
       {
+        // Logo del sitio en tamaño ícono (TopNav; scripts/build-brand-png.mjs).
+        pathname: "/icons/**",
+        search: "",
+      },
+      {
         // Portadas de ruta generadas con IA (ver public/rutas/ y
         // routes.cover_image, migración 0011_route_cover_image.sql).
         pathname: "/rutas/**",

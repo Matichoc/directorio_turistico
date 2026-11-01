@@ -1,24 +1,39 @@
 import type { PlaceTheme } from "@/lib/ui/category-gradient";
 
 /**
- * Fondos ilustrados con el diablito (casco minero con linterna, poncho,
- * cola de flecha) en distintos escenarios de la zona — pedido del usuario:
- * "que el diablito aparezca o en la playa, o en el cerro, o con poncho,
- * según como lo busquen y donde naveguen". Son SVG en `public/fondos/`
- * (compuestos para que el diablito quede a la derecha y el título a la
- * izquierda); para cambiarlos por arte raster (webp) basta reemplazar el
- * archivo y su extensión en `SCENE_SRC`.
+ * Fondos ilustrados con el diablo de Petorca en distintos escenarios de la
+ * comuna — pedido del usuario: "que el diablito aparezca o en la playa, o en
+ * el cerro, o con poncho, según como lo busquen y donde naveguen". Arte
+ * aprobado (frac, poncho y cucharón de madera con borla; ver
+ * docs/PROMPTS-IMAGENES.md) en `public/fondos/*.webp`, compuesto con el diablo
+ * a la derecha y el título a la izquierda. `playa` y `dulces` son de la
+ * versión de la provincia y siguen en SVG.
  */
 export type SceneId =
   "atardecer" | "playa" | "cerro" | "pueblo" | "dulces" | "tunel";
 
 export const SCENE_SRC: Record<SceneId, string> = {
-  atardecer: "/fondos/atardecer.svg",
+  atardecer: "/fondos/atardecer.webp",
   playa: "/fondos/playa.svg",
-  cerro: "/fondos/cerro.svg",
-  pueblo: "/fondos/pueblo.svg",
+  cerro: "/fondos/cerro.webp",
+  pueblo: "/fondos/pueblo.webp",
   dulces: "/fondos/dulces.svg",
-  tunel: "/fondos/tunel.svg",
+  tunel: "/fondos/tunel.webp",
+};
+
+/**
+ * Punto de la escena que tiene que quedar a la vista al recortarla
+ * (`background-position`): la cara y el torso del diablo. Usarlo en todo
+ * lugar que muestre una escena, así una cabecera ancha o una postal angosta
+ * nunca le cortan la cabeza.
+ */
+export const SCENE_POSITION: Record<SceneId, string> = {
+  atardecer: "80% 22%",
+  playa: "85% 70%",
+  cerro: "78% 26%",
+  pueblo: "78% 34%",
+  dulces: "85% 70%",
+  tunel: "82% 30%",
 };
 
 const SCENE_BY_CATEGORY: Record<string, SceneId> = {

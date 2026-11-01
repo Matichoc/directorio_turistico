@@ -5,6 +5,7 @@ import { getRouteBySlug } from "@/lib/data/routes";
 import { resolveLocale } from "@/i18n/utils";
 import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
 import { RouteMapWithStops } from "@/components/route/route-map-with-stops";
+import { OfficialRouteCard } from "@/components/route/official-route-card";
 import { DevilMascot } from "@/components/ui/devil-mascot";
 import { ListenButton } from "@/components/ui/listen-button";
 import type { Metadata } from "next";
@@ -92,6 +93,8 @@ export default async function RouteDetailPage({
       {route.description && (
         <p className="text-foreground/70">{route.description}</p>
       )}
+
+      <OfficialRouteCard routeSlug={route.slug} />
 
       <RouteMapWithStops
         routeId={route.id}

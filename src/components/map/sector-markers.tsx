@@ -6,7 +6,11 @@ import { useTranslations } from "next-intl";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { ThemeAura } from "@/components/map/theme-aura";
 import { THEME_STYLE } from "@/lib/ui/category-gradient";
-import { SCENE_SRC, getSceneForTheme } from "@/lib/ui/scene-backgrounds";
+import {
+  SCENE_POSITION,
+  SCENE_SRC,
+  getSceneForTheme,
+} from "@/lib/ui/scene-backgrounds";
 import type { MapSector } from "@/lib/ui/map-sectors";
 
 /** Tamaño aproximado de una burbuja, para que no se tapen entre sí. */
@@ -136,9 +140,10 @@ export function SectorMarkers({
           >
             <span
               aria-hidden="true"
-              className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-white/20 bg-[#1d0f22] bg-[length:300%] [background-position:86%_72%]"
+              className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-white/20 bg-[#1d0f22] bg-[length:300%]"
               style={{
                 backgroundImage: `url(${SCENE_SRC[getSceneForTheme(lead)]})`,
+                backgroundPosition: SCENE_POSITION[getSceneForTheme(lead)],
               }}
             />
             <span className="flex flex-col gap-1 leading-none">

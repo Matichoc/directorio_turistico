@@ -1,4 +1,4 @@
-# Lineamientos de diseño — El diablo murió en Petorca y en La Ligua lo enterraron
+# Lineamientos de diseño — El diablo murió en Petorca
 
 > Documento vivo (igual que `docs/PLAN.md`): cuando agregues una página, un
 > componente o un color/animación nuevo, primero revisa si ya hay un token o
@@ -187,6 +187,21 @@ del sitio (mar azul noche → valles violeta → cordillera brasa). Reglas:
   vuelo ni giro (saltos directos). `cooperativeGestures`: en celular el mapa
   no secuestra el scroll de la página (se mueve con dos dedos).
 
+## Logo e íconos
+
+Un solo origen: `public/brand/logo.png` (insignia, transparente) e
+`icono.png` (cabeza del diablo), arte aprobado hecho con GPT
+(`docs/PROMPTS-IMAGENES.md`). `node scripts/build-brand-png.mjs` arma desde ahí
+todo lo demás — nunca editar a mano los archivos generados:
+
+| Archivo generado                     | Dónde se ve                                    |
+| ------------------------------------ | ---------------------------------------------- |
+| `src/app/favicon.ico`, `icon.png`    | Pestaña del navegador                          |
+| `src/app/apple-icon.png`             | Ícono al agregar a inicio en iPhone            |
+| `public/icons/icon-192/512.png`      | App instalable (manifiesto) y barra de arriba  |
+| `public/icons/icon-maskable-512.png` | App instalable en Android (recorte en círculo) |
+| `public/brand/og.png`                | Vista previa al compartir un link sin foto     |
+
 ## Aparición al hacer scroll
 
 Clase `reveal` (en `globals.css`): las secciones y tarjetas suben y aparecen
@@ -199,19 +214,26 @@ los rompería).
 
 ## Fondos con el diablito (escenas)
 
-Pedido del usuario: fondos únicos con el diablo de la ilustración (casco
-minero con cuernos y linterna, poncho rojo, cola de flecha) "en la playa, en
-el cerro, con poncho, según cómo lo busquen y dónde naveguen". Son SVG en
+Pedido del usuario: fondos únicos con el diablo "en la playa, en el cerro,
+con poncho, según cómo lo busquen y dónde naveguen". Son SVG en
 `public/fondos/` (`atardecer`, `playa`, `cerro`, `pueblo`, `dulces`,
 `tunel`), compuestos con el diablito a la derecha y el cielo a la izquierda
-para que el título de `PageHero` quede legible. La elección vive en un solo
-lugar, `src/lib/ui/scene-backgrounds.ts`: `getSceneForCategory` (playa →
-playa, naturaleza → cerro, cultura → pueblo, gastronomía → dulces, sin
-categoría → atardecer) y `getSceneForRoute`. `PageHero` acepta `scene`:
-`/explorar` la cambia con el filtro de categoría, la ficha de un pueblo usa la
-categoría que más se repite entre sus atractivos, y el hero del home usa el
-atardecer. Para cambiar un fondo por arte raster (webp, p. ej. generado con
-IA) basta reemplazar el archivo y su extensión en `SCENE_SRC`.
+para que el título de `PageHero` quede legible.
+
+**El diablo de Petorca** (desde 2026-11-01): el de antes llevaba casco minero
+(Cabildo) y aparecía con tabla de surf y dulces (La Ligua) — era de la
+provincia. El de ahora (arte aprobado, `docs/arte/diablo-referencia-aprobada.png`)
+sale de la leyenda de la ruta de Petorca: frac negro, humita roja, diente de
+oro, poncho rojo sobre un hombro y **cucharón de madera con borla roja y
+dorada**. Las escenas `atardecer`, `cerro`, `pueblo` y `tunel` son WebP de ese
+arte; `playa` y `dulces` (solo provincia) siguen en SVG. Nunca volver a poner
+casco minero, playa ni dulces en el personaje.
+
+**Recorte**: cada escena tiene su punto de foco en `SCENE_POSITION` (la cara
+y el torso del diablo), que usan todas las vistas (`PageHero`, hero del
+inicio, postales, burbujas del mapa) — nunca un `background-position` escrito
+a mano. En el hero del inicio, desde `sm:` el título, el texto y el buscador
+ocupan el 62 % izquierdo para no taparle la cara.
 
 ## Radios y espaciado
 
@@ -341,6 +363,14 @@ pausa, sigue, detiene y cambia velocidad (1×, 1,25×, 0,8×). Para sumarlo a
 otra página: pasarle `segments` con textos reales de esa página — nunca un
 texto escrito solo para la voz.
 
+## Ruta turística oficial
+
+Si una ruta del sitio corresponde a una ruta real de la comuna, su ficha
+muestra `OfficialRouteCard` (`components/route/`): el logo de la ruta oficial,
+de dónde viene (con fuente) y su Instagram, en una tarjeta `surface-glass`.
+Los datos viven en `lib/official-routes.ts`, por slug. Solo con permiso de los
+dueños, y nuestro arte nunca imita su logo (`docs/PROMPTS-IMAGENES.md`).
+
 ## Compartir un recorrido
 
 "Compartir recorrido" (Mi recorrido) arma un link con las paradas en orden
@@ -358,9 +388,10 @@ Pedido del usuario: que su posición real en el mapa de navegación se vea
 como una "ficha tipo Monopoly" (un ícono elegido por él) en vez del punto
 azul genérico de MapLibre. `lib/navigation/avatar-storage.ts` guarda la
 elección (`localStorage`, mismo patrón que `lib/trip/storage.ts`) entre los
-íconos temáticos "de la zona" (`AVATAR_ICONS`: diablo/dulce/tejido/surf/
-casco-minero/palta — no los de categoría genérica, para que la ficha se
-sienta propia de Petorca/La Ligua). `AvatarPicker` (junto al botón
+íconos de la comuna (`AVATAR_ICONS`: diablo, cucharón, poncho, tren, Túnel
+Las Palmas y petroglifo de Chincolco; hasta 2026-11-01 eran los de la
+provincia — dulce, surf, palta… — y una ficha guardada que ya no existe
+vuelve sola al diablo). `AvatarPicker` (junto al botón
 "Iniciar navegación") deja elegirla; `PlayerToken` la dibuja en el mapa;
 `MapView` pasa `showUserLocation={false}` a `GeolocateControl` para que
 `PlayerToken` sea la única marca de posición, no las dos a la vez.

@@ -9,7 +9,10 @@ describe("scene backgrounds", () => {
     expect(getSceneForCategory("playa")).toBe("playa");
     expect(getSceneForCategory("naturaleza")).toBe("cerro");
     expect(getSceneForCategory("cultura")).toBe("pueblo");
-    expect(getSceneForCategory("gastronomia")).toBe("dulces");
+    // Gastronomía ya no usa la escena de dulces (La Ligua, diablo viejo).
+    expect(getSceneForCategory("gastronomia")).toBe("pueblo");
+    expect(getSceneForCategory("alojamiento")).toBe("atardecer");
+    expect(getSceneForCategory("recreacion")).toBe("cerro");
   });
 
   it("falls back to the general sunset without a known category", () => {

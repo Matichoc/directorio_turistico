@@ -24,10 +24,12 @@
     "featuredRoutes": "Rutas destacadas",
     "intent": {
       "title": "¿Qué buscas hoy?",
-      "nature": "Naturaleza",
+      "nature": "Naturaleza y aventura",
       "gastronomy": "Gastronomía",
-      "culture": "Cultura",
-      "beach": "Playa"
+      "culture": "Patrimonio y cultura",
+      "beach": "Playa",
+      "lodging": "Alojamiento",
+      "leisure": "Recreación"
     },
     "municipality": {
       "title": "Municipalidad de Petorca",
@@ -86,6 +88,12 @@
       "historia": "Historia",
       "naturaleza": "Naturaleza",
       "diablo": "El diablo"
+    },
+    "categories": {
+      "label": "Categorías",
+      "all": "Todo",
+      "routes": "Rutas",
+      "empty": "Todavía no hay lugares de {category} en la comuna. Los estamos sumando: si conoces uno, cuéntanos desde Información."
     }
   },
   "place": {

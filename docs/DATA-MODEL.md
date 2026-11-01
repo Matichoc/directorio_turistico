@@ -42,6 +42,7 @@ pendiente de reverificación).
 - `place_hours`: una fila por día de semana (`0`–`6`), `unique(place_id, day_of_week)`.
 - `place_images`: ordenadas por `position`.
 - `place_tags`: tabla puente `place_id, tag_id`.
+- `place_secondary_categories`: categorías **adicionales** de un lugar (`place_id, category_id`); la principal sigue en `places.category_id` y define ícono y color. Migración `0024`; en city_tour, `supabase/manual/categorias-petorca.sql`.
 - `status_changed_at` (migración `0020_status_tracking.sql`, también en
   `routes`): cuándo cambió `publication_status` por última vez, vía trigger
   (`touch_status_changed_at`) — no se toca en otras ediciones. Alimenta el

@@ -32,6 +32,7 @@ const basePlace: PlaceCardType = {
   localitySlug: null,
   categoryName: "Naturaleza",
   categorySlug: "naturaleza",
+  categorySlugs: ["naturaleza"],
   icon: null,
   latitude: -32.28528,
   longitude: -71.0,

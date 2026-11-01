@@ -47,6 +47,7 @@ function place(
     localitySlug: null,
     categoryName: categorySlug,
     categorySlug,
+    categorySlugs: [categorySlug],
     icon,
     latitude: coords[0],
     longitude: coords[1],

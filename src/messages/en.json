@@ -24,10 +24,12 @@
     "featuredRoutes": "Featured routes",
     "intent": {
       "title": "What are you looking for today?",
-      "nature": "Nature",
-      "gastronomy": "Food",
-      "culture": "Culture",
-      "beach": "Beach"
+      "nature": "Nature & adventure",
+      "gastronomy": "Food & drink",
+      "culture": "Heritage & culture",
+      "beach": "Beach",
+      "lodging": "Places to stay",
+      "leisure": "Leisure"
     },
     "municipality": {
       "title": "Municipality of Petorca",
@@ -86,6 +88,12 @@
       "historia": "History",
       "naturaleza": "Nature",
       "diablo": "The devil"
+    },
+    "categories": {
+      "label": "Categories",
+      "all": "All",
+      "routes": "Routes",
+      "empty": "There are no {category} places in the commune yet. We're adding them: if you know one, tell us from Information."
     }
   },
   "place": {

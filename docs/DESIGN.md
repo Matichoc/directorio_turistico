@@ -472,6 +472,28 @@ detrás de un botón "Filtros" (`FiltersDisclosure`, con el conteo de filtros
 activos) para que el mapa o el árbol sea lo primero que se ve; achican los
 atractivos dentro de cada pueblo, no esconden pueblos.
 
+## Categorías de Explorar (pestañas)
+
+Pedido del usuario: Explorar "por categorías, como tenemos lo del Papudo", y
+que un lugar pueda estar en más de una. `CategoryTabs`
+(`components/explore/`) va bajo la cabecera: "Todo", una pestaña por
+categoría con su cantidad real de lugares y un acceso a Rutas. Orden y lista
+fija en `EXPLORE_CATEGORY_ORDER` (`lib/ui/category-gradient.ts`):
+Gastronomía · Alojamiento · Naturaleza y aventura · Patrimonio y cultura ·
+Recreación. Se muestran aunque estén vacías (para que se vea qué ofrece el
+directorio); vacías muestran un `EmptyState` que invita a contar de uno,
+nunca un lugar de relleno. Las postales del inicio, en cambio, solo con
+lugares.
+
+- **Varias categorías**: `PlaceCard.categorySlugs` (principal primero +
+  `place_secondary_categories`); se filtra y se cuenta con esa lista. La
+  principal (`categorySlug`) sigue mandando en ícono, color del pin y escena.
+- Cambiar de pestaña conserva la vista (mapa/listado) y los demás filtros;
+  la categoría ya no está en "Filtros".
+- Categoría nueva = su entrada en `EXPLORE_CATEGORY_ORDER` y en los
+  `Record` de `category-gradient.ts` (degradado, color, ícono) — y su escena
+  en `SCENE_BY_CATEGORY`. Nunca la escena `dulces` (La Ligua) para Petorca.
+
 ## Mapa de /explorar (vista por defecto)
 
 Pedido del usuario: "un mapa asociado a lo que ofrece el sector, con

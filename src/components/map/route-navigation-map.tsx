@@ -15,7 +15,12 @@ import {
 import { announceStage, type Instruction } from "@/lib/navigation/guidance";
 import { externalDirectionsUrl } from "@/lib/navigation/route-client";
 import type { TravelMode } from "@/lib/navigation/street-route";
-import { SPEECH_LANG, speakNow, stopSpeaking } from "@/lib/speech";
+import {
+  SPEECH_LANG,
+  preloadVoices,
+  speakNow,
+  stopSpeaking,
+} from "@/lib/speech";
 
 const lowerFirst = (text: string) =>
   text ? text[0].toLocaleLowerCase() + text.slice(1) : text;
@@ -77,6 +82,9 @@ export function RouteNavigationMap({
   // vez al acercarse y justo en la esquina ("ahora, dobla…"), y la llegada.
   // Cada aviso una sola vez (la clave recuerda el último dicho).
   const lastSaid = useRef<string | null>(null);
+  useEffect(() => {
+    if (active && voice) return preloadVoices();
+  }, [active, voice]);
   useEffect(() => {
     if (!active || !voice || !guidance || !mode || !target) return;
     let key: string;

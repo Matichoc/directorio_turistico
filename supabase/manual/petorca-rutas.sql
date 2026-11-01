@@ -1,7 +1,7 @@
 -- Las dos rutas del sitio de la comuna de Petorca (rama `petorca`, ver
 -- src/lib/site-scope.ts), en el esquema `legacy` del proyecto compartido:
 --   - "Donde el Diablo perdió el poncho"
---   - "Ruta Ferroviaria: de Pedegua a Las Palmas"
+--   - "Ruta Turística Ferroviaria Pedegua – Palquico – Las Palmas"
 --
 -- La primera se cargó al principio con el slug
 -- `donde-el-diablo-perdio-el-poncho`; hoy su slug es
@@ -77,7 +77,7 @@ begin
         '/rutas/ruta-del-diablo.webp',
         'Donde el Diablo perdió el poncho',
         'Tras la huella del diablo que, dice el dicho, murió en Petorca: parte en la antigua estación y el puente de Pedegua, y sigue valle arriba por la Escalera del Diablo en Hierro Viejo y la Iglesia La Merced de Petorca hasta los petroglifos de Chincolco.',
-        'Where the Devil Lost His Poncho',
+        'Donde el Diablo perdió el poncho',
         'Following the trail of the Devil who, as the saying goes, died in Petorca: it starts at Pedegua''s old railway station and bridge, then heads up the valley through the Devil''s Staircase in Hierro Viejo and La Merced Church in Petorca to the Chincolco petroglyphs.',
         array['pedegua', 'pedegua-puente', 'escalera-del-diablo',
               'iglesia-la-merced-petorca', 'petorca-petroglifos-chincolco'],
@@ -87,9 +87,9 @@ begin
       (
         'ruta-ferroviaria-pedegua-las-palmas',
         null,
-        'Ruta Ferroviaria: de Pedegua a Las Palmas',
+        'Ruta Turística Ferroviaria Pedegua – Palquico – Las Palmas',
         'Por el antiguo trazado del ferrocarril: desde la estación de Pedegua, que conserva su fachada y bodegas restauradas, por el puente sobre el río Petorca, hasta el Túnel Las Palmas: 966 m inaugurados en 1914 como parte de la red Longitudinal Norte, Monumento Histórico desde 2011.',
-        'Railway Route: Pedegua to Las Palmas',
+        'Ruta Turística Ferroviaria Pedegua – Palquico – Las Palmas',
         'Along the old railway line: from Pedegua station, which keeps its restored façade and warehouses, across the bridge over the Río Petorca, to the Túnel Las Palmas: 966 m opened in 1914 as part of the Northern Longitudinal network, a National Historic Monument since 2011.',
         array['pedegua', 'pedegua-puente', 'petorca-tunel-las-palmas'],
         'https://www.monumentos.gob.cl/monumentos/monumentos-historicos/tunel-las-palmas',

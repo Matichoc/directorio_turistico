@@ -93,6 +93,22 @@ export function pickVoice<V extends VoiceLike>(
 }
 
 /**
+ * Pide la lista de voces antes de necesitarla: Chrome y Edge la entregan
+ * vacía la primera vez y la cargan después. Sin esto, el primer aviso de la
+ * guía salía con la voz por defecto del teléfono (que puede ser de otro
+ * idioma) en vez de una en el idioma del sitio. Devuelve cómo dejar de
+ * escuchar.
+ */
+export function preloadVoices(): () => void {
+  if (!isSpeechSupported()) return () => {};
+  const synth = window.speechSynthesis;
+  const load = () => synth.getVoices();
+  load();
+  synth.addEventListener("voiceschanged", load);
+  return () => synth.removeEventListener("voiceschanged", load);
+}
+
+/**
  * Dice una frase corta ahora, cortando lo que se estuviera diciendo (un giro
  * nuevo reemplaza al anterior). Para la guía; las páginas largas usan el
  * botón "Escuchar", que maneja pausa y trozos.

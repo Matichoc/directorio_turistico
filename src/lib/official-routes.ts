@@ -1,21 +1,31 @@
 /**
- * Rutas turísticas oficiales (de otros, no del sitio) a las que corresponde
- * una de nuestras rutas: la ficha muestra su logo y su contacto. Solo con
- * permiso de sus dueños — ver docs/PROPUESTA-CONTENIDO-PETORCA.md.
+ * Rutas turísticas de la comuna con nombre, logo y redes propias (de otros,
+ * no del sitio) a las que corresponde una de nuestras rutas: la ficha muestra
+ * su logo, de dónde viene y su Instagram. Logos y cuentas entregados por el
+ * usuario — ver docs/PROPUESTA-CONTENIDO-PETORCA.md.
  */
 export interface OfficialRoute {
-  /** Logo de la ruta oficial (public/brand/). */
+  /** Clave de sus textos en `route.official.routes` (messages/*.json). */
+  key: "poncho" | "ferroviaria";
+  /** Logo de la ruta (public/brand/). */
   logo: string;
   instagramUrl: string;
 }
 
 const OFFICIAL_ROUTES: Record<string, OfficialRoute> = {
   // "Donde el Diablo perdió el poncho" (Municipalidad de Petorca e INDAP,
-  // 2018; presidenta Nataly Muñoz). Instagram citado en El Mercurio de
-  // Valparaíso, 29-09-2024. Logo provisorio entregado por el usuario.
+  // 2018; presidenta Nataly Muñoz).
   "ruta-del-diablo-pedegua-chincolco": {
+    key: "poncho",
     logo: "/brand/ruta-oficial-poncho.webp",
-    instagramUrl: "https://www.instagram.com/ruta_dondeeldiabloperdio/",
+    instagramUrl: "https://www.instagram.com/rutadondeeldiabloperdio/",
+  },
+  // "Ruta Turística Ferroviaria Pedegua – Palquico – Las Palmas". No hay
+  // fuente de quién la organiza: la tarjeta no la llama "oficial".
+  "ruta-ferroviaria-pedegua-las-palmas": {
+    key: "ferroviaria",
+    logo: "/brand/ruta-ferroviaria-logo.webp",
+    instagramUrl: "https://www.instagram.com/ruta_ferroviaria/",
   },
 };
 

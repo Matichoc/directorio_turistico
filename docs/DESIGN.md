@@ -363,13 +363,17 @@ pausa, sigue, detiene y cambia velocidad (1×, 1,25×, 0,8×). Para sumarlo a
 otra página: pasarle `segments` con textos reales de esa página — nunca un
 texto escrito solo para la voz.
 
-## Ruta turística oficial
+## Rutas turísticas de la comuna (oficial y ferroviaria)
 
 Si una ruta del sitio corresponde a una ruta real de la comuna, su ficha
-muestra `OfficialRouteCard` (`components/route/`): el logo de la ruta oficial,
-de dónde viene (con fuente) y su Instagram, en una tarjeta `surface-glass`.
-Los datos viven en `lib/official-routes.ts`, por slug. Solo con permiso de los
-dueños, y nuestro arte nunca imita su logo (`docs/PROMPTS-IMAGENES.md`).
+muestra `OfficialRouteCard` (`components/route/`): el logo de esa ruta, de
+dónde viene (solo con fuente) y su Instagram, en una tarjeta `surface-glass`.
+Los datos viven en `lib/official-routes.ts`, por slug, y los textos en
+`route.official.routes.<clave>` (es/en). Hoy: "Donde el Diablo perdió el
+poncho" (oficial: Municipalidad e INDAP) y la "Ruta Turística Ferroviaria
+Pedegua – Palquico – Las Palmas" (sin fuente de quién la organiza: no se la
+llama "oficial"). Nuestras rutas usan su **nombre propio**, sin traducir.
+Nuestro arte nunca imita sus logos (`docs/PROMPTS-IMAGENES.md`).
 
 ## Compartir un recorrido
 

@@ -1940,7 +1940,8 @@ const routes = [
         "Tras la huella del diablo que, dice el dicho, murió en Petorca: parte en la antigua estación y el puente de Pedegua, y sigue valle arriba por la Escalera del Diablo en Hierro Viejo y la Iglesia La Merced de Petorca hasta los petroglifos de Chincolco.",
     },
     en: {
-      name: "Where the Devil Lost His Poncho",
+      // Nombre propio de la ruta oficial: no se traduce.
+      name: "Donde el Diablo perdió el poncho",
       description:
         "Following the trail of the Devil who, as the saying goes, died in Petorca: it starts at Pedegua's old railway station and bridge, then heads up the valley through the Devil's Staircase in Hierro Viejo and La Merced Church in Petorca to the Chincolco petroglyphs.",
     },
@@ -1963,12 +1964,13 @@ const routes = [
     durationMinutes: null,
     coverImage: "/rutas/ruta-ferroviaria-pedegua-las-palmas.webp",
     es: {
-      name: "Ruta Ferroviaria: de Pedegua a Las Palmas",
+      name: "Ruta Turística Ferroviaria Pedegua – Palquico – Las Palmas",
       description:
         "Por el antiguo trazado del ferrocarril: desde la estación de Pedegua, que conserva su fachada y bodegas restauradas, por el puente sobre el río Petorca, hasta el Túnel Las Palmas: 966 m inaugurados en 1914 como parte de la red Longitudinal Norte, Monumento Histórico desde 2011.",
     },
     en: {
-      name: "Railway Route: Pedegua to Las Palmas",
+      // Nombre propio de la ruta (su logo): no se traduce.
+      name: "Ruta Turística Ferroviaria Pedegua – Palquico – Las Palmas",
       description:
         "Along the old railway line: from Pedegua station, which keeps its restored façade and warehouses, across the bridge over the Río Petorca, to the Túnel Las Palmas: 966 m opened in 1914 as part of the Northern Longitudinal network, a National Historic Monument since 2011.",
     },

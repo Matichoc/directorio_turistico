@@ -6,6 +6,7 @@ import {
   SPEECH_LANG,
   isSpeechSupported,
   pickVoice,
+  preloadVoices,
   splitIntoChunks,
 } from "@/lib/speech";
 
@@ -50,12 +51,9 @@ export function ListenButton({
     if (!isSpeechSupported()) return;
     const synth = window.speechSynthesis;
     const started = session;
-    // Chrome entrega la lista de voces después: pedirla temprano la carga.
-    const load = () => synth.getVoices();
-    load();
-    synth.addEventListener("voiceschanged", load);
+    const stopPreloading = preloadVoices();
     return () => {
-      synth.removeEventListener("voiceschanged", load);
+      stopPreloading();
       // Al salir de la página se corta la lectura, si este botón la empezó.
       if (started.current > 0) synth.cancel();
     };

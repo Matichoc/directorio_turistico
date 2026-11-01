@@ -422,6 +422,23 @@ const localities: {
     summaryEn:
       "Former estate of the Augustinian religious community; when gold was found in 1730 in the Hierro Viejo area, miners and adventurers settled on the estate's lands. In 1924 a railway branch connecting it to the Petorca station was opened.",
   },
+  // Chalaco: donde el diablo perdió el poncho según el poema de 1894.
+  // Coordenada de OpenStreetMap (nodo 5769887521, "hamlet").
+  {
+    slug: "chalaco",
+    communeSlug: "petorca",
+    es: "Chalaco",
+    en: "Chalaco",
+    latitude: -32.178246,
+    longitude: -70.7971751,
+    summary:
+      'Caserío de la parte alta de la comuna, en el valle del río Pedernal, a unos 6,5 km al noreste de Chincolco. Según el poema "La Muerte del Diablo", que Elías Lizana publicó en 1894 en La Voz de Petorca, aquí perdió el diablo su poncho; otras versiones de la leyenda también pasan por sus cerros.',
+    summaryEn:
+      'Hamlet in the upper part of the commune, in the Pedernal River valley, about 6.5 km northeast of Chincolco. According to the poem "La Muerte del Diablo", published by Elías Lizana in 1894 in La Voz de Petorca, this is where the Devil lost his poncho; other versions of the legend also pass through its hills.',
+    sourceUrl: "https://fucoa.cl/publicaciones/mandinga/",
+    sourceLabel:
+      "FUCOA — El Mandinga. Historias del diablo en la zona central de Chile (2021)",
+  },
   {
     slug: "palquico",
     communeSlug: "petorca",

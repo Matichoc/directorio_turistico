@@ -170,7 +170,10 @@ Las Palmas". (La primera se llamó al principio "Donde el diablo perdió el
 poncho", pero ese es el nombre de una ruta turística real de Petorca; si el
 script ya se corrió con ese nombre, al correrlo de nuevo la renombra.) Solo toca esas 2 rutas en `legacy`, verifica antes
 que las 6 paradas existan en Petorca y es repetible. Se corre igual que el
-paso 2 (SQL Editor → pegar → Run). Estado al 2026-11-01: **por correr**.
+paso 2 (SQL Editor → pegar → Run). Estado: **hecho (2026-11-01)**. Comprobado
+desde fuera con la llave pública: las 2 rutas están publicadas y verificadas,
+con sus paradas en orden (5 y 3), sin ruta con el nombre viejo; las 3 rutas de
+la provincia y los 21 lugares de Papudo (`public`) siguen iguales.
 
 Ojo: como la base es una sola, mientras el sitio de la provincia siga
 publicado también va a mostrar estas 2 rutas (junto a la Ruta del Diablo).

@@ -479,6 +479,13 @@ pantalla, nunca los dos a la vez:
 Agregar una sexta sección = un solo ítem nuevo en `NAV_ITEMS`, nunca
 duplicar el link a mano en cada uno de los dos componentes.
 
+**Cambio de idioma** (`LocaleSwitcher`): botones ES · EN · PT (píldora,
+el activo en `bg-accent`), en `TopNav` a la derecha y, en celular, en
+`MobileHeader` (logo + nombre + idioma, arriba, no fijo). Antes era un
+`<select>` solo en el hero del inicio: las opciones no se leían (lista del
+sistema clara con texto blanco) y en las otras páginas no había cómo
+cambiar de idioma (feedback real del usuario).
+
 ## Panel para varias personas
 
 Pedido del usuario: "varias personas, con roles" para poder entregar el

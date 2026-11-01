@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { usePathname, Link } from "@/i18n/navigation";
 import { NAV_ITEMS } from "@/components/ui/nav-items";
+import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 
 /**
  * Nav horizontal fijo arriba, solo desde `sm:` hacia arriba (tablet/
@@ -52,6 +53,7 @@ export function TopNav() {
             );
           })}
         </ul>
+        <LocaleSwitcher />
       </div>
     </nav>
   );

@@ -7,7 +7,7 @@
     "info": "Informações"
   },
   "info": {
-    "about": "Um guia turístico da comuna de Petorca, a terra onde —diz o ditado— o diabo morreu: lugares, rotas e roteiros reais, feitos por gente da região.",
+    "about": "Um guia feito em Petorca, com dados reais e suas fontes: para que quem chega se apaixone pelo vale, e para que quem mora aqui o mostre com orgulho.",
     "developmentTitle": "Desenvolvimento",
     "developmentCredit": "Desenvolvido por Cristóbal Roco, CTO da Matichoc.",
     "developerTagline": "Apoie seus projetos de IA e com IA.",
@@ -19,11 +19,11 @@
   "home": {
     "title": "El diablo murió en Petorca",
     "provinceLabel": "Comuna de Petorca: Pedegua · Petorca · Chincolco · Hierro Viejo",
-    "subtitle": "Percorra a terra onde o diabo morreu: seus povoados, a rota onde ele perdeu o poncho, a antiga ferrovia e o Túnel Las Palmas.",
+    "subtitle": "O vale onde o diabo dançou cueca, perdeu o poncho e ficou para sempre. Túneis do antigo trem, petróglifos com mais de 800 anos, uma igreja de 1640, chicha e empanadas do campo. Venha descobrir… ou redescobrir, se você é daqui.",
     "searchPlaceholder": "Busque um lugar ou localidade",
     "featuredRoutes": "Rotas em destaque",
     "intent": {
-      "title": "O que você procura hoje?",
+      "title": "Do que você está com vontade hoje?",
       "nature": "Natureza e aventura",
       "gastronomy": "Gastronomia",
       "culture": "Patrimônio e cultura",
@@ -45,8 +45,8 @@
       }
     },
     "flyover": {
-      "title": "Sobrevoe Petorca",
-      "subtitle": "O relevo real da comuna em 3D, povoado por povoado: de Pedegua a Chincolco.",
+      "title": "Sobrevoe o vale",
+      "subtitle": "De Pedegua a Chincolco, vale acima rumo à cordilheira: o relevo real da comuna em 3D, povoado por povoado.",
       "play": "▶ Percorrer a comuna",
       "pause": "❚❚ Pausar",
       "overview": "Toda a comuna",
@@ -67,7 +67,7 @@
     "noResults": "Não encontramos lugares com esses filtros.",
     "otherPlaces": "Outros lugares",
     "villagesOnMap": "{count, plural, one {# povoado} other {# povoados}} no mapa",
-    "subtitle": "Toque em um pino do mapa para ver o que ele oferece: história, serras, ferrovia e os cantos do diabo. Prefere a lista? Mude para Lista.",
+    "subtitle": "Serras, história, sabores do campo e cantos com lenda. Toque em um pino e descubra o que cada povoado esconde, ou mude para Lista.",
     "communeSummary": "{villages, plural, =0 {sem povoados} one {# povoado} other {# povoados}} · {places, plural, =0 {sem atrativos} one {# atrativo} other {# atrativos}}",
     "filtersButton": "Filtros",
     "placesCount": "{count, plural, =0 {Sem atrativos} one {# atrativo} other {# atrativos}}",
@@ -133,6 +133,7 @@
     "addToTrip": "Adicionar rota completa",
     "addedToTrip": "Rota adicionada ao seu roteiro",
     "viewAll": "Ver todas as rotas",
+    "listSubtitle": "Siga a trilha do diabo ou o traçado do antigo trem: paradas em ordem, guia passo a passo com voz e um mapa que funciona sem sinal.",
     "noResults": "Ainda não há rotas publicadas.",
     "viewOnMap": "Ver rota no mapa",
     "checklistProgress": "{visited}/{total} paradas visitadas",
@@ -224,7 +225,7 @@
   },
   "trip": {
     "title": "Meu roteiro",
-    "subtitle": "Monte seu itinerário adicionando lugares e rotas pelo site; ele fica salvo só neste dispositivo.",
+    "subtitle": "Monte sua escapada do seu jeito: adicione lugares e rotas, ordene-os e compartilhe pelo WhatsApp. Fica salvo neste telefone.",
     "empty": "Você ainda não adicionou lugares ao seu roteiro.",
     "emptyCta": "Explorar lugares",
     "loading": "Montando seu itinerário…",
@@ -357,8 +358,8 @@
     },
     "home": {
       "title": "A lenda do diabo",
-      "body": "Perdeu o poncho em Chalaco, morreu em Petorca e foi enterrado em La Ligua. Leia ou ouça.",
-      "cta": "Conheça a lenda"
+      "body": "Dizem que ele dançava cueca com os mineiros, que perdeu o poncho em Chalaco e que morreu em Petorca. Ouça a lenda que dá nome a este vale.",
+      "cta": "Descubra a lenda"
     }
   },
   "offline": {

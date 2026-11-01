@@ -7,7 +7,7 @@
     "info": "Información"
   },
   "info": {
-    "about": "Un directorio turístico de la comuna de Petorca, la tierra donde —dice el dicho— murió el diablo: lugares, rutas y recorridos reales, hechos por gente de la zona.",
+    "about": "Una guía hecha en Petorca, con datos reales y sus fuentes: para que quien llega se enamore del valle, y para que quien vive aquí lo muestre con orgullo.",
     "developmentTitle": "Desarrollo",
     "developmentCredit": "Desarrollo de Cristóbal Roco, CTO de Matichoc.",
     "developerTagline": "Apoya tus proyectos de IA y con IA.",
@@ -19,11 +19,11 @@
   "home": {
     "title": "El diablo murió en Petorca",
     "provinceLabel": "Comuna de Petorca: Pedegua · Petorca · Chincolco · Hierro Viejo",
-    "subtitle": "Recorre la tierra donde murió el diablo: sus pueblos, la ruta donde perdió el poncho, el viejo ferrocarril y el Túnel Las Palmas.",
+    "subtitle": "El valle donde el diablo bailó cueca, perdió el poncho y se quedó para siempre. Túneles del viejo tren, petroglifos de más de 800 años, una iglesia de 1640, chicha y empanadas de campo. Ven a descubrirlo… o a redescubrirlo si eres de aquí.",
     "searchPlaceholder": "Busca un lugar o localidad",
     "featuredRoutes": "Rutas destacadas",
     "intent": {
-      "title": "¿Qué buscas hoy?",
+      "title": "¿Qué se te antoja hoy?",
       "nature": "Naturaleza y aventura",
       "gastronomy": "Gastronomía",
       "culture": "Patrimonio y cultura",
@@ -45,8 +45,8 @@
       }
     },
     "flyover": {
-      "title": "Vuela por Petorca",
-      "subtitle": "El relieve real de la comuna en 3D, pueblo por pueblo: de Pedegua a Chincolco.",
+      "title": "Vuela sobre el valle",
+      "subtitle": "De Pedegua a Chincolco, valle arriba hacia la cordillera: el relieve real de la comuna en 3D, pueblo por pueblo.",
       "play": "▶ Recorrer la comuna",
       "pause": "❚❚ Pausar",
       "overview": "Toda la comuna",
@@ -67,7 +67,7 @@
     "noResults": "No encontramos lugares con estos filtros.",
     "otherPlaces": "Otros lugares",
     "villagesOnMap": "{count, plural, one {# pueblo} other {# pueblos}} en el mapa",
-    "subtitle": "Toca un pin del mapa para ver qué ofrece: historia, cerro, ferrocarril y los rincones del diablo. ¿Prefieres la lista? Cambia a Listado.",
+    "subtitle": "Cerros, historia, sabores de campo y rincones con leyenda. Toca un pin y descubre qué esconde cada pueblo, o cambia a Listado.",
     "communeSummary": "{villages, plural, =0 {sin pueblos} one {# pueblo} other {# pueblos}} · {places, plural, =0 {sin atractivos} one {# atractivo} other {# atractivos}}",
     "filtersButton": "Filtros",
     "placesCount": "{count, plural, =0 {Sin atractivos} one {# atractivo} other {# atractivos}}",
@@ -133,6 +133,7 @@
     "addToTrip": "Agregar ruta completa",
     "addedToTrip": "Ruta agregada a tu recorrido",
     "viewAll": "Ver todas las rutas",
+    "listSubtitle": "Sigue la huella del diablo o el trazado del viejo tren: paradas en orden, guía paso a paso con voz y un mapa que funciona sin señal.",
     "noResults": "Todavía no hay rutas publicadas.",
     "viewOnMap": "Ver ruta en el mapa",
     "checklistProgress": "{visited}/{total} paradas visitadas",
@@ -224,7 +225,7 @@
   },
   "trip": {
     "title": "Mi recorrido",
-    "subtitle": "Arma tu itinerario agregando lugares y rutas desde el sitio; se guarda solo en este dispositivo.",
+    "subtitle": "Arma tu escapada a tu manera: suma lugares y rutas, ordénalos y compártelos por WhatsApp. Se guarda en este teléfono.",
     "empty": "Todavía no agregaste lugares a tu recorrido.",
     "emptyCta": "Explorar lugares",
     "loading": "Armando tu itinerario…",
@@ -357,8 +358,8 @@
     },
     "home": {
       "title": "La leyenda del diablo",
-      "body": "Perdió el poncho en Chalaco, murió en Petorca y lo enterraron en La Ligua. Léela o escúchala.",
-      "cta": "Conoce la leyenda"
+      "body": "Dicen que bailaba cueca con los mineros, que perdió el poncho en Chalaco y que murió en Petorca. Escucha la leyenda que le da nombre a este valle.",
+      "cta": "Descubre la leyenda"
     }
   },
   "offline": {

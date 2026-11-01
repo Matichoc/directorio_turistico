@@ -99,6 +99,42 @@ texto del poema. Se puede enlazar desde el inicio y leer con "Escuchar".
 Los guías de petroglifos que aparecen en "Cocinando con el Diablo" (**Club de
 Montaña Arrank'a**) podrían ser el contacto para visitarlos con guía.
 
+### 2.0 Cargados el 2026-11-01 (`supabase/manual/lugares-petorca-2026-11.sql`)
+
+Con ubicación exacta de **OpenStreetMap** y fuente propia, publicados como
+"Pendiente de verificación" hasta confirmarlos y marcarlos desde `/admin`:
+
+| Lugar                          | Pueblo       | Categorías              | Fuente                                  |
+| ------------------------------ | ------------ | ----------------------- | --------------------------------------- |
+| Betzabé (cocina regional)      | Petorca      | Gastronomía             | OpenStreetMap (con teléfono)            |
+| Amancay                        | Petorca      | Gastronomía             | OpenStreetMap                           |
+| La Travesía                    | Petorca      | Gastronomía             | OpenStreetMap                           |
+| El Rincón Criollo              | Chincolco    | Gastronomía             | artículo enciclopédico antiguo ⚠️ + OSM |
+| Iglesia de Chincolco           | Chincolco    | Patrimonio y cultura    | OpenStreetMap                           |
+| Plaza de Armas de Chincolco    | Chincolco    | Recreación + Patrimonio | InfoPetorca                             |
+| Medialuna de Chincolco         | Chincolco    | Recreación + Patrimonio | OpenStreetMap                           |
+| Plaza de Hierro Viejo          | Hierro Viejo | Recreación              | hierroviejo.cl                          |
+| Piscina de Hierro Viejo        | Hierro Viejo | Recreación              | vregion.cl                              |
+| Campo de Petroglifos El Arenal | El Pedernal  | Patrimonio + Naturaleza | Tesis U. de Chile (2022) + OSM          |
+
+Además: "Petroglifos de Chincolco" pasa a **"Petroglifos de Chalaco"** (OSM
+ubica ese mismo sitio en Chalaco, con 51 rocas y 70 paneles de 800 a 1.500
+años); la Iglesia La Merced recibe su dirección (Matriz 135, InfoPetorca); y
+Túnel Las Palmas, Puente Pedegua y Escalera del Diablo suman "Patrimonio y
+cultura", y la Plaza de Petorca, "Recreación".
+
+**Alojamiento sigue vacío**: ninguno de los candidatos tiene ubicación en
+OpenStreetMap ni una fuente con dirección. Faltan también, por la misma
+razón: Laguna El Sobrante, Cerro Altos de Carén (senderismo, escalada,
+cabalgatas), Petroglifos de Cerro Tongorito y de Quebrada La Monhuaca,
+Iglesia y Hacienda El Sobrante (chicha y chacolí), y los Cristos de Valle Los
+Olmos y El Sobrante (InfoPetorca, "Turismo en Chincolco"). Se cargan desde
+`/admin/lugares/nuevo` con la ubicación de Google Maps.
+
+> Ojo: `dondeldiabloperdioelponcho.com` (el sitio de la ruta oficial, que
+> OpenStreetMap enlaza desde Betzabé) está **vencido** y en venta en GoDaddy
+> (2026-11-01). Avisarle a la ruta.
+
 ### 2.1 Candidatos para las categorías nuevas (2026-11-01)
 
 Explorar pasó a tener pestañas por categoría (Gastronomía, Alojamiento,

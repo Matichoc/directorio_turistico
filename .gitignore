@@ -52,3 +52,10 @@ next-env.d.ts
 
 # Archivos temporales del CLI de Supabase (project-ref, versiones)
 /supabase/.temp/
+
+# Originales PNG del arte nuevo: se suben convertidos a WebP
+# (scripts/build-brand-png.mjs). logo.png e icono.png sí se suben: de ahí
+# salen los íconos.
+/public/fondos/*.png
+/public/rutas/*.png
+/public/brand/diablo-buscando.png

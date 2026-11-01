@@ -1933,7 +1933,7 @@ const routes = [
   {
     slug: "ruta-del-diablo-pedegua-chincolco",
     durationMinutes: null,
-    coverImage: "/rutas/ruta-del-diablo.webp",
+    coverImage: "/rutas/ruta-del-diablo-pedegua-chincolco.webp",
     es: {
       name: "Donde el Diablo perdió el poncho",
       description:
@@ -1961,8 +1961,7 @@ const routes = [
   {
     slug: "ruta-ferroviaria-pedegua-las-palmas",
     durationMinutes: null,
-    // Sin portada propia todavía: cae a la foto de la primera parada
-    // (Pedegua), ver pickRouteCoverPhoto.
+    coverImage: "/rutas/ruta-ferroviaria-pedegua-las-palmas.webp",
     es: {
       name: "Ruta Ferroviaria: de Pedegua a Las Palmas",
       description:

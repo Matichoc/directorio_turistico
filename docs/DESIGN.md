@@ -189,18 +189,18 @@ del sitio (mar azul noche → valles violeta → cordillera brasa). Reglas:
 
 ## Logo e íconos
 
-Un solo origen: `public/brand/logo.png` + `icono.png` (arte final, hecho con
-GPT según `docs/PROMPTS-IMAGENES.md`) o, mientras no existan, los SVG
-provisorios `logo.svg` + `icono.svg`. `node scripts/build-brand-png.mjs` arma
-desde ahí todo lo demás — nunca editar a mano los archivos generados:
+Un solo origen: `public/brand/logo.png` (insignia, transparente) e
+`icono.png` (cabeza del diablo), arte aprobado hecho con GPT
+(`docs/PROMPTS-IMAGENES.md`). `node scripts/build-brand-png.mjs` arma desde ahí
+todo lo demás — nunca editar a mano los archivos generados:
 
-| Archivo generado                      | Dónde se ve                                    |
-| ------------------------------------- | ---------------------------------------------- |
-| `src/app/favicon.ico`, `icon.svg/png` | Pestaña del navegador                          |
-| `src/app/apple-icon.png`              | Ícono al agregar a inicio en iPhone            |
-| `public/icons/icon-192/512.png`       | App instalable (manifiesto) y barra de arriba  |
-| `public/icons/icon-maskable-512.png`  | App instalable en Android (recorte en círculo) |
-| `public/brand/og.png`                 | Vista previa al compartir un link sin foto     |
+| Archivo generado                     | Dónde se ve                                    |
+| ------------------------------------ | ---------------------------------------------- |
+| `src/app/favicon.ico`, `icon.png`    | Pestaña del navegador                          |
+| `src/app/apple-icon.png`             | Ícono al agregar a inicio en iPhone            |
+| `public/icons/icon-192/512.png`      | App instalable (manifiesto) y barra de arriba  |
+| `public/icons/icon-maskable-512.png` | App instalable en Android (recorte en círculo) |
+| `public/brand/og.png`                | Vista previa al compartir un link sin foto     |
 
 ## Aparición al hacer scroll
 
@@ -222,20 +222,18 @@ para que el título de `PageHero` quede legible.
 
 **El diablo de Petorca** (desde 2026-11-01): el de antes llevaba casco minero
 (Cabildo) y aparecía con tabla de surf y dulces (La Ligua) — era de la
-provincia. El de ahora sale de la leyenda de la ruta de Petorca: frac negro,
-humita roja, diente de oro, pañuelo de cueca y el poncho rojo resbalándose
-del hombro (el que pierde). Formas redondeadas, nada triangular (pedido del
-usuario). Lo dibuja `scripts/build-scene-devil.py` en todas las escenas (cada
-una con su gesto: cueca, bastón, saludo, farol). Es provisorio: el arte final
-se pide a GPT con `docs/PROMPTS-IMAGENES.md`, y nunca se vuelven a poner
-casco minero, playa ni dulces en el personaje. La elección vive en un solo
-lugar, `src/lib/ui/scene-backgrounds.ts`: `getSceneForCategory` (playa →
-playa, naturaleza → cerro, cultura → pueblo, gastronomía → dulces, sin
-categoría → atardecer) y `getSceneForRoute`. `PageHero` acepta `scene`:
-`/explorar` la cambia con el filtro de categoría, la ficha de un pueblo usa la
-categoría que más se repite entre sus atractivos, y el hero del home usa el
-atardecer. Para cambiar un fondo por arte raster (webp, p. ej. generado con
-IA) basta reemplazar el archivo y su extensión en `SCENE_SRC`.
+provincia. El de ahora (arte aprobado, `docs/arte/diablo-referencia-aprobada.png`)
+sale de la leyenda de la ruta de Petorca: frac negro, humita roja, diente de
+oro, poncho rojo sobre un hombro y **cucharón de madera con borla roja y
+dorada**. Las escenas `atardecer`, `cerro`, `pueblo` y `tunel` son WebP de ese
+arte; `playa` y `dulces` (solo provincia) siguen en SVG. Nunca volver a poner
+casco minero, playa ni dulces en el personaje.
+
+**Recorte**: cada escena tiene su punto de foco en `SCENE_POSITION` (la cara
+y el torso del diablo), que usan todas las vistas (`PageHero`, hero del
+inicio, postales, burbujas del mapa) — nunca un `background-position` escrito
+a mano. En el hero del inicio, desde `sm:` el título, el texto y el buscador
+ocupan el 62 % izquierdo para no taparle la cara.
 
 ## Radios y espaciado
 

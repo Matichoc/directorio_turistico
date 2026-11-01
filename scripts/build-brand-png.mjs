@@ -1,16 +1,18 @@
-// Genera los íconos del sitio a partir del logo (public/brand/): favicon,
-// ícono de pestaña, ícono de Apple, íconos de la app instalable y la imagen
-// para compartir. Usa `logo.png`/`icono.png` si existen (arte final, p. ej.
-// hecho con GPT: ver docs/PROMPTS-IMAGENES.md); si no, `logo.svg`/`icono.svg`
-// (provisorios, de scripts/build-scene-devil.py).
-// Uso: node scripts/build-brand-png.mjs (usa `sharp`, que viene con Next).
-import {
-  copyFileSync,
-  existsSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+// Integra el arte final del diablo de Petorca (hecho con GPT según
+// docs/PROMPTS-IMAGENES.md; personaje aprobado en
+// docs/arte/diablo-referencia-aprobada.png).
+//
+//   node scripts/build-brand-png.mjs --check   → solo dice qué falta y qué no cumple
+//   node scripts/build-brand-png.mjs           → convierte lo que esté listo
+//
+// Cada recurso se procesa solo si su PNG existe y cumple (tamaño, y
+// transparencia cuando corresponde): nunca pisa una imagen del proyecto con
+// algo que falta o es un borrador. Los íconos del sitio (favicon, app,
+// compartir) se arman recién cuando están `logo.png` e `icono.png`. Conectar
+// el arte al sitio (fondos, portadas, logo en la barra) es un paso aparte,
+// después de revisarlo a la vista: ver "Integración" en docs/PROMPTS-IMAGENES.md.
+// Usa `sharp`, que viene con Next.
+import { existsSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -18,36 +20,126 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
 const sharp = createRequire(require.resolve("next/package.json"))("sharp");
+const CHECK_ONLY = process.argv.includes("--check");
 
 const NIGHT = "#07060c";
-const brand = (name) => {
-  const raster = join(ROOT, `public/brand/${name}.png`);
-  return existsSync(raster)
-    ? { file: raster, raster: true }
-    : { file: join(ROOT, `public/brand/${name}.svg`), raster: false };
-};
-const logoSrc = brand("logo");
-const iconoSrc = brand("icono");
-const logo = readFileSync(logoSrc.file);
-const icono = readFileSync(iconoSrc.file);
-console.log("logo:", logoSrc.file, "· ícono:", iconoSrc.file);
 
+/** Lo que falta generar (mismo listado que docs/PROMPTS-IMAGENES.md). */
+const ASSETS = [
+  { src: "public/brand/logo.png", size: [1024, 1024], transparent: true },
+  { src: "public/brand/icono.png", size: [1024, 1024] },
+  { src: "public/fondos/atardecer.png", size: [1536, 1024], webp: true },
+  { src: "public/fondos/cerro.png", size: [1536, 1024], webp: true },
+  { src: "public/fondos/pueblo.png", size: [1536, 1024], webp: true },
+  { src: "public/fondos/tunel.png", size: [1536, 1024], webp: true },
+  {
+    src: "public/rutas/ruta-del-diablo-pedegua-chincolco.png",
+    size: [1536, 1024],
+    webp: true,
+  },
+  {
+    src: "public/rutas/ruta-ferroviaria-pedegua-las-palmas.png",
+    size: [1536, 1024],
+    webp: true,
+  },
+  {
+    src: "public/brand/diablo-buscando.png",
+    size: [1024, 1024],
+    transparent: true,
+    webp: true,
+    optional: true,
+  },
+];
+
+/** ¿Las cuatro esquinas son transparentes? (un "transparente" falso trae fondo pintado) */
+async function cornersTransparent(file) {
+  const { data, info } = await sharp(file)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const alphaAt = (x, y) => data[(y * info.width + x) * info.channels + 3];
+  const w = info.width - 1;
+  const h = info.height - 1;
+  return [alphaAt(0, 0), alphaAt(w, 0), alphaAt(0, h), alphaAt(w, h)].every(
+    (a) => a < 16,
+  );
+}
+
+async function review(asset) {
+  const file = join(ROOT, asset.src);
+  if (!existsSync(file)) {
+    return { ...asset, file, status: asset.optional ? "opcional" : "falta" };
+  }
+  const meta = await sharp(file).metadata();
+  const problems = [];
+  if (meta.width !== asset.size[0] || meta.height !== asset.size[1]) {
+    problems.push(
+      `mide ${meta.width}×${meta.height}, se esperaba ${asset.size.join("×")}`,
+    );
+  }
+  if (asset.transparent && !(await cornersTransparent(file))) {
+    problems.push("no tiene fondo transparente");
+  }
+  return {
+    ...asset,
+    file,
+    status: problems.length ? "revisar" : "listo",
+    problems,
+  };
+}
+
+const reviewed = await Promise.all(ASSETS.map(review));
+for (const a of reviewed) {
+  const icon = { listo: "✔", revisar: "✖", falta: "·", opcional: "·" }[
+    a.status
+  ];
+  console.log(`${icon} ${a.status.padEnd(8)} ${a.src}`);
+  for (const p of a.problems ?? []) console.log(`             ${p}`);
+}
+const ready = (src) => reviewed.find((a) => a.src === src)?.status === "listo";
+
+if (CHECK_ONLY) process.exit(0);
+
+const out = (path, data) => {
+  writeFileSync(join(ROOT, path), data);
+  console.log("  →", path);
+};
+
+// Fondos, portadas y el diablo buscando: PNG → WebP al lado (el PNG original
+// no se sube al repo, ver .gitignore).
+for (const a of reviewed.filter((a) => a.webp && a.status === "listo")) {
+  const target = a.src.replace(/\.png$/, ".webp");
+  out(target, await sharp(a.file).webp({ quality: 82 }).toBuffer());
+}
+
+if (!ready("public/brand/logo.png") || !ready("public/brand/icono.png")) {
+  console.log(
+    "\nÍconos del sitio sin tocar: faltan logo.png e icono.png definitivos.",
+  );
+  process.exit(0);
+}
+
+const logo = join(ROOT, "public/brand/logo.png");
+const icono = join(ROOT, "public/brand/icono.png");
+// Siempre RGBA: el favicon (.ico) con un PNG sin canal alfa no lo lee Next.
 const png = (image, size) =>
-  sharp(image, { density: 384 })
+  sharp(image)
     .resize(size, size, {
       fit: "contain",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
+    .ensureAlpha()
     .png()
     .toBuffer();
 
 /** El logo centrado sobre un cuadrado de noche (`scale` = cuánto ocupa). */
 async function onNight(size, scale) {
-  const inner = Math.round(size * scale);
   return sharp({
     create: { width: size, height: size, channels: 4, background: NIGHT },
   })
-    .composite([{ input: await png(logo, inner), gravity: "centre" }])
+    .composite([
+      { input: await png(logo, Math.round(size * scale)), gravity: "centre" },
+    ])
     .png()
     .toBuffer();
 }
@@ -71,30 +163,19 @@ function ico(images) {
   return Buffer.concat([header, ...images.map((i) => i.data)]);
 }
 
-const out = (path, data) => {
-  writeFileSync(join(ROOT, path), data);
-  console.log("ok", path);
-};
-
-const sizes = [16, 32, 48];
 out(
   "src/app/favicon.ico",
   ico(
     await Promise.all(
-      sizes.map(async (size) => ({ size, data: await png(icono, size) })),
+      [16, 32, 48].map(async (size) => ({
+        size,
+        data: await png(icono, size),
+      })),
     ),
   ),
 );
-// Ícono de pestaña moderno: SVG si el ícono es vectorial, si no PNG.
-if (iconoSrc.raster) {
-  rmSync(join(ROOT, "src/app/icon.svg"), { force: true });
-  out("src/app/icon.png", await png(icono, 192));
-} else {
-  rmSync(join(ROOT, "src/app/icon.png"), { force: true });
-  copyFileSync(iconoSrc.file, join(ROOT, "src/app/icon.svg"));
-  console.log("ok src/app/icon.svg");
-}
-out("src/app/apple-icon.png", await onNight(180, 0.9));
+out("src/app/icon.png", await png(icono, 192));
+out("src/app/apple-icon.png", await png(icono, 180));
 out("public/icons/icon-192.png", await png(logo, 192));
 out("public/icons/icon-512.png", await png(logo, 512));
 // Android recorta los íconos "maskable" en círculo o gota: el logo dentro de
@@ -106,7 +187,6 @@ const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
 <defs><radialGradient id="bg" cx=".3" cy=".45" r=".8"><stop offset="0" stop-color="#3b1830"/><stop offset=".5" stop-color="#1b0e1f"/><stop offset="1" stop-color="${NIGHT}"/></radialGradient>
 <linearGradient id="t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffb072"/><stop offset="1" stop-color="#ff7a45"/></linearGradient></defs>
 <rect width="1200" height="630" fill="url(#bg)"/>
-<path d="M0 560 C160 520 300 512 440 540 C600 500 760 492 920 526 C1040 508 1130 512 1200 528 V630 H0 Z" fill="#221a45"/>
 <text x="560" y="270" font-family="Georgia" font-weight="700" font-size="84" fill="#ecebf6">El diablo</text>
 <text x="560" y="368" font-family="Georgia" font-weight="700" font-size="84" fill="url(#t)">en Petorca</text>
 <text x="562" y="430" font-family="Georgia" font-size="30" fill="#ecebf6" fill-opacity=".75">Rutas, pueblos y leyendas de la comuna</text>
@@ -117,4 +197,7 @@ out(
     .composite([{ input: await png(logo, 420), left: 90, top: 105 }])
     .png()
     .toBuffer(),
+);
+console.log(
+  "\nListo. Falta conectarlo al sitio y revisarlo: docs/PROMPTS-IMAGENES.md, Integración.",
 );

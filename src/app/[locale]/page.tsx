@@ -15,7 +15,11 @@ import { listPlaces } from "@/lib/data/places";
 import { buildProvinceFlyover } from "@/lib/ui/province-flyover";
 import { ProvinceFlyover } from "@/components/home/province-flyover";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
-import { SCENE_SRC, getSceneForCategory } from "@/lib/ui/scene-backgrounds";
+import {
+  SCENE_POSITION,
+  SCENE_SRC,
+  getSceneForCategory,
+} from "@/lib/ui/scene-backgrounds";
 import type { Metadata } from "next";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 
@@ -91,8 +95,11 @@ export default async function HomePage({
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-cover [background-position:85%_70%]"
-          style={{ backgroundImage: `url(${SCENE_SRC.atardecer})` }}
+          className="pointer-events-none absolute inset-0 bg-cover"
+          style={{
+            backgroundImage: `url(${SCENE_SRC.atardecer})`,
+            backgroundPosition: SCENE_POSITION.atardecer,
+          }}
         />
         <div
           aria-hidden="true"
@@ -113,12 +120,18 @@ export default async function HomePage({
           <LocaleSwitcher />
         </header>
 
-        <h1 className="font-display relative text-3xl leading-tight font-semibold tracking-wide text-balance [text-shadow:0_2px_18px_rgba(7,6,12,0.85)] sm:text-4xl">
+        {/* Desde sm: el texto ocupa la mitad izquierda; la derecha es del
+            diablo de la escena (sin taparle la cara). */}
+        <h1 className="font-display relative text-3xl leading-tight font-semibold tracking-wide text-balance [text-shadow:0_2px_18px_rgba(7,6,12,0.85)] sm:max-w-[62%] sm:text-4xl">
           {t("title")}
         </h1>
-        <p className="relative max-w-prose text-white/70">{t("subtitle")}</p>
+        <p className="relative max-w-prose text-white/70 sm:max-w-[62%]">
+          {t("subtitle")}
+        </p>
 
-        <HomeSearchForm />
+        <div className="relative sm:max-w-[62%]">
+          <HomeSearchForm />
+        </div>
       </div>
 
       <ProvinceFlyover data={flyover} />
@@ -144,9 +157,11 @@ export default async function HomePage({
                 >
                   <span
                     aria-hidden="true"
-                    className="absolute inset-0 bg-cover [background-position:78%_75%] transition-transform duration-700 ease-out group-hover:scale-110"
+                    className="absolute inset-0 bg-cover transition-transform duration-700 ease-out group-hover:scale-110"
                     style={{
                       backgroundImage: `url(${SCENE_SRC[getSceneForCategory(intent.slug)]})`,
+                      backgroundPosition:
+                        SCENE_POSITION[getSceneForCategory(intent.slug)],
                     }}
                   />
                   <span

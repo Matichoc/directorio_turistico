@@ -208,6 +208,9 @@ Se pegan tal cual en el SQL Editor; cada uno se aplica solo en `legacy` y
   por lugar). El sitio funciona antes y después de correrlo.
 - `admin-roles.sql`: roles del equipo del panel (`admin`/`editor`) y
   registro de cambios (`audit_log`). Correr antes de usar `/admin/personas`.
+- `lugares-petorca-2026-11.sql`: 10 lugares nuevos con ubicación de
+  OpenStreetMap ("Pendiente de verificación"), Petroglifos de Chalaco y
+  categorías adicionales de los lugares que ya estaban.
 - `chalaco.sql`: Chalaco como pueblo nuevo (coordenada de OpenStreetMap,
   resumen con fuente FUCOA).
 - `petorca-portadas.sql`: portadas nuevas en `legacy`, recién cuando `main`

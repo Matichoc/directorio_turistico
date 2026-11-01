@@ -118,11 +118,34 @@ const communeLinks: Record<string, { kind: string; value: string }[]> = {
   ],
 };
 
+// Mismos nombres que supabase/manual/categorias-petorca.sql (Explorar).
 const categories = [
-  { slug: "naturaleza", es: "Naturaleza", en: "Nature", icon: "mountain" },
-  { slug: "gastronomia", es: "Gastronomía", en: "Food", icon: "utensils" },
-  { slug: "cultura", es: "Cultura", en: "Culture", icon: "landmark" },
+  {
+    slug: "naturaleza",
+    es: "Naturaleza y aventura",
+    en: "Nature & adventure",
+    icon: "mountain",
+  },
+  {
+    slug: "gastronomia",
+    es: "Gastronomía",
+    en: "Food & drink",
+    icon: "utensils",
+  },
+  {
+    slug: "cultura",
+    es: "Patrimonio y cultura",
+    en: "Heritage & culture",
+    icon: "landmark",
+  },
   { slug: "playa", es: "Playa", en: "Beach", icon: "waves" },
+  {
+    slug: "alojamiento",
+    es: "Alojamiento",
+    en: "Places to stay",
+    icon: "cama",
+  },
+  { slug: "recreacion", es: "Recreación", en: "Leisure", icon: "recreacion" },
 ];
 
 const tags = [
@@ -973,6 +996,7 @@ const places = [
     localitySlug: "hierro-viejo",
     communeSlug: "petorca",
     categorySlug: "naturaleza",
+    extraCategorySlugs: ["cultura"],
     icon: "diablo",
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
     latitude: -32.28516042143831,
@@ -1004,6 +1028,7 @@ const places = [
     // Coordenadas exactas provistas por el usuario (pin de Google Maps).
     latitude: -32.25155652774576,
     longitude: -70.93130407092764,
+    address: "Matriz 135, Petorca",
     photo: {
       filename: "Iglesia de la Merced, Petorca.jpg",
       attribution: "Foto: Wikimedia Commons (ver licencia en la fuente)",
@@ -1784,6 +1809,7 @@ const places = [
     localitySlug: "pedegua",
     communeSlug: "petorca",
     categorySlug: "naturaleza",
+    extraCategorySlugs: ["cultura"],
     icon: "casco-minero",
     latitude: -32.348696990370975,
     longitude: -71.07050661121622,
@@ -1816,6 +1842,7 @@ const places = [
     // Petorca (antes había quedado mal asignado a Cabildo).
     communeSlug: "petorca",
     categorySlug: "naturaleza",
+    extraCategorySlugs: ["cultura"],
     icon: "casco-minero",
     latitude: -32.165013387998314,
     longitude: -71.15352300594377,
@@ -1843,6 +1870,7 @@ const places = [
     localitySlug: "petorca",
     communeSlug: "petorca",
     categorySlug: "cultura",
+    extraCategorySlugs: ["recreacion"],
     latitude: -32.25155652774576,
     longitude: -70.93130407092764,
     es: {
@@ -1866,24 +1894,26 @@ const places = [
   },
   {
     slug: "petorca-petroglifos-chincolco",
-    localitySlug: "chincolco",
+    // OpenStreetMap ubica este mismo sitio en Chalaco (a ~30 m del pin).
+    localitySlug: "chalaco",
     communeSlug: "petorca",
     categorySlug: "cultura",
+    extraCategorySlugs: ["naturaleza"],
     latitude: -32.16465513411942,
     longitude: -70.7752963617689,
     es: {
-      name: "Petroglifos de Chincolco",
+      name: "Petroglifos de Chalaco",
       short:
-        "Grabados rupestres en piedra asociados a las culturas El Molle, Las Ánimas, diaguita, mapuche e incluso incaica, con motivos geométricos, humanos, animales y serpientes; sin protección oficial, algunos dañados por vandalismo en 2021.",
+        "Grabados rupestres en el sector de Chalaco, donde según la leyenda el diablo perdió el poncho: 51 rocas y 70 paneles de entre 800 y 1.500 años, asociados a las culturas El Molle, Las Ánimas, diaguita, mapuche e incluso incaica; sin protección oficial, algunos dañados por vandalismo en 2021.",
       description:
-        "En Chincolco, sector rural de la comuna de Petorca (9.826 habitantes, Censo 2017), estos grabados rupestres en piedra están asociados a las culturas El Molle, Las Ánimas, diaguita, mapuche e incluso incaica, con motivos geométricos, humanos, animales y serpientes. No tienen protección oficial — algunos fueron dañados por vandalismo en 2021. El mismo capítulo de Sabingo (Chilevisión) que recorrió Pedegua también pasó por Chincolco.",
+        "En Chalaco, sector rural de la comuna de Petorca cerca de Chincolco (9.826 habitantes en la comuna, Censo 2017), estos grabados rupestres en piedra están asociados a las culturas El Molle, Las Ánimas, diaguita, mapuche e incluso incaica, con motivos geométricos, humanos, animales y serpientes. No tienen protección oficial — algunos fueron dañados por vandalismo en 2021. El mismo capítulo de Sabingo (Chilevisión) que recorrió Pedegua también pasó por Chincolco.",
     },
     en: {
-      name: "Chincolco Petroglyphs",
+      name: "Chalaco Petroglyphs",
       short:
-        "Rock carvings linked to the El Molle, Las Ánimas, Diaguita, Mapuche and even Inca cultures, with geometric, human, animal and serpent motifs; unprotected, some damaged by vandalism in 2021.",
+        "Rock carvings in the Chalaco area, where legend says the Devil lost his poncho: 51 boulders and 70 panels between 800 and 1,500 years old, linked to the El Molle, Las Ánimas, Diaguita, Mapuche and even Inca cultures; with no official protection, some were damaged by vandalism in 2021.",
       description:
-        "In Chincolco, a rural sector of Petorca commune (9,826 residents, 2017 census), these rock carvings are linked to the El Molle, Las Ánimas, Diaguita, Mapuche and even Inca cultures, with geometric, human, animal and serpent motifs. They have no official protection — some were damaged by vandalism in 2021. The same Sabingo (Chilevisión) episode that toured Pedegua also passed through Chincolco.",
+        "In Chalaco, a rural sector of Petorca commune near Chincolco (9,826 residents in the commune, 2017 census), these rock carvings are linked to the El Molle, Las Ánimas, Diaguita, Mapuche and even Inca cultures, with geometric, human, animal and serpent motifs. They have no official protection — some were damaged by vandalism in 2021. The same Sabingo (Chilevisión) episode that toured Pedegua also passed through Chincolco.",
     },
     source: {
       url: "https://repositorio.uchile.cl/handle/2250/201561",
@@ -1892,6 +1922,250 @@ const places = [
     tvSource: {
       url: "https://www.chilevision.cl/programas/sabingo/etienne-bobenrieth-recorrio-los-misterios-y-leyendas-de-petorca-de-pueblo-en-pueblo-sabingo",
       label: "Chilevisión — Sabingo: misterios y leyendas de Petorca",
+    },
+  },
+  // Lugares nuevos de la comuna de Petorca (2026-11-01), con fuente propia.
+  // Turismo Rural La Nina y El Rincón Criollo los conoce el usuario; el
+  // resto queda "pending" hasta confirmarlo en terreno
+  // (supabase/manual/lugares-petorca-2026-11.sql carga lo mismo).
+  {
+    slug: "turismo-rural-la-nina",
+    localitySlug: "pedegua",
+    communeSlug: "petorca",
+    categorySlug: "gastronomia",
+    latitude: -32.367683,
+    longitude: -71.076079,
+    address: "Ruta E-35 km 37,5, Pedegua",
+    phone: "+56999593235",
+    es: {
+      name: "Turismo Rural La Nina",
+      short:
+        "Restorán al paso en la entrada de Pedegua, punto de partida de la ruta «Donde el Diablo perdió el poncho»: empanadas de pino con mote con huesillo o jugos naturales, y en verano humitas y pastel de choclo. Lo llevan César Arancibia y su madre, Cristina Delgado.",
+    },
+    en: {
+      name: "Turismo Rural La Nina",
+      short:
+        "Roadside eatery at the entrance to Pedegua, starting point of the «Donde el Diablo perdió el poncho» route: beef empanadas with mote con huesillo or fresh juices, and humitas and pastel de choclo in summer. Run by César Arancibia and his mother, Cristina Delgado.",
+    },
+    source: {
+      url: "https://www.indap.gob.cl/noticias/emprendedor-de-turismo-rural-de-petorca-enfrenta-crisis-con-delivery-de-empanadas-caseras",
+      label:
+        "INDAP — Emprendedor de turismo rural de Petorca (Turismo Rural La Nina)",
+    },
+  },
+  {
+    slug: "hostal-el-rio-pedegua",
+    localitySlug: "pedegua",
+    communeSlug: "petorca",
+    categorySlug: "alojamiento",
+    // Dato real, sin confirmar en terreno todavía.
+    verificationStatus: "pending",
+    latitude: -32.35448,
+    longitude: -71.06973,
+    address: "Ferroviario 507, Pedegua",
+    es: {
+      name: "Hostal El Río",
+      short:
+        "Hostal en Pedegua, en la calle Ferroviario: jardín, terraza, sala de estar, cocina compartida y chimenea; admite mascotas.",
+    },
+    en: {
+      name: "Hostal El Río",
+      short:
+        "Hostel in Pedegua, on Ferroviario street: garden, terrace, lounge, shared kitchen and fireplace; pets allowed.",
+    },
+    source: {
+      url: "https://destinia.com/es/hoteles/america-del-sur/chile/valparaiso/petorca/hostal-el-rio/ho-5484611",
+      label: "Destinia — Albergue Hostal El Río (Pedegua)",
+    },
+  },
+  {
+    slug: "tinajas-chincolco",
+    localitySlug: "chincolco",
+    communeSlug: "petorca",
+    categorySlug: "alojamiento",
+    extraCategorySlugs: ["recreacion"],
+    // Dato real, sin confirmar en terreno todavía.
+    verificationStatus: "pending",
+    latitude: -32.2171,
+    longitude: -70.8462,
+    phone: "+56996240044",
+    website: "https://tinajaschincolco.cl/",
+    es: {
+      name: "Tinajas Chincolco",
+      short:
+        "Refugio natural en Chincolco con hospedaje y tinajas termales con hidromasaje; también se puede ir solo por la tinaja (3 horas).",
+    },
+    en: {
+      name: "Tinajas Chincolco",
+      short:
+        "Nature retreat in Chincolco with lodging and hot tubs with hydromassage; you can also book just the hot tub (3 hours).",
+    },
+    source: {
+      url: "https://tinajaschincolco.cl/",
+      label: "Tinajas Chincolco (sitio oficial)",
+    },
+  },
+  {
+    slug: "el-rincon-criollo-chincolco",
+    localitySlug: "chincolco",
+    communeSlug: "petorca",
+    categorySlug: "gastronomia",
+    latitude: -32.22599,
+    longitude: -70.84923,
+    es: {
+      name: "El Rincón Criollo",
+      short:
+        "Restaurante típico de Chincolco, conocido por sus parrilladas y su vino casero.",
+    },
+    en: {
+      name: "El Rincón Criollo",
+      short:
+        "Traditional restaurant in Chincolco, known for its grilled meats and homemade wine.",
+    },
+    source: {
+      url: "https://www.classicistranieri.com/es/articles/p/e/t/Petorca.html",
+      label: "Petorca (artículo enciclopédico, versión antigua)",
+    },
+  },
+  {
+    slug: "iglesia-de-chincolco",
+    localitySlug: "chincolco",
+    communeSlug: "petorca",
+    categorySlug: "cultura",
+    // Dato real, sin confirmar en terreno todavía.
+    verificationStatus: "pending",
+    latitude: -32.2243,
+    longitude: -70.84318,
+    address: "Avenida Pedro Montt, Chincolco",
+    es: {
+      name: "Iglesia de Chincolco",
+      short: "Iglesia del pueblo de Chincolco, en la avenida Pedro Montt.",
+    },
+    en: {
+      name: "Chincolco Church",
+      short: "The village church of Chincolco, on Pedro Montt avenue.",
+    },
+    source: {
+      url: "https://www.openstreetmap.org/way/686139194",
+      label: "OpenStreetMap — Iglesia Chincolco",
+    },
+  },
+  {
+    slug: "plaza-de-armas-chincolco",
+    localitySlug: "chincolco",
+    communeSlug: "petorca",
+    categorySlug: "recreacion",
+    extraCategorySlugs: ["cultura"],
+    // Dato real, sin confirmar en terreno todavía.
+    verificationStatus: "pending",
+    latitude: -32.22272,
+    longitude: -70.83635,
+    address: "Pedro Montt, Chincolco",
+    es: {
+      name: "Plaza de Armas de Chincolco",
+      short:
+        "Plaza del pueblo, en la calle Pedro Montt: un lugar tranquilo para descansar, frente a la Casa Pueblo y a la radio de Chincolco.",
+    },
+    en: {
+      name: "Chincolco Main Square",
+      short:
+        "The village square on Pedro Montt street: a quiet place to rest, across from the Casa Pueblo and Chincolco's radio station.",
+    },
+    source: {
+      url: "https://www.infopetorca.cl/p/turismo-en-chincolco.html",
+      label: "InfoPetorca — Turismo en Chincolco",
+    },
+  },
+  {
+    slug: "medialuna-de-chincolco",
+    localitySlug: "chincolco",
+    communeSlug: "petorca",
+    categorySlug: "recreacion",
+    extraCategorySlugs: ["cultura"],
+    // Dato real, sin confirmar en terreno todavía.
+    verificationStatus: "pending",
+    latitude: -32.23125,
+    longitude: -70.85333,
+    es: {
+      name: "Medialuna de Chincolco",
+      short: "La medialuna del pueblo, el recinto donde se corren los rodeos.",
+    },
+    en: {
+      name: "Chincolco Rodeo Arena",
+      short: "The village medialuna, the arena where rodeos are held.",
+    },
+    source: {
+      url: "https://www.openstreetmap.org/way/686139192",
+      label: "OpenStreetMap — Medialuna de Chincolco",
+    },
+  },
+  {
+    slug: "plaza-hierro-viejo",
+    localitySlug: "hierro-viejo",
+    communeSlug: "petorca",
+    categorySlug: "recreacion",
+    // Dato real, sin confirmar en terreno todavía.
+    verificationStatus: "pending",
+    latitude: -32.28123,
+    longitude: -71.01388,
+    es: {
+      name: "Plaza de Hierro Viejo",
+      short:
+        "Plaza del pueblo de Hierro Viejo, que creció a lo largo del camino entre Cabildo y Petorca.",
+    },
+    en: {
+      name: "Hierro Viejo Square",
+      short:
+        "The square of Hierro Viejo, a village that grew along the road between Cabildo and Petorca.",
+    },
+    source: { url: "https://hierroviejo.cl/", label: "hierroviejo.cl" },
+  },
+  {
+    slug: "piscina-hierro-viejo",
+    localitySlug: "hierro-viejo",
+    communeSlug: "petorca",
+    categorySlug: "recreacion",
+    // Dato real, sin confirmar en terreno todavía.
+    verificationStatus: "pending",
+    latitude: -32.2796,
+    longitude: -71.0103,
+    es: {
+      name: "Piscina de Hierro Viejo",
+      short: "Piscina pública del pueblo, a orillas del camino.",
+    },
+    en: {
+      name: "Hierro Viejo Swimming Pool",
+      short: "The village's public swimming pool, by the road.",
+    },
+    source: {
+      url: "http://www.vregion.cl/petorca/petorca/",
+      label: "V Región — Petorca",
+    },
+  },
+  {
+    slug: "petroglifos-el-arenal",
+    localitySlug: "pedernal",
+    communeSlug: "petorca",
+    categorySlug: "cultura",
+    extraCategorySlugs: ["naturaleza"],
+    // Dato real, sin confirmar en terreno todavía.
+    verificationStatus: "pending",
+    latitude: -32.10853,
+    longitude: -70.79644,
+    es: {
+      name: "Campo de Petroglifos El Arenal",
+      short:
+        "Arte rupestre en una antigua llanura aluvial: unos 80 bloques de roca con grabados de alrededor del año 800 d.C., a unos 27 km al noreste de Petorca, camino a El Pedernal.",
+    },
+    en: {
+      name: "El Arenal Petroglyph Field",
+      short:
+        "Rock art on an old alluvial plain: about 80 boulders with carvings from around 800 AD, some 27 km northeast of Petorca on the way to El Pedernal.",
+    },
+    source: {
+      url: "https://repositorio.uchile.cl/handle/2250/201561",
+      label:
+        "Universidad de Chile — tesis sobre arte rupestre del valle de Petorca (2022)",
     },
   },
 ] as const;
@@ -2423,6 +2697,19 @@ async function seedPlaces(
     // algo que no la documenta de verdad.
     if ("source" in place) {
       await addSource("place", data.id, place.source.url, place.source.label);
+    }
+    // Categorías adicionales (place_secondary_categories, ver
+    // supabase/manual/categorias-petorca.sql). Sin la tabla, se omiten.
+    if ("extraCategorySlugs" in place) {
+      for (const extra of place.extraCategorySlugs) {
+        if (!categoryIds[extra] || extra === place.categorySlug) continue;
+        await supabase
+          .from("place_secondary_categories")
+          .upsert(
+            { place_id: data.id, category_id: categoryIds[extra] },
+            { onConflict: "place_id,category_id" },
+          );
+      }
     }
     // Mención real en TV (Sabingo/Chilevisión, investigado vía WebSearch y
     // cruzado en varias búsquedas — ver docs/PLAN.md) como segunda fuente,

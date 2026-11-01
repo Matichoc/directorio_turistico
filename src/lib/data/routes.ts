@@ -180,7 +180,7 @@ export interface AdminRouteListItem {
 const ADMIN_ROUTES_LIST_QUERY =
   `id, slug, publication_status, status_changed_at,
    route_translations!inner(name, locale),
-   route_stops(id)` as const;
+   route_stops(id, places(communes(slug)))` as const;
 
 interface AdminRouteListQueryResult {
   id: string;
@@ -188,7 +188,10 @@ interface AdminRouteListQueryResult {
   publication_status: PublicationStatus;
   status_changed_at: string;
   route_translations: { name: string; locale: Locale }[];
-  route_stops: { id: string }[];
+  route_stops: {
+    id: string;
+    places: { communes: { slug: string } | null } | null;
+  }[];
 }
 
 /** Lista TODAS las rutas (cualquier `publication_status`) para el panel admin. */
@@ -210,14 +213,22 @@ export async function listAdminRoutes(): Promise<AdminRouteListItem[]> {
     return [];
   }
 
-  return data.map((route) => ({
-    id: route.id,
-    slug: route.slug,
-    name: route.route_translations[0]?.name ?? route.slug,
-    stopsCount: route.route_stops?.length ?? 0,
-    publicationStatus: route.publication_status,
-    statusChangedAt: route.status_changed_at,
-  }));
+  // Igual que el sitio (lib/site-scope.ts): fuera las rutas con paradas de
+  // otras comunas; una ruta recién creada, sin paradas, sí se lista.
+  return data
+    .filter((route) =>
+      route.route_stops.every((stop) =>
+        isCommuneInScope(stop.places?.communes?.slug),
+      ),
+    )
+    .map((route) => ({
+      id: route.id,
+      slug: route.slug,
+      name: route.route_translations[0]?.name ?? route.slug,
+      stopsCount: route.route_stops?.length ?? 0,
+      publicationStatus: route.publication_status,
+      statusChangedAt: route.status_changed_at,
+    }));
 }
 
 export interface AdminRouteTranslation {

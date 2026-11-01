@@ -121,7 +121,7 @@ export interface AdminLocalityListItem {
 
 const ADMIN_LOCALITIES_LIST_QUERY = `id, slug, latitude, longitude,
    locality_translations!inner(name, summary, locale),
-   communes!inner(commune_translations!inner(name, locale)),
+   communes!inner(slug, commune_translations!inner(name, locale)),
    places(id)` as const;
 
 interface AdminLocalityListQueryResult {
@@ -145,14 +145,18 @@ export async function listAdminLocalities(): Promise<AdminLocalityListItem[]> {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("localities")
     .select<typeof ADMIN_LOCALITIES_LIST_QUERY, AdminLocalityListQueryResult>(
       ADMIN_LOCALITIES_LIST_QUERY,
     )
     .eq("locality_translations.locale", "es")
-    .eq("communes.commune_translations.locale", "es")
-    .order("slug");
+    .eq("communes.commune_translations.locale", "es");
+  // Igual que el sitio (lib/site-scope.ts): sin borrar los de otras comunas.
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder.order("slug");
 
   if (error || !data) {
     return [];
@@ -264,7 +268,7 @@ export interface LocalityOption {
 
 const LOCALITY_OPTIONS_QUERY = `id, slug, commune_id,
    locality_translations!inner(name, locale),
-   communes!inner(commune_translations!inner(name, locale))` as const;
+   communes!inner(slug, commune_translations!inner(name, locale))` as const;
 
 interface LocalityOptionQueryResult {
   id: string;
@@ -284,13 +288,17 @@ export async function listLocalityOptions(): Promise<LocalityOption[]> {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("localities")
     .select<typeof LOCALITY_OPTIONS_QUERY, LocalityOptionQueryResult>(
       LOCALITY_OPTIONS_QUERY,
     )
     .eq("locality_translations.locale", "es")
     .eq("communes.commune_translations.locale", "es");
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
 
   if (error || !data) {
     return [];

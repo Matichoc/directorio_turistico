@@ -377,7 +377,7 @@ export interface AdminPlaceListItem {
 const ADMIN_PLACES_LIST_QUERY =
   `id, slug, publication_status, verification_status, status_changed_at,
    place_translations!inner(name, locale),
-   communes!inner(commune_translations!inner(name, locale)),
+   communes!inner(slug, commune_translations!inner(name, locale)),
    categories!places_category_id_fkey!inner(category_translations!inner(name, locale))` as const;
 
 interface AdminPlaceListQueryResult {
@@ -405,15 +405,20 @@ export async function listAdminPlaces(): Promise<AdminPlaceListItem[]> {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("places")
     .select<typeof ADMIN_PLACES_LIST_QUERY, AdminPlaceListQueryResult>(
       ADMIN_PLACES_LIST_QUERY,
     )
     .eq("place_translations.locale", "es")
     .eq("communes.commune_translations.locale", "es")
-    .eq("categories.category_translations.locale", "es")
-    .order("slug");
+    .eq("categories.category_translations.locale", "es");
+  // El panel muestra lo mismo que el sitio (lib/site-scope.ts): los lugares
+  // de otras comunas siguen en la base, solo no se listan.
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder.order("slug");
 
   if (error || !data) {
     return [];
@@ -664,7 +669,7 @@ export interface AdminPlaceExportRow {
 const ADMIN_PLACES_EXPORT_QUERY =
   `slug, latitude, longitude, address, phone, website, icon, publication_status,
    place_translations(locale, name, short_description, description),
-   communes!inner(commune_translations!inner(name, locale)),
+   communes!inner(slug, commune_translations!inner(name, locale)),
    localities(locality_translations(name, locale)),
    categories!places_category_id_fkey!inner(category_translations!inner(name, locale))` as const;
 
@@ -701,14 +706,17 @@ export async function listAdminPlacesForExport(): Promise<
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("places")
     .select<typeof ADMIN_PLACES_EXPORT_QUERY, AdminPlaceExportQueryResult>(
       ADMIN_PLACES_EXPORT_QUERY,
     )
     .eq("communes.commune_translations.locale", "es")
-    .eq("categories.category_translations.locale", "es")
-    .order("slug");
+    .eq("categories.category_translations.locale", "es");
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder.order("slug");
 
   if (error || !data) {
     return [];

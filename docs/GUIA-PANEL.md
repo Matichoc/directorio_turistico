@@ -104,10 +104,11 @@ rutas** y **auspiciadores**.
 
 1. **Desactivar, no borrar.** "Eliminar lugar" o "Eliminar pueblo" no se puede
    deshacer; "Desactivar" sí.
-2. **No toques los lugares de otras comunas.** En el panel vas a ver unos 29
-   lugares de La Ligua, Papudo, Zapallar y Cabildo: son de la versión de la
-   provincia (rama `provincia-completa`) y viven en la misma base. El sitio de
-   Petorca no los muestra; si los borras, se pierden para esa versión.
+2. **Los lugares de otras comunas siguen guardados.** La base tiene 29
+   lugares de La Ligua, Papudo, Zapallar y Cabildo (y 3 rutas de la
+   provincia), de la versión de la provincia (rama `provincia-completa`). El
+   panel, igual que el sitio, muestra solo Petorca: no los vas a ver, pero
+   no se borraron.
 3. **"Verificado" = confirmado en terreno o por el dueño.** Lo que salió de
    internet queda "Pendiente" hasta confirmarlo (el sitio muestra un aviso
    ámbar).

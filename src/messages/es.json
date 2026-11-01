@@ -212,7 +212,8 @@
       "uturn": "Da la vuelta en U{street, select, none {} other { por {street}}}",
       "roundabout": "En la rotonda, toma la salida {exit}{street, select, none {} other { por {street}}}",
       "arrive": "Llegas a {name}"
-    }
+    },
+    "noRouteOffline": "Sin señal: la guía por calle necesita conexión. El mapa guardado y tu posición en él siguen funcionando."
   },
   "locality": {
     "placesTitle": "Lugares en {name}",
@@ -359,5 +360,13 @@
       "body": "Perdió el poncho en Chalaco, murió en Petorca y lo enterraron en La Ligua. Léela o escúchala.",
       "cta": "Conoce la leyenda"
     }
+  },
+  "offline": {
+    "save": "Guardar para usar sin señal (≈ {mb} MB)",
+    "saving": "Guardando para usar sin señal… {percent} %",
+    "saved": "Guardada para usar sin señal el {date}.",
+    "update": "Actualizar",
+    "error": "No se pudo guardar todo. Inténtalo de nuevo con mejor señal (o con wifi).",
+    "hint": "Guarda esta página, sus paradas y el mapa de la zona en tu teléfono, para el valle donde no hay señal."
   }
 }

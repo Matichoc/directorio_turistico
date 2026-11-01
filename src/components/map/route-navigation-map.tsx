@@ -245,7 +245,13 @@ export function RouteNavigationMap({
           ) : guidance?.offRoute ? (
             <p className="text-sm text-amber-300">{t("offRoute")}</p>
           ) : live.noRoute ? (
-            <p className="text-sm">{t("noRoute")}</p>
+            <p className="text-sm">
+              {/* Sin señal: el camino por calle sale de un servicio en línea;
+                  el mapa guardado y tu posición (GPS) sí siguen. */}
+              {typeof navigator !== "undefined" && !navigator.onLine
+                ? t("noRouteOffline")
+                : t("noRoute")}
+            </p>
           ) : next && nextText ? (
             <div className="flex items-center gap-3">
               <span className="bg-accent text-accent-foreground flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-[0_0_20px_2px_var(--accent-soft)]">

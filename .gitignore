@@ -45,10 +45,6 @@ next-env.d.ts
 /playwright-report/
 /test-results/
 
-# serwist (generado en build)
-/public/sw.js
-/public/sw.js.map
-/public/swe-worker-*.js
 
 # Archivos temporales del CLI de Supabase (project-ref, versiones)
 /supabase/.temp/

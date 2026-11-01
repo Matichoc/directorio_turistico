@@ -20,7 +20,7 @@ src/
 │   │                      trip/places
 │   ├── manifest.ts        manifest PWA
 │   ├── sitemap.ts / robots.ts
-│   └── sw.ts              service worker (Serwist)
+│   └── (public/sw.js)     service worker escrito a mano ("sin señal")
 ├── components/
 │   ├── ui/                genéricos (nav, PageHero, íconos, fichas, auspicio)
 │   ├── home/              portada (vuelo 3D, banner de municipios, buscador)
@@ -86,7 +86,7 @@ Implementación: con hasta `EXACT_ORDER_STOPS_LIMIT` paradas prueba todos los ó
 
 ## PWA
 
-`Serwist` (no `next-pwa`) por mejor soporte de App Router y mantenimiento activo. Desactivado en desarrollo (`disable: process.env.NODE_ENV === "development"`).
+Service worker **escrito a mano** en `public/sw.js` (desde 2026-11-01). Antes se usaba `Serwist` (`@serwist/next`), pero su plugin es de webpack y Next 16 compila con Turbopack: el build nunca generó `sw.js` y el sitio publicado no tenía service worker (`/sw.js` daba 404). Lo registra `ServiceWorkerRegister` (`components/offline/`) solo en producción (o con `NEXT_PUBLIC_SW_DEV=1`). Estrategias: páginas con red primero y copia guardada de respaldo (tope de 6 s) y `/offline.html` si no hay copia; `/_next/static` guardado para siempre; imágenes y mapa (OpenFreeMap) guardados al verse; `/api` y los datos RSC de Next siempre a la red. "Guardar para usar sin señal" (`OfflineSaveButton`, `lib/offline/plan.ts`) baja de antemano las páginas de una ruta o de Mi recorrido, sus archivos y el mapa de la zona (zooms 8–14). Al cambiar `sw.js`, subir su `VERSION`.
 
 ## Mapas
 

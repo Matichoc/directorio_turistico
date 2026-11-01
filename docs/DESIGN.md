@@ -386,6 +386,20 @@ propias desde fuentes citadas (nunca copiar el poema ni párrafos). En el
 inicio, una tarjeta ancha con la misma escena lleva a ella, después del
 vuelo 3D.
 
+## Sin señal (`OfflineSaveButton`)
+
+Pedido del usuario: que funcione "sin señal en el valle". En la ficha de
+cada ruta y en Mi recorrido, un botón "⬇ Guardar para usar sin señal (≈ N
+MB)" (vidrio con borde, glow al pasar el mouse) baja al teléfono la página,
+sus paradas y el mapa de la zona; mientras guarda muestra el porcentaje, y
+después "✓ Guardada para usar sin señal el {fecha} · Actualizar". Si algo
+esencial falla (las páginas o el estilo del mapa), avisa en ámbar en vez de
+decir "guardada". Mi recorrido guarda su versión "compartida", que trae las
+paradas sin pedirlas a `/api`. Sin señal, una página no guardada abre
+`public/offline.html` (mismo fondo de noche y logo) con links a lo guardado.
+La guía por calle necesita conexión: sin señal lo dice
+(`guide.noRouteOffline`) y siguen el mapa y tu posición.
+
 ## Compartir un recorrido
 
 "Compartir recorrido" (Mi recorrido) arma un link con las paradas en orden

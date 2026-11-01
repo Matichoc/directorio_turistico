@@ -7,6 +7,7 @@ import { BottomNav } from "@/components/ui/bottom-nav";
 import { TopNav } from "@/components/ui/top-nav";
 import { SponsorBanner } from "@/components/ui/sponsor-banner";
 import { DevEnvironmentBanner } from "@/components/ui/dev-environment-banner";
+import { ServiceWorkerRegister } from "@/components/offline/service-worker-register";
 import { listActiveSponsors } from "@/lib/data/sponsors";
 
 export function generateStaticParams() {
@@ -34,6 +35,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider>
       <div className="flex min-h-dvh flex-1 flex-col pb-16 sm:pb-0">
         <DevEnvironmentBanner />
+        <ServiceWorkerRegister />
         <TopNav />
         {/* Mismo `max-w-3xl` que `TopNav`/`BottomNav`/`SponsorBanner`: sin
             esto, el contenido de cada página se estiraba a todo el ancho

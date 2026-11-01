@@ -206,6 +206,8 @@ Se pegan tal cual en el SQL Editor; cada uno se aplica solo en `legacy` y
 - `categorias-petorca.sql`: categorías de Explorar (alojamiento, recreación,
   nombres nuevos) y la tabla `place_secondary_categories` (varias categorías
   por lugar). El sitio funciona antes y después de correrlo.
+- `admin-roles.sql`: roles del equipo del panel (`admin`/`editor`) y
+  registro de cambios (`audit_log`). Correr antes de usar `/admin/personas`.
 - `chalaco.sql`: Chalaco como pueblo nuevo (coordenada de OpenStreetMap,
   resumen con fuente FUCOA).
 - `petorca-portadas.sql`: portadas nuevas en `legacy`, recién cuando `main`

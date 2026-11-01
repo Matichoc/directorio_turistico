@@ -76,6 +76,10 @@ export default function AdminLoginPage() {
             className="border-accent-soft focus:border-accent rounded-xl border bg-transparent px-3 py-2 outline-none dark:border-white/15"
           />
         </label>
+        <p className="text-foreground/60 text-xs">
+          ¿Olvidaste tu clave o eres nuevo? Pídele a un administrador un link
+          desde «Personas».
+        </p>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button
           type="submit"

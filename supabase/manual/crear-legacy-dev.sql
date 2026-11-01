@@ -92,9 +92,27 @@ begin
       join pg_namespace n on n.oid = c.relnamespace
       where n.nspname = src and c.relname = r.relname
         and a.attnum > 0 and not a.attisdropped and a.attgenerated = '';
-      execute format('insert into %I.%I (%s) select %s from %I.%I',
-                     dst, r.relname, cols, cols, src, r.relname);
+      -- `overriding system value`: columnas de identidad (p. ej. el id de
+      -- `audit_log`) se copian con su valor original.
+      execute format(
+        'insert into %I.%I (%s) overriding system value select %s from %I.%I',
+        dst, r.relname, cols, cols, src, r.relname);
     end if;
+
+    -- Que los ids nuevos sigan después de los copiados (si no, el primer
+    -- insert en la copia chocaría con un id existente).
+    for col in
+      select a.attname
+      from pg_attribute a
+      join pg_class c on c.oid = a.attrelid
+      join pg_namespace n on n.oid = c.relnamespace
+      where n.nspname = dst and c.relname = r.relname
+        and a.attnum > 0 and not a.attisdropped and a.attidentity <> ''
+    loop
+      execute format(
+        'select setval(pg_get_serial_sequence(%L, %L), coalesce(max(%I), 0) + 1, false) from %I.%I',
+        format('%I.%I', dst, r.relname), col.attname, col.attname, dst, r.relname);
+    end loop;
   end loop;
 
   -- 3) Columnas con tipos de `legacy` → tipos de `legacy_dev` ------------------

@@ -99,6 +99,8 @@ texto del poema. Se puede enlazar desde el inicio y leer con "Escuchar".
 Los guías de petroglifos que aparecen en "Cocinando con el Diablo" (**Club de
 Montaña Arrank'a**) podrían ser el contacto para visitarlos con guía.
 
+> Listado completo de candidatos (Sernatur y Google Maps): `docs/CATALOGO-CANDIDATOS-PETORCA.md`.
+
 ### 2.0 Cargados el 2026-11-01 (`supabase/manual/lugares-petorca-2026-11.sql`)
 
 Decisión del usuario: de los restaurantes, solo los que conoce (Turismo

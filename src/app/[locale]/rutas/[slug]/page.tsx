@@ -6,6 +6,7 @@ import { resolveLocale } from "@/i18n/utils";
 import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
 import { RouteMapWithStops } from "@/components/route/route-map-with-stops";
 import { DevilMascot } from "@/components/ui/devil-mascot";
+import { ListenButton } from "@/components/ui/listen-button";
 import type { Metadata } from "next";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 import { TrackEvent } from "@/components/analytics/track-event";
@@ -37,6 +38,7 @@ export default async function RouteDetailPage({
   const locale = resolveLocale(rawLocale);
   setRequestLocale(locale);
   const t = await getTranslations("route");
+  const tListen = await getTranslations("listen");
 
   const route = await getRouteBySlug(slug, locale);
   if (!route) {
@@ -73,6 +75,18 @@ export default async function RouteDetailPage({
         {route.slug === "ruta-del-diablo" && (
           <DevilMascot className="animate-devil-peek text-accent pointer-events-none absolute top-0 right-0 h-10 w-10 opacity-70" />
         )}
+        <ListenButton
+          name={route.name}
+          segments={[
+            `${route.name}.`,
+            route.description,
+            route.stops.length > 0
+              ? tListen("stopsIntro", {
+                  stops: route.stops.map((stop) => stop.placeName).join(", "),
+                })
+              : null,
+          ]}
+        />
       </header>
 
       {route.description && (

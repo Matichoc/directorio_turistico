@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { resolveLocale } from "@/i18n/utils";
 import { Link } from "@/i18n/navigation";
 import { PageHero } from "@/components/ui/page-hero";
+import { ListenButton } from "@/components/ui/listen-button";
 import { PlaceCard } from "@/components/place/place-card";
 import { MapView } from "@/components/map/map-view";
 import { getLocalityBySlug } from "@/lib/data/localities";
@@ -38,6 +39,7 @@ export default async function LocalityDetailPage({
   const locale = resolveLocale(rawLocale);
   setRequestLocale(locale);
   const t = await getTranslations("locality");
+  const tListen = await getTranslations("listen");
 
   const locality = await getLocalityBySlug(slug, locale);
   if (!locality) {
@@ -97,6 +99,19 @@ export default async function LocalityDetailPage({
         title={locality.name}
         subtitle={locality.communeName}
         scene={scene}
+      />
+
+      <ListenButton
+        name={locality.name}
+        segments={[
+          `${locality.name}, ${locality.communeName}.`,
+          locality.summary,
+          locality.places.length > 0
+            ? tListen("attractionsIntro", {
+                places: locality.places.map((place) => place.name).join(", "),
+              })
+            : null,
+        ]}
       />
 
       {locality.summary && (

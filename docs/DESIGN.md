@@ -329,6 +329,18 @@ donde estás hasta la próxima parada (`/api/ruta`, OSRM de OpenStreetMap, ver
 - Al llegar ofrece seguir a la siguiente parada; tocar otra parada en el
   mapa cambia el destino. Siempre queda el link a Google Maps.
 
+## Escuchar la página
+
+`ListenButton` (`components/ui/listen-button.tsx`): botón "▶ Escuchar"
+(píldora `bg-accent`, mismo glow que los CTA) que lee en voz alta un
+apartado con la voz del teléfono (`lib/speech.ts`) — pensado para quien va
+manejando o caminando. Va bajo el título de la ficha de lugar (nombre,
+dónde está, descripción), de ruta (nombre, descripción y sus paradas en
+orden) y de pueblo (nombre, resumen y sus atractivos). Nunca suena solo;
+pausa, sigue, detiene y cambia velocidad (1×, 1,25×, 0,8×). Para sumarlo a
+otra página: pasarle `segments` con textos reales de esa página — nunca un
+texto escrito solo para la voz.
+
 ## Ficha del jugador en el mapa en vivo
 
 Pedido del usuario: que su posición real en el mapa de navegación se vea

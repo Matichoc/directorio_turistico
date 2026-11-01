@@ -260,5 +260,16 @@
         "body": "Para dudas, correcciones o pedir que se elimine un dato, escribe a quien desarrolla el sitio (ver Información)."
       }
     }
+  },
+  "listen": {
+    "play": "Escuchar",
+    "pause": "Pausar",
+    "resume": "Seguir",
+    "stop": "Detener",
+    "playLabel": "Escuchar {name}",
+    "speedLabel": "Velocidad {rate}",
+    "noVoice": "Tu teléfono no tiene una voz en español.",
+    "stopsIntro": "Paradas: {stops}.",
+    "attractionsIntro": "Atractivos: {places}."
   }
 }

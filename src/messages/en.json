@@ -212,7 +212,8 @@
       "uturn": "Make a U-turn{street, select, none {} other { onto {street}}}",
       "roundabout": "At the roundabout, take exit {exit}{street, select, none {} other { onto {street}}}",
       "arrive": "You arrive at {name}"
-    }
+    },
+    "noRouteOffline": "You're offline: street directions need a connection. The saved map and your position on it still work."
   },
   "locality": {
     "placesTitle": "Places in {name}",
@@ -359,5 +360,13 @@
       "body": "He lost his poncho in Chalaco, died in Petorca and was buried in La Ligua. Read it or listen to it.",
       "cta": "Discover the legend"
     }
+  },
+  "offline": {
+    "save": "Save to use offline (≈ {mb} MB)",
+    "saving": "Saving to use offline… {percent}%",
+    "saved": "Saved to use offline on {date}.",
+    "update": "Update",
+    "error": "Couldn't save everything. Try again with a better signal (or wifi).",
+    "hint": "Saves this page, its stops and the area's map on your phone, for the valley where there's no signal."
   }
 }

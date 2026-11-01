@@ -8,8 +8,13 @@ import { RouteMapWithStops } from "@/components/route/route-map-with-stops";
 import { OfficialRouteCard } from "@/components/route/official-route-card";
 import { DevilMascot } from "@/components/ui/devil-mascot";
 import { ListenButton } from "@/components/ui/listen-button";
+import { OfflineSaveButton } from "@/components/offline/offline-save-button";
 import type { Metadata } from "next";
-import { buildPageMetadata, truncateDescription } from "@/lib/seo";
+import {
+  buildPageMetadata,
+  localizedPath,
+  truncateDescription,
+} from "@/lib/seo";
 import { TrackEvent } from "@/components/analytics/track-event";
 
 export async function generateMetadata({
@@ -104,10 +109,34 @@ export default async function RouteDetailPage({
       />
 
       {route.stops.length > 0 && (
-        <div className="pt-2">
+        <div className="flex flex-col gap-4 pt-2">
           <AddRouteToTripButton
             routeId={route.id}
             placeIds={route.stops.map((stop) => stop.placeId)}
+          />
+          {/* Para el valle sin señal: la ruta, sus paradas y el mapa. */}
+          <OfflineSaveButton
+            saveKey={`ruta:${route.slug}`}
+            title={route.name}
+            pages={[
+              localizedPath(
+                { pathname: "/rutas/[slug]", params: { slug: route.slug } },
+                locale,
+              ),
+              ...route.stops.map((stop) =>
+                localizedPath(
+                  {
+                    pathname: "/lugares/[slug]",
+                    params: { slug: stop.placeSlug },
+                  },
+                  locale,
+                ),
+              ),
+            ]}
+            points={route.stops.map((stop) => ({
+              latitude: stop.latitude,
+              longitude: stop.longitude,
+            }))}
           />
         </div>
       )}

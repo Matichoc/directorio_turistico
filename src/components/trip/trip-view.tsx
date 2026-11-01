@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { getPathname, Link } from "@/i18n/navigation";
 import { ShareButton } from "@/components/place/share-button";
+import { OfflineSaveButton } from "@/components/offline/offline-save-button";
 import { formatSharedStops, SHARE_PARAM } from "@/lib/trip/share-link";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RouteNavigationMap } from "@/components/map/route-navigation-map";
@@ -326,6 +327,38 @@ export function TripView({ locale }: { locale: Locale }) {
           />
           <span className="text-foreground/60 text-xs">{t("shareHint")}</span>
         </div>
+      )}
+
+      {markers.length > 0 && (
+        // Sin señal se abre la versión "compartida" del recorrido: trae las
+        // paradas desde el servidor, sin pedirlas a /api como esta página.
+        <OfflineSaveButton
+          saveKey="recorrido"
+          title={t("title")}
+          pages={[
+            getPathname({
+              locale,
+              href: {
+                pathname: "/recorrido/compartido",
+                query: {
+                  [SHARE_PARAM]: formatSharedStops(
+                    markers.map((marker) => marker.slug),
+                  ),
+                },
+              },
+            }),
+            ...markers.map((marker) =>
+              getPathname({
+                locale,
+                href: {
+                  pathname: "/lugares/[slug]",
+                  params: { slug: marker.slug },
+                },
+              }),
+            ),
+          ]}
+          points={markers}
+        />
       )}
 
       {markers.length > 0 && (

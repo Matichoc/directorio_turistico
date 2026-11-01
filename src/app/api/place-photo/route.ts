@@ -8,8 +8,8 @@ const PHOTO_REF_PATTERN = /^places\/[\w-]+\/photos\/[\w-]+$/;
 const DEFAULT_MAX_WIDTH_PX = 1200;
 const MAX_ALLOWED_WIDTH_PX = 1600;
 // Cada foto nueva (ref distinto) le cuesta dinero real al proyecto de
-// Google Cloud — más generoso que /api/directions porque una sola página
-// puede pedir varias fotos, pero igual corta un loop de refs inventados.
+// Google Cloud — generoso porque una sola página puede pedir varias fotos,
+// pero igual corta un loop de refs inventados.
 const MAX_REQUESTS_PER_MINUTE = 120;
 
 /**

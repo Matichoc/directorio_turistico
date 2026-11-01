@@ -260,5 +260,16 @@
         "body": "For questions, corrections or to ask for data to be removed, write to the site's developer (see Info)."
       }
     }
+  },
+  "listen": {
+    "play": "Listen",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "playLabel": "Listen to {name}",
+    "speedLabel": "Speed {rate}",
+    "noVoice": "Your phone has no English voice.",
+    "stopsIntro": "Stops: {stops}.",
+    "attractionsIntro": "Attractions: {places}."
   }
 }

@@ -5,6 +5,7 @@ import { listApprovedComments } from "@/lib/data/comments";
 import { resolveLocale } from "@/i18n/utils";
 import { Link } from "@/i18n/navigation";
 import { ShareButton } from "@/components/place/share-button";
+import { ListenButton } from "@/components/ui/listen-button";
 import { LikeButton } from "@/components/place/like-button";
 import { PlaceCommentForm } from "@/components/place/place-comment-form";
 import { AddToTripButton } from "@/components/trip/add-to-trip-button";
@@ -91,6 +92,14 @@ export default async function PlaceDetailPage({
             {t("verificationPending")}
           </span>
         )}
+        <ListenButton
+          name={place.name}
+          segments={[
+            `${place.name}.`,
+            [place.localityName, place.communeName].filter(Boolean).join(", "),
+            place.description ?? place.shortDescription,
+          ]}
+        />
       </header>
 
       <PlacePhotoHero

@@ -5,7 +5,10 @@
 -- (esquemas `legacy` y `legacy_dev`), nunca con `supabase db push`.
 
 create table public.place_secondary_categories (
-  place_id uuid not null references public.places (id) on delete cascade,
+  -- Sin llave hacia places: con ella PostgREST ve dos caminos entre lugares
+  -- y categorías y "lugar con su categoría" se vuelve ambiguo (PGRST201).
+  -- Las filas de un lugar borrado las limpia el disparador de abajo.
+  place_id uuid not null,
   category_id uuid not null references public.categories (id) on delete cascade,
   primary key (place_id, category_id)
 );
@@ -24,3 +27,18 @@ create policy place_secondary_categories_public_read
 create policy place_secondary_categories_admin_write
   on public.place_secondary_categories for all
   using (public.is_admin()) with check (public.is_admin());
+
+create or replace function public.drop_place_secondary_categories()
+returns trigger
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+begin
+  delete from public.place_secondary_categories where place_id = old.id;
+  return old;
+end;
+$$;
+
+create trigger drop_secondary_categories after delete on public.places
+  for each row execute function public.drop_place_secondary_categories();

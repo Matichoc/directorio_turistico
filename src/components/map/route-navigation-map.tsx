@@ -51,7 +51,8 @@ export function RouteNavigationMap({
 }) {
   const t = useTranslations("guide");
   const locale = useLocale();
-  const lang = SPEECH_LANG[locale === "en" ? "en" : "es"];
+  const lang =
+    SPEECH_LANG[locale as keyof typeof SPEECH_LANG] ?? SPEECH_LANG.es;
   const stops = markers.filter((marker) => marker.kind !== "locality");
 
   const [active, setActive] = useState(false);

@@ -270,7 +270,8 @@ export function OfflineSaveButton({
           <span className="text-emerald-400">✓</span>
           {t("saved", {
             date: new Date(savedAt).toLocaleDateString(
-              locale === "en" ? "en" : "es-CL",
+              ({ en: "en", pt: "pt-BR" } as Record<string, string>)[locale] ??
+                "es-CL",
             ),
           })}
           <button

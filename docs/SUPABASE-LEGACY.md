@@ -217,6 +217,12 @@ Se pegan tal cual en el SQL Editor; cada uno se aplica solo en `legacy` y
   resumen con fuente FUCOA).
 - `petorca-portadas.sql`: portadas nuevas en `legacy`, recién cuando `main`
   tenga los archivos.
+- `portugues-1-idioma.sql` y después `portugues-2-contenido.sql` (en dos
+  corridas: Postgres no deja usar un idioma nuevo en la misma transacción
+  en que se agrega): suman el portugués al tipo `locale` del diablo (no al
+  de Papudo) y el contenido de Petorca traducido, sin pisar lo editado.
+  Correr el paso 1 **antes** de publicar el código con portugués: sin el
+  idioma en la base, las páginas en `/pt` fallan.
 
 ## Cambios futuros en la base del diablo
 

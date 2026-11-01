@@ -3,10 +3,16 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { portugueseCleared, savedTranslations } from "./translations";
 
 const localityLocaleContentSchema = z.object({
   name: z.string().trim().min(1, "Falta el nombre"),
   summary: z.string().trim().optional().or(z.literal("")),
+});
+
+/** Portugués: opcional; sin nombre no se guarda (ver translations.ts). */
+const localityOptionalLocaleSchema = localityLocaleContentSchema.extend({
+  name: z.string().trim(),
 });
 
 /**
@@ -58,6 +64,7 @@ const localityFormSchema = z.object({
   translations: z.object({
     es: localityLocaleContentSchema,
     en: localityLocaleContentSchema,
+    pt: localityOptionalLocaleSchema.optional(),
   }),
 });
 
@@ -95,11 +102,11 @@ export async function createLocality(
   const { error: translationsError } = await supabase
     .from("locality_translations")
     .insert(
-      (["es", "en"] as const).map((locale) => ({
+      savedTranslations(parsed.translations).map(([locale, content]) => ({
         locality_id: locality.id,
         locale,
-        name: parsed.translations[locale].name,
-        summary: normalize(parsed.translations[locale].summary),
+        name: content.name,
+        summary: normalize(content.summary),
       })),
     );
 
@@ -139,11 +146,11 @@ export async function updateLocality(
   const { error: translationsError } = await supabase
     .from("locality_translations")
     .upsert(
-      (["es", "en"] as const).map((locale) => ({
+      savedTranslations(parsed.translations).map(([locale, content]) => ({
         locality_id: id,
         locale,
-        name: parsed.translations[locale].name,
-        summary: normalize(parsed.translations[locale].summary),
+        name: content.name,
+        summary: normalize(content.summary),
       })),
       { onConflict: "locality_id,locale" },
     );
@@ -152,6 +159,14 @@ export async function updateLocality(
     throw new Error(
       `No se pudo actualizar la traducción: ${translationsError.message}`,
     );
+  }
+
+  if (portugueseCleared(parsed.translations)) {
+    await supabase
+      .from("locality_translations")
+      .delete()
+      .eq("locality_id", id)
+      .eq("locale", "pt");
   }
 
   revalidatePath("/admin/pueblos");

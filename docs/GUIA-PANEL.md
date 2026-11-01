@@ -43,7 +43,8 @@ Hay dos sitios y dos bases:
 ### Lugares (`/admin/lugares`)
 
 - **Crear** (`+ Nuevo lugar`) y **editar**: nombre y descripciones en
-  español e inglés, comuna y pueblo, **categoría principal** (define el ícono
+  español, inglés y portugués (opcional: si lo dejas vacío, el sitio en
+  portugués muestra el español; lo mismo en rutas y pueblos), comuna y pueblo, **categoría principal** (define el ícono
   y el color en el mapa) y **"También aparece en"** (más categorías),
   ubicación (latitud y longitud), dirección, teléfono, sitio web, ícono
   temático, estado de publicación y de verificación.

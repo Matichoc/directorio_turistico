@@ -11,7 +11,11 @@ export const SITE_NAME = "El diablo murió en Petorca";
  */
 export const DEFAULT_OG_IMAGE = "/brand/og.png";
 
-const OG_LOCALE: Record<Locale, string> = { es: "es_CL", en: "en_US" };
+const OG_LOCALE: Record<Locale, string> = {
+  es: "es_CL",
+  en: "en_US",
+  pt: "pt_BR",
+};
 
 /**
  * URL pública del sitio, base de las URLs absolutas de metadata/sitemap.

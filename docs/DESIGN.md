@@ -458,6 +458,19 @@ pantalla, nunca los dos a la vez:
 Agregar una sexta sección = un solo ítem nuevo en `NAV_ITEMS`, nunca
 duplicar el link a mano en cada uno de los dos componentes.
 
+## Panel para varias personas
+
+Pedido del usuario: "varias personas, con roles" para poder entregar el
+panel. Menú lateral: además de las secciones de contenido, **Personas**
+(solo administradores: invitar con correo y rol, cambiar rol, "Link para
+cambiar clave", quitar), **Registro de cambios** (quién cambió qué y cuándo,
+los últimos 200) y **Mi cuenta** (cambiar la clave propia, cerrar sesión;
+"Cerrar sesión" también al pie del menú en escritorio). Los links de
+invitación aparecen en una caja verde con "Copiar link" y "Mandar por
+WhatsApp" y el aviso de que sirven una vez y vencen en 1 hora. `/admin/aceptar`
+usa el mismo diseño que el login (sin menú). Claves de al menos 10
+caracteres.
+
 ## Explorar: comuna → pueblo → atractivos
 
 `/explorar` es la **única** pantalla para recorrer el catálogo por pueblos

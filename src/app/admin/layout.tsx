@@ -2,7 +2,8 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { DevEnvironmentBanner } from "@/components/ui/dev-environment-banner";
 
 const sections = [
@@ -13,15 +14,25 @@ const sections = [
   { href: "/admin/verificaciones", label: "Verificaciones" },
   { href: "/admin/metricas", label: "Métricas" },
   { href: "/admin/comunas-categorias", label: "Comunas y categorías" },
+  { href: "/admin/personas", label: "Personas" },
+  { href: "/admin/registro", label: "Registro de cambios" },
+  { href: "/admin/cuenta", label: "Mi cuenta" },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function signOut() {
+    await createClient().auth.signOut();
+    router.replace("/admin/login");
+    router.refresh();
+  }
 
   // La barra de navegación no sirve de nada antes de loguearse (cualquier
   // link ahí rebota a este mismo login vía middleware) — mostrarla igual
   // solo confunde, como si el panel ya estuviera "abierto" sin estarlo.
-  if (pathname === "/admin/login") {
+  if (pathname === "/admin/login" || pathname === "/admin/aceptar") {
     return (
       <>
         <DevEnvironmentBanner />
@@ -63,6 +74,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               })}
             </ul>
           </nav>
+          <button
+            type="button"
+            onClick={() => void signOut()}
+            className="text-foreground/60 hover:text-foreground mt-4 hidden text-sm md:block"
+          >
+            Cerrar sesión
+          </button>
         </aside>
         <main className="flex-1 p-6">{children}</main>
       </div>

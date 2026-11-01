@@ -49,7 +49,11 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isLoginRoute = request.nextUrl.pathname === "/admin/login";
+  // Login y la entrada desde un link de invitación (/admin/personas) se
+  // abren sin ser del equipo todavía.
+  const isLoginRoute = ["/admin/login", "/admin/aceptar"].includes(
+    request.nextUrl.pathname,
+  );
   if (!user && !isLoginRoute) {
     const loginUrl = new URL("/admin/login", request.url);
     return NextResponse.redirect(loginUrl);

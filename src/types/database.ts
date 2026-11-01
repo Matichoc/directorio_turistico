@@ -258,6 +258,26 @@ type PlaceCommentRow = {
   moderated_by: string | null;
 };
 
+/** Equipo del panel (`admin_users`; roles en supabase/manual/admin-roles.sql). */
+export type TeamRole = "admin" | "editor";
+
+type AdminUserRow = {
+  user_id: string;
+  role: TeamRole;
+  added_by: string | null;
+  created_at: string;
+};
+
+/** Registro de cambios del panel (disparador `log_change`). */
+type AuditLogRow = {
+  id: number;
+  at: string;
+  user_id: string | null;
+  table_name: string;
+  action: "insert" | "update" | "delete";
+  row_ref: string | null;
+};
+
 export interface Database {
   public: {
     Views: Record<string, never>;
@@ -283,6 +303,12 @@ export interface Database {
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
     Tables: {
+      admin_users: Table<
+        AdminUserRow,
+        Partial<AdminUserRow> & { user_id: string },
+        Partial<AdminUserRow>
+      >;
+      audit_log: Table<AuditLogRow, never, never>;
       communes: Table<
         CommuneRow,
         Partial<CommuneRow> & { slug: string },

@@ -145,10 +145,19 @@
     },
     "tripError": "We couldn't add the route to your trip. Please try again in a while.",
     "official": {
-      "badge": "Official tourist route",
-      "body": "This trip is named after the tourist route created in 2018 by the Municipality of Petorca and INDAP with local rural tourism businesses: it runs from Pedegua to Chalaco, with 20 signposts along the way.",
       "instagram": "Follow it on Instagram",
-      "logoAlt": "Logo of the Donde el Diablo perdió el poncho tourist route"
+      "routes": {
+        "poncho": {
+          "badge": "Official tourist route",
+          "body": "This trip is named after the tourist route created in 2018 by the Municipality of Petorca and INDAP with local rural tourism businesses: it runs from Pedegua to Chalaco, with 20 signposts along the way.",
+          "logoAlt": "Logo of the Donde el Diablo perdió el poncho tourist route"
+        },
+        "ferroviaria": {
+          "badge": "Tourist route",
+          "body": "It follows the old Northern Longitudinal railway line up the valley: Palquico and Las Palmas were stations on the line from 1916, on the way to the Las Palmas Tunnel.",
+          "logoAlt": "Logo of the Ruta Turística Ferroviaria Pedegua – Palquico – Las Palmas"
+        }
+      }
     }
   },
   "guide": {

@@ -22,6 +22,8 @@ const placeFormSchema = z.object({
   communeId: z.uuid(),
   localityId: z.uuid().optional().or(z.literal("")),
   categoryId: z.uuid(),
+  /** Categorías adicionales (además de la principal, `categoryId`). */
+  secondaryCategoryIds: z.array(z.uuid()).default([]),
   latitude: z.coerce.number().min(-90).max(90),
   longitude: z.coerce.number().min(-180).max(180),
   address: z.string().trim().optional().or(z.literal("")),
@@ -40,6 +42,44 @@ export type PlaceFormInput = z.input<typeof placeFormSchema>;
 
 function normalize(value: string | undefined | null): string | null {
   return value && value.trim() !== "" ? value.trim() : null;
+}
+
+/**
+ * Deja las categorías adicionales de un lugar tal como vienen del
+ * formulario (sin la principal, que ya está en `places.category_id`).
+ * Si la tabla todavía no existe en esta base (falta correr
+ * supabase/manual/categorias-petorca.sql) y no se eligió ninguna, no hace
+ * nada; si se eligió alguna, avisa.
+ */
+async function saveSecondaryCategories(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  placeId: string,
+  primaryId: string,
+  categoryIds: string[],
+) {
+  const wanted = [...new Set(categoryIds)].filter((id) => id !== primaryId);
+  const { error: deleteError } = await supabase
+    .from("place_secondary_categories")
+    .delete()
+    .eq("place_id", placeId);
+  if (deleteError) {
+    if (wanted.length === 0) return;
+    throw new Error(
+      `No se pudieron guardar las categorías adicionales (¿falta correr categorias-petorca.sql?): ${deleteError.message}`,
+    );
+  }
+  if (wanted.length === 0) return;
+  const { error } = await supabase.from("place_secondary_categories").insert(
+    wanted.map((categoryId) => ({
+      place_id: placeId,
+      category_id: categoryId,
+    })),
+  );
+  if (error) {
+    throw new Error(
+      `No se pudieron guardar las categorías adicionales: ${error.message}`,
+    );
+  }
 }
 
 /**
@@ -100,6 +140,13 @@ export async function createPlace(
     );
   }
 
+  await saveSecondaryCategories(
+    supabase,
+    place.id,
+    parsed.categoryId,
+    parsed.secondaryCategoryIds,
+  );
+
   revalidatePath("/admin/lugares");
   return { id: place.id };
 }
@@ -153,6 +200,13 @@ export async function updatePlace(
       `No se pudo actualizar la traducción: ${translationsError.message}`,
     );
   }
+
+  await saveSecondaryCategories(
+    supabase,
+    id,
+    parsed.categoryId,
+    parsed.secondaryCategoryIds,
+  );
 
   revalidatePath("/admin/lugares");
   revalidatePath(`/admin/lugares/${id}`);

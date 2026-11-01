@@ -28,9 +28,11 @@ export function generateStaticParams() {
 }
 
 const INTENT_CATEGORIES = [
-  { slug: "naturaleza", key: "nature" as const, icon: "mountain" },
   { slug: "gastronomia", key: "gastronomy" as const, icon: "utensils" },
+  { slug: "alojamiento", key: "lodging" as const, icon: "cama" },
+  { slug: "naturaleza", key: "nature" as const, icon: "mountain" },
   { slug: "cultura", key: "culture" as const, icon: "landmark" },
+  { slug: "recreacion", key: "leisure" as const, icon: "recreacion" },
   { slug: "playa", key: "beach" as const, icon: "waves" },
 ];
 
@@ -83,7 +85,8 @@ export default async function HomePage({
   // (lib/site-scope.ts) una postal que lleva a una lista vacía confunde.
   const intents = INTENT_CATEGORIES.map((intent) => ({
     ...intent,
-    count: places.filter((place) => place.categorySlug === intent.slug).length,
+    count: places.filter((place) => place.categorySlugs.includes(intent.slug))
+      .length,
   })).filter((intent) => intent.count > 0);
 
   return (

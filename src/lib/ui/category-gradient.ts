@@ -1,8 +1,23 @@
+/**
+ * Categorías de Explorar, en el orden de sus pestañas (decisión del usuario,
+ * 2026-11-01: la "lista Petorca"). Se muestran aunque todavía no tengan
+ * lugares; `playa` (solo provincia) aparece únicamente si tiene alguno.
+ */
+export const EXPLORE_CATEGORY_ORDER = [
+  "gastronomia",
+  "alojamiento",
+  "naturaleza",
+  "cultura",
+  "recreacion",
+] as const;
+
 const GRADIENTS: Record<string, string> = {
   naturaleza: "from-emerald-700 via-emerald-600 to-teal-500",
   gastronomia: "from-amber-700 via-orange-600 to-amber-500",
   cultura: "from-indigo-700 via-violet-600 to-fuchsia-500",
   playa: "from-sky-700 via-cyan-600 to-teal-400",
+  alojamiento: "from-rose-800 via-rose-700 to-orange-500",
+  recreacion: "from-lime-700 via-green-600 to-emerald-400",
 };
 
 const DEFAULT_GRADIENT = GRADIENTS.cultura;
@@ -17,6 +32,8 @@ const PIN_COLORS: Record<string, string> = {
   gastronomia: "#ea580c", // orange-600
   cultura: "#7c3aed", // violet-600
   playa: "#0891b2", // cyan-600 — mar
+  alojamiento: "#be123c", // rose-700 — techo y fogón
+  recreacion: "#65a30d", // lime-600 — plaza y piscina
 };
 
 const DEFAULT_PIN_COLOR = "#b3401f"; // acento del sitio (terracota)
@@ -37,6 +54,8 @@ const CATEGORY_ICONS: Record<string, string> = {
   gastronomia: "utensils",
   cultura: "landmark",
   playa: "waves",
+  alojamiento: "cama",
+  recreacion: "recreacion",
 };
 
 const DEFAULT_CATEGORY_ICON = CATEGORY_ICONS.cultura;

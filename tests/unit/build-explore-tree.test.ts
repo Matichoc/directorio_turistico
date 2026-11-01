@@ -37,6 +37,7 @@ function place(
     localitySlug,
     categoryName: "Naturaleza",
     categorySlug: "naturaleza",
+    categorySlugs: ["naturaleza"],
     icon: null,
     latitude: 0,
     longitude: 0,

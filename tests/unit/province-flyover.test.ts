@@ -43,6 +43,7 @@ function place(id: string, communeName: string): PlaceCard {
     localitySlug: null,
     categoryName: "Naturaleza",
     categorySlug: "naturaleza",
+    categorySlugs: ["naturaleza"],
     icon: null,
     latitude: 0,
     longitude: 0,

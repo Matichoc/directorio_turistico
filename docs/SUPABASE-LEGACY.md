@@ -196,6 +196,19 @@ publicado también va a mostrar estas 2 rutas (junto a la Ruta del Diablo).
 `legacy_dev`, copia completa de `legacy` para el ambiente de desarrollo
 (rama `develop` y vistas previas). Pasos y reglas en `docs/DESARROLLO.md`.
 
+## Scripts de contenido de Petorca (2026-11-01)
+
+Se pegan tal cual en el SQL Editor; cada uno se aplica solo en `legacy` y
+`legacy_dev` (si existe), es repetible y, si algo falla, no cambia nada:
+
+- `petorca-nombres-oficiales.sql`: nombre propio de las 2 rutas; portadas
+  nuevas solo en `legacy_dev`.
+- `categorias-petorca.sql`: categorías de Explorar (alojamiento, recreación,
+  nombres nuevos) y la tabla `place_secondary_categories` (varias categorías
+  por lugar). El sitio funciona antes y después de correrlo.
+- `petorca-portadas.sql`: portadas nuevas en `legacy`, recién cuando `main`
+  tenga los archivos.
+
 ## Cambios futuros en la base del diablo
 
 Cada cambio de tablas se escribe como un archivo SQL en `supabase/manual/`,

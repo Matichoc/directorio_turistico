@@ -94,6 +94,38 @@ texto del poema. Se puede enlazar desde el inicio y leer con "Escuchar".
 Los guías de petroglifos que aparecen en "Cocinando con el Diablo" (**Club de
 Montaña Arrank'a**) podrían ser el contacto para visitarlos con guía.
 
+### 2.1 Candidatos para las categorías nuevas (2026-11-01)
+
+Explorar pasó a tener pestañas por categoría (Gastronomía, Alojamiento,
+Naturaleza y aventura, Patrimonio y cultura, Recreación). Para Gastronomía,
+Alojamiento y Recreación **no hay todavía nada cargado**. Esto es lo que se
+encontró en internet: fuentes débiles (anuncios, Facebook, directorios
+viejos) y **sin ubicación exacta**, así que no se cargó nada. Confirmar que
+siguen abiertos y cargarlos desde `/admin/lugares/nuevo` con su ubicación de
+Google Maps. Un lugar puede ir en más de una categoría ("También aparece en").
+
+| Candidato                                             | Dónde       | Categorías                 | Fuente                                              |
+| ----------------------------------------------------- | ----------- | -------------------------- | --------------------------------------------------- |
+| Viña y bodega El Sobrante                             | El Sobrante | Gastronomía (+ Patrimonio) | Ver tabla de arriba (fuente sólida)                 |
+| Camping Don Juanito                                   | Chincolco   | Alojamiento + Recreación   | [Facebook][donjuanito] (piscina, quinchos, cabañas) |
+| Hospedaje Petro-Chalaco                               | Chalaco     | Alojamiento                | [Facebook][petrochalaco] (cabaña de 3 piezas)       |
+| Hostal La Taquilla (Luchito Silva)                    | Chincolco   | Alojamiento                | [Mundo Chileno][hostales] ⚠️ (directorio)           |
+| Domos "Aguas de Chincol"                              | Chincolco   | Alojamiento + Recreación   | [Airbnb][airbnb] ⚠️ (anuncio)                       |
+| Hotel Andino Petorca, Casa Petorca                    | Petorca     | Alojamiento                | [Alojamiento Chile][alojamiento] ⚠️ (≈2 años)       |
+| El Rincón Criollo                                     | Chincolco   | Gastronomía                | [Classici Stranieri][classici] ⚠️ (texto antiguo)   |
+| Valsof, Donde Manuel, Tamy's Club, El Yugo, La Casona | Petorca     | Gastronomía                | [Classici Stranieri][classici] ⚠️ (texto antiguo)   |
+
+Lo más rápido para completarlo: pedirle a la Municipalidad (Oficina de
+Turismo o Fomento Productivo) su catastro de alojamientos y restaurantes, y a
+la ruta "Donde el Diablo perdió el poncho" sus emprendedores.
+
+[donjuanito]: https://www.facebook.com/campingdonjuanito/
+[petrochalaco]: https://www.facebook.com/Petrochalaco/
+[hostales]: https://www.mundochileno.com/petorca/hostales
+[airbnb]: https://es-l.airbnb.com/rooms/51268411
+[alojamiento]: https://alojamientochile.com/valparaiso/petorca/
+[classici]: https://www.classicistranieri.com/es/articles/p/e/t/Petorca.html
+
 ## 3. Mejorar los lugares que ya están
 
 - **Iglesia La Merced**: construida por los jesuitas en 1640 y reconstruida en

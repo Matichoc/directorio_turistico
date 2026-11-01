@@ -181,7 +181,43 @@ interface PlaceListQueryResult {
   place_images: PlaceImageResult[];
 }
 
-function mapPlaceCard(place: PlaceListQueryResult, locale: Locale): PlaceCard {
+/**
+ * Categorías adicionales de cada lugar (`place_secondary_categories`), por
+ * id de lugar. Consulta aparte a propósito: si la tabla todavía no existe en
+ * una base (ver supabase/manual/categorias-petorca.sql), el sitio sigue
+ * funcionando con la categoría principal de cada lugar.
+ */
+async function loadSecondaryCategories(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+): Promise<Map<string, string[]>> {
+  const { data, error } = await supabase
+    .from("place_secondary_categories")
+    .select<
+      "place_id, categories(slug)",
+      { place_id: string; categories: { slug: string } | null }
+    >("place_id, categories(slug)");
+  const byPlace = new Map<string, string[]>();
+  if (error || !data) return byPlace;
+  for (const row of data) {
+    if (!row.categories) continue;
+    byPlace.set(row.place_id, [
+      ...(byPlace.get(row.place_id) ?? []),
+      row.categories.slug,
+    ]);
+  }
+  return byPlace;
+}
+
+/** Principal primero, sin repetir. */
+function allCategorySlugs(primary: string, secondary: string[] = []) {
+  return [...new Set([primary, ...secondary].filter(Boolean))];
+}
+
+function mapPlaceCard(
+  place: PlaceListQueryResult,
+  locale: Locale,
+  secondary: Map<string, string[]> = new Map(),
+): PlaceCard {
   const translation = place.place_translations[0];
   return {
     id: place.id,
@@ -195,6 +231,10 @@ function mapPlaceCard(place: PlaceListQueryResult, locale: Locale): PlaceCard {
     localitySlug: place.localities?.slug ?? null,
     categoryName: place.categories?.category_translations[0]?.name ?? "",
     categorySlug: place.categories?.slug ?? "",
+    categorySlugs: allCategorySlugs(
+      place.categories?.slug ?? "",
+      secondary.get(place.id),
+    ),
     icon: place.icon,
     latitude: place.latitude,
     longitude: place.longitude,
@@ -209,10 +249,11 @@ function mapPlaceCard(place: PlaceListQueryResult, locale: Locale): PlaceCard {
 }
 
 /**
- * Lista lugares publicados. El filtro por `tagSlug` y `query` (nombre) se
- * aplica en memoria después de traer los resultados: a la escala actual del
- * catálogo (decenas de lugares) es más simple que armar un `!inner` dinámico
- * en PostgREST. Si el catálogo crece mucho, mover ambos a la consulta.
+ * Lista lugares publicados. Los filtros por categoría (principal o
+ * adicional), `tagSlug` y `query` (nombre) se aplican en memoria después de
+ * traer los resultados: a la escala actual del catálogo (decenas de lugares)
+ * es más simple que armar un `!inner` dinámico en PostgREST. Si el catálogo
+ * crece mucho, moverlos a la consulta.
  */
 export async function listPlaces(
   locale: Locale,
@@ -234,14 +275,14 @@ export async function listPlaces(
   if (filters.communeSlug) {
     builder = builder.eq("communes.slug", filters.communeSlug);
   }
-  if (filters.categorySlug) {
-    builder = builder.eq("categories.slug", filters.categorySlug);
-  }
   if (isSiteScoped()) {
     builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
   }
 
-  const { data, error } = await builder;
+  const [{ data, error }, secondary] = await Promise.all([
+    builder,
+    loadSecondaryCategories(supabase),
+  ]);
 
   if (error || !data) {
     return [];
@@ -250,8 +291,14 @@ export async function listPlaces(
   const query = filters.query?.trim().toLowerCase();
 
   return data
-    .map((place) => mapPlaceCard(place, locale))
+    .map((place) => mapPlaceCard(place, locale, secondary))
     .filter((place) => {
+      if (
+        filters.categorySlug &&
+        !place.categorySlugs.includes(filters.categorySlug)
+      ) {
+        return false;
+      }
       if (filters.tagSlug && !place.tags.includes(filters.tagSlug)) {
         return false;
       }
@@ -427,6 +474,8 @@ export interface AdminPlaceDetail {
   publicationStatus: PublicationStatus;
   verificationStatus: VerificationStatus;
   translations: Record<Locale, AdminPlaceTranslation>;
+  /** Categorías adicionales (`place_secondary_categories`). */
+  secondaryCategoryIds: string[];
 }
 
 const ADMIN_PLACE_DETAIL_QUERY =
@@ -482,6 +531,12 @@ export async function getAdminPlaceById(
     return null;
   }
 
+  // Aparte: si la tabla todavía no existe en esta base, sin adicionales.
+  const { data: secondary } = await supabase
+    .from("place_secondary_categories")
+    .select("category_id")
+    .eq("place_id", id);
+
   const translations: Record<Locale, AdminPlaceTranslation> = {
     es: { ...EMPTY_TRANSLATION },
     en: { ...EMPTY_TRANSLATION },
@@ -509,6 +564,7 @@ export async function getAdminPlaceById(
     publicationStatus: data.publication_status,
     verificationStatus: data.verification_status,
     translations,
+    secondaryCategoryIds: (secondary ?? []).map((row) => row.category_id),
   };
 }
 

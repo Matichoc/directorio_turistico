@@ -12,12 +12,14 @@ import { ExploreFilters } from "@/components/explore/explore-filters";
 import { FiltersDisclosure } from "@/components/explore/filters-disclosure";
 import { LocalityBrowser } from "@/components/explore/locality-browser";
 import { ViewToggle } from "@/components/explore/view-toggle";
+import { CategoryTabs } from "@/components/explore/category-tabs";
 import { ExploreMap } from "@/components/explore/explore-map";
 import { TrackEvent } from "@/components/analytics/track-event";
 import { buildExploreTree } from "@/lib/ui/build-explore-tree";
 import { buildMapSectors } from "@/lib/ui/map-sectors";
 import { EXPLORE_SECTOR_MAX_ZOOM } from "@/lib/maps/config";
 import { getSceneForCategory } from "@/lib/ui/scene-backgrounds";
+import { EXPLORE_CATEGORY_ORDER } from "@/lib/ui/category-gradient";
 import type { Metadata } from "next";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 
@@ -65,23 +67,56 @@ export default async function ExplorePage({
   // muy poco amigable para navegar"); el listado queda a un toque.
   const view = filters.vista === "lista" ? "lista" : "mapa";
 
-  const [places, communes, localities, categories, tags] = await Promise.all([
-    listPlaces(locale, {
-      query: filters.q,
-      communeSlug: filters.comuna,
-      categorySlug: filters.categoria,
-      tagSlug: filters.caracteristica,
-    }),
-    listCommunes(locale),
-    listLocalities(locale),
-    listCategories(locale),
-    listTags(),
-  ]);
+  const [allPlaces, communes, localities, categories, tags] = await Promise.all(
+    [
+      listPlaces(locale, {
+        query: filters.q,
+        communeSlug: filters.comuna,
+        tagSlug: filters.caracteristica,
+      }),
+      listCommunes(locale),
+      listLocalities(locale),
+      listCategories(locale),
+      listTags(),
+    ],
+  );
 
+  // Pestañas de categoría: las de la comuna siempre (aunque estén vacías,
+  // para que se vea qué ofrece el directorio) y otra solo si tiene lugares.
+  // Un lugar en varias categorías cuenta en cada una.
+  const countIn = (slug: string) =>
+    allPlaces.filter((place) => place.categorySlugs.includes(slug)).length;
+  const order: readonly string[] = EXPLORE_CATEGORY_ORDER;
+  const categoryTabs = categories
+    .map((category) => ({
+      slug: category.slug,
+      name: category.name,
+      count: countIn(category.slug),
+    }))
+    .filter((tab) => order.includes(tab.slug) || tab.count > 0)
+    .sort((a, b) => {
+      const ai = order.indexOf(a.slug);
+      const bi = order.indexOf(b.slug);
+      return (ai < 0 ? order.length : ai) - (bi < 0 ? order.length : bi);
+    });
+  const activeTab =
+    categoryTabs.find((tab) => tab.slug === filters.categoria) ?? null;
+  const places = activeTab
+    ? allPlaces.filter((place) => place.categorySlugs.includes(activeTab.slug))
+    : allPlaces;
+  const tabQuery = Object.fromEntries(
+    Object.entries({
+      q: filters.q,
+      comuna: filters.comuna,
+      caracteristica: filters.caracteristica,
+      vista: filters.vista,
+    }).filter((entry): entry is [string, string] => Boolean(entry[1])),
+  );
+
+  // La categoría va en las pestañas, no en "Filtros".
   const filtersActiveCount = [
     filters.q,
     filters.comuna,
-    filters.categoria,
     filters.caracteristica,
   ].filter(Boolean).length;
 
@@ -173,6 +208,12 @@ export default async function ExplorePage({
         scene={getSceneForCategory(filters.categoria)}
       />
 
+      <CategoryTabs
+        tabs={categoryTabs}
+        active={activeTab?.slug ?? null}
+        query={tabQuery}
+      />
+
       <div className="flex flex-wrap items-start justify-between gap-3">
         <FiltersDisclosure activeCount={filtersActiveCount}>
           <ExploreFilters
@@ -183,14 +224,17 @@ export default async function ExplorePage({
               caracteristica: filters.caracteristica ?? "",
             }}
             communes={communes}
-            categories={categories}
             tags={tags}
           />
         </FiltersDisclosure>
         <ViewToggle current={view} />
       </div>
 
-      {view === "mapa" ? (
+      {activeTab && activeTab.count === 0 ? (
+        <EmptyState>
+          {t("categories.empty", { category: activeTab.name })}
+        </EmptyState>
+      ) : view === "mapa" ? (
         <>
           <p className="text-foreground/50 text-sm">
             {t("resultsCount", { count: places.length })}

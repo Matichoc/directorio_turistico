@@ -131,7 +131,13 @@ export interface PlaceCard {
   localityName: string | null;
   localitySlug: string | null;
   categoryName: string;
+  /** Categoría principal: define ícono, color del pin y escena. */
   categorySlug: string;
+  /**
+   * Todas sus categorías: la principal primero y luego las adicionales
+   * (`place_secondary_categories`). Con esto filtra Explorar.
+   */
+  categorySlugs: string[];
   /** Ícono puntual (ver migración 0010_place_icon.sql); null = de categoría. */
   icon: string | null;
   latitude: number;

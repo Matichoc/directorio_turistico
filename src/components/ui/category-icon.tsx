@@ -20,6 +20,9 @@ const ICON_PATHS: Record<string, string> = {
   pueblo: "M3 11.5 8 7l5 4.5M5 10.5V19h6v-7.5M14 19v-5.5l3.5-3L21 13.5V19h-7Z",
   palta:
     "M12 3c4 3.5 6 8.5 6 12.5a6 6 0 0 1-12 0c0-4 2-9 6-12.5Z M9.6 15.5a2.4 2.4 0 1 0 4.8 0 2.4 2.4 0 1 0 -4.8 0",
+  // Categorías de Explorar (alojamiento y recreación).
+  cama: "M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6M7 11.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z",
+  recreacion: "M12 3v18M12 3c-4 0-7 2.5-8 6h16c-1-3.5-4-6-8-6Z M5 21h14",
   // De la comuna de Petorca (fichas del jugador): el cucharón y el poncho
   // del diablo aprobado, el ramal y el Túnel Las Palmas, y los petroglifos
   // de Chincolco.

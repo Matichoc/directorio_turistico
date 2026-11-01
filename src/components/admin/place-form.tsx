@@ -95,6 +95,7 @@ export function PlaceForm({
       communeId: String(formData.get("communeId") ?? ""),
       localityId: String(formData.get("localityId") ?? ""),
       categoryId: String(formData.get("categoryId") ?? ""),
+      secondaryCategoryIds: formData.getAll("secondaryCategoryIds").map(String),
       latitude: Number(formData.get("latitude")),
       longitude: Number(formData.get("longitude")),
       address: String(formData.get("address") ?? ""),
@@ -217,6 +218,32 @@ export function PlaceForm({
             ))}
           </select>
         </label>
+        <fieldset className={`${labelClassName} sm:col-span-2`}>
+          <legend>También aparece en (opcional)</legend>
+          <p className="text-foreground/60 text-xs font-normal">
+            Un lugar puede estar en más de una categoría: por ejemplo, una viña
+            con hospedaje es Gastronomía y también Alojamiento. La principal
+            (arriba) define su ícono y su color en el mapa.
+          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
+            {categories.map((category) => (
+              <label
+                key={category.id}
+                className="flex items-center gap-2 text-sm font-normal"
+              >
+                <input
+                  type="checkbox"
+                  name="secondaryCategoryIds"
+                  value={category.id}
+                  defaultChecked={place?.secondaryCategoryIds.includes(
+                    category.id,
+                  )}
+                />
+                {category.name}
+              </label>
+            ))}
+          </div>
+        </fieldset>
         <label className={labelClassName}>
           Ícono puntual
           <select

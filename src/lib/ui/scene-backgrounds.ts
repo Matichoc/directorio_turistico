@@ -36,11 +36,16 @@ export const SCENE_POSITION: Record<SceneId, string> = {
   tunel: "82% 30%",
 };
 
+// Gastronomía y alojamiento van al pueblo en fiesta y recreación al cerro:
+// la escena de dulces es de La Ligua (versión provincia) y trae el diablo
+// viejo.
 const SCENE_BY_CATEGORY: Record<string, SceneId> = {
   playa: "playa",
   naturaleza: "cerro",
   cultura: "pueblo",
-  gastronomia: "dulces",
+  gastronomia: "pueblo",
+  alojamiento: "atardecer",
+  recreacion: "cerro",
 };
 
 /** Escena según la categoría que se está mirando; sin categoría, el atardecer general. */
@@ -60,7 +65,7 @@ export function getSceneForRoute(routeSlug?: string | null): SceneId {
 const SCENE_BY_THEME: Record<PlaceTheme, SceneId> = {
   playa: "playa",
   dulces: "dulces",
-  sabores: "dulces",
+  sabores: "pueblo",
   historia: "pueblo",
   naturaleza: "cerro",
   diablo: "tunel",

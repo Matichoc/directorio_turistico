@@ -132,6 +132,9 @@ type PlaceImageRow = {
 
 type PlaceTagRow = { place_id: string; tag_id: string };
 
+/** Categorías adicionales de un lugar (0024_place_secondary_categories.sql). */
+type PlaceSecondaryCategoryRow = { place_id: string; category_id: string };
+
 type RouteRow = {
   id: string;
   slug: string;
@@ -361,6 +364,11 @@ export interface Database {
         Partial<PlaceImageRow>
       >;
       place_tags: Table<PlaceTagRow, PlaceTagRow, Partial<PlaceTagRow>>;
+      place_secondary_categories: Table<
+        PlaceSecondaryCategoryRow,
+        PlaceSecondaryCategoryRow,
+        Partial<PlaceSecondaryCategoryRow>
+      >;
       routes: Table<
         RouteRow,
         Partial<RouteRow> & { slug: string },

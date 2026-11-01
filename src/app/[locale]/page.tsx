@@ -65,6 +65,7 @@ export default async function HomePage({
     t,
     tRoute,
     tExplore,
+    tLegend,
     routes,
     municipalities,
     communes,
@@ -74,6 +75,7 @@ export default async function HomePage({
     getTranslations("home"),
     getTranslations("route"),
     getTranslations("explore"),
+    getTranslations("legend.home"),
     listRoutes(locale, 3),
     listMunicipalities(locale),
     listCommunes(locale),
@@ -138,6 +140,36 @@ export default async function HomePage({
       </div>
 
       <ProvinceFlyover data={flyover} />
+
+      {/* La leyenda que le da nombre al sitio (página /leyenda). */}
+      <section className="reveal px-4">
+        <Link
+          href="/leyenda"
+          className="group hover:border-accent relative flex min-h-40 flex-col justify-end overflow-hidden rounded-2xl border border-white/10 p-5 text-white shadow-[0_8px_30px_-12px_rgba(0,0,0,0.8)] transition-all duration-300 hover:shadow-[0_0_28px_2px_var(--accent-soft)]"
+        >
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 bg-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            style={{
+              backgroundImage: `url(${SCENE_SRC.tunel})`,
+              backgroundPosition: SCENE_POSITION.tunel,
+            }}
+          />
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-r from-[#07060c]/90 via-[#07060c]/60 to-transparent"
+          />
+          <span className="relative flex max-w-[65%] flex-col gap-1">
+            <span className="font-display text-xl font-semibold">
+              {tLegend("title")}
+            </span>
+            <span className="text-sm text-white/80">{tLegend("body")}</span>
+            <span className="text-accent mt-1 text-sm font-semibold">
+              {tLegend("cta")} →
+            </span>
+          </span>
+        </Link>
+      </section>
 
       <section className="reveal px-4">
         <h2 className="mb-3 text-lg font-medium">{t("intent.title")}</h2>

@@ -375,6 +375,17 @@ Pedegua – Palquico – Las Palmas" (sin fuente de quién la organiza: no se la
 llama "oficial"). Nuestras rutas usan su **nombre propio**, sin traducir.
 Nuestro arte nunca imita sus logos (`docs/PROMPTS-IMAGENES.md`).
 
+## La leyenda del diablo (`/leyenda`)
+
+La página que cuenta el dicho que le da nombre al sitio: el dicho, el poema
+de 1894, tres versiones en tarjetas `surface-glass`, la versión de la ruta,
+"Recórrela" (solo links a lo que existe en la base: Chalaco, la Escalera
+del Diablo, la ruta) y las fuentes al pie. `PageHero` con la escena del
+túnel; "Escuchar" lee la página entera en orden. Todo contado con palabras
+propias desde fuentes citadas (nunca copiar el poema ni párrafos). En el
+inicio, una tarjeta ancha con la misma escena lleva a ella, después del
+vuelo 3D.
+
 ## Compartir un recorrido
 
 "Compartir recorrido" (Mi recorrido) arma un link con las paradas en orden

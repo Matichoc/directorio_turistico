@@ -49,6 +49,11 @@ ellos, o que hablamos en su nombre. **Propuesta:**
 
 ## 1. Página nueva: "La leyenda del diablo" (prioridad alta)
 
+> **Hecho (2026-11-01)**: `/leyenda`, con Escuchar. Fuente principal nueva y
+> sólida: FUCOA, _El Mandinga. Historias del diablo en la zona central de
+> Chile_ (2021, apoyo del Ministerio de Agricultura), que recoge el poema de
+> 1894 y las versiones del libro de 2015 — reemplaza a Academia X-Ray ⚠️.
+
 El sitio se llama como el dicho, pero no lo cuenta. Hay material:
 
 - **De dónde viene el dicho**: del poema **"La Muerte del Diablo"**, de
@@ -143,7 +148,7 @@ la ruta "Donde el Diablo perdió el poncho" sus emprendedores.
 
 ## 4. Pueblos
 
-- **Agregar Chalaco**: no está en la base, y es donde el diablo perdió el
+- **Agregar Chalaco** (hecho 2026-11-01: `supabase/manual/chalaco.sql`, coordenada de OpenStreetMap): no estaba en la base, y es donde el diablo perdió el
   poncho (según el poema) y donde termina la ruta.
 - **El Pedernal**: el río Pedernal (también llamado río Chalaco) se junta con
   el Petorca frente a Chincolco; en sus cerros se trabajaron minas de plata y

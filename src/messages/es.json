@@ -311,5 +311,53 @@
     "stopsTitle": "Paradas en orden",
     "shareAgain": "Compartir este recorrido",
     "saveHint": "Guárdalo para tenerlo en Mi recorrido y armarlo a tu manera."
+  },
+  "legend": {
+    "title": "La leyenda del diablo",
+    "subtitle": "Cómo el diablo perdió el poncho en Chalaco, murió en Petorca y lo enterraron en La Ligua.",
+    "saying": {
+      "title": "El dicho",
+      "body": "En el valle se repite un dicho: «El diablo murió en Petorca y en La Ligua lo enterraron». Detrás hay un poema de hace más de 130 años y varias historias que todavía se cuentan en la zona."
+    },
+    "poem": {
+      "title": "El poema de 1894",
+      "body": "El registro más antiguo es «La Muerte del Diablo», un poema que Elías Lizana, vicario de Hierro Viejo, publicó en 1894 en el periódico La Voz de Petorca. Sigue las andanzas del diablo por la zona: nace en Mincha, trabaja de minero en el Choapa, pierde su poncho en Chalaco y muere en Petorca."
+    },
+    "versions": {
+      "title": "Las versiones que se cuentan",
+      "intro": "Algunas recogidas en el libro Narraciones tradicionales de Petorca y sus alrededores (2015); otras, de relatos de la zona.",
+      "stranger": {
+        "title": "El forastero con suerte",
+        "body": "En los tiempos del oro y la plata, un desconocido ganaba siempre en el juego y tenía fama de seductor. Los mineros, convencidos de que era el diablo, descubrieron la tinaja donde guardaba sus ganancias y lo mataron. En su bolsillo encontraron una estampita de la Virgen: no era el diablo. Lo enterraron en La Ligua. Relato de Ana Leyton Morales."
+      },
+      "rider": {
+        "title": "El jinete del poncho",
+        "body": "En una chingana de Petorca apareció un jinete de capa negra que invitaba tragos y bailaba cueca. Cuando se fue quedó olor a azufre y, desde entonces, de noche se oye a un jinete que reclama su poncho desde los cerros de Chalaco."
+      },
+      "miner": {
+        "title": "El minero apodado «El Diablo»",
+        "body": "Un minero llegado del Choapa, buen trabajador pero pendenciero, se ganó el apodo de «El Diablo». Lo persiguieron por los cerros de Chalaco y murió en la plaza de Petorca; lo enterraron en La Ligua."
+      }
+    },
+    "route": {
+      "title": "La versión de la ruta",
+      "body": "La ruta turística «Donde el Diablo perdió el poncho» cuenta que el diablo bailaba cueca con los mineros los días de pago, de frac negro y con dentadura de oro; que olvidó su poncho después de una fiesta de Año Nuevo en la que pagó la cuenta de todos, y que huía de los curas por la Escalera del Diablo, de peldaños «al revés». De ahí sale el diablo de este sitio: frac, diente de oro y el poncho a punto de perderse."
+    },
+    "visit": {
+      "title": "Recórrela",
+      "chalaco": "Chalaco, donde perdió el poncho",
+      "escalera": "La Escalera del Diablo, en Hierro Viejo",
+      "route": "La ruta «Donde el Diablo perdió el poncho»"
+    },
+    "sources": {
+      "title": "Fuentes",
+      "fucoa": "FUCOA — El Mandinga. Historias del diablo en la zona central de Chile (2021)",
+      "informador": "El Informador — la ruta «Donde el diablo perdió el poncho» (2018)"
+    },
+    "home": {
+      "title": "La leyenda del diablo",
+      "body": "Perdió el poncho en Chalaco, murió en Petorca y lo enterraron en La Ligua. Léela o escúchala.",
+      "cta": "Conoce la leyenda"
+    }
   }
 }

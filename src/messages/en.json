@@ -311,5 +311,53 @@
     "stopsTitle": "Stops in order",
     "shareAgain": "Share this trip",
     "saveHint": "Save it to keep it in My trip and make it your own."
+  },
+  "legend": {
+    "title": "The legend of the Devil",
+    "subtitle": "How the Devil lost his poncho in Chalaco, died in Petorca and was buried in La Ligua.",
+    "saying": {
+      "title": "The saying",
+      "body": "In the valley people repeat an old saying: \"The Devil died in Petorca and was buried in La Ligua.\" Behind it there is a poem more than 130 years old and several stories still told in the area."
+    },
+    "poem": {
+      "title": "The 1894 poem",
+      "body": "The oldest record is \"La Muerte del Diablo\" (The Death of the Devil), a poem that Elías Lizana, vicar of Hierro Viejo, published in 1894 in the newspaper La Voz de Petorca. It follows the Devil's wanderings through the area: he is born in Mincha, works as a miner in the Choapa, loses his poncho in Chalaco and dies in Petorca."
+    },
+    "versions": {
+      "title": "The versions people tell",
+      "intro": "Some collected in the book Narraciones tradicionales de Petorca y sus alrededores (2015); others from local accounts.",
+      "stranger": {
+        "title": "The lucky stranger",
+        "body": "In the days of gold and silver, a stranger always won at cards and had a reputation as a seducer. The miners, sure he was the Devil, found the jar where he kept his winnings and killed him. In his pocket they found a little picture of the Virgin: he was not the Devil. He was buried in La Ligua. As told by Ana Leyton Morales."
+      },
+      "rider": {
+        "title": "The rider and his poncho",
+        "body": "In a tavern in Petorca a rider in a black cape appeared, buying drinks and dancing the cueca. When he left there was a smell of sulfur and, ever since, at night a rider can be heard calling for his poncho from the hills of Chalaco."
+      },
+      "miner": {
+        "title": "The miner nicknamed \"The Devil\"",
+        "body": "A miner from the Choapa, hard-working but quarrelsome, earned the nickname \"The Devil\". He was chased through the hills of Chalaco and died in the square of Petorca; he was buried in La Ligua."
+      }
+    },
+    "route": {
+      "title": "The tourist route's version",
+      "body": "The \"Donde el Diablo perdió el poncho\" tourist route tells that the Devil danced the cueca with the miners on payday, in a black tailcoat and with gold teeth; that he forgot his poncho after a New Year's party where he paid everyone's bill; and that he fled from the priests up the Devil's Staircase, whose steps run \"backwards\". That is where this site's Devil comes from: tailcoat, gold tooth and a poncho about to be lost."
+    },
+    "visit": {
+      "title": "Follow it",
+      "chalaco": "Chalaco, where he lost his poncho",
+      "escalera": "The Devil's Staircase, in Hierro Viejo",
+      "route": "The \"Donde el Diablo perdió el poncho\" route"
+    },
+    "sources": {
+      "title": "Sources",
+      "fucoa": "FUCOA — El Mandinga. Historias del diablo en la zona central de Chile (2021)",
+      "informador": "El Informador — the \"Donde el diablo perdió el poncho\" route (2018)"
+    },
+    "home": {
+      "title": "The legend of the Devil",
+      "body": "He lost his poncho in Chalaco, died in Petorca and was buried in La Ligua. Read it or listen to it.",
+      "cta": "Discover the legend"
+    }
   }
 }

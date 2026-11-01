@@ -3,8 +3,13 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { getClientIp, isRateLimited } from "@/lib/http/rate-limit";
 import { GOOGLE_PLACE_PHOTO_PREFIX } from "@/lib/data/google-photo-prefix";
+import {
+  authorFromAltText,
+  parsePlacePhotoRef,
+  pickCurrentPhotoName,
+  type CurrentPlacePhoto,
+} from "@/lib/google/place-photo-ref";
 
-const PHOTO_REF_PATTERN = /^places\/[\w-]+\/photos\/[\w-]+$/;
 const DEFAULT_MAX_WIDTH_PX = 1200;
 const MAX_ALLOWED_WIDTH_PX = 1600;
 // Cada foto nueva (ref distinto) le cuesta dinero real al proyecto de
@@ -16,15 +21,15 @@ const MAX_REQUESTS_PER_MINUTE = 120;
  * Sirve fotos de Google Places API (New) sin exponer `GOOGLE_PLACES_API_KEY`
  * al navegador: recibe el `name` del recurso foto (p. ej.
  * "places/XXX/photos/YYY", guardado como `place_images.storage_path` por
- * scripts/fetch-google-photos.ts) y hace streaming del binario desde
- * Google. `fetch` sigue el 302 que Google devuelve por defecto hacia el
- * CDN real de la foto.
+ * scripts/fetch-google-photos.ts), busca la foto vigente que le corresponde
+ * y hace streaming del binario desde Google. `fetch` sigue el 302 que
+ * Google devuelve por defecto hacia el CDN real de la foto.
  */
 export async function GET(request: NextRequest) {
   const ref = request.nextUrl.searchParams.get("ref");
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
 
-  if (!ref || !PHOTO_REF_PATTERN.test(ref)) {
+  if (!ref || !parsePlacePhotoRef(ref)) {
     return NextResponse.json({ error: "invalid_ref" }, { status: 400 });
   }
   if (!apiKey) {
@@ -47,23 +52,51 @@ export async function GET(request: NextRequest) {
   // propios `%XX` de la codificación como comodines) nunca iba a encontrar
   // nada y tiraba abajo TODAS las fotos de Google del sitio (bug real,
   // reportado en vivo: "algunos lugares se ve bien, los otros no").
+  let stored = { ref, author: null as string | null, position: 0 };
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
     const { data: candidates } = await supabase
       .from("place_images")
-      .select("storage_path")
+      .select("storage_path, alt_text, position")
       .like("storage_path", `${GOOGLE_PLACE_PHOTO_PREFIX}%`);
 
-    const isKnownRef = (candidates ?? []).some(
-      (image) =>
-        new URL(image.storage_path, "http://placeholder").searchParams.get(
+    const image = (candidates ?? []).find(
+      (candidate) =>
+        new URL(candidate.storage_path, "http://placeholder").searchParams.get(
           "ref",
         ) === ref,
     );
 
-    if (!isKnownRef) {
+    if (!image) {
       return NextResponse.json({ error: "invalid_ref" }, { status: 400 });
     }
+    stored = {
+      ref,
+      author: authorFromAltText(image.alt_text),
+      position: image.position,
+    };
+  }
+
+  // El `name` guardado vence (ver lib/google/place-photo-ref.ts): se piden
+  // las fotos vigentes del lugar y se elige la que corresponde. La lista se
+  // reusa una hora para no pagar una consulta a Google por cada foto.
+  const placeId = parsePlacePhotoRef(ref);
+  const details = await fetch(
+    `https://places.googleapis.com/v1/places/${placeId}`,
+    {
+      headers: { "X-Goog-Api-Key": apiKey, "X-Goog-FieldMask": "photos" },
+      next: { revalidate: 3600 },
+    },
+  );
+  if (!details.ok) {
+    return NextResponse.json({ error: "upstream_error" }, { status: 502 });
+  }
+  const { photos = [] } = (await details.json()) as {
+    photos?: CurrentPlacePhoto[];
+  };
+  const photoName = pickCurrentPhotoName(photos, stored);
+  if (!photoName) {
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
   const requestedWidth = Number(request.nextUrl.searchParams.get("w"));
@@ -72,8 +105,8 @@ export async function GET(request: NextRequest) {
       ? Math.min(Math.round(requestedWidth), MAX_ALLOWED_WIDTH_PX)
       : DEFAULT_MAX_WIDTH_PX;
 
-  const googleUrl = `https://places.googleapis.com/v1/${ref}/media?maxWidthPx=${maxWidthPx}&key=${apiKey}`;
-  const upstream = await fetch(googleUrl);
+  const googleUrl = `https://places.googleapis.com/v1/${photoName}/media?maxWidthPx=${maxWidthPx}&key=${apiKey}`;
+  const upstream = await fetch(googleUrl, { cache: "no-store" });
 
   if (!upstream.ok || !upstream.body) {
     return NextResponse.json({ error: "upstream_error" }, { status: 502 });

@@ -59,6 +59,21 @@ cada ficha del buscador.
 
 ## 2. Recomendados para sumar ahora
 
+> **Cargados el 2026-11-01** (`supabase/manual/lugares-petorca-2026-11-b.sql`):
+> los recomendados que tienen una ubicación de una fuente que se puede
+> guardar — **Panal de Hierro Viejo** (calle Comercio, OpenStreetMap) y
+> **Viña El Sobrante** (caserío de El Sobrante, OpenStreetMap) — y El Rincón
+> Criollo completo (dirección, WhatsApp, sitio, especialidades).
+>
+> **El resto de esta sección no tiene ubicación fuera de Google** (OpenStreetMap
+> no los tiene y Google no se puede guardar): se cargan desde
+> `/admin/lugares/nuevo` con la ubicación que confirme el equipo o el propio
+> negocio (también conviene sumarlos a OpenStreetMap, que es libre). Están
+> ordenados por prioridad: primero alojamiento (Monhuaca, Petro-Chalaco,
+> Tunquelén, Don Juanito), después gastronomía (Vista Carén, La Picá del
+> Muertito, La Taquilla) y naturaleza (Cascada de Castro, Palmar de Petorca,
+> Piedra Colgada, Piscina La Roca).
+
 ### Alojamiento
 
 | Lugar                         | Dónde                   | Señales                                       | Ubicación para cargar          |

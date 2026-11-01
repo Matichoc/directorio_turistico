@@ -211,6 +211,8 @@ Se pegan tal cual en el SQL Editor; cada uno se aplica solo en `legacy` y
 - `lugares-petorca-2026-11.sql`: 10 lugares nuevos con ubicación de
   OpenStreetMap ("Pendiente de verificación"), Petroglifos de Chalaco y
   categorías adicionales de los lugares que ya estaban.
+- `lugares-petorca-2026-11-b.sql`: Panal de Hierro Viejo, Viña El Sobrante
+  y los datos completos de El Rincón Criollo (no pisa lo editado).
 - `chalaco.sql`: Chalaco como pueblo nuevo (coordenada de OpenStreetMap,
   resumen con fuente FUCOA).
 - `petorca-portadas.sql`: portadas nuevas en `legacy`, recién cuando `main`

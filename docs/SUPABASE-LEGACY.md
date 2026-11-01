@@ -143,9 +143,10 @@ Las cuentas de usuario (`auth.users`) también son compartidas:
   siendo la misma cuenta: entra a `/admin` con el mismo correo y contraseña.
 - **Inicio de sesión anónimo** (lo usan "Mi recorrido" y los "me gusta"):
   Authentication → Sign In / Providers → **Allow anonymous sign-ins** tiene
-  que estar activado. Es una opción del proyecto entero. **Al 2026-11-01 está
-  apagada**, y por eso Mi recorrido, los "me gusta" y los comentarios no
-  funcionan (el sitio ya lo avisa en vez de fallar en silencio).
+  que estar activado. Es una opción del proyecto entero. **Activado el
+  2026-11-01** (estaba apagado y por eso Mi recorrido, los "me gusta" y los
+  comentarios no funcionaban). Comprobado en local contra la base real: dar
+  "me gusta" y agregar al recorrido funcionan (la prueba se deshizo).
   **Revisado el 2026-11-01 contra el repo de Papudo** (`directorio_papudo`,
   migraciones 0001–0029): activarla no le da permisos de más a nadie en
   Papudo. Una sesión anónima entra como `authenticated`, pero en Papudo todo

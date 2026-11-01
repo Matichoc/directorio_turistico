@@ -1,6 +1,9 @@
-# El diablo murió en Petorca y en La Ligua lo enterraron
+# El diablo murió en Petorca
 
-Directorio turístico y planificador de rutas para la provincia de Petorca (Chile).
+Directorio turístico y planificador de rutas de la comuna de Petorca (Chile),
+la tierra donde —dice el dicho— murió el diablo. La versión de toda la
+provincia, con el nombre completo del dicho ("…y en La Ligua lo enterraron"),
+queda en la rama `provincia-completa`.
 Next.js 16 (App Router) + TypeScript + Tailwind + Supabase + next-intl (es/en).
 
 Ver `docs/PLAN.md` para el plan completo por fases, `docs/ARCHITECTURE.md` para

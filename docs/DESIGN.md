@@ -1,4 +1,4 @@
-# Lineamientos de diseño — El diablo murió en Petorca y en La Ligua lo enterraron
+# Lineamientos de diseño — El diablo murió en Petorca
 
 > Documento vivo (igual que `docs/PLAN.md`): cuando agregues una página, un
 > componente o un color/animación nuevo, primero revisa si ya hay un token o
@@ -388,9 +388,10 @@ Pedido del usuario: que su posición real en el mapa de navegación se vea
 como una "ficha tipo Monopoly" (un ícono elegido por él) en vez del punto
 azul genérico de MapLibre. `lib/navigation/avatar-storage.ts` guarda la
 elección (`localStorage`, mismo patrón que `lib/trip/storage.ts`) entre los
-íconos temáticos "de la zona" (`AVATAR_ICONS`: diablo/dulce/tejido/surf/
-casco-minero/palta — no los de categoría genérica, para que la ficha se
-sienta propia de Petorca/La Ligua). `AvatarPicker` (junto al botón
+íconos de la comuna (`AVATAR_ICONS`: diablo, cucharón, poncho, tren, Túnel
+Las Palmas y petroglifo de Chincolco; hasta 2026-11-01 eran los de la
+provincia — dulce, surf, palta… — y una ficha guardada que ya no existe
+vuelve sola al diablo). `AvatarPicker` (junto al botón
 "Iniciar navegación") deja elegirla; `PlayerToken` la dibuja en el mapa;
 `MapView` pasa `showUserLocation={false}` a `GeolocateControl` para que
 `PlayerToken` sea la única marca de posición, no las dos a la vez.

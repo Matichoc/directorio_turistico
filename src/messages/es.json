@@ -7,7 +7,7 @@
     "info": "Información"
   },
   "info": {
-    "about": "Un directorio turístico de la comuna de Petorca: lugares, rutas y recorridos reales, hechos por gente de la zona.",
+    "about": "Un directorio turístico de la comuna de Petorca, la tierra donde —dice el dicho— murió el diablo: lugares, rutas y recorridos reales, hechos por gente de la zona.",
     "developmentTitle": "Desarrollo",
     "developmentCredit": "Desarrollo de Cristóbal Roco, CTO de Matichoc.",
     "developerTagline": "Apoya tus proyectos de IA y con IA.",
@@ -17,9 +17,9 @@
     "privacyLink": "Privacidad"
   },
   "home": {
-    "title": "El diablo murió en Petorca y en La Ligua lo enterraron",
+    "title": "El diablo murió en Petorca",
     "provinceLabel": "Comuna de Petorca: Pedegua · Petorca · Chincolco · Hierro Viejo",
-    "subtitle": "Descubre lugares y arma tu recorrido por la comuna de Petorca.",
+    "subtitle": "Recorre la tierra donde murió el diablo: sus pueblos, la ruta donde perdió el poncho, el viejo ferrocarril y el Túnel Las Palmas.",
     "searchPlaceholder": "Busca un lugar o localidad",
     "featuredRoutes": "Rutas destacadas",
     "intent": {
@@ -137,11 +137,11 @@
     "yourToken": "Tu ficha:",
     "avatarIcons": {
       "diablo": "El Diablo",
-      "dulce": "Dulce de La Ligua",
-      "tejido": "Chaleco/tejido",
-      "surf": "Tabla de surf",
-      "casco-minero": "Casco minero",
-      "palta": "Palta"
+      "cucharon": "El cucharón del diablo",
+      "poncho": "El poncho perdido",
+      "tren": "El ferrocarril",
+      "tunel": "Túnel Las Palmas",
+      "petroglifo": "Petroglifo de Chincolco"
     },
     "tripError": "No pudimos agregar la ruta a tu recorrido. Inténtalo de nuevo en un rato.",
     "official": {
@@ -265,7 +265,7 @@
       },
       "thirdParties": {
         "title": "Servicios que usamos",
-        "body": "El sitio funciona con Supabase (base de datos), Vercel (alojamiento), Google (fotos de lugares y cálculo de rutas por calle) y un proveedor de mapas. Para mostrarte esos contenidos, esos servicios reciben las solicitudes de tu navegador y, con ellas, tu dirección IP. Para evitar abusos, el servidor cuenta momentáneamente las solicitudes por IP, sin guardarlas."
+        "body": "El sitio funciona con Supabase (base de datos), Vercel (alojamiento), Google (fotos de lugares), OpenStreetMap (cálculo de rutas por calle) y un proveedor de mapas. Para mostrarte esos contenidos, esos servicios reciben las solicitudes de tu navegador y, con ellas, tu dirección IP. Para evitar abusos, el servidor cuenta momentáneamente las solicitudes por IP, sin guardarlas."
       },
       "contact": {
         "title": "Contacto",

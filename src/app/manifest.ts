@@ -2,9 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "El diablo murió en Petorca y en La Ligua lo enterraron",
+    name: "El diablo murió en Petorca",
     short_name: "El Diablo en Petorca",
-    description: "Directorio turístico y planificador de rutas para Petorca.",
+    description:
+      "Directorio turístico de la comuna de Petorca, la tierra donde murió el diablo: pueblos, rutas y leyendas.",
     start_url: "/",
     display: "standalone",
     // Mismo fondo de noche del sitio (`--background`): la pantalla de inicio

@@ -11,16 +11,17 @@
 const STORAGE_KEY = "petorca-nav-avatar";
 export const AVATAR_EVENT = "avatar:change";
 
-/** Íconos elegibles como ficha — los temáticos "de la zona", no los de
- * categoría genérica (mountain/utensils/landmark/waves), para que la
- * ficha se sienta propia de Petorca/La Ligua. */
+/** Íconos elegibles como ficha — solo de la comuna de Petorca (el diablo y
+ * su cucharón, el poncho que perdió, el ferrocarril, el Túnel Las Palmas y
+ * los petroglifos de Chincolco). Una ficha guardada que ya no está (p. ej.
+ * "surf", de la versión de la provincia) vuelve sola al diablo. */
 export const AVATAR_ICONS = [
   "diablo",
-  "dulce",
-  "tejido",
-  "surf",
-  "casco-minero",
-  "palta",
+  "cucharon",
+  "poncho",
+  "tren",
+  "tunel",
+  "petroglifo",
 ] as const;
 
 export type AvatarIcon = (typeof AVATAR_ICONS)[number];

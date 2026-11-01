@@ -34,7 +34,8 @@ export const metadata: Metadata = {
     default: SITE_NAME,
     template: "%s · El diablo en Petorca",
   },
-  description: "Directorio turístico y planificador de rutas para Petorca.",
+  description:
+    "Directorio turístico de la comuna de Petorca, la tierra donde murió el diablo: pueblos, rutas y leyendas.",
   manifest: "/manifest.webmanifest",
 };
 

@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { LegendCard } from "@/components/legend/legend-card";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
 import { listRoutes } from "@/lib/data/routes";
@@ -53,6 +54,9 @@ export default async function RoutesPage({
           ))}
         </ul>
       )}
+      <section className="reveal">
+        <LegendCard />
+      </section>
     </main>
   );
 }

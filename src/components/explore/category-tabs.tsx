@@ -78,6 +78,12 @@ export async function CategoryTabs({
             {t("routes")} →
           </Link>
         </li>
+        <li>
+          <Link href="/leyenda" className={`${pill} ${off}`}>
+            <CategoryIcon icon="diablo" className="h-4 w-4" />
+            {t("legend")} →
+          </Link>
+        </li>
       </ul>
     </nav>
   );

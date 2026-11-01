@@ -403,9 +403,15 @@ de 1894, tres versiones en tarjetas `surface-glass`, la versión de la ruta,
 "Recórrela" (solo links a lo que existe en la base: Chalaco, la Escalera
 del Diablo, la ruta) y las fuentes al pie. `PageHero` con la escena del
 túnel; "Escuchar" lee la página entera en orden. Todo contado con palabras
-propias desde fuentes citadas (nunca copiar el poema ni párrafos). En el
-inicio, una tarjeta ancha con la misma escena lleva a ella, después del
-vuelo 3D.
+propias desde fuentes citadas (nunca copiar el poema ni párrafos).
+
+Cómo se llega (pedido del usuario: "esa página queda perdida"): la tarjeta
+ancha `LegendCard` (`components/legend/`, escena del túnel) va en el inicio
+después del vuelo 3D y en Rutas debajo de las rutas; en Explorar hay una
+píldora "La leyenda" junto a "Rutas" (`CategoryTabs`); la tarjeta de la ruta
+del poncho (`OfficialRouteCard`) suma "Conoce la leyenda", e Información
+tiene un link. No va en la barra de navegación: con más de 5 secciones la de
+abajo del celular se aprieta.
 
 ## Sin señal (`OfflineSaveButton`)
 

@@ -378,5 +378,13 @@
     "update": "Actualizar",
     "error": "No se pudo guardar todo. Inténtalo de nuevo con mejor señal (o con wifi).",
     "hint": "Guarda esta página, sus paradas y el mapa de la zona en tu teléfono, para el valle donde no hay señal."
+  },
+  "videos": {
+    "title": "Petorca en la tele",
+    "subtitle": "Reportajes que recorrieron la comuna, sus rutas y sus leyendas. Se ven aquí mismo, con el reproductor de cada canal.",
+    "routeTitle": "La ruta en video",
+    "more": "Ver los {count} reportajes",
+    "play": "Ver reportaje",
+    "watchOn": "Ver en {site}"
   }
 }

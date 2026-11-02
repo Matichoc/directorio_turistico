@@ -425,6 +425,25 @@ del poncho (`OfficialRouteCard`) suma "Conoce la leyenda", e Información
 tiene un link. No va en la barra de navegación: con más de 5 secciones la de
 abajo del celular se aprieta.
 
+## Petorca en la tele (reportajes)
+
+Reportajes de TV sobre la comuna (pedido del usuario: "extrae los videos y
+ponlos para reproducir en nuestro sitio"). **Nunca se descargan ni se vuelven
+a subir**: son de cada canal. Se muestran con el reproductor oficial (Rudo para
+Canal 13 y Chilevisión, YouTube sin cookies para el resto), con el canal y un
+link "Ver en …" al original. Lista y orden en `lib/reportajes.ts` (fuente
+única); solo canales o programas reconocibles ("oficiales"), no videos de
+terceros que reúnen material ajeno.
+
+- `VideoReportaje` (`components/video/`): hasta que se toca "Ver reportaje" es
+  una tarjeta con nuestra escena del diablo, el canal, el título y la duración
+  y fecha si se conocen; recién entonces carga el reproductor (sin megas ni
+  cookies de terceros si nadie lo mira).
+- Dónde: los tres en `/leyenda` ("Petorca en la tele", `#reportajes`), el que
+  trata de una ruta en su ficha ("La ruta en video") y el destacado en el
+  inicio, con "Ver los N reportajes" hacia la leyenda.
+- Un reproductor nuevo necesita su dominio en `frame-src` (CSP, `next.config.ts`).
+
 ## Sin señal (`OfflineSaveButton`)
 
 Pedido del usuario: que funcione "sin señal en el valle". En la ficha de

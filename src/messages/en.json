@@ -378,5 +378,13 @@
     "update": "Update",
     "error": "Couldn't save everything. Try again with a better signal (or wifi).",
     "hint": "Saves this page, its stops and the area's map on your phone, for the valley where there's no signal."
+  },
+  "videos": {
+    "title": "Petorca on TV",
+    "subtitle": "TV reports that toured the commune, its routes and its legends (in Spanish). Watch them right here, with each channel’s own player.",
+    "routeTitle": "The route on video",
+    "more": "See all {count} reports",
+    "play": "Watch report",
+    "watchOn": "Watch on {site}"
   }
 }

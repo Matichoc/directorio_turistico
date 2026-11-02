@@ -6,6 +6,8 @@ import { resolveLocale } from "@/i18n/utils";
 import { AddRouteToTripButton } from "@/components/trip/add-route-to-trip-button";
 import { RouteMapWithStops } from "@/components/route/route-map-with-stops";
 import { OfficialRouteCard } from "@/components/route/official-route-card";
+import { ReportajesSection } from "@/components/video/reportajes-section";
+import { reportajesForRoute } from "@/lib/reportajes";
 import { DevilMascot } from "@/components/ui/devil-mascot";
 import { ListenButton } from "@/components/ui/listen-button";
 import { OfflineSaveButton } from "@/components/offline/offline-save-button";
@@ -57,6 +59,7 @@ export default async function RouteDetailPage({
   setRequestLocale(locale);
   const t = await getTranslations("route");
   const tListen = await getTranslations("listen");
+  const tVideos = await getTranslations("videos");
 
   const route = await getRouteBySlug(slug, locale);
   if (!route) {
@@ -130,6 +133,11 @@ export default async function RouteDetailPage({
       )}
 
       <OfficialRouteCard routeSlug={route.slug} />
+
+      <ReportajesSection
+        title={tVideos("routeTitle")}
+        items={reportajesForRoute(route.slug)}
+      />
 
       <RouteMapWithStops
         routeId={route.id}

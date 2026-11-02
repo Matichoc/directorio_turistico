@@ -56,7 +56,11 @@
       "stats": "{villages, plural, =0 {no villages} one {# village} other {# villages}} · {places, plural, =0 {no attractions} one {# attraction} other {# attractions}}",
       "attractions": "{places, plural, =0 {No attractions yet} one {# attraction} other {# attractions}}",
       "explore": "See {name}",
-      "hint": "Use two fingers (or Ctrl + scroll) to move the map. Terrain: AWS Terrain Tiles."
+      "hint": "Use two fingers (or Ctrl + scroll) to move the map. Terrain: AWS Terrain Tiles.",
+      "start": "▶ Watch the 3D flight",
+      "startNote": "Uses about 4 MB of data · best on Wi-Fi",
+      "posterAlt": "The Petorca river valley relief in 3D, with its villages",
+      "credit": "Relief: AWS Terrain Tiles."
     }
   },
   "explore": {

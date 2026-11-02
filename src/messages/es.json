@@ -56,7 +56,11 @@
       "stats": "{villages, plural, =0 {sin pueblos} one {# pueblo} other {# pueblos}} · {places, plural, =0 {sin atractivos} one {# atractivo} other {# atractivos}}",
       "attractions": "{places, plural, =0 {Sin atractivos todavía} one {# atractivo} other {# atractivos}}",
       "explore": "Ver {name}",
-      "hint": "Usa dos dedos (o Ctrl + rueda) para mover el mapa. Relieve: Terrain Tiles de AWS."
+      "hint": "Usa dos dedos (o Ctrl + rueda) para mover el mapa. Relieve: Terrain Tiles de AWS.",
+      "start": "▶ Ver el vuelo 3D",
+      "startNote": "Usa unos 4 MB de datos · ideal con wifi",
+      "posterAlt": "El relieve del valle del río Petorca en 3D, con sus pueblos",
+      "credit": "Relieve: Terrain Tiles de AWS."
     }
   },
   "explore": {

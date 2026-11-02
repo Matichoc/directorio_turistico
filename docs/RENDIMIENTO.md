@@ -107,3 +107,11 @@ curl -s -o /dev/null -D - -w "TTFB=%{time_starttransfer}s\n" https://<sitio>/es 
   `createPublicClient()` y envolverla con `cachedContent`. Al agregar una
   acción del panel que cambie contenido público: llamar a
   `refreshPublicContent()`.
+
+## Peso de una visita (2026-11-02)
+
+Medido en el sitio publicado con un celular sin caché: inicio con el vuelo 3D
+~6 MB (4,5 MB del relieve), Explorar 1,3 MB, ficha de ruta 1,5 MB, leyenda
+1,8 MB (más el mapa de OpenFreeMap, que no se cobra). Desde entonces el vuelo
+3D se carga solo al tocar "Ver el vuelo 3D": el inicio completo pasó de
+~6,4 MB a 2,6 MB para quien no lo abre (ver DESIGN.md, "Vuelo 3D").

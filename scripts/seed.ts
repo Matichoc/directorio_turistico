@@ -2282,7 +2282,9 @@ const routes = [
   {
     slug: "ruta-del-diablo-pedegua-chincolco",
     durationMinutes: null,
-    coverImage: "/rutas/ruta-del-diablo-pedegua-chincolco.webp",
+    // Provisoria: escena de la Escalera del Diablo (parada de la ruta) con el
+    // diablo campesino; la portada propia aún trae el diablito anterior.
+    coverImage: "/leyendas/escalera.webp",
     es: {
       name: "Donde el Diablo perdió el poncho",
       description:

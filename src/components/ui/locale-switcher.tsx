@@ -48,7 +48,7 @@ export function LocaleSwitcher() {
                 { locale: code },
               );
             }}
-            className={`rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide transition-colors ${
+            className={`inline-flex min-h-10 min-w-10 items-center justify-center rounded-full px-3 text-xs font-semibold tracking-wide transition-colors ${
               active
                 ? "bg-accent text-accent-foreground shadow-[0_0_12px_var(--accent-soft)]"
                 : "text-foreground/70 hover:text-foreground"

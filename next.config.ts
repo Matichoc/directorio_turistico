@@ -3,9 +3,31 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+/**
+ * Encabezados de seguridad para todo el sitio (auditoría 2026-11-02). Sin
+ * CSP completa todavía: MapLibre usa workers `blob:` y estilos en línea, y
+ * una política mal armada rompe los mapas (ver docs/AUDITORIA-2026-11-02.md);
+ * por ahora solo `frame-ancestors`, que no afecta nada del propio sitio.
+ * Cámara y ubicación quedan permitidas solo al propio sitio (la guía paso a
+ * paso las usa); el resto de los permisos, apagados.
+ */
+const SECURITY_HEADERS = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+  {
+    key: "Permissions-Policy",
+    value:
+      "camera=(self), geolocation=(self), microphone=(), payment=(), usb=(), browsing-topics=()",
+  },
+];
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   async headers() {
     return [
+      { source: "/:path*", headers: SECURITY_HEADERS },
       {
         // Service worker escrito a mano (public/sw.js, "sin señal"): el
         // navegador tiene que ver siempre la última versión.

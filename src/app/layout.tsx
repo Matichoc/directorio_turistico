@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
     default: SITE_NAME,
-    template: "%s · El diablo en Petorca",
+    template: `%s · ${SITE_NAME}`,
   },
   description:
     "Directorio turístico de la comuna de Petorca, la tierra donde murió el diablo: pueblos, rutas y leyendas.",

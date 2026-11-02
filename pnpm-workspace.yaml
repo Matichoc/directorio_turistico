@@ -1,3 +1,7 @@
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+overrides:
+  # Vulnerabilidad alta (GHSA-68fv-2mgg-jv7q) en la versión que trae
+  # next > postcss; solo se usa al compilar. Quitar cuando Next la actualice.
+  source-map-js: ^1.2.2

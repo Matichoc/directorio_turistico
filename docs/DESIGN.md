@@ -248,10 +248,19 @@ ruta lleva de portada provisoria la escena de la Escalera del Diablo (una de
 sus paradas, `supabase/manual/portada-poncho-campesino.sql`) hasta que llegue
 una propia con el personaje nuevo.
 
-**Recorte**: cada escena tiene su punto de foco en `SCENE_POSITION` (la cara
-y el torso del diablo), que usan todas las vistas (`PageHero`, hero del
-inicio, postales, burbujas del mapa) — nunca un `background-position` escrito
-a mano. En el hero del inicio, desde `sm:` el título, el texto y el buscador
+**Recorte**: cada arte del diablo (escenas, portadas de ruta, escenas de la
+leyenda) tiene su encuadre en `ART_POSITION` (`lib/ui/scene-backgrounds.ts`,
+por archivo): en horizontal, la cara; en vertical, el borde de arriba del
+sombrero. Así la cabeza entra entera en cualquier recuadro, ancho o angosto, y
+lo que se recorta son las botas — antes, con el foco en la cara o centrado, las
+cabeceras anchas (ficha de ruta, tarjeta de la leyenda) le cortaban la cabeza
+(feedback real: "se están viendo como cortada la cara del protagonista").
+Lo usan todas las vistas: `SCENE_POSITION` (`PageHero`, hero del inicio,
+postales, tarjeta de la leyenda, reportajes, burbujas del mapa) y
+`getArtPosition(src)` para una imagen suelta (`RouteCard`, hero de la ficha de
+ruta, escenas de `/leyenda`); una foto real devuelve `undefined` y conserva su
+encuadre de siempre. Nunca un `background-position`/`object-position` escrito
+a mano; un arte nuevo = su entrada en `ART_POSITION`. En el hero del inicio, desde `sm:` el título, el texto y el buscador
 ocupan el 62 % izquierdo para no taparle la cara. En el atardecer nuevo el
 diablo está al centro: las cabeceras anchas (inicio, `PageHero`) usan el
 cerro, el pueblo o el túnel, con el diablo a la derecha; el atardecer queda

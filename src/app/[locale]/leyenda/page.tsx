@@ -12,6 +12,7 @@ import { getPlaceBySlug } from "@/lib/data/places";
 import { getRouteBySlug } from "@/lib/data/routes";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 import { REPORTAJES } from "@/lib/reportajes";
+import { getArtPosition } from "@/lib/ui/scene-backgrounds";
 import { ReportajesSection } from "@/components/video/reportajes-section";
 
 export function generateStaticParams() {
@@ -154,6 +155,7 @@ export default async function LegendPage({
                   fill
                   sizes="(min-width: 640px) 240px, 100vw"
                   className="object-cover"
+                  style={{ objectPosition: getArtPosition(src) }}
                 />
               </div>
               <figcaption className="text-foreground/60 text-xs">

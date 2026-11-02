@@ -22,22 +22,57 @@ export const SCENE_SRC: Record<SceneId, string> = {
 };
 
 /**
- * Punto de la escena que tiene que quedar a la vista al recortarla
- * (`background-position`): la cara y el torso del diablo. Usarlo en todo
- * lugar que muestre una escena, así una cabecera ancha o una postal angosta
- * nunca le cortan la cabeza.
+ * Encuadre de cada ilustración del diablo (`object-position` /
+ * `background-position`), por ruta de archivo: escenas, portadas de ruta y
+ * escenas de la leyenda. Fuente única — toda vista que recorte un arte del
+ * diablo usa esto, nunca un centrado por defecto.
+ *
+ * El primer valor es la cara (en horizontal); el segundo, el borde de arriba
+ * del sombrero (con los cuernos). Ojo con el segundo: en CSS el punto p % de
+ * la imagen cae en el p % del recuadro, así que con la cara (≈12 %) una
+ * cabecera ancha y baja igual le cortaba la cabeza (pedido del usuario:
+ * "se están viendo como cortada la cara del protagonista"). Con el borde del
+ * sombrero, la cabeza entra entera en cualquier recuadro: lo que se recorta
+ * son las botas.
  */
-export const SCENE_POSITION: Record<SceneId, string> = {
-  // Foco en la cara del diablo campesino (entrega 2026-11-02). En el
-  // atardecer está al centro: no sirve para cabeceras anchas con texto a la
-  // izquierda (ahí se usa el cerro), sí para las postales altas.
-  atardecer: "55% 16%",
-  playa: "85% 70%",
-  cerro: "72% 14%",
-  pueblo: "68% 16%",
-  dulces: "85% 70%",
-  tunel: "75% 14%",
+const ART_POSITION: Record<string, string> = {
+  // Entrega del diablo campesino (2026-11-02).
+  "/fondos/atardecer.webp": "55% 0%",
+  "/fondos/cerro.webp": "72% 0%",
+  "/fondos/pueblo.webp": "72% 0%",
+  "/fondos/tunel.webp": "77% 0%",
+  "/leyendas/escalera.webp": "66% 0%",
+  "/leyendas/cueca.webp": "45% 4%",
+  "/leyendas/ano-nuevo.webp": "24% 0%",
+  "/rutas/ruta-ferroviaria-pedegua-las-palmas.webp": "51% 0%",
+  // Versión provincia (SVG), con el diablo abajo a la derecha.
+  "/fondos/playa.svg": "85% 70%",
+  "/fondos/dulces.svg": "85% 70%",
 };
+
+/**
+ * Encuadre de un arte del diablo (ver `ART_POSITION`), o `undefined` si la
+ * imagen no es uno de ellos (p. ej. la foto de una parada): ahí manda el
+ * encuadre de siempre del componente. Acepta la URL completa del sitio.
+ */
+export function getArtPosition(src?: string | null): string | undefined {
+  if (!src) return undefined;
+  let path = src;
+  try {
+    path = new URL(src, "http://local").pathname;
+  } catch {
+    return undefined;
+  }
+  return ART_POSITION[path];
+}
+
+/** Encuadre de cada escena (`ART_POSITION` de su archivo). */
+export const SCENE_POSITION = Object.fromEntries(
+  Object.entries(SCENE_SRC).map(([scene, src]) => [
+    scene,
+    getArtPosition(src) ?? "center",
+  ]),
+) as Record<SceneId, string>;
 
 // Gastronomía y alojamiento van al pueblo en fiesta y recreación al cerro:
 // la escena de dulces es de La Ligua (versión provincia) y trae el diablo

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getPathname } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
+import { isSiteIndexable } from "@/lib/site-indexing";
 
 /** Nombre del sitio: la parte del dicho que es de la comuna (ver docs/PLAN.md, 2026-11-01). */
 export const SITE_NAME = "El diablo murió en Petorca";
@@ -110,6 +111,9 @@ export function buildPageMetadata({
       images,
     },
     twitter: { card: "summary_large_image", title, description, images },
-    ...(noIndex ? { robots: { index: false, follow: false } } : {}),
+    // Antes del lanzamiento ninguna página se indexa (lib/site-indexing.ts).
+    ...(noIndex || !isSiteIndexable()
+      ? { robots: { index: false, follow: false } }
+      : {}),
   };
 }

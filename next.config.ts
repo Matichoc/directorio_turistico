@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { isSiteIndexable } from "./src/lib/site-indexing";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
@@ -59,6 +60,11 @@ const SECURITY_HEADERS = [
           value: CONTENT_SECURITY_POLICY,
         },
       ]),
+  // Antes del lanzamiento, ninguna respuesta (páginas, fotos, archivos) se
+  // indexa: src/lib/site-indexing.ts.
+  ...(isSiteIndexable()
+    ? []
+    : [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]),
   {
     key: "Permissions-Policy",
     value:

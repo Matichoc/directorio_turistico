@@ -75,6 +75,7 @@ Preview):
 | `SUPABASE_SERVICE_ROLE_KEY`     | Llave de administrador (solo servidor)                        | **Sí**    |
 | `GOOGLE_PLACES_API_KEY`         | Fotos de Google y rutas por calle (solo servidor)             | **Sí**    |
 | `NEXT_PUBLIC_SITE_URL`          | El dominio propio (paso 5)                                    | No        |
+| `SITE_INDEXING`                 | `on` = Google puede indexar el sitio (paso 8); vacío = oculto | No        |
 | `NEXT_PUBLIC_MAP_STYLE_URL`     | Opcional: estilo de mapa propio; vacío = OpenFreeMap oscuro   | No        |
 | `NEXT_PUBLIC_SUPABASE_SCHEMA`   | Opcional: vacía o `legacy`; **nunca `public`** (es de Papudo) | No        |
 
@@ -207,6 +208,13 @@ cuando un municipio entra a mirar.
 
 ## 8. Google Search Console (que Google encuentre cada lugar)
 
+**Antes que nada, abrir el sitio a Google.** Hasta el lanzamiento el sitio
+está oculto de los buscadores (funciona con el link, pero no aparece en
+Google; `src/lib/site-indexing.ts`). Vercel → Settings → Environment
+Variables → **Add**: `SITE_INDEXING` = `on`, marcando **solo Production**, y
+volver a desplegar. Para comprobarlo: `https://tudominio.cl/robots.txt` ahora
+dice `Sitemap: …` y las páginas ya no traen `noindex`.
+
 1. [search.google.com/search-console](https://search.google.com/search-console)
    → **Agregar propiedad** → tipo **Dominio** → `tudominio.cl`.
 2. Google te da un registro **TXT**. Agrégalo en Vercel → Domains →
@@ -241,6 +249,7 @@ Para escribirle a los encargados de turismo desde
 - [ ] Una ficha de lugar con foto de Google carga la foto.
 - [ ] En el celular, el sitio instalado como app (si lo tenías) se ve
       actualizado tras cerrarlo y abrirlo.
+- [ ] `SITE_INDEXING=on` en Production (si no, Google no indexa nada).
 - [ ] Search Console verificado y sitemap enviado.
 
 ## Mantenimiento

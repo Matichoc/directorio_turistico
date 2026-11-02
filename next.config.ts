@@ -158,6 +158,11 @@ const nextConfig: NextConfig = {
         pathname: "/leyendas/**",
         search: "",
       },
+      {
+        // Imagen fija del vuelo 3D del inicio (antes de tocar "Ver el vuelo").
+        pathname: "/vuelo/**",
+        search: "",
+      },
     ],
   },
 };

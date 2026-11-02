@@ -185,14 +185,20 @@ del sitio (mar azul noche → valles violeta → cordillera brasa). Reglas:
   coordenada) y cuenta pueblos y atractivos reales; una comuna sin ninguna
   coordenada queda fuera. Los puntos de luz son los pueblos con coordenada
   (los de cabecera, más grandes y con nombre) y llevan a su ficha.
-- **Recorrido**: arranca solo la primera vez que la sección entra en
-  pantalla, vuela de oeste a este (del mar a la cordillera) mostrando una
+- **Liviano hasta que lo piden** (pedido del usuario: "no todos van a querer
+  ver eso"): al entrar se ve una imagen fija del mismo relieve
+  (`public/vuelo/vuelo-poster.webp`, ~90 KB, `scripts/capture-flyover-poster.mjs`)
+  con "▶ Ver el vuelo 3D", un aviso de cuántos datos usa y los pueblos. El 3D
+  (motor del mapa + relieve, ~4 MB) se descarga recién al tocar el botón o un
+  pueblo (ese abre el 3D y vuela directo a él). Medido: el inicio completo
+  pasó de ~6,4 MB a 2,6 MB para quien no lo abre. Si cambia el relieve, los
+  pueblos o el estilo del vuelo, volver a correr el script de la imagen.
+- **Recorrido**: arranca solo al abrir el 3D con el botón, vuela de oeste a este (del mar a la cordillera) mostrando una
   tarjeta por comuna con link a `/explorar?comuna=…`, y vuelve a la vista
   general. Cualquier gesto del usuario lo detiene; sin interacción la cámara
   gira lento.
-- **Costo**: MapLibre se descarga recién cuando la sección está por verse
-  (`next/dynamic` + `IntersectionObserver`); fuera de pantalla no se anima
-  nada. Sin WebGL la sección no se muestra. Con movimiento reducido no hay
+- **Costo**: MapLibre se descarga recién al tocar "Ver el vuelo 3D"
+  (`next/dynamic`); fuera de pantalla no se anima nada (`IntersectionObserver`). Sin WebGL la sección no se muestra. Con movimiento reducido no hay
   vuelo ni giro (saltos directos). `cooperativeGestures`: en celular el mapa
   no secuestra el scroll de la página (se mueve con dos dedos).
 

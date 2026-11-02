@@ -8,6 +8,7 @@ import { RouteMapWithStops } from "@/components/route/route-map-with-stops";
 import { OfficialRouteCard } from "@/components/route/official-route-card";
 import { ReportajesSection } from "@/components/video/reportajes-section";
 import { reportajesForRoute } from "@/lib/reportajes";
+import { getArtPosition } from "@/lib/ui/scene-backgrounds";
 import { DevilMascot } from "@/components/ui/devil-mascot";
 import { ListenButton } from "@/components/ui/listen-button";
 import { OfflineSaveButton } from "@/components/offline/offline-save-button";
@@ -97,6 +98,7 @@ export default async function RouteDetailPage({
             fill
             sizes="100vw"
             className="object-cover"
+            style={{ objectPosition: getArtPosition(route.coverImageUrl) }}
             priority
           />
         </div>

@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  getArtPosition,
   getSceneForCategory,
   getSceneForRoute,
+  SCENE_POSITION,
 } from "@/lib/ui/scene-backgrounds";
 
 describe("scene backgrounds", () => {
@@ -28,5 +30,27 @@ describe("scene backgrounds", () => {
     );
     expect(getSceneForRoute("ruta-del-diablo")).toBe("tunel");
     expect(getSceneForRoute(null)).toBe("atardecer");
+  });
+});
+
+describe("art framing", () => {
+  it("keeps the devil's hat in view for every scene", () => {
+    for (const scene of ["atardecer", "cerro", "pueblo", "tunel"] as const) {
+      expect(SCENE_POSITION[scene]).toMatch(/^\d+% 0%$/);
+    }
+  });
+
+  it("frames route covers and legend scenes, even as full URLs", () => {
+    expect(getArtPosition("/leyendas/escalera.webp")).toBe("66% 0%");
+    expect(
+      getArtPosition(
+        "https://directorio-turistico-bgl3.vercel.app/rutas/ruta-ferroviaria-pedegua-las-palmas.webp",
+      ),
+    ).toBe("51% 0%");
+  });
+
+  it("leaves real photos to the component's own framing", () => {
+    expect(getArtPosition("/api/place-photo?ref=abc&w=800")).toBeUndefined();
+    expect(getArtPosition(null)).toBeUndefined();
   });
 });

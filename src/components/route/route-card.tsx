@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { RouteCard as RouteCardType } from "@/types/domain";
+import { getArtPosition } from "@/lib/ui/scene-backgrounds";
 
 function RouteIcon({ className = "h-7 w-7" }: { className?: string }) {
   return (
@@ -43,6 +44,7 @@ export function RouteCard({ route }: { route: RouteCardType }) {
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             onError={() => setPhotoFailed(true)}
             className="object-cover object-[center_65%]"
+            style={{ objectPosition: getArtPosition(route.photoUrl) }}
           />
         ) : (
           <RouteIcon className="text-accent-foreground h-7 w-7" />

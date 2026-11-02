@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#07060c" />
+    <title>Sin señal · El diablo murió en Petorca</title>
+    <link rel="icon" href="/icons/icon-192.png" />
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at 30% 20%, #3b1830, #1b0e1f 45%, #07060c);
+        color: #ecebf6;
+        font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+        display: flex;
+        justify-content: center;
+      }
+      main {
+        max-width: 36rem;
+        padding: 2.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      img {
+        width: 96px;
+        height: 96px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.6rem;
+      }
+      p {
+        margin: 0;
+        color: rgba(236, 235, 246, 0.8);
+      }
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      a {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(18, 12, 28, 0.85);
+        color: #ecebf6;
+        text-decoration: none;
+      }
+      a:hover {
+        border-color: #ff7a45;
+      }
+      small {
+        color: rgba(236, 235, 246, 0.55);
+      }
+      button {
+        align-self: flex-start;
+        border: 0;
+        border-radius: 999px;
+        padding: 0.5rem 1rem;
+        background: #ff7a45;
+        color: #1b0e1f;
+        font-weight: 600;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="/icons/icon-192.png" alt="" />
+      <h1 data-es="Estás sin señal" data-en="You're offline">Estás sin señal</h1>
+      <p
+        data-es="Esta página no quedó guardada en tu teléfono. Lo que guardaste con «Guardar para usar sin señal» sigue funcionando:"
+        data-en="This page wasn't saved on your phone. What you saved with “Save to use offline” still works:"
+      >
+        Esta página no quedó guardada en tu teléfono. Lo que guardaste con
+        «Guardar para usar sin señal» sigue funcionando:
+      </p>
+      <ul id="saved"></ul>
+      <p
+        id="none"
+        hidden
+        data-es="Todavía no guardaste ninguna ruta. Cuando tengas señal, abre una ruta o Mi recorrido y toca «Guardar para usar sin señal»."
+        data-en="You haven't saved any route yet. When you're online, open a route or My trip and tap “Save to use offline”."
+      >
+        Todavía no guardaste ninguna ruta.
+      </p>
+      <button
+        type="button"
+        onclick="location.reload()"
+        data-es="Reintentar"
+        data-en="Try again"
+      >
+        Reintentar
+      </button>
+    </main>
+    <script>
+      // Mismo registro que guarda components/offline/offline-save-button.tsx.
+      var en = /^en/i.test(navigator.language || "");
+      if (en) {
+        document.documentElement.lang = "en";
+        document.querySelectorAll("[data-en]").forEach(function (el) {
+          el.textContent = el.getAttribute("data-en");
+        });
+      }
+      var saved = [];
+      try {
+        saved = JSON.parse(localStorage.getItem("petorca-offline") || "[]");
+      } catch (e) {}
+      var list = document.getElementById("saved");
+      saved.forEach(function (item) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = item.url;
+        a.textContent = item.title;
+        var small = document.createElement("small");
+        small.textContent =
+          " · " + new Date(item.savedAt).toLocaleDateString(en ? "en" : "es-CL");
+        a.appendChild(small);
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      if (saved.length === 0) document.getElementById("none").hidden = false;
+    </script>
+  </body>
+</html>

@@ -46,7 +46,13 @@ const inputClassName =
   "border-accent-soft focus:border-accent rounded-xl border bg-transparent px-3 py-2 text-sm outline-none dark:border-white/15";
 const labelClassName = "flex flex-col gap-1 text-sm";
 
-function readTranslation(formData: FormData, locale: "es" | "en") {
+const LOCALE_LABELS = {
+  es: "Español",
+  en: "English",
+  pt: "Português (opcional: vacío = el sitio en portugués usa el español)",
+} as const;
+
+function readTranslation(formData: FormData, locale: "es" | "en" | "pt") {
   return {
     name: String(formData.get(`${locale}.name`) ?? ""),
     shortDescription: String(formData.get(`${locale}.shortDescription`) ?? ""),
@@ -95,6 +101,7 @@ export function PlaceForm({
       communeId: String(formData.get("communeId") ?? ""),
       localityId: String(formData.get("localityId") ?? ""),
       categoryId: String(formData.get("categoryId") ?? ""),
+      secondaryCategoryIds: formData.getAll("secondaryCategoryIds").map(String),
       latitude: Number(formData.get("latitude")),
       longitude: Number(formData.get("longitude")),
       address: String(formData.get("address") ?? ""),
@@ -110,6 +117,7 @@ export function PlaceForm({
       translations: {
         es: readTranslation(formData, "es"),
         en: readTranslation(formData, "en"),
+        pt: readTranslation(formData, "pt"),
       },
     };
 
@@ -217,6 +225,32 @@ export function PlaceForm({
             ))}
           </select>
         </label>
+        <fieldset className={`${labelClassName} sm:col-span-2`}>
+          <legend>También aparece en (opcional)</legend>
+          <p className="text-foreground/60 text-xs font-normal">
+            Un lugar puede estar en más de una categoría: por ejemplo, una viña
+            con hospedaje es Gastronomía y también Alojamiento. La principal
+            (arriba) define su ícono y su color en el mapa.
+          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
+            {categories.map((category) => (
+              <label
+                key={category.id}
+                className="flex items-center gap-2 text-sm font-normal"
+              >
+                <input
+                  type="checkbox"
+                  name="secondaryCategoryIds"
+                  value={category.id}
+                  defaultChecked={place?.secondaryCategoryIds.includes(
+                    category.id,
+                  )}
+                />
+                {category.name}
+              </label>
+            ))}
+          </div>
+        </fieldset>
         <label className={labelClassName}>
           Ícono puntual
           <select
@@ -308,19 +342,19 @@ export function PlaceForm({
         </label>
       </div>
 
-      {(["es", "en"] as const).map((locale) => (
+      {(["es", "en", "pt"] as const).map((locale) => (
         <fieldset
           key={locale}
           className="border-accent-soft flex flex-col gap-3 rounded-xl border p-3 dark:border-white/10"
         >
           <legend className="text-foreground/60 px-1 text-xs font-medium tracking-wide uppercase">
-            {locale === "es" ? "Español" : "English"}
+            {LOCALE_LABELS[locale]}
           </legend>
           <label className={labelClassName}>
             Nombre
             <input
               name={`${locale}.name`}
-              required
+              required={locale !== "pt"}
               defaultValue={place?.translations[locale].name}
               onChange={locale === "es" ? handleNameEsChange : undefined}
               className={inputClassName}

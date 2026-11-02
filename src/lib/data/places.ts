@@ -1,12 +1,20 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import {
+  isCommuneInScope,
+  isSiteScoped,
+  SITE_COMMUNE_SLUGS,
+} from "@/lib/site-scope";
 import type {
   Locale,
   PublicationStatus,
   VerificationStatus,
 } from "@/types/database";
 import type { Place, PlaceCard, PlaceFilters } from "@/types/domain";
+import { contentLocales, pickTranslation } from "@/i18n/content";
 
 interface PlaceImageResult {
   storage_path: string;
@@ -33,13 +41,20 @@ function isCurrentlyFeatured(featuredUntil: string | null): boolean {
   );
 }
 
+/**
+ * Las consultas nombran la llave de la categoría principal
+ * (`places_category_id_fkey`): si otra tabla llegara a unir lugares y
+ * categorías (como pasó con `place_secondary_categories`, ver
+ * supabase/manual/arreglo-categorias-ambiguas.sql), la API no sabría cuál
+ * usar y el sitio se quedaba sin lugares.
+ */
 const PLACE_QUERY =
   `id, slug, commune_id, category_id, locality_id, latitude, longitude, address,
    phone, website, featured_until, icon, publication_status, verification_status,
    place_translations!inner(name, short_description, description, locale),
-   communes!inner(commune_translations!inner(name, locale)),
+   communes!inner(slug, commune_translations!inner(name, locale)),
    localities(slug, locality_translations(name, locale)),
-   categories!inner(slug, category_translations!inner(name, locale)),
+   categories!places_category_id_fkey!inner(slug, category_translations!inner(name, locale)),
    place_tags(tags(slug)),
    place_images(storage_path, alt_text, position)` as const;
 
@@ -64,7 +79,10 @@ interface PlaceQueryResult {
     description: string | null;
     locale: Locale;
   }[];
-  communes: { commune_translations: { name: string; locale: Locale }[] } | null;
+  communes: {
+    slug: string;
+    commune_translations: { name: string; locale: Locale }[];
+  } | null;
   localities: {
     slug: string;
     locality_translations: { name: string; locale: Locale }[];
@@ -77,7 +95,7 @@ interface PlaceQueryResult {
   place_images: PlaceImageResult[];
 }
 
-export async function getPlaceBySlug(
+async function getPlaceBySlugUncached(
   slug: string,
   locale: Locale,
 ): Promise<Place | null> {
@@ -85,22 +103,23 @@ export async function getPlaceBySlug(
     return null;
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("places")
     .select<typeof PLACE_QUERY, PlaceQueryResult>(PLACE_QUERY)
     .eq("slug", slug)
-    .eq("place_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .eq("categories.category_translations.locale", locale)
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale))
     .eq("publication_status", "published")
     .maybeSingle();
 
-  if (error || !data) {
+  // Fuera del alcance del sitio (ver lib/site-scope.ts): como si no existiera.
+  if (error || !data || !isCommuneInScope(data.communes?.slug)) {
     return null;
   }
 
-  const translation = data.place_translations[0];
+  const translation = pickTranslation(data.place_translations, locale);
 
   return {
     id: data.id,
@@ -109,14 +128,17 @@ export async function getPlaceBySlug(
     description: translation?.description ?? null,
     shortDescription: translation?.short_description ?? null,
     communeId: data.commune_id,
-    communeName: data.communes?.commune_translations[0]?.name ?? "",
+    communeName:
+      pickTranslation(data.communes?.commune_translations, locale)?.name ?? "",
     localityId: data.locality_id,
     localityName:
-      data.localities?.locality_translations.find((t) => t.locale === locale)
-        ?.name ?? null,
+      pickTranslation(data.localities?.locality_translations, locale)?.name ??
+      null,
     localitySlug: data.localities?.slug ?? null,
     categoryId: data.category_id,
-    categoryName: data.categories?.category_translations[0]?.name ?? "",
+    categoryName:
+      pickTranslation(data.categories?.category_translations, locale)?.name ??
+      "",
     categorySlug: data.categories?.slug ?? "",
     icon: data.icon,
     latitude: data.latitude,
@@ -133,13 +155,17 @@ export async function getPlaceBySlug(
       .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),
   };
 }
+export const getPlaceBySlug = cachedContent(
+  getPlaceBySlugUncached,
+  "getPlaceBySlug",
+);
 
 const PLACES_LIST_QUERY =
   `id, slug, latitude, longitude, featured_until, icon, verification_status,
    place_translations!inner(name, short_description, locale),
    communes!inner(slug, commune_translations!inner(name, locale)),
    localities(slug, locality_translations(name, locale)),
-   categories!inner(slug, category_translations!inner(name, locale)),
+   categories!places_category_id_fkey!inner(slug, category_translations!inner(name, locale)),
    place_tags(tags(slug)),
    place_images(storage_path, alt_text, position)` as const;
 
@@ -172,20 +198,63 @@ interface PlaceListQueryResult {
   place_images: PlaceImageResult[];
 }
 
-function mapPlaceCard(place: PlaceListQueryResult, locale: Locale): PlaceCard {
-  const translation = place.place_translations[0];
+/**
+ * Categorías adicionales de cada lugar (`place_secondary_categories`), por
+ * id de lugar. Consulta aparte a propósito: si la tabla todavía no existe en
+ * una base (ver supabase/manual/categorias-petorca.sql), el sitio sigue
+ * funcionando con la categoría principal de cada lugar.
+ */
+async function loadSecondaryCategories(
+  supabase: ReturnType<typeof createPublicClient>,
+): Promise<Map<string, string[]>> {
+  const { data, error } = await supabase
+    .from("place_secondary_categories")
+    .select<
+      "place_id, categories(slug)",
+      { place_id: string; categories: { slug: string } | null }
+    >("place_id, categories(slug)");
+  const byPlace = new Map<string, string[]>();
+  if (error || !data) return byPlace;
+  for (const row of data) {
+    if (!row.categories) continue;
+    byPlace.set(row.place_id, [
+      ...(byPlace.get(row.place_id) ?? []),
+      row.categories.slug,
+    ]);
+  }
+  return byPlace;
+}
+
+/** Principal primero, sin repetir. */
+function allCategorySlugs(primary: string, secondary: string[] = []) {
+  return [...new Set([primary, ...secondary].filter(Boolean))];
+}
+
+function mapPlaceCard(
+  place: PlaceListQueryResult,
+  locale: Locale,
+  secondary: Map<string, string[]> = new Map(),
+): PlaceCard {
+  const translation = pickTranslation(place.place_translations, locale);
   return {
     id: place.id,
     slug: place.slug,
     name: translation?.name ?? place.slug,
     shortDescription: translation?.short_description ?? null,
-    communeName: place.communes?.commune_translations[0]?.name ?? "",
+    communeName:
+      pickTranslation(place.communes?.commune_translations, locale)?.name ?? "",
     localityName:
-      place.localities?.locality_translations.find((t) => t.locale === locale)
-        ?.name ?? null,
+      pickTranslation(place.localities?.locality_translations, locale)?.name ??
+      null,
     localitySlug: place.localities?.slug ?? null,
-    categoryName: place.categories?.category_translations[0]?.name ?? "",
+    categoryName:
+      pickTranslation(place.categories?.category_translations, locale)?.name ??
+      "",
     categorySlug: place.categories?.slug ?? "",
+    categorySlugs: allCategorySlugs(
+      place.categories?.slug ?? "",
+      secondary.get(place.id),
+    ),
     icon: place.icon,
     latitude: place.latitude,
     longitude: place.longitude,
@@ -200,12 +269,13 @@ function mapPlaceCard(place: PlaceListQueryResult, locale: Locale): PlaceCard {
 }
 
 /**
- * Lista lugares publicados. El filtro por `tagSlug` y `query` (nombre) se
- * aplica en memoria después de traer los resultados: a la escala actual del
- * catálogo (decenas de lugares) es más simple que armar un `!inner` dinámico
- * en PostgREST. Si el catálogo crece mucho, mover ambos a la consulta.
+ * Lista lugares publicados. Los filtros por categoría (principal o
+ * adicional), `tagSlug` y `query` (nombre) se aplican en memoria después de
+ * traer los resultados: a la escala actual del catálogo (decenas de lugares)
+ * es más simple que armar un `!inner` dinámico en PostgREST. Si el catálogo
+ * crece mucho, moverlos a la consulta.
  */
-export async function listPlaces(
+async function listPlacesUncached(
   locale: Locale,
   filters: PlaceFilters = {},
 ): Promise<PlaceCard[]> {
@@ -213,23 +283,26 @@ export async function listPlaces(
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let builder = supabase
     .from("places")
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
     .eq("publication_status", "published")
-    .eq("place_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .eq("categories.category_translations.locale", locale);
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale));
 
   if (filters.communeSlug) {
     builder = builder.eq("communes.slug", filters.communeSlug);
   }
-  if (filters.categorySlug) {
-    builder = builder.eq("categories.slug", filters.categorySlug);
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
   }
 
-  const { data, error } = await builder;
+  const [{ data, error }, secondary] = await Promise.all([
+    builder,
+    loadSecondaryCategories(supabase),
+  ]);
 
   if (error || !data) {
     return [];
@@ -238,8 +311,14 @@ export async function listPlaces(
   const query = filters.query?.trim().toLowerCase();
 
   return data
-    .map((place) => mapPlaceCard(place, locale))
+    .map((place) => mapPlaceCard(place, locale, secondary))
     .filter((place) => {
+      if (
+        filters.categorySlug &&
+        !place.categorySlugs.includes(filters.categorySlug)
+      ) {
+        return false;
+      }
       if (filters.tagSlug && !place.tags.includes(filters.tagSlug)) {
         return false;
       }
@@ -259,9 +338,10 @@ export async function listPlaces(
       return a.name.localeCompare(b.name, locale);
     });
 }
+export const listPlaces = cachedContent(listPlacesUncached, "listPlaces");
 
 /** Lugares publicados que pertenecen a un pueblo (`locality_id`) — ficha de pueblo. */
-export async function listPlacesByLocalityId(
+async function listPlacesByLocalityIdUncached(
   localityId: string,
   locale: Locale,
 ): Promise<PlaceCard[]> {
@@ -269,15 +349,19 @@ export async function listPlacesByLocalityId(
     return [];
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
+  const supabase = createPublicClient();
+  let builder = supabase
     .from("places")
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
     .eq("locality_id", localityId)
     .eq("publication_status", "published")
-    .eq("place_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .eq("categories.category_translations.locale", locale);
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale));
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
 
   if (error || !data) {
     return [];
@@ -287,6 +371,10 @@ export async function listPlacesByLocalityId(
     .map((place) => mapPlaceCard(place, locale))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
+export const listPlacesByLocalityId = cachedContent(
+  listPlacesByLocalityIdUncached,
+  "listPlacesByLocalityId",
+);
 
 /**
  * Trae lugares publicados por `id` (para el carrito de recorrido, que
@@ -307,8 +395,8 @@ export interface AdminPlaceListItem {
 const ADMIN_PLACES_LIST_QUERY =
   `id, slug, publication_status, verification_status, status_changed_at,
    place_translations!inner(name, locale),
-   communes!inner(commune_translations!inner(name, locale)),
-   categories!inner(category_translations!inner(name, locale))` as const;
+   communes!inner(slug, commune_translations!inner(name, locale)),
+   categories!places_category_id_fkey!inner(category_translations!inner(name, locale))` as const;
 
 interface AdminPlaceListQueryResult {
   id: string;
@@ -335,15 +423,20 @@ export async function listAdminPlaces(): Promise<AdminPlaceListItem[]> {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("places")
     .select<typeof ADMIN_PLACES_LIST_QUERY, AdminPlaceListQueryResult>(
       ADMIN_PLACES_LIST_QUERY,
     )
     .eq("place_translations.locale", "es")
     .eq("communes.commune_translations.locale", "es")
-    .eq("categories.category_translations.locale", "es")
-    .order("slug");
+    .eq("categories.category_translations.locale", "es");
+  // El panel muestra lo mismo que el sitio (lib/site-scope.ts): los lugares
+  // de otras comunas siguen en la base, solo no se listan.
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder.order("slug");
 
   if (error || !data) {
     return [];
@@ -411,6 +504,8 @@ export interface AdminPlaceDetail {
   publicationStatus: PublicationStatus;
   verificationStatus: VerificationStatus;
   translations: Record<Locale, AdminPlaceTranslation>;
+  /** Categorías adicionales (`place_secondary_categories`). */
+  secondaryCategoryIds: string[];
 }
 
 const ADMIN_PLACE_DETAIL_QUERY =
@@ -466,9 +561,16 @@ export async function getAdminPlaceById(
     return null;
   }
 
+  // Aparte: si la tabla todavía no existe en esta base, sin adicionales.
+  const { data: secondary } = await supabase
+    .from("place_secondary_categories")
+    .select("category_id")
+    .eq("place_id", id);
+
   const translations: Record<Locale, AdminPlaceTranslation> = {
     es: { ...EMPTY_TRANSLATION },
     en: { ...EMPTY_TRANSLATION },
+    pt: { ...EMPTY_TRANSLATION },
   };
   for (const translation of data.place_translations) {
     translations[translation.locale] = {
@@ -493,10 +595,11 @@ export async function getAdminPlaceById(
     publicationStatus: data.publication_status,
     verificationStatus: data.verification_status,
     translations,
+    secondaryCategoryIds: (secondary ?? []).map((row) => row.category_id),
   };
 }
 
-export async function getPlacesByIds(
+async function getPlacesByIdsUncached(
   ids: string[],
   locale: Locale,
 ): Promise<PlaceCard[]> {
@@ -504,15 +607,21 @@ export async function getPlacesByIds(
     return [];
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
+  const supabase = createPublicClient();
+  // Un recorrido armado antes de acotar el sitio puede traer lugares de otra
+  // comuna: quedan fuera, igual que en el resto del sitio.
+  let builder = supabase
     .from("places")
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
     .in("id", ids)
     .eq("publication_status", "published")
-    .eq("place_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .eq("categories.category_translations.locale", locale);
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale));
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
 
   if (error || !data) {
     return [];
@@ -520,6 +629,54 @@ export async function getPlacesByIds(
 
   return data.map((place) => mapPlaceCard(place, locale));
 }
+export const getPlacesByIds = cachedContent(
+  getPlacesByIdsUncached,
+  "getPlacesByIds",
+);
+
+/**
+ * Lugares publicados por `slug`, en el mismo orden pedido — para un
+ * recorrido compartido por link (`/recorrido/compartido?paradas=a,b,c`). Lo
+ * que no existe o queda fuera del sitio (`lib/site-scope.ts`) se omite.
+ */
+async function getPlacesBySlugsUncached(
+  slugs: string[],
+  locale: Locale,
+): Promise<PlaceCard[]> {
+  if (!isSupabaseConfigured() || slugs.length === 0) {
+    return [];
+  }
+
+  const supabase = createPublicClient();
+  let builder = supabase
+    .from("places")
+    .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
+    .in("slug", slugs)
+    .eq("publication_status", "published")
+    .in("place_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale))
+    .in("categories.category_translations.locale", contentLocales(locale));
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
+
+  if (error || !data) {
+    return [];
+  }
+
+  const bySlug = new Map(
+    data.map((place) => [place.slug, mapPlaceCard(place, locale)]),
+  );
+  return slugs.flatMap((slug) => {
+    const place = bySlug.get(slug);
+    return place ? [place] : [];
+  });
+}
+export const getPlacesBySlugs = cachedContent(
+  getPlacesBySlugsUncached,
+  "getPlacesBySlugs",
+);
 
 export interface AdminPlaceExportRow {
   slug: string;
@@ -539,9 +696,9 @@ export interface AdminPlaceExportRow {
 const ADMIN_PLACES_EXPORT_QUERY =
   `slug, latitude, longitude, address, phone, website, icon, publication_status,
    place_translations(locale, name, short_description, description),
-   communes!inner(commune_translations!inner(name, locale)),
+   communes!inner(slug, commune_translations!inner(name, locale)),
    localities(locality_translations(name, locale)),
-   categories!inner(category_translations!inner(name, locale))` as const;
+   categories!places_category_id_fkey!inner(category_translations!inner(name, locale))` as const;
 
 interface AdminPlaceExportQueryResult {
   slug: string;
@@ -576,14 +733,17 @@ export async function listAdminPlacesForExport(): Promise<
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("places")
     .select<typeof ADMIN_PLACES_EXPORT_QUERY, AdminPlaceExportQueryResult>(
       ADMIN_PLACES_EXPORT_QUERY,
     )
     .eq("communes.commune_translations.locale", "es")
-    .eq("categories.category_translations.locale", "es")
-    .order("slug");
+    .eq("categories.category_translations.locale", "es");
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder.order("slug");
 
   if (error || !data) {
     return [];
@@ -593,6 +753,7 @@ export async function listAdminPlacesForExport(): Promise<
     const translations: Record<Locale, AdminPlaceTranslation> = {
       es: { ...EMPTY_TRANSLATION },
       en: { ...EMPTY_TRANSLATION },
+      pt: { ...EMPTY_TRANSLATION },
     };
     for (const translation of place.place_translations) {
       translations[translation.locale] = {

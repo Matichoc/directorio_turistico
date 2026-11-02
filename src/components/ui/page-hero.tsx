@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 import { SparkleField } from "@/components/ui/sparkle-field";
-import { SCENE_SRC, type SceneId } from "@/lib/ui/scene-backgrounds";
+import {
+  SCENE_POSITION,
+  SCENE_SRC,
+  type SceneId,
+} from "@/lib/ui/scene-backgrounds";
 
 /**
  * Cabecera oscura con chispas y halo, reutilizada en toda página de
@@ -36,8 +40,11 @@ export function PageHero({
         <>
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-cover [background-position:85%_70%]"
-            style={{ backgroundImage: `url(${SCENE_SRC[scene]})` }}
+            className="pointer-events-none absolute inset-0 bg-cover"
+            style={{
+              backgroundImage: `url(${SCENE_SRC[scene]})`,
+              backgroundPosition: SCENE_POSITION[scene],
+            }}
           />
           <div
             aria-hidden="true"

@@ -42,6 +42,7 @@ pendiente de reverificación).
 - `place_hours`: una fila por día de semana (`0`–`6`), `unique(place_id, day_of_week)`.
 - `place_images`: ordenadas por `position`.
 - `place_tags`: tabla puente `place_id, tag_id`.
+- `place_secondary_categories`: categorías **adicionales** de un lugar (`place_id, category_id`); la principal sigue en `places.category_id` y define ícono y color. Migración `0024`; en city_tour, `supabase/manual/categorias-petorca.sql`.
 - `status_changed_at` (migración `0020_status_tracking.sql`, también en
   `routes`): cuándo cambió `publication_status` por última vez, vía trigger
   (`touch_status_changed_at`) — no se toca en otras ediciones. Alimenta el
@@ -169,7 +170,7 @@ pero solo lectura de administrador. No debe contener PII: `properties` es un
 
 ## Auth / administración
 
-`admin_users(user_id)` mapea usuarios de `auth.users` a rol de administrador.
+`admin_users(user_id, role, added_by, created_at)` mapea usuarios de `auth.users` al equipo del panel: `role` es `admin` (todo, incluido el equipo) o `editor` (contenido). `is_admin()` = cualquiera del equipo (lo usan las políticas de contenido); `is_admin_role()` = rol `admin`. `admin_users` no tiene políticas de escritura: solo el servidor (service role) la cambia, desde `/admin/personas`, después de revisar el rol. `audit_log(at, user_id, table_name, action, row_ref)`: registro de cambios que llena el disparador `log_change()` en las tablas de contenido (en comentarios, solo la moderación); lo lee el equipo y nadie lo puede editar ni borrar. Migración `0025`; en city_tour, `supabase/manual/admin-roles.sql`.
 `public.is_admin()` es una función `security definer` que evalúa
 `auth.uid()` contra esa tabla; todas las políticas de escritura la usan.
 Alta de administradores: manual, sin pantalla — crear el usuario en

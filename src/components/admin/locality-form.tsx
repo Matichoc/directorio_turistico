@@ -14,7 +14,13 @@ const inputClassName =
   "border-accent-soft focus:border-accent rounded-xl border bg-transparent px-3 py-2 text-sm outline-none dark:border-white/15";
 const labelClassName = "flex flex-col gap-1 text-sm";
 
-function readTranslation(formData: FormData, locale: "es" | "en") {
+const LOCALE_LABELS = {
+  es: "Español",
+  en: "English",
+  pt: "Português (opcional: vacío = el sitio en portugués usa el español)",
+} as const;
+
+function readTranslation(formData: FormData, locale: "es" | "en" | "pt") {
   return {
     name: String(formData.get(`${locale}.name`) ?? ""),
     summary: String(formData.get(`${locale}.summary`) ?? ""),
@@ -63,6 +69,7 @@ export function LocalityForm({
           ...enTranslation,
           name: enTranslation.name.trim() || esTranslation.name,
         },
+        pt: readTranslation(formData, "pt"),
       },
     };
 
@@ -169,13 +176,13 @@ export function LocalityForm({
         </label>
       </div>
 
-      {(["es", "en"] as const).map((locale) => (
+      {(["es", "en", "pt"] as const).map((locale) => (
         <fieldset
           key={locale}
           className="border-accent-soft flex flex-col gap-3 rounded-xl border p-3 dark:border-white/10"
         >
           <legend className="text-foreground/60 px-1 text-xs font-medium tracking-wide uppercase">
-            {locale === "es" ? "Español" : "English"}
+            {LOCALE_LABELS[locale]}
           </legend>
           <label className={labelClassName}>
             Nombre
@@ -185,7 +192,7 @@ export function LocalityForm({
               defaultValue={locality?.translations[locale].name}
               onChange={locale === "es" ? handleNameEsChange : undefined}
               placeholder={
-                locale === "en" ? "Vacío = usa el nombre en español" : undefined
+                locale === "es" ? undefined : "Vacío = usa el nombre en español"
               }
               className={inputClassName}
             />

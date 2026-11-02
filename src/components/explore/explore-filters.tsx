@@ -3,7 +3,7 @@
 import type { FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import type { Category, Commune } from "@/types/domain";
+import type { Commune } from "@/types/domain";
 import type { Tag } from "@/lib/data/tags";
 
 export interface ExploreFiltersValue {
@@ -16,18 +16,14 @@ export interface ExploreFiltersValue {
 interface ExploreFiltersProps {
   value: ExploreFiltersValue;
   communes: Commune[];
-  categories: Category[];
   tags: Tag[];
 }
 
+// `categoria` no tiene control acá (son las pestañas, `CategoryTabs`), pero
+// se conserva al cambiar los demás filtros.
 const PARAM_KEYS = ["q", "comuna", "categoria", "caracteristica"] as const;
 
-export function ExploreFilters({
-  value,
-  communes,
-  categories,
-  tags,
-}: ExploreFiltersProps) {
+export function ExploreFilters({ value, communes, tags }: ExploreFiltersProps) {
   const t = useTranslations("explore");
   const router = useRouter();
   const pathname = usePathname();
@@ -78,22 +74,6 @@ export function ExploreFilters({
           {communes.map((commune) => (
             <option key={commune.slug} value={commune.slug}>
               {commune.name}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <label className="flex items-center gap-2 text-sm">
-        <span className="text-foreground/60">{t("filters.category")}</span>
-        <select
-          value={value.categoria}
-          onChange={(event) => updateParam("categoria", event.target.value)}
-          className="rounded border border-black/10 bg-transparent px-2 py-1.5 dark:border-white/20"
-        >
-          <option value="">—</option>
-          {categories.map((category) => (
-            <option key={category.slug} value={category.slug}>
-              {category.name}
             </option>
           ))}
         </select>

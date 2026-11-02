@@ -1,5 +1,9 @@
 import { test, expect } from "@playwright/test";
 
+// El sitio elige el idioma según el navegador: sin esto, un Chrome en inglés
+// iría a /en y la prueba fallaría sin que el sitio esté mal.
+test.use({ locale: "es-CL" });
+
 test("redirects to the default locale and shows the home page", async ({
   page,
 }) => {

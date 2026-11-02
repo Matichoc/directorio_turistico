@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { LegendCard } from "@/components/legend/legend-card";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
 import { listRoutes } from "@/lib/data/routes";
@@ -37,7 +38,11 @@ export default async function RoutesPage({
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
-      <PageHero title={tHome("featuredRoutes")} scene="tunel" />
+      <PageHero
+        title={tHome("featuredRoutes")}
+        subtitle={t("listSubtitle")}
+        scene="tunel"
+      />
       {routes.length === 0 ? (
         <EmptyState>{t("noResults")}</EmptyState>
       ) : (
@@ -49,6 +54,9 @@ export default async function RoutesPage({
           ))}
         </ul>
       )}
+      <section className="reveal">
+        <LegendCard />
+      </section>
     </main>
   );
 }

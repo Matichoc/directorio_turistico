@@ -1,8 +1,10 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import type { Locale } from "@/types/database";
 import type { Category } from "@/types/domain";
+import { contentLocales, pickTranslation } from "@/i18n/content";
 
 const CATEGORIES_QUERY =
   `id, slug, icon, category_translations!inner(name, locale)` as const;
@@ -14,16 +16,16 @@ interface CategoryQueryResult {
   category_translations: { name: string; locale: Locale }[];
 }
 
-export async function listCategories(locale: Locale): Promise<Category[]> {
+async function listCategoriesUncached(locale: Locale): Promise<Category[]> {
   if (!isSupabaseConfigured()) {
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("categories")
     .select<typeof CATEGORIES_QUERY, CategoryQueryResult>(CATEGORIES_QUERY)
-    .eq("category_translations.locale", locale)
+    .in("category_translations.locale", contentLocales(locale))
     .order("slug");
 
   if (error || !data) {
@@ -35,7 +37,13 @@ export async function listCategories(locale: Locale): Promise<Category[]> {
       id: category.id,
       slug: category.slug,
       icon: category.icon,
-      name: category.category_translations[0]?.name ?? category.slug,
+      name:
+        pickTranslation(category.category_translations, locale)?.name ??
+        category.slug,
     }))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
+export const listCategories = cachedContent(
+  listCategoriesUncached,
+  "listCategories",
+);

@@ -1,21 +1,88 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import withSerwistInit from "@serwist/next";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-const withSerwist = withSerwistInit({
-  swSrc: "src/app/sw.ts",
-  swDest: "public/sw.js",
-  disable: process.env.NODE_ENV === "development",
-});
+/** Origen de un estilo de mapa propio (`NEXT_PUBLIC_MAP_STYLE_URL`), si hay. */
+function mapStyleOrigin(): string {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_MAP_STYLE_URL ?? "").origin;
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Política de contenido completa (auditoría H-05), por ahora en modo
+ * **solo informe** (`Content-Security-Policy-Report-Only`): el navegador no
+ * bloquea nada, solo avisa en la consola lo que bloquearía. Así se prueba en
+ * la vista previa sin arriesgar los mapas (MapLibre usa workers `blob:`) y,
+ * sin avisos, se aplica de verdad con `CSP_MODE=enforce` al compilar (variable
+ * de entorno en Vercel, sin tocar código; docs/AUDITORIA-2026-11-02.md).
+ * `unsafe-inline` en scripts: Next mete scripts en línea sin nonce en páginas
+ * cacheadas; `unsafe-eval` solo en desarrollo (recarga en caliente).
+ */
+const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://*.supabase.co https://commons.wikimedia.org https://upload.wikimedia.org https://tiles.openfreemap.org",
+  "font-src 'self' data:",
+  `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://tiles.openfreemap.org ${mapStyleOrigin()}`.trim(),
+  "worker-src 'self' blob:",
+  "child-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+
+/**
+ * Encabezados de seguridad para todo el sitio (auditoría 2026-11-02).
+ * `frame-ancestors` sí se aplica (no afecta nada del propio sitio); el resto
+ * de la política va en modo informe, ver arriba. Cámara y ubicación quedan
+ * permitidas solo al propio sitio (la guía paso a paso las usa); el resto de
+ * los permisos, apagados.
+ */
+const SECURITY_HEADERS = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "X-Frame-Options", value: "DENY" },
+  ...(process.env.CSP_MODE === "enforce"
+    ? [{ key: "Content-Security-Policy", value: CONTENT_SECURITY_POLICY }]
+    : [
+        { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+        {
+          key: "Content-Security-Policy-Report-Only",
+          value: CONTENT_SECURITY_POLICY,
+        },
+      ]),
+  {
+    key: "Permissions-Policy",
+    value:
+      "camera=(self), geolocation=(self), microphone=(), payment=(), usb=(), browsing-topics=()",
+  },
+];
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   async headers() {
     return [
+      { source: "/:path*", headers: SECURITY_HEADERS },
       {
-        // El panel no debe indexarse (es un layout de cliente, así que no
-        // puede exportar `metadata`; el header cubre todas sus páginas).
+        // Service worker escrito a mano (public/sw.js, "sin señal"): el
+        // navegador tiene que ver siempre la última versión.
+        source: "/sw.js",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+        ],
+      },
+      {
+        // El panel no debe indexarse (el header cubre todas sus páginas,
+        // también las respuestas que no son HTML, como el CSV exportado).
         source: "/admin/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
@@ -74,13 +141,23 @@ const nextConfig: NextConfig = {
         search: "",
       },
       {
+        // Logo del sitio en tamaño ícono (TopNav; scripts/build-brand-png.mjs).
+        pathname: "/icons/**",
+        search: "",
+      },
+      {
         // Portadas de ruta generadas con IA (ver public/rutas/ y
         // routes.cover_image, migración 0011_route_cover_image.sql).
         pathname: "/rutas/**",
+        search: "",
+      },
+      {
+        // Escenas de la leyenda (diablo campesino, página /leyenda).
+        pathname: "/leyendas/**",
         search: "",
       },
     ],
   },
 };
 
-export default withSerwist(withNextIntl(nextConfig));
+export default withNextIntl(nextConfig);

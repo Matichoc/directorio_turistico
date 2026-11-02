@@ -11,12 +11,10 @@ import Map, {
   type MapRef,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-
-// `maplibre-gl` está fijado a la serie 5.x en package.json a propósito: la
-// v6 cambió cómo se cargan los workers/tiles y el mapa queda en blanco sin
-// ningún error en consola con `react-map-gl` (bug conocido y reportado en
-// varios proyectos). No subir a v6 sin antes configurar el worker según la
-// guía de migración de MapLibre para el bundler de Next.js/Turbopack.
+// MapLibre 6 trae su worker en un archivo aparte: se carga siempre con
+// `loadMaplibre` (`mapLib`), que le dice dónde quedó; sin eso el mapa base
+// queda en blanco (ver `lib/maps/maplibre.ts`).
+import { loadMaplibre } from "@/lib/maps/maplibre";
 import { Link } from "@/i18n/navigation";
 import { MapPin } from "@/components/map/map-pin";
 import { PlayerToken } from "@/components/map/player-token";
@@ -65,12 +63,17 @@ function markerKey(marker: Pick<MapMarkerData, "slug" | "kind">) {
 export interface MapViewProps {
   className?: string;
   markers?: MapMarkerData[];
-  /** [lng, lat] de una ruta real por calle (ver lib/maps/directions.ts) —
+  /** [lng, lat] de una ruta real por calle (ver lib/navigation/street-route.ts) —
    * se dibuja como línea sobre el mapa, para el modo de navegación. */
   routeLine?: [number, number][] | null;
   /** Muestra el control de geolocalización de MapLibre (punto azul que
    * sigue tu posición real) — modo navegación. */
   showLiveLocation?: boolean;
+  /** Posición en vivo que ya sigue el padre (la guía paso a paso): se dibuja
+   * la ficha ahí, sin un segundo GPS en el mapa. */
+  livePosition?: { latitude: number; longitude: number } | null;
+  /** Con `livePosition`, el mapa la sigue (como un navegador). */
+  followLivePosition?: boolean;
   /** Slug destacado desde afuera (ej. al pasar el mouse por una parada en
    * la lista) — resaltado cruzado mapa↔lista, ver docs/PLAN.md. */
   highlightedSlug?: string | null;
@@ -89,6 +92,8 @@ export function MapView({
   markers = [],
   routeLine,
   showLiveLocation = false,
+  livePosition: externalPosition,
+  followLivePosition = false,
   highlightedSlug = null,
   onMarkerClick,
   markersMinZoom,
@@ -97,10 +102,13 @@ export function MapView({
   const mapRef = useRef<MapRef>(null);
   const [showMarkers, setShowMarkers] = useState(markersMinZoom === undefined);
   const [selected, setSelected] = useState<MapMarkerData | null>(null);
-  const [livePosition, setLivePosition] = useState<{
+  const [ownPosition, setOwnPosition] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
+  const hasExternalPosition = externalPosition !== undefined;
+  const livePosition = hasExternalPosition ? externalPosition : ownPosition;
+  const showPlayer = showLiveLocation || hasExternalPosition;
   const [avatarIcon, setAvatarIconState] =
     useState<AvatarIcon>(DEFAULT_AVATAR_ICON);
 
@@ -112,6 +120,22 @@ export function MapView({
     window.addEventListener(AVATAR_EVENT, sync);
     return () => window.removeEventListener(AVATAR_EVENT, sync);
   }, []);
+
+  // Guía en vivo: el mapa acompaña a la persona.
+  const followLat = followLivePosition ? externalPosition?.latitude : undefined;
+  const followLng = followLivePosition
+    ? externalPosition?.longitude
+    : undefined;
+  useEffect(() => {
+    if (followLat === undefined || followLng === undefined) return;
+    const map = mapRef.current;
+    if (!map) return;
+    map.easeTo({
+      center: [followLng, followLat],
+      zoom: Math.max(map.getZoom(), 16),
+      duration: 800,
+    });
+  }, [followLat, followLng]);
 
   // Con sectores (`markersMinZoom`), arranca alejado sobre la provincia: así
   // se ven los sectores aunque el estilo tarde o no cargue (sin `onLoad` no
@@ -162,6 +186,7 @@ export function MapView({
         ref={mapRef}
         onLoad={handleLoad}
         onZoom={syncZoom}
+        mapLib={loadMaplibre()}
         mapStyle={getMapStyleUrl()}
         initialViewState={{
           latitude: center.latitude,
@@ -171,7 +196,7 @@ export function MapView({
         style={{ width: "100%", height: "100%" }}
       >
         <NavigationControl position="top-right" />
-        {showLiveLocation && (
+        {showLiveLocation && !hasExternalPosition && (
           <GeolocateControl
             position="top-right"
             trackUserLocation
@@ -181,14 +206,14 @@ export function MapView({
             showUserLocation={false}
             positionOptions={{ enableHighAccuracy: true }}
             onGeolocate={(event) =>
-              setLivePosition({
+              setOwnPosition({
                 latitude: event.coords.latitude,
                 longitude: event.coords.longitude,
               })
             }
           />
         )}
-        {showLiveLocation && livePosition && (
+        {showPlayer && livePosition && (
           <Marker
             latitude={livePosition.latitude}
             longitude={livePosition.longitude}
@@ -223,8 +248,8 @@ export function MapView({
         {showMarkers &&
           markers.map((marker, index) => {
             const isNear =
-              showLiveLocation &&
-              livePosition !== null &&
+              showPlayer &&
+              livePosition != null &&
               haversineDistanceKm(livePosition, marker) < NEAR_STOP_KM;
 
             return (

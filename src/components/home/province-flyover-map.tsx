@@ -12,6 +12,7 @@ import Map, {
 } from "react-map-gl/maplibre";
 import type { StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { loadMaplibre } from "@/lib/maps/maplibre";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { ProvinceFlyoverData } from "@/lib/ui/province-flyover";
 import {
@@ -114,15 +115,6 @@ function buildFlyoverStyle(origin: string): StyleSpecification {
   };
 }
 
-/** Vista de toda la provincia: desde el mar, mirando hacia la cordillera. */
-const OVERVIEW = {
-  longitude: -71.12,
-  latitude: -32.4,
-  zoom: 9.2,
-  pitch: 60,
-  bearing: 72,
-};
-
 /** Zoom de cada parada: cerca, pero dentro del detalle que hay (zoom 12). */
 const STOP_ZOOM = 11.6;
 const FLY_MS = 4200;
@@ -166,7 +158,7 @@ export function ProvinceFlyoverMap({
   const lastInteractionRef = useRef(0);
   const [reducedMotion] = useState(prefersReducedMotion);
 
-  const { stops, villages } = data;
+  const { stops, villages, overview } = data;
   const current = index === null ? null : stops[index];
 
   // Los pueblos (menos las cabeceras, que van como marcador con nombre) se
@@ -206,10 +198,10 @@ export function ProvinceFlyoverMap({
             bearing: 55 + ((next ?? 0) % 3) * 22,
           }
         : {
-            center: [OVERVIEW.longitude, OVERVIEW.latitude] as [number, number],
-            zoom: OVERVIEW.zoom,
-            pitch: OVERVIEW.pitch,
-            bearing: OVERVIEW.bearing,
+            center: [overview.longitude, overview.latitude] as [number, number],
+            zoom: overview.zoom,
+            pitch: overview.pitch,
+            bearing: overview.bearing,
           };
       if (reducedMotion) {
         map.jumpTo(camera);
@@ -220,7 +212,7 @@ export function ProvinceFlyoverMap({
         map.flyTo({ ...camera, duration: FLY_MS, essential: true, curve: 1.1 });
       }
     },
-    [stops, reducedMotion],
+    [stops, overview, reducedMotion],
   );
 
   // Recorrido automático: vuela a cada comuna, se queda un momento mostrando
@@ -361,8 +353,9 @@ export function ProvinceFlyoverMap({
     <div className="relative h-full w-full">
       <Map
         ref={mapRef}
+        mapLib={loadMaplibre()}
         mapStyle={mapStyle}
-        initialViewState={OVERVIEW}
+        initialViewState={overview}
         pixelRatio={pixelRatio}
         interactiveLayerIds={["villages"]}
         onClick={openVillage}
@@ -458,7 +451,7 @@ export function ProvinceFlyoverMap({
 
       <div className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-col gap-2 sm:inset-x-4 sm:bottom-4">
         <div
-          key={current?.communeSlug ?? "overview"}
+          key={current?.id ?? "overview"}
           aria-live="polite"
           className="animate-stop-in pointer-events-auto max-w-sm rounded-2xl border border-white/10 bg-[#0b0814]/85 p-3 text-white shadow-[0_8px_30px_-12px_rgba(0,0,0,0.7)] sm:p-4"
         >
@@ -468,10 +461,12 @@ export function ProvinceFlyoverMap({
                 {current.name}
               </p>
               <p className="text-xs text-white/70">
-                {t("stats", {
-                  villages: current.villages,
-                  places: current.attractions,
-                })}
+                {current.villages === null
+                  ? t("attractions", { places: current.attractions })
+                  : t("stats", {
+                      villages: current.villages,
+                      places: current.attractions,
+                    })}
               </p>
               {current.summary && (
                 <p className="mt-2 line-clamp-2 text-sm text-white/85 sm:line-clamp-3">
@@ -479,10 +474,17 @@ export function ProvinceFlyoverMap({
                 </p>
               )}
               <Link
-                href={{
-                  pathname: "/explorar",
-                  query: { comuna: current.communeSlug },
-                }}
+                href={
+                  current.localitySlug
+                    ? {
+                        pathname: "/pueblos/[slug]",
+                        params: { slug: current.localitySlug },
+                      }
+                    : {
+                        pathname: "/explorar",
+                        query: { comuna: current.communeSlug },
+                      }
+                }
                 className="bg-accent text-accent-foreground mt-3 inline-block rounded-full px-4 py-2 text-sm font-medium"
               >
                 {t("explore", { name: current.name })}
@@ -524,7 +526,7 @@ export function ProvinceFlyoverMap({
           </button>
           {stops.map((stop, stopIndex) => (
             <button
-              key={stop.communeSlug}
+              key={stop.id}
               type="button"
               onClick={() => jump(stopIndex)}
               aria-pressed={index === stopIndex}

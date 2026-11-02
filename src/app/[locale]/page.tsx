@@ -1,5 +1,4 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { HomeSearchForm } from "@/components/home/home-search-form";
 import { RouteCard } from "@/components/route/route-card";
 import { MunicipalityBanner } from "@/components/home/municipality-banner";
@@ -14,8 +13,13 @@ import { listLocalities } from "@/lib/data/localities";
 import { listPlaces } from "@/lib/data/places";
 import { buildProvinceFlyover } from "@/lib/ui/province-flyover";
 import { ProvinceFlyover } from "@/components/home/province-flyover";
+import { LegendCard } from "@/components/legend/legend-card";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
-import { SCENE_SRC, getSceneForCategory } from "@/lib/ui/scene-backgrounds";
+import {
+  SCENE_POSITION,
+  SCENE_SRC,
+  getSceneForCategory,
+} from "@/lib/ui/scene-backgrounds";
 import type { Metadata } from "next";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 
@@ -24,9 +28,11 @@ export function generateStaticParams() {
 }
 
 const INTENT_CATEGORIES = [
-  { slug: "naturaleza", key: "nature" as const, icon: "mountain" },
   { slug: "gastronomia", key: "gastronomy" as const, icon: "utensils" },
+  { slug: "alojamiento", key: "lodging" as const, icon: "cama" },
+  { slug: "naturaleza", key: "nature" as const, icon: "mountain" },
   { slug: "cultura", key: "culture" as const, icon: "landmark" },
+  { slug: "recreacion", key: "leisure" as const, icon: "recreacion" },
   { slug: "playa", key: "beach" as const, icon: "waves" },
 ];
 
@@ -75,6 +81,13 @@ export default async function HomePage({
     listPlaces(locale),
   ]);
   const flyover = buildProvinceFlyover(communes, localities, places);
+  // Solo las categorías con lugares reales: en un sitio acotado a una comuna
+  // (lib/site-scope.ts) una postal que lleva a una lista vacía confunde.
+  const intents = INTENT_CATEGORIES.map((intent) => ({
+    ...intent,
+    count: places.filter((place) => place.categorySlugs.includes(intent.slug))
+      .length,
+  })).filter((intent) => intent.count > 0);
 
   return (
     <main className="flex flex-1 flex-col gap-8">
@@ -85,8 +98,11 @@ export default async function HomePage({
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-cover [background-position:85%_70%]"
-          style={{ backgroundImage: `url(${SCENE_SRC.atardecer})` }}
+          className="pointer-events-none absolute inset-0 bg-cover"
+          style={{
+            backgroundImage: `url(${SCENE_SRC.cerro})`,
+            backgroundPosition: SCENE_POSITION.cerro,
+          }}
         />
         <div
           aria-hidden="true"
@@ -100,33 +116,41 @@ export default async function HomePage({
         />
         <SparkleField />
 
-        <header className="relative flex items-start justify-between gap-4">
-          <p className="text-xs font-semibold tracking-wide text-amber-300 uppercase">
-            {t("provinceLabel")}
-          </p>
-          <LocaleSwitcher />
-        </header>
+        <p className="relative text-xs font-semibold tracking-wide text-amber-300 uppercase">
+          {t("provinceLabel")}
+        </p>
 
-        <h1 className="font-display relative text-3xl leading-tight font-semibold tracking-wide text-balance [text-shadow:0_2px_18px_rgba(7,6,12,0.85)] sm:text-4xl">
+        {/* Desde sm: el texto ocupa la mitad izquierda; la derecha es del
+            diablo de la escena (sin taparle la cara). */}
+        <h1 className="font-display relative text-3xl leading-tight font-semibold tracking-wide text-balance [text-shadow:0_2px_18px_rgba(7,6,12,0.85)] sm:max-w-[62%] sm:text-4xl">
           {t("title")}
         </h1>
-        <p className="relative max-w-prose text-white/70">{t("subtitle")}</p>
+        <p className="relative max-w-prose text-white/70 sm:max-w-[62%]">
+          {t("subtitle")}
+        </p>
 
-        <HomeSearchForm />
+        <div className="relative sm:max-w-[62%]">
+          <HomeSearchForm />
+        </div>
       </div>
 
       <ProvinceFlyover data={flyover} />
+
+      {/* La leyenda que le da nombre al sitio (página /leyenda). */}
+      <section className="reveal px-4">
+        <LegendCard />
+      </section>
 
       <section className="reveal px-4">
         <h2 className="mb-3 text-lg font-medium">{t("intent.title")}</h2>
         {/* Postales por categoría: cada una con la escena del diablito que le
             corresponde (playa, cerro, pueblo, dulces — ver
             lib/ui/scene-backgrounds.ts) y cuántos lugares reales tiene. */}
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {INTENT_CATEGORIES.map((intent) => {
-            const count = places.filter(
-              (place) => place.categorySlug === intent.slug,
-            ).length;
+        <ul
+          className={`grid grid-cols-2 gap-3 ${intents.length > 2 ? "sm:grid-cols-4" : ""}`}
+        >
+          {intents.map((intent) => {
+            const { count } = intent;
             return (
               <li key={intent.slug}>
                 <Link
@@ -138,9 +162,11 @@ export default async function HomePage({
                 >
                   <span
                     aria-hidden="true"
-                    className="absolute inset-0 bg-cover [background-position:78%_75%] transition-transform duration-700 ease-out group-hover:scale-110"
+                    className="absolute inset-0 bg-cover transition-transform duration-700 ease-out group-hover:scale-110"
                     style={{
                       backgroundImage: `url(${SCENE_SRC[getSceneForCategory(intent.slug)]})`,
+                      backgroundPosition:
+                        SCENE_POSITION[getSceneForCategory(intent.slug)],
                     }}
                   />
                   <span

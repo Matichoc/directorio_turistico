@@ -1,36 +1,59 @@
 import type { PlaceTheme } from "@/lib/ui/category-gradient";
 
 /**
- * Fondos ilustrados con el diablito (casco minero con linterna, poncho,
- * cola de flecha) en distintos escenarios de la zona — pedido del usuario:
- * "que el diablito aparezca o en la playa, o en el cerro, o con poncho,
- * según como lo busquen y donde naveguen". Son SVG en `public/fondos/`
- * (compuestos para que el diablito quede a la derecha y el título a la
- * izquierda); para cambiarlos por arte raster (webp) basta reemplazar el
- * archivo y su extensión en `SCENE_SRC`.
+ * Fondos ilustrados con el diablo de Petorca en distintos escenarios de la
+ * comuna — pedido del usuario: "que el diablito aparezca o en la playa, o en
+ * el cerro, o con poncho, según como lo busquen y donde naveguen". Arte
+ * aprobado (frac, poncho y cucharón de madera con borla; ver
+ * docs/PROMPTS-IMAGENES.md) en `public/fondos/*.webp`, compuesto con el diablo
+ * a la derecha y el título a la izquierda. `playa` y `dulces` son de la
+ * versión de la provincia y siguen en SVG.
  */
 export type SceneId =
   "atardecer" | "playa" | "cerro" | "pueblo" | "dulces" | "tunel";
 
 export const SCENE_SRC: Record<SceneId, string> = {
-  atardecer: "/fondos/atardecer.svg",
+  atardecer: "/fondos/atardecer.webp",
   playa: "/fondos/playa.svg",
-  cerro: "/fondos/cerro.svg",
-  pueblo: "/fondos/pueblo.svg",
+  cerro: "/fondos/cerro.webp",
+  pueblo: "/fondos/pueblo.webp",
   dulces: "/fondos/dulces.svg",
-  tunel: "/fondos/tunel.svg",
+  tunel: "/fondos/tunel.webp",
 };
 
+/**
+ * Punto de la escena que tiene que quedar a la vista al recortarla
+ * (`background-position`): la cara y el torso del diablo. Usarlo en todo
+ * lugar que muestre una escena, así una cabecera ancha o una postal angosta
+ * nunca le cortan la cabeza.
+ */
+export const SCENE_POSITION: Record<SceneId, string> = {
+  // Foco en la cara del diablo campesino (entrega 2026-11-02). En el
+  // atardecer está al centro: no sirve para cabeceras anchas con texto a la
+  // izquierda (ahí se usa el cerro), sí para las postales altas.
+  atardecer: "55% 16%",
+  playa: "85% 70%",
+  cerro: "72% 14%",
+  pueblo: "68% 16%",
+  dulces: "85% 70%",
+  tunel: "75% 14%",
+};
+
+// Gastronomía y alojamiento van al pueblo en fiesta y recreación al cerro:
+// la escena de dulces es de La Ligua (versión provincia) y trae el diablo
+// viejo.
 const SCENE_BY_CATEGORY: Record<string, SceneId> = {
   playa: "playa",
   naturaleza: "cerro",
   cultura: "pueblo",
-  gastronomia: "dulces",
+  gastronomia: "pueblo",
+  alojamiento: "atardecer",
+  recreacion: "cerro",
 };
 
-/** Escena según la categoría que se está mirando; sin categoría, el atardecer general. */
+/** Escena según la categoría que se está mirando; sin categoría, el cerro (el valle de noche). */
 export function getSceneForCategory(categorySlug?: string | null): SceneId {
-  return (categorySlug && SCENE_BY_CATEGORY[categorySlug]) || "atardecer";
+  return (categorySlug && SCENE_BY_CATEGORY[categorySlug]) || "cerro";
 }
 
 /** Escena de una ruta según su tema (túneles, costa, patrimonio). */
@@ -45,7 +68,7 @@ export function getSceneForRoute(routeSlug?: string | null): SceneId {
 const SCENE_BY_THEME: Record<PlaceTheme, SceneId> = {
   playa: "playa",
   dulces: "dulces",
-  sabores: "dulces",
+  sabores: "pueblo",
   historia: "pueblo",
   naturaleza: "cerro",
   diablo: "tunel",

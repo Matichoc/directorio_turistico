@@ -1,12 +1,16 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { isCommuneInScope } from "@/lib/site-scope";
 import type {
   Locale,
   PublicationStatus,
   VerificationStatus,
 } from "@/types/database";
 import type { Route, RouteCard, RouteStop } from "@/types/domain";
+import { contentLocales, pickTranslation } from "@/i18n/content";
 
 const ROUTE_QUERY = `id, slug, estimated_duration_minutes, cover_image,
    publication_status,
@@ -16,7 +20,8 @@ const ROUTE_QUERY = `id, slug, estimated_duration_minutes, cover_image,
      places(slug, latitude, longitude, icon,
        place_translations(name, short_description, locale),
        place_images(storage_path, position),
-       categories(slug)))` as const;
+       categories!places_category_id_fkey(slug),
+       communes(slug)))` as const;
 
 interface RouteQueryResult {
   id: string;
@@ -46,11 +51,26 @@ interface RouteQueryResult {
       }[];
       place_images: { storage_path: string; position: number }[];
       categories: { slug: string } | null;
+      communes: { slug: string } | null;
     } | null;
   }[];
 }
 
-export async function getRouteBySlug(
+/**
+ * Una ruta entra al sitio solo si todas sus paradas están en las comunas del
+ * sitio (`lib/site-scope.ts`): una ruta a medias, con paradas que el sitio
+ * no muestra, confundiría más de lo que ayuda.
+ */
+function isRouteInScope(
+  stops: { places: { communes: { slug: string } | null } | null }[],
+): boolean {
+  return (
+    stops.length > 0 &&
+    stops.every((stop) => isCommuneInScope(stop.places?.communes?.slug))
+  );
+}
+
+async function getRouteBySlugUncached(
   slug: string,
   locale: Locale,
 ): Promise<Route | null> {
@@ -58,20 +78,20 @@ export async function getRouteBySlug(
     return null;
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("routes")
     .select<typeof ROUTE_QUERY, RouteQueryResult>(ROUTE_QUERY)
     .eq("slug", slug)
-    .eq("route_translations.locale", locale)
+    .in("route_translations.locale", contentLocales(locale))
     .eq("publication_status", "published")
     .maybeSingle();
 
-  if (error || !data) {
+  if (error || !data || !isRouteInScope(data.route_stops ?? [])) {
     return null;
   }
 
-  const translation = data.route_translations[0];
+  const translation = pickTranslation(data.route_translations, locale);
   const stops: RouteStop[] = (data.route_stops ?? [])
     .slice()
     .sort((a, b) => a.position - b.position)
@@ -85,10 +105,9 @@ export async function getRouteBySlug(
         placeId: stop.place_id,
         placeSlug: stop.places?.slug ?? "",
         placeName:
-          stop.places?.place_translations.find((t) => t.locale === locale)
-            ?.name ?? "",
+          pickTranslation(stop.places?.place_translations, locale)?.name ?? "",
         placeShortDescription:
-          stop.places?.place_translations.find((t) => t.locale === locale)
+          pickTranslation(stop.places?.place_translations, locale)
             ?.short_description ?? null,
         placePhotoUrl: firstPhoto?.storage_path ?? null,
         categorySlug: stop.places?.categories?.slug ?? null,
@@ -97,8 +116,7 @@ export async function getRouteBySlug(
         longitude: stop.places?.longitude ?? 0,
         position: stop.position,
         notes:
-          stop.route_stop_translations.find((t) => t.locale === locale)
-            ?.notes ?? null,
+          pickTranslation(stop.route_stop_translations, locale)?.notes ?? null,
       };
     });
 
@@ -113,11 +131,15 @@ export async function getRouteBySlug(
     stops,
   };
 }
+export const getRouteBySlug = cachedContent(
+  getRouteBySlugUncached,
+  "getRouteBySlug",
+);
 
 const ROUTES_LIST_QUERY = `id, slug, estimated_duration_minutes, cover_image,
    route_translations!inner(name, description, locale),
    route_stops(id, position,
-     places(place_images(storage_path, position)))` as const;
+     places(communes(slug), place_images(storage_path, position)))` as const;
 
 interface RouteListQueryResult {
   id: string;
@@ -133,6 +155,7 @@ interface RouteListQueryResult {
     id: string;
     position: number;
     places: {
+      communes: { slug: string } | null;
       place_images: { storage_path: string; position: number }[];
     } | null;
   }[];
@@ -162,7 +185,7 @@ export interface AdminRouteListItem {
 const ADMIN_ROUTES_LIST_QUERY =
   `id, slug, publication_status, status_changed_at,
    route_translations!inner(name, locale),
-   route_stops(id)` as const;
+   route_stops(id, places(communes(slug)))` as const;
 
 interface AdminRouteListQueryResult {
   id: string;
@@ -170,7 +193,10 @@ interface AdminRouteListQueryResult {
   publication_status: PublicationStatus;
   status_changed_at: string;
   route_translations: { name: string; locale: Locale }[];
-  route_stops: { id: string }[];
+  route_stops: {
+    id: string;
+    places: { communes: { slug: string } | null } | null;
+  }[];
 }
 
 /** Lista TODAS las rutas (cualquier `publication_status`) para el panel admin. */
@@ -192,14 +218,22 @@ export async function listAdminRoutes(): Promise<AdminRouteListItem[]> {
     return [];
   }
 
-  return data.map((route) => ({
-    id: route.id,
-    slug: route.slug,
-    name: route.route_translations[0]?.name ?? route.slug,
-    stopsCount: route.route_stops?.length ?? 0,
-    publicationStatus: route.publication_status,
-    statusChangedAt: route.status_changed_at,
-  }));
+  // Igual que el sitio (lib/site-scope.ts): fuera las rutas con paradas de
+  // otras comunas; una ruta recién creada, sin paradas, sí se lista.
+  return data
+    .filter((route) =>
+      route.route_stops.every((stop) =>
+        isCommuneInScope(stop.places?.communes?.slug),
+      ),
+    )
+    .map((route) => ({
+      id: route.id,
+      slug: route.slug,
+      name: route.route_translations[0]?.name ?? route.slug,
+      stopsCount: route.route_stops?.length ?? 0,
+      publicationStatus: route.publication_status,
+      statusChangedAt: route.status_changed_at,
+    }));
 }
 
 export interface AdminRouteTranslation {
@@ -280,6 +314,7 @@ export async function getAdminRouteById(
   const translations: Record<Locale, AdminRouteTranslation> = {
     es: { ...EMPTY_ROUTE_TRANSLATION },
     en: { ...EMPTY_ROUTE_TRANSLATION },
+    pt: { ...EMPTY_ROUTE_TRANSLATION },
   };
   for (const translation of data.route_translations) {
     translations[translation.locale] = {
@@ -312,7 +347,7 @@ export async function getAdminRouteById(
   };
 }
 
-export async function listRoutes(
+async function listRoutesUncached(
   locale: Locale,
   limit?: number,
 ): Promise<RouteCard[]> {
@@ -320,26 +355,26 @@ export async function listRoutes(
     return [];
   }
 
-  const supabase = await createClient();
-  let builder = supabase
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
     .from("routes")
     .select<typeof ROUTES_LIST_QUERY, RouteListQueryResult>(ROUTES_LIST_QUERY)
     .eq("publication_status", "published")
-    .eq("route_translations.locale", locale)
+    .in("route_translations.locale", contentLocales(locale))
     .order("slug");
-
-  if (limit) {
-    builder = builder.limit(limit);
-  }
-
-  const { data, error } = await builder;
 
   if (error || !data) {
     return [];
   }
 
-  return data.map((route) => {
-    const translation = route.route_translations[0];
+  // El tope se aplica después de filtrar por alcance: antes, podría dejar
+  // fuera rutas válidas por contar las de otras comunas.
+  const inScope = data.filter((route) =>
+    isRouteInScope(route.route_stops ?? []),
+  );
+
+  return (limit ? inScope.slice(0, limit) : inScope).map((route) => {
+    const translation = pickTranslation(route.route_translations, locale);
     return {
       id: route.id,
       slug: route.slug,
@@ -352,3 +387,4 @@ export async function listRoutes(
     };
   });
 }
+export const listRoutes = cachedContent(listRoutesUncached, "listRoutes");

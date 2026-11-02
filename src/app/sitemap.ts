@@ -28,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { href: "/", priority: 1 },
     { href: "/explorar", priority: 0.9 },
     { href: "/rutas", priority: 0.8 },
+    { href: "/leyenda", priority: 0.7 },
     { href: "/informacion", priority: 0.4 },
     { href: "/privacidad", priority: 0.2 },
     ...routes.map((route) => ({
@@ -59,12 +60,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority,
       alternates: {
-        languages: Object.fromEntries(
-          routing.locales.map((alt) => [
-            alt,
-            `${base}${localizedPath(href, alt)}`,
-          ]),
-        ),
+        languages: {
+          ...Object.fromEntries(
+            routing.locales.map((alt) => [
+              alt,
+              `${base}${localizedPath(href, alt)}`,
+            ]),
+          ),
+          // Igual que las páginas (lib/seo.ts): sin idioma, el español.
+          "x-default": `${base}${localizedPath(href, routing.defaultLocale)}`,
+        },
       },
     })),
   );

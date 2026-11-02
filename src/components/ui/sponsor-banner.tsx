@@ -54,6 +54,9 @@ export function SponsorBanner({ sponsors }: { sponsors: Sponsor[] }) {
             alt={sponsor.name}
             width={2000}
             height={2000}
+            // Se ve a 56–64 px de alto: sin `sizes` el navegador pedía la
+            // versión de 3840 px en cada página.
+            sizes="160px"
             className="h-14 w-auto shrink-0 rounded-lg sm:h-16"
           />
           <div className="flex flex-col leading-tight">

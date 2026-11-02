@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { refreshPublicContent } from "./refresh";
 import { createClient } from "@/lib/supabase/server";
 
 const tagFormSchema = z.object({
@@ -37,6 +38,7 @@ export async function createTag(input: TagFormInput): Promise<void> {
     throw new Error(`No se pudo crear el tag: ${error.message}`);
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/comunas-categorias");
 }
 
@@ -50,5 +52,6 @@ export async function deleteTag(id: string): Promise<void> {
     );
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/comunas-categorias");
 }

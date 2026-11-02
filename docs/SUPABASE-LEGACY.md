@@ -143,9 +143,20 @@ Las cuentas de usuario (`auth.users`) también son compartidas:
   siendo la misma cuenta: entra a `/admin` con el mismo correo y contraseña.
 - **Inicio de sesión anónimo** (lo usan "Mi recorrido" y los "me gusta"):
   Authentication → Sign In / Providers → **Allow anonymous sign-ins** tiene
-  que estar activado. Es una opción del proyecto entero: si Papudo ya la usa,
-  ya está activa. Antes de activarla, confirma que no cambia nada que Papudo
-  necesite.
+  que estar activado. Es una opción del proyecto entero. **Activado el
+  2026-11-01** (estaba apagado y por eso Mi recorrido, los "me gusta" y los
+  comentarios no funcionaban). Comprobado en local contra la base real: dar
+  "me gusta" y agregar al recorrido funcionan (la prueba se deshizo).
+  **Revisado el 2026-11-01 contra el repo de Papudo** (`directorio_papudo`,
+  migraciones 0001–0029): activarla no le da permisos de más a nadie en
+  Papudo. Una sesión anónima entra como `authenticated`, pero en Papudo todo
+  permiso de escritura o moderación pasa por `has_role(...)`, que exige una
+  fila activa en `public.profiles` (un visitante anónimo no la tiene), y
+  `verify_entity()` también lo revisa; lo que queda abierto a cualquiera
+  (lecturas públicas) ya lo estaba para `anon`. En el diablo, `/admin` exige
+  estar en `legacy.admin_users`. Recomendado al activarla: el límite de
+  inicios anónimos por IP de Supabase (Authentication → Rate Limits) y, más
+  adelante, CAPTCHA.
 - **URL Configuration:** agrega el link del sitio del diablo a **Redirect
   URLs** (`https://<sitio-del-diablo>/**`) **sin cambiar el Site URL**, que
   hoy es de Papudo.
@@ -160,6 +171,58 @@ Las cuentas de usuario (`auth.users`) también son compartidas:
 - [ ] `/admin` deja entrar y guardar un cambio.
 - [ ] "Mi recorrido": agregar un lugar funciona.
 - [ ] El sitio de Papudo sigue exactamente igual.
+
+## Rutas de la comuna de Petorca (`petorca-rutas.sql`)
+
+El sitio acotado a Petorca (rama `petorca`) muestra solo rutas con todas sus
+paradas en la comuna. `supabase/manual/petorca-rutas.sql` carga las dos:
+"Donde el Diablo perdió el poncho" (Pedegua → Chincolco, slug
+`ruta-del-diablo-pedegua-chincolco`) y "Ruta Ferroviaria: de Pedegua a Las
+Palmas". El nombre de la primera lo decidió el usuario (2026-11-01, después de
+probar "Ruta del Diablo: de Pedegua a Chincolco"); para cambiarlo en la base
+basta volver a correr el script. Solo toca esas 2 rutas en `legacy`, verifica antes
+que las 6 paradas existan en Petorca y es repetible. Se corre igual que el
+paso 2 (SQL Editor → pegar → Run). Estado: **hecho (2026-11-01)**. Comprobado
+desde fuera con la llave pública: las 2 rutas están publicadas y verificadas,
+con sus paradas en orden (5 y 3), sin ruta con el nombre viejo; las 3 rutas de
+la provincia y los 21 lugares de Papudo (`public`) siguen iguales.
+
+Ojo: como la base es una sola, mientras el sitio de la provincia siga
+publicado también va a mostrar estas 2 rutas (junto a la Ruta del Diablo).
+
+## Copia de desarrollo (`legacy_dev`)
+
+`supabase/manual/crear-legacy-dev.sql` crea en el mismo proyecto el esquema
+`legacy_dev`, copia completa de `legacy` para el ambiente de desarrollo
+(rama `develop` y vistas previas). Pasos y reglas en `docs/DESARROLLO.md`.
+
+## Scripts de contenido de Petorca (2026-11-01)
+
+Se pegan tal cual en el SQL Editor; cada uno se aplica solo en `legacy` y
+`legacy_dev` (si existe), es repetible y, si algo falla, no cambia nada:
+
+- `petorca-nombres-oficiales.sql`: nombre propio de las 2 rutas; portadas
+  nuevas solo en `legacy_dev`.
+- `categorias-petorca.sql`: categorías de Explorar (alojamiento, recreación,
+  nombres nuevos) y la tabla `place_secondary_categories` (varias categorías
+  por lugar). El sitio funciona antes y después de correrlo.
+- `admin-roles.sql`: roles del equipo del panel (`admin`/`editor`) y
+  registro de cambios (`audit_log`). Correr antes de usar `/admin/personas`.
+- `lugares-petorca-2026-11.sql`: 10 lugares nuevos con ubicación de
+  OpenStreetMap ("Pendiente de verificación"), Petroglifos de Chalaco y
+  categorías adicionales de los lugares que ya estaban.
+- `lugares-petorca-2026-11-b.sql`: Panal de Hierro Viejo, Viña El Sobrante
+  y los datos completos de El Rincón Criollo (no pisa lo editado).
+- `chalaco.sql`: Chalaco como pueblo nuevo (coordenada de OpenStreetMap,
+  resumen con fuente FUCOA).
+- `petorca-portadas.sql`: portadas nuevas en `legacy`, recién cuando `main`
+  tenga los archivos.
+- `portugues-1-idioma.sql` y después `portugues-2-contenido.sql` (en dos
+  corridas: Postgres no deja usar un idioma nuevo en la misma transacción
+  en que se agrega): suman el portugués al tipo `locale` del diablo (no al
+  de Papudo) y el contenido de Petorca traducido, sin pisar lo editado.
+  Correr el paso 1 **antes** de publicar el código con portugués: sin el
+  idioma en la base, las páginas en `/pt` fallan.
 
 ## Cambios futuros en la base del diablo
 

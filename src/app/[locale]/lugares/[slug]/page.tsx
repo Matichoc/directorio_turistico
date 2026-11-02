@@ -5,6 +5,7 @@ import { listApprovedComments } from "@/lib/data/comments";
 import { resolveLocale } from "@/i18n/utils";
 import { Link } from "@/i18n/navigation";
 import { ShareButton } from "@/components/place/share-button";
+import { ListenButton } from "@/components/ui/listen-button";
 import { LikeButton } from "@/components/place/like-button";
 import { PlaceCommentForm } from "@/components/place/place-comment-form";
 import { AddToTripButton } from "@/components/trip/add-to-trip-button";
@@ -12,8 +13,15 @@ import { MapView } from "@/components/map/map-view";
 import { PlacePhotoHero } from "@/components/place/place-photo-hero";
 import { RouteStopNav } from "@/components/route/route-stop-nav";
 import type { Metadata } from "next";
-import { buildPageMetadata, truncateDescription } from "@/lib/seo";
+import {
+  buildPageMetadata,
+  getSiteUrl,
+  localizedPath,
+  truncateDescription,
+} from "@/lib/seo";
+import { placeJsonLd } from "@/lib/seo-json-ld";
 import { TrackEvent } from "@/components/analytics/track-event";
+import { JsonLd } from "@/components/seo/json-ld";
 
 export async function generateMetadata({
   params,
@@ -58,6 +66,15 @@ export default async function PlaceDetailPage({
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
       <TrackEvent event={{ name: "place_view", properties: { slug } }} />
+      <JsonLd
+        data={placeJsonLd(place, {
+          siteUrl: getSiteUrl(),
+          path: localizedPath(
+            { pathname: "/lugares/[slug]", params: { slug } },
+            locale,
+          ),
+        })}
+      />
       {routeSlug && (
         <RouteStopNav routeSlug={routeSlug} placeSlug={slug} locale={locale} />
       )}
@@ -91,6 +108,14 @@ export default async function PlaceDetailPage({
             {t("verificationPending")}
           </span>
         )}
+        <ListenButton
+          name={place.name}
+          segments={[
+            `${place.name}.`,
+            [place.localityName, place.communeName].filter(Boolean).join(", "),
+            place.description ?? place.shortDescription,
+          ]}
+        />
       </header>
 
       <PlacePhotoHero

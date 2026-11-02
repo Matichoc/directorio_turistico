@@ -2,11 +2,18 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { refreshPublicContent } from "./refresh";
 import { createClient } from "@/lib/supabase/server";
+import { portugueseCleared, savedTranslations } from "./translations";
 
 const routeLocaleContentSchema = z.object({
   name: z.string().trim().min(1, "Falta el nombre"),
   description: z.string().trim().optional().or(z.literal("")),
+});
+
+/** Portugués: opcional; sin nombre no se guarda (ver translations.ts). */
+const routeOptionalLocaleSchema = routeLocaleContentSchema.extend({
+  name: z.string().trim(),
 });
 
 const routeFormSchema = z.object({
@@ -29,6 +36,7 @@ const routeFormSchema = z.object({
   translations: z.object({
     es: routeLocaleContentSchema,
     en: routeLocaleContentSchema,
+    pt: routeOptionalLocaleSchema.optional(),
   }),
 });
 
@@ -70,11 +78,11 @@ export async function createRoute(
   const { error: translationsError } = await supabase
     .from("route_translations")
     .insert(
-      (["es", "en"] as const).map((locale) => ({
+      savedTranslations(parsed.translations).map(([locale, content]) => ({
         route_id: route.id,
         locale,
-        name: parsed.translations[locale].name,
-        description: normalize(parsed.translations[locale].description),
+        name: content.name,
+        description: normalize(content.description),
       })),
     );
 
@@ -84,6 +92,7 @@ export async function createRoute(
     );
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/rutas");
   return { id: route.id };
 }
@@ -114,11 +123,11 @@ export async function updateRoute(
   const { error: translationsError } = await supabase
     .from("route_translations")
     .upsert(
-      (["es", "en"] as const).map((locale) => ({
+      savedTranslations(parsed.translations).map(([locale, content]) => ({
         route_id: id,
         locale,
-        name: parsed.translations[locale].name,
-        description: normalize(parsed.translations[locale].description),
+        name: content.name,
+        description: normalize(content.description),
       })),
       { onConflict: "route_id,locale" },
     );
@@ -129,6 +138,15 @@ export async function updateRoute(
     );
   }
 
+  if (portugueseCleared(parsed.translations)) {
+    await supabase
+      .from("route_translations")
+      .delete()
+      .eq("route_id", id)
+      .eq("locale", "pt");
+  }
+
+  refreshPublicContent();
   revalidatePath("/admin/rutas");
   revalidatePath(`/admin/rutas/${id}`);
 }
@@ -152,6 +170,7 @@ export async function setRoutePublicationStatus(
     throw new Error(`No se pudo cambiar el estado: ${error.message}`);
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/rutas");
 }
 
@@ -163,6 +182,7 @@ export async function deleteRoute(id: string): Promise<void> {
     throw new Error(`No se pudo eliminar la ruta: ${error.message}`);
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/rutas");
 }
 
@@ -226,6 +246,7 @@ export async function addRouteStop(
     throw new Error(`No se pudo agregar la parada: ${error.message}`);
   }
 
+  refreshPublicContent();
   revalidatePath(`/admin/rutas/${routeId}`);
 }
 
@@ -256,6 +277,7 @@ export async function removeRouteStop(
     );
   }
 
+  refreshPublicContent();
   revalidatePath(`/admin/rutas/${routeId}`);
 }
 
@@ -286,5 +308,6 @@ export async function moveRouteStop(
   [order[index], order[targetIndex]] = [order[targetIndex], order[index]];
   await renumberStops(supabase, order);
 
+  refreshPublicContent();
   revalidatePath(`/admin/rutas/${routeId}`);
 }

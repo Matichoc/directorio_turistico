@@ -1,14 +1,18 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { listPlacesByLocalityId } from "@/lib/data/places";
+import { isSiteScoped, SITE_COMMUNE_SLUGS } from "@/lib/site-scope";
 import type { Locale } from "@/types/database";
 import type { Locality, LocalityWithPlaces } from "@/types/domain";
+import { contentLocales, pickTranslation } from "@/i18n/content";
 
 const LOCALITIES_QUERY =
   `id, slug, latitude, longitude, summary_source_url, summary_source_label,
    locality_translations!inner(name, summary, locale),
-   communes!inner(id, commune_translations!inner(name, locale))` as const;
+   communes!inner(id, slug, commune_translations!inner(name, locale))` as const;
 
 interface LocalityQueryResult {
   id: string;
@@ -24,12 +28,13 @@ interface LocalityQueryResult {
   }[];
   communes: {
     id: string;
+    slug: string;
     commune_translations: { name: string; locale: Locale }[];
   } | null;
 }
 
-function mapLocality(row: LocalityQueryResult): Locality {
-  const translation = row.locality_translations[0];
+function mapLocality(row: LocalityQueryResult, locale: Locale): Locality {
+  const translation = pickTranslation(row.locality_translations, locale);
   return {
     id: row.id,
     slug: row.slug,
@@ -40,24 +45,29 @@ function mapLocality(row: LocalityQueryResult): Locality {
     summarySourceUrl: translation?.summary ? row.summary_source_url : null,
     summarySourceLabel: translation?.summary ? row.summary_source_label : null,
     communeId: row.communes?.id ?? "",
-    communeName: row.communes?.commune_translations[0]?.name ?? "",
+    communeName:
+      pickTranslation(row.communes?.commune_translations, locale)?.name ?? "",
     latitude: row.latitude,
     longitude: row.longitude,
   };
 }
 
 /** Todos los pueblos, para `/pueblos` (agrupados por comuna en la página). */
-export async function listLocalities(locale: Locale): Promise<Locality[]> {
+async function listLocalitiesUncached(locale: Locale): Promise<Locality[]> {
   if (!isSupabaseConfigured()) {
     return [];
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
+  const supabase = createPublicClient();
+  let builder = supabase
     .from("localities")
     .select<typeof LOCALITIES_QUERY, LocalityQueryResult>(LOCALITIES_QUERY)
-    .eq("locality_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale);
+    .in("locality_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale));
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
 
   if (error || !data) {
     // Sin este log, una columna que falta en la base (migración sin aplicar)
@@ -67,11 +77,15 @@ export async function listLocalities(locale: Locale): Promise<Locality[]> {
   }
 
   return data
-    .map(mapLocality)
+    .map((row) => mapLocality(row, locale))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
+export const listLocalities = cachedContent(
+  listLocalitiesUncached,
+  "listLocalities",
+);
 
-export async function getLocalityBySlug(
+async function getLocalityBySlugUncached(
   slug: string,
   locale: Locale,
 ): Promise<LocalityWithPlaces | null> {
@@ -79,25 +93,32 @@ export async function getLocalityBySlug(
     return null;
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
+  const supabase = createPublicClient();
+  let builder = supabase
     .from("localities")
     .select<typeof LOCALITIES_QUERY, LocalityQueryResult>(LOCALITIES_QUERY)
     .eq("slug", slug)
-    .eq("locality_translations.locale", locale)
-    .eq("communes.commune_translations.locale", locale)
-    .maybeSingle();
+    .in("locality_translations.locale", contentLocales(locale))
+    .in("communes.commune_translations.locale", contentLocales(locale));
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder.maybeSingle();
 
   if (error || !data) {
     if (error) console.error("getLocalityBySlug:", error.message);
     return null;
   }
 
-  const locality = mapLocality(data);
+  const locality = mapLocality(data, locale);
   const places = await listPlacesByLocalityId(locality.id, locale);
 
   return { ...locality, places };
 }
+export const getLocalityBySlug = cachedContent(
+  getLocalityBySlugUncached,
+  "getLocalityBySlug",
+);
 
 export interface AdminLocalityListItem {
   id: string;
@@ -112,7 +133,7 @@ export interface AdminLocalityListItem {
 
 const ADMIN_LOCALITIES_LIST_QUERY = `id, slug, latitude, longitude,
    locality_translations!inner(name, summary, locale),
-   communes!inner(commune_translations!inner(name, locale)),
+   communes!inner(slug, commune_translations!inner(name, locale)),
    places(id)` as const;
 
 interface AdminLocalityListQueryResult {
@@ -136,14 +157,18 @@ export async function listAdminLocalities(): Promise<AdminLocalityListItem[]> {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("localities")
     .select<typeof ADMIN_LOCALITIES_LIST_QUERY, AdminLocalityListQueryResult>(
       ADMIN_LOCALITIES_LIST_QUERY,
     )
     .eq("locality_translations.locale", "es")
-    .eq("communes.commune_translations.locale", "es")
-    .order("slug");
+    .eq("communes.commune_translations.locale", "es");
+  // Igual que el sitio (lib/site-scope.ts): sin borrar los de otras comunas.
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder.order("slug");
 
   if (error || !data) {
     return [];
@@ -225,6 +250,7 @@ export async function getAdminLocalityById(
   const translations: Record<Locale, AdminLocalityTranslation> = {
     es: { ...EMPTY_LOCALITY_TRANSLATION },
     en: { ...EMPTY_LOCALITY_TRANSLATION },
+    pt: { ...EMPTY_LOCALITY_TRANSLATION },
   };
   for (const translation of data.locality_translations) {
     translations[translation.locale] = {
@@ -255,7 +281,7 @@ export interface LocalityOption {
 
 const LOCALITY_OPTIONS_QUERY = `id, slug, commune_id,
    locality_translations!inner(name, locale),
-   communes!inner(commune_translations!inner(name, locale))` as const;
+   communes!inner(slug, commune_translations!inner(name, locale))` as const;
 
 interface LocalityOptionQueryResult {
   id: string;
@@ -275,13 +301,17 @@ export async function listLocalityOptions(): Promise<LocalityOption[]> {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let builder = supabase
     .from("localities")
     .select<typeof LOCALITY_OPTIONS_QUERY, LocalityOptionQueryResult>(
       LOCALITY_OPTIONS_QUERY,
     )
     .eq("locality_translations.locale", "es")
     .eq("communes.commune_translations.locale", "es");
+  if (isSiteScoped()) {
+    builder = builder.in("communes.slug", SITE_COMMUNE_SLUGS);
+  }
+  const { data, error } = await builder;
 
   if (error || !data) {
     return [];

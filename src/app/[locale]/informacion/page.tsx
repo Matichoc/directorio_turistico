@@ -45,17 +45,20 @@ export default async function InfoPage({
   return (
     <main className="flex flex-1 flex-col gap-6 py-8">
       <div className="px-4">
-        <PageHero
-          title={t("info")}
-          subtitle={info("about")}
-          scene="atardecer"
-        />
+        <PageHero title={t("info")} subtitle={info("about")} scene="pueblo" />
       </div>
 
       <MunicipalityBanner municipalities={municipalities} />
 
       <div className="flex flex-col gap-6 px-4">
         <p className="text-foreground/60 text-sm">{info("sponsorNote")}</p>
+
+        <Link
+          href="/leyenda"
+          className="text-accent hover:text-foreground w-fit text-sm font-medium underline underline-offset-2"
+        >
+          {info("legendLink")} →
+        </Link>
 
         <Link
           href="/privacidad"

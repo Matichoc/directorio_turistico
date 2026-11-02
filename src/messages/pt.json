@@ -1,0 +1,382 @@
+{
+  "nav": {
+    "home": "Início",
+    "explore": "Explorar",
+    "routes": "Rotas",
+    "myTrip": "Meu roteiro",
+    "info": "Informações"
+  },
+  "info": {
+    "about": "Um guia feito em Petorca, com dados reais e suas fontes: para que quem chega se apaixone pelo vale, e para que quem mora aqui o mostre com orgulho.",
+    "developmentTitle": "Desenvolvimento",
+    "developmentCredit": "Desenvolvido por Cristóbal Roco, CTO da Matichoc.",
+    "developerTagline": "Apoie seus projetos de IA e com IA.",
+    "developerInstagram": "Instagram: @el.cristo.cl",
+    "developerWhatsapp": "WhatsApp",
+    "sponsorNote": "Patrocinado pela Chocolatería Matichoc — chocolate artesanal feito em La Ligua.",
+    "legendLink": "A lenda do diabo",
+    "privacyLink": "Privacidade"
+  },
+  "home": {
+    "title": "El diablo murió en Petorca",
+    "provinceLabel": "Comuna de Petorca: Pedegua · Petorca · Chincolco · Hierro Viejo",
+    "subtitle": "O vale onde o diabo dançou cueca, perdeu o poncho e ficou para sempre. Túneis do antigo trem, petróglifos com mais de 800 anos, uma igreja de 1640, chicha e empanadas do campo. Venha descobrir… ou redescobrir, se você é daqui.",
+    "searchPlaceholder": "Busque um lugar ou localidade",
+    "featuredRoutes": "Rotas em destaque",
+    "intent": {
+      "title": "Do que você está com vontade hoje?",
+      "nature": "Natureza e aventura",
+      "gastronomy": "Gastronomia",
+      "culture": "Patrimônio e cultura",
+      "beach": "Praia",
+      "lodging": "Hospedagem",
+      "leisure": "Lazer"
+    },
+    "municipality": {
+      "title": "Prefeitura de Petorca",
+      "noLinksYet": "Ainda sem links cadastrados.",
+      "goTo": "Ir para {name}",
+      "linkKinds": {
+        "website": "Site",
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "twitter": "Twitter/X",
+        "phone": "Telefone",
+        "email": "E-mail"
+      }
+    },
+    "flyover": {
+      "title": "Sobrevoe o vale",
+      "subtitle": "De Pedegua a Chincolco, vale acima rumo à cordilheira: o relevo real da comuna em 3D, povoado por povoado.",
+      "play": "▶ Percorrer a comuna",
+      "pause": "❚❚ Pausar",
+      "overview": "Toda a comuna",
+      "overviewTitle": "O vale do rio Petorca",
+      "overviewText": "Da antiga estação de Pedegua aos petróglifos de Chincolco. Toque em um povoado para voar até ele, ou em qualquer ponto de luz para abrir sua ficha.",
+      "stats": "{villages, plural, =0 {sem povoados} one {# povoado} other {# povoados}} · {places, plural, =0 {sem atrativos} one {# atrativo} other {# atrativos}}",
+      "attractions": "{places, plural, =0 {Ainda sem atrativos} one {# atrativo} other {# atrativos}}",
+      "explore": "Ver {name}",
+      "hint": "Use dois dedos (ou Ctrl + roda do mouse) para mover o mapa. Relevo: Terrain Tiles da AWS."
+    }
+  },
+  "explore": {
+    "title": "Explorar",
+    "searchPlaceholder": "Busque um lugar ou localidade",
+    "mapView": "Mapa",
+    "listView": "Lista",
+    "resultsCount": "{count, plural, =0 {Sem resultados} one {# lugar} other {# lugares}}",
+    "noResults": "Não encontramos lugares com esses filtros.",
+    "otherPlaces": "Outros lugares",
+    "villagesOnMap": "{count, plural, one {# povoado} other {# povoados}} no mapa",
+    "subtitle": "Serras, história, sabores do campo e cantos com lenda. Toque em um pino e descubra o que cada povoado esconde, ou mude para Lista.",
+    "communeSummary": "{villages, plural, =0 {sem povoados} one {# povoado} other {# povoados}} · {places, plural, =0 {sem atrativos} one {# atrativo} other {# atrativos}}",
+    "filtersButton": "Filtros",
+    "placesCount": "{count, plural, =0 {Sem atrativos} one {# atrativo} other {# atrativos}}",
+    "pinned": "(fixado aberto)",
+    "viewVillage": "Ver povoado",
+    "filters": {
+      "commune": "Comuna",
+      "category": "Categoria",
+      "features": "Características"
+    },
+    "sectorZoom": "Aproximar de {name}",
+    "showOnMap": "Ver {name} no mapa",
+    "themesLegend": "O que cada lugar oferece",
+    "themes": {
+      "playa": "Praia",
+      "dulces": "Doces",
+      "sabores": "Sabores",
+      "historia": "História",
+      "naturaleza": "Natureza",
+      "diablo": "O diabo"
+    },
+    "categories": {
+      "label": "Categorias",
+      "all": "Tudo",
+      "routes": "Rotas",
+      "legend": "A lenda",
+      "empty": "Ainda não há lugares de {category} na comuna. Estamos adicionando: se você conhece algum, conte para nós em Informações."
+    }
+  },
+  "place": {
+    "verificationPending": "Verificação pendente",
+    "verified": "Verificado",
+    "featured": "Destaque",
+    "photosComingSoon": "Galeria de fotos: em breve",
+    "previousPhoto": "Foto anterior",
+    "nextPhoto": "Próxima foto",
+    "goToPhoto": "Ir para a foto {number}",
+    "viewFullSize": "Ver foto em tamanho real",
+    "share": "Compartilhar",
+    "linkCopied": "Link copiado",
+    "hours": "Horário",
+    "address": "Endereço",
+    "phone": "Telefone",
+    "website": "Site",
+    "tags": "Características",
+    "addToTrip": "Adicionar ao meu roteiro",
+    "removeFromTrip": "Tirar do meu roteiro",
+    "backToExplore": "Voltar para explorar",
+    "like": "Curtir",
+    "liked": "Você curtiu",
+    "commentsTitle": "Comentários",
+    "commentLabel": "Deixe um comentário sobre este lugar",
+    "commentModerationNote": "É publicado depois que um administrador o revisar.",
+    "commentSubmit": "Enviar comentário",
+    "commentSending": "Enviando…",
+    "commentSent": "Obrigado! Seu comentário ficará visível quando o revisarmos.",
+    "commentError": "Não foi possível enviar o comentário, tente novamente.",
+    "likeError": "Não conseguimos salvar sua curtida. Tente novamente daqui a pouco.",
+    "tripError": "Não conseguimos atualizar seu roteiro. Tente novamente daqui a pouco."
+  },
+  "route": {
+    "stops": "Paradas",
+    "duration": "Duração estimada",
+    "addToTrip": "Adicionar rota completa",
+    "addedToTrip": "Rota adicionada ao seu roteiro",
+    "viewAll": "Ver todas as rotas",
+    "listSubtitle": "Siga a trilha do diabo ou o traçado do antigo trem: paradas em ordem, guia passo a passo com voz e um mapa que funciona sem sinal.",
+    "noResults": "Ainda não há rotas publicadas.",
+    "viewOnMap": "Ver rota no mapa",
+    "checklistProgress": "{visited}/{total} paradas visitadas",
+    "markVisited": "Marcar como visitada",
+    "markNotVisited": "Marcar como não visitada",
+    "routeComplete": "Rota completa! 🎉",
+    "previousStop": "Parada anterior",
+    "nextStop": "Próxima parada",
+    "stopPosition": "Parada {current}/{total}",
+    "yourToken": "Sua peça:",
+    "avatarIcons": {
+      "diablo": "O Diabo",
+      "cucharon": "A concha do diabo",
+      "poncho": "O poncho perdido",
+      "tren": "A ferrovia",
+      "tunel": "Túnel Las Palmas",
+      "petroglifo": "Petróglifo de Chincolco"
+    },
+    "tripError": "Não conseguimos adicionar a rota ao seu roteiro. Tente novamente daqui a pouco.",
+    "official": {
+      "instagram": "Siga no Instagram",
+      "legend": "Conheça a lenda",
+      "routes": {
+        "poncho": {
+          "badge": "Rota turística oficial",
+          "body": "Este percurso leva o nome da rota turística criada em 2018 pela Prefeitura de Petorca e pelo INDAP com empreendedores de turismo rural: vai de Pedegua a Chalaco, com 20 placas de sinalização no caminho.",
+          "logoAlt": "Logo da rota turística Donde el Diablo perdió el poncho"
+        },
+        "ferroviaria": {
+          "badge": "Rota turística",
+          "body": "Segue o antigo traçado da ferrovia Longitudinal Norte pelo vale: Palquico e Las Palmas foram estações da linha desde 1916, a caminho do Túnel Las Palmas.",
+          "logoAlt": "Logo da Ruta Turística Ferroviaria Pedegua – Palquico – Las Palmas"
+        }
+      }
+    }
+  },
+  "guide": {
+    "start": "Iniciar guia",
+    "stop": "Encerrar guia",
+    "walk": "A pé",
+    "car": "De carro",
+    "modeLabel": "Como você vai",
+    "towards": "Rumo a {name}",
+    "remaining": "Faltam {distance} · {time}",
+    "calculating": "Calculando o caminho pelas ruas…",
+    "waitingGps": "Buscando sua localização…",
+    "gpsDenied": "Sem permissão de localização. Ative-a no navegador para que o guia leve você.",
+    "noRoute": "Não conseguimos calcular o caminho pelas ruas a partir de onde você está.",
+    "openExternal": "Abrir no Google Maps",
+    "privacy": "Para calcular o caminho, sua localização aproximada é enviada ao serviço de rotas do OpenStreetMap; ela não é salva.",
+    "offRoute": "Você saiu do caminho: recalculando…",
+    "arrived": "Você chegou a {name}!",
+    "goNext": "Seguir para {name}",
+    "finished": "Você terminou o roteiro!",
+    "voiceOn": "Voz ativada",
+    "voiceOff": "Voz desativada",
+    "camera": "Guia com câmera",
+    "pickStop": "Toque em outra parada no mapa para ir até ela.",
+    "inDistance": "Em {distance}",
+    "now": "Agora",
+    "attribution": "Caminhos: © OpenStreetMap · OSRM",
+    "cameraClose": "Fechar",
+    "cameraSafety": "Olhe o caminho, não só a tela.",
+    "cameraOff": "Sem câmera: siga a seta do mesmo jeito.",
+    "enableCompass": "Ativar orientação",
+    "noHeading": "Caminhe alguns passos para a seta saber para onde você está olhando.",
+    "arrowLabel": "Seta: siga por aqui",
+    "action": {
+      "straight": "Siga em frente{street, select, none {} other { pela {street}}}",
+      "left": "Vire à esquerda{street, select, none {} other { na {street}}}",
+      "right": "Vire à direita{street, select, none {} other { na {street}}}",
+      "slightLeft": "Vire levemente à esquerda{street, select, none {} other { na {street}}}",
+      "slightRight": "Vire levemente à direita{street, select, none {} other { na {street}}}",
+      "sharpLeft": "Vire bem fechado à esquerda{street, select, none {} other { na {street}}}",
+      "sharpRight": "Vire bem fechado à direita{street, select, none {} other { na {street}}}",
+      "keepLeft": "Mantenha-se à esquerda{street, select, none {} other { na {street}}}",
+      "keepRight": "Mantenha-se à direita{street, select, none {} other { na {street}}}",
+      "uturn": "Faça o retorno{street, select, none {} other { na {street}}}",
+      "roundabout": "Na rotatória, pegue a saída {exit}{street, select, none {} other { para a {street}}}",
+      "arrive": "Você chega a {name}"
+    },
+    "noRouteOffline": "Sem sinal: o guia pelas ruas precisa de conexão. O mapa salvo e sua posição nele continuam funcionando."
+  },
+  "locality": {
+    "placesTitle": "Lugares em {name}",
+    "noPlacesYet": "Ainda não há lugares cadastrados neste povoado.",
+    "aboutTitle": "Sobre {name}",
+    "source": "Fonte",
+    "backToList": "Voltar para explorar"
+  },
+  "trip": {
+    "title": "Meu roteiro",
+    "subtitle": "Monte sua escapada do seu jeito: adicione lugares e rotas, ordene-os e compartilhe pelo WhatsApp. Fica salvo neste telefone.",
+    "empty": "Você ainda não adicionou lugares ao seu roteiro.",
+    "emptyCta": "Explorar lugares",
+    "loading": "Montando seu itinerário…",
+    "loadError": "Não conseguimos carregar os lugares do seu roteiro.",
+    "summaryStops": "Paradas",
+    "summaryDuration": "Duração estimada",
+    "summaryDistance": "Distância estimada",
+    "travelFromPrevious": "Trajeto desde a parada anterior",
+    "remove": "Tirar",
+    "clearAll": "Esvaziar roteiro",
+    "mapTitle": "Mapa do roteiro",
+    "skippedNotice": "Alguns lugares ficaram de fora pela distância ou pela ordem; você poderia dividir o roteiro em dois dias.",
+    "moveUp": "Subir",
+    "moveDown": "Descer",
+    "orderManualNotice": "Ordem do seu jeito — não é mais recalculada sozinha.",
+    "optimizeAuto": "Otimizar automaticamente",
+    "startAt": "Começa em",
+    "returnToStart": "Voltar ao ponto de partida no final",
+    "returnLeg": "Volta para {place}: {duration} · {distance} km",
+    "share": "Compartilhar roteiro",
+    "shareTitle": "Meu roteiro por Petorca",
+    "shareHint": "Mande o link pelo WhatsApp: quem abrir verá estas paradas em ordem e poderá segui-las com o guia."
+  },
+  "common": {
+    "loading": "Carregando…",
+    "error": "Ocorreu um erro. Tente novamente.",
+    "language": "Idioma",
+    "sponsoredBy": "Patrocinado por",
+    "retry": "Tentar de novo",
+    "sponsor": {
+      "tagline": "Chocolate artesanal feito em La Ligua",
+      "cta": "Visitar o site",
+      "instagram": "Instagram"
+    }
+  },
+  "privacy": {
+    "title": "Privacidade",
+    "intro": "Este site não pede que você crie uma conta nem que deixe seu nome ou e-mail. Isto é o que acontece quando você o usa.",
+    "updated": "Última atualização: 7 de outubro de 2026.",
+    "sections": {
+      "session": {
+        "title": "Sessão anônima",
+        "body": "Se você curte, comenta ou monta o \"Meu roteiro\", é criada uma sessão anônima com um identificador aleatório, salvo no seu navegador. Ela serve para lembrar seu roteiro e suas curtidas e para que ninguém mais possa alterá-los. Não inclui seu nome, e-mail nem telefone."
+      },
+      "comments": {
+        "title": "Comentários",
+        "body": "O que você escrever em um comentário é salvo tal como está, sem seu nome, e só é publicado depois que um administrador o revisa."
+      },
+      "analytics": {
+        "title": "Estatísticas de uso",
+        "body": "Registramos eventos anônimos: quais lugares, rotas e povoados são vistos, o que se busca e quais filtros são usados. Não guardamos quem foi nem seu endereço IP. Servem para saber o que interessa às pessoas sobre a região."
+      },
+      "location": {
+        "title": "Localização",
+        "body": "Sua localização só é usada se você ativar a navegação ao vivo, e é mostrada no mapa do seu dispositivo."
+      },
+      "thirdParties": {
+        "title": "Serviços que usamos",
+        "body": "O site funciona com Supabase (banco de dados), Vercel (hospedagem), Google (fotos dos lugares), OpenStreetMap (cálculo de rotas pelas ruas) e um provedor de mapas. Para mostrar esses conteúdos, esses serviços recebem as solicitações do seu navegador e, com elas, seu endereço IP. Para evitar abusos, o servidor conta momentaneamente as solicitações por IP, sem salvá-las."
+      },
+      "contact": {
+        "title": "Contato",
+        "body": "Para dúvidas, correções ou para pedir que um dado seja apagado, escreva para quem desenvolve o site (veja Informações)."
+      }
+    }
+  },
+  "listen": {
+    "play": "Ouvir",
+    "pause": "Pausar",
+    "resume": "Continuar",
+    "stop": "Parar",
+    "playLabel": "Ouvir {name}",
+    "speedLabel": "Velocidade {rate}",
+    "noVoice": "Seu telefone não tem uma voz em português.",
+    "stopsIntro": "Paradas: {stops}.",
+    "attractionsIntro": "Atrativos: {places}."
+  },
+  "sharedTrip": {
+    "title": "Roteiro compartilhado",
+    "subtitle": "Compartilharam com você este roteiro pela comuna de Petorca: {count, plural, one {# parada} other {# paradas}}, em ordem.",
+    "emptySubtitle": "Um roteiro que alguém compartilhou com você por link.",
+    "metaDescription": "Um roteiro pela comuna de Petorca, com suas paradas em ordem e guia passo a passo.",
+    "empty": "Este link não traz paradas que possamos mostrar.",
+    "explore": "Explorar Petorca",
+    "stopsTitle": "Paradas em ordem",
+    "shareAgain": "Compartilhar este roteiro",
+    "saveHint": "Salve-o para tê-lo em Meu roteiro e montá-lo do seu jeito."
+  },
+  "legend": {
+    "title": "A lenda do diabo",
+    "subtitle": "Dizem que aqui, em Petorca, o diabo perdeu o poncho. Também dizem que foi por aqui que ele morreu. Mas outros dizem que ele ainda percorre a comuna, por vários lugares… e você poderia percorrê-los com ele.",
+    "saying": {
+      "title": "O ditado",
+      "body": "No vale se repete um ditado: «El diablo murió en Petorca y en La Ligua lo enterraron» (o diabo morreu em Petorca e foi enterrado em La Ligua). Por trás dele há um poema de mais de 130 anos e várias histórias que ainda são contadas na região."
+    },
+    "poem": {
+      "title": "O poema de 1894",
+      "body": "O registro mais antigo é «La Muerte del Diablo», um poema que Elías Lizana, vigário de Hierro Viejo, publicou em 1894 no jornal La Voz de Petorca. Ele acompanha as andanças do diabo pela região: nasce em Mincha, trabalha como mineiro no Choapa, perde o poncho em Chalaco e morre em Petorca."
+    },
+    "versions": {
+      "title": "As versões que se contam",
+      "intro": "Algumas reunidas no livro Narraciones tradicionales de Petorca y sus alrededores (2015); outras, de relatos da região.",
+      "stranger": {
+        "title": "O forasteiro de sorte",
+        "body": "Nos tempos do ouro e da prata, um desconhecido ganhava sempre no jogo e tinha fama de sedutor. Os mineiros, convencidos de que ele era o diabo, descobriram a talha onde ele guardava seus ganhos e o mataram. No bolso dele encontraram um santinho da Virgem: não era o diabo. Foi enterrado em La Ligua. Relato de Ana Leyton Morales."
+      },
+      "rider": {
+        "title": "O cavaleiro do poncho",
+        "body": "Em uma taberna de Petorca apareceu um cavaleiro de capa preta que pagava bebidas e dançava cueca. Quando ele foi embora, ficou um cheiro de enxofre e, desde então, à noite se ouve um cavaleiro que reclama seu poncho nas serras de Chalaco."
+      },
+      "miner": {
+        "title": "O mineiro apelidado de «El Diablo»",
+        "body": "Um mineiro vindo do Choapa, bom trabalhador mas briguento, ganhou o apelido de «El Diablo». Foi perseguido pelas serras de Chalaco e morreu na praça de Petorca; foi enterrado em La Ligua."
+      }
+    },
+    "route": {
+      "title": "A versão da rota",
+      "body": "A rota turística «Donde el Diablo perdió el poncho» conta que o diabo dançava cueca com os mineiros nos dias de pagamento, de fraque preto e dentadura de ouro; que esqueceu o poncho depois de uma festa de Ano-Novo em que pagou a conta de todos, e que fugia dos padres pela Escalera del Diablo, de degraus «ao contrário». Daí vem o diabo deste site: fraque, dente de ouro e o poncho prestes a se perder."
+    },
+    "images": {
+      "cueca": "O diabo dança cueca na festa do povoado, com o poncho no ombro.",
+      "anoNuevo": "Ano-Novo: um brinde sob os fogos de artifício, na noite em que esqueceu o poncho.",
+      "escalera": "Na Escalera del Diablo, a dos degraus «ao contrário».",
+      "buscando": "O diabo, com sua concha, procurando o poncho pela comuna."
+    },
+    "visit": {
+      "title": "Percorra-a",
+      "chalaco": "Chalaco, onde ele perdeu o poncho",
+      "escalera": "A Escalera del Diablo, em Hierro Viejo",
+      "route": "A rota «Donde el Diablo perdió el poncho»"
+    },
+    "sources": {
+      "title": "Fontes",
+      "fucoa": "FUCOA — El Mandinga. Historias del diablo en la zona central de Chile (2021)",
+      "informador": "El Informador — a rota «Donde el diablo perdió el poncho» (2018)"
+    },
+    "home": {
+      "title": "A lenda do diabo",
+      "body": "Dizem que aqui, em Petorca, o diabo perdeu o poncho. Também dizem que foi por aqui que ele morreu. Mas outros dizem que ele ainda percorre a comuna… e você poderia percorrê-la com ele.",
+      "cta": "Descubra a lenda"
+    }
+  },
+  "offline": {
+    "save": "Salvar para usar sem sinal (≈ {mb} MB)",
+    "saving": "Salvando para usar sem sinal… {percent} %",
+    "saved": "Salva para usar sem sinal em {date}.",
+    "update": "Atualizar",
+    "error": "Não foi possível salvar tudo. Tente de novo com sinal melhor (ou com wi-fi).",
+    "hint": "Salve esta página, suas paradas e o mapa da região no seu telefone, para o vale onde não há sinal."
+  }
+}

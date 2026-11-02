@@ -1,4 +1,4 @@
-# Lineamientos de diseño — El diablo murió en Petorca y en La Ligua lo enterraron
+# Lineamientos de diseño — El diablo murió en Petorca
 
 > Documento vivo (igual que `docs/PLAN.md`): cuando agregues una página, un
 > componente o un color/animación nuevo, primero revisa si ya hay un token o
@@ -54,8 +54,13 @@ que use ese token, que es justo lo que se pidió:
   ficha de ruta) no llevan `PageHero` encima — ya tienen su propio momento
   visual, duplicarlo se ve recargado.
 - **El folclore del diablo es un condimento, no un tema constante.** El
-  `DevilMascot` solo aparece donde tiene sentido narrativo (home, "Ruta del
-  Diablo") — no ponerlo en cualquier página nueva "porque sí".
+  `DevilMascot` (la cabeza del diablo campesino, `icons/icon-192.png`) solo
+  aparece donde tiene sentido narrativo (la ruta del poncho,
+  `ruta-del-diablo-pedegua-chincolco`) — no ponerlo en cualquier página
+  nueva "porque sí".
+- **Foco visible**: todo link, botón o campo muestra un anillo de brasa
+  (`--accent`) al llegar con el teclado (`:focus-visible` en `globals.css`).
+  No apagarlo con `outline-none` sin poner otro indicador igual de visible.
 
 ## Color
 
@@ -123,6 +128,31 @@ número si no hay ninguno). Al pasar el mouse la escena se acerca lento y la
 tarjeta se enciende con el glow de siempre. Pedido del usuario: las tarjetas
 planas con un ícono "no me gustan".
 
+## Sitio acotado a una comuna (`lib/site-scope.ts`)
+
+Desde 2026-11-01 (rama `petorca`) el sitio muestra solo la comuna de
+Petorca, sin perder el look ni el folclore. Lo visual que dependía de "varias
+comunas" se adapta solo cuando hay una:
+
+- **Vuelo 3D**: con una sola comuna, la cámara va de **pueblo en pueblo** (los
+  que tienen atractivos, más la cabecera, de oeste a este: Pedegua → Hierro
+  Viejo → Petorca → Chincolco) y el botón lleva a la ficha del pueblo; la vista
+  general encuadra esas paradas en vez de la provincia.
+- **Mapa de `/explorar`**: con una sola comuna no hay sectores (burbujas por
+  comuna); arranca directo en los pines.
+- **Postales "¿Qué buscas hoy?"**: solo las categorías con lugares reales
+  (en Petorca: naturaleza y cultura) — nunca una postal que lleve a una lista
+  vacía.
+- **Rutas**: solo las que tienen todas sus paradas en la comuna.
+- **Panel (`/admin`)**: Lugares, Pueblos, Rutas, Verificaciones, Métricas,
+  la exportación CSV y los selectores de pueblo usan el mismo alcance (pedido
+  del usuario: no ver los lugares de otras comunas guardados en la base).
+  Nada se borra; una ruta nueva sin paradas sí se lista.
+
+Los textos (`messages/*.json`) hablan de "la comuna de Petorca". Volver a la
+provincia es vaciar `SITE_COMMUNE_SLUGS` (y los textos están en la rama
+`provincia-completa`).
+
 ## Vuelo 3D por la provincia (home)
 
 El "efecto wow" del inicio (`ProvinceFlyover`, `components/home/`): el
@@ -166,6 +196,21 @@ del sitio (mar azul noche → valles violeta → cordillera brasa). Reglas:
   vuelo ni giro (saltos directos). `cooperativeGestures`: en celular el mapa
   no secuestra el scroll de la página (se mueve con dos dedos).
 
+## Logo e íconos
+
+Un solo origen: `public/brand/logo.png` (insignia, transparente) e
+`icono.png` (cabeza del diablo), arte aprobado hecho con GPT
+(`docs/PROMPTS-IMAGENES.md`). `node scripts/build-brand-png.mjs` arma desde ahí
+todo lo demás — nunca editar a mano los archivos generados:
+
+| Archivo generado                     | Dónde se ve                                    |
+| ------------------------------------ | ---------------------------------------------- |
+| `src/app/favicon.ico`, `icon.png`    | Pestaña del navegador                          |
+| `src/app/apple-icon.png`             | Ícono al agregar a inicio en iPhone            |
+| `public/icons/icon-192/512.png`      | App instalable (manifiesto) y barra de arriba  |
+| `public/icons/icon-maskable-512.png` | App instalable en Android (recorte en círculo) |
+| `public/brand/og.png`                | Vista previa al compartir un link sin foto     |
+
 ## Aparición al hacer scroll
 
 Clase `reveal` (en `globals.css`): las secciones y tarjetas suben y aparecen
@@ -178,19 +223,30 @@ los rompería).
 
 ## Fondos con el diablito (escenas)
 
-Pedido del usuario: fondos únicos con el diablo de la ilustración (casco
-minero con cuernos y linterna, poncho rojo, cola de flecha) "en la playa, en
-el cerro, con poncho, según cómo lo busquen y dónde naveguen". Son SVG en
+Pedido del usuario: fondos únicos con el diablo "en la playa, en el cerro,
+con poncho, según cómo lo busquen y dónde naveguen". Son SVG en
 `public/fondos/` (`atardecer`, `playa`, `cerro`, `pueblo`, `dulces`,
 `tunel`), compuestos con el diablito a la derecha y el cielo a la izquierda
-para que el título de `PageHero` quede legible. La elección vive en un solo
-lugar, `src/lib/ui/scene-backgrounds.ts`: `getSceneForCategory` (playa →
-playa, naturaleza → cerro, cultura → pueblo, gastronomía → dulces, sin
-categoría → atardecer) y `getSceneForRoute`. `PageHero` acepta `scene`:
-`/explorar` la cambia con el filtro de categoría, la ficha de un pueblo usa la
-categoría que más se repite entre sus atractivos, y el hero del home usa el
-atardecer. Para cambiar un fondo por arte raster (webp, p. ej. generado con
-IA) basta reemplazar el archivo y su extensión en `SCENE_SRC`.
+para que el título de `PageHero` quede legible.
+
+**El diablo de Petorca** (desde 2026-11-02, `docs/arte/diablo-campesino-referencia.png`):
+un hombre de campo de unos 50 años, clásico y pícaro — sombrero con cuernos,
+poncho rojo con flecos dorados, pañuelo rojo y **cucharón de madera con borla
+roja y dorada**. Reemplazó al diablito de mascota (2026-11-01), que a su vez
+reemplazó al de la provincia (casco minero, surf, dulces). Las escenas
+`atardecer`, `cerro`, `pueblo` y `tunel`, la portada ferroviaria y las escenas
+de `public/leyendas/` son WebP de ese arte; `playa` y `dulces` (solo
+provincia) siguen en SVG. Pendiente: la portada de "Donde el Diablo perdió el
+poncho" y un logo, que aún traen el diablito anterior (no se usa el logo).
+
+**Recorte**: cada escena tiene su punto de foco en `SCENE_POSITION` (la cara
+y el torso del diablo), que usan todas las vistas (`PageHero`, hero del
+inicio, postales, burbujas del mapa) — nunca un `background-position` escrito
+a mano. En el hero del inicio, desde `sm:` el título, el texto y el buscador
+ocupan el 62 % izquierdo para no taparle la cara. En el atardecer nuevo el
+diablo está al centro: las cabeceras anchas (inicio, `PageHero`) usan el
+cerro, el pueblo o el túnel, con el diablo a la derecha; el atardecer queda
+para las postales altas.
 
 ## Radios y espaciado
 
@@ -269,6 +325,12 @@ string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
   `place_images` (Wikimedia, Google Places vía proxy, o subida a mano),
   con `PhotoOrIcon` como envoltorio único que decide foto-vs-ícono y maneja
   el `onError` — no reimplementar ese fallback en un componente nuevo.
+- **Fotos de Google** (`/api/place-photo`): el `name` de una foto de Google
+  vence, así que el proxy pide en el momento las fotos vigentes del lugar
+  (cacheadas una hora) y sirve la del mismo autor que dice el crédito
+  guardado (`lib/google/place-photo-ref.ts`). Si ese autor ya no está, no
+  sirve otra foto con su nombre: cae al ícono. Antes de este arreglo
+  (2026-11-01) no cargaba ninguna; ahora cargan 35 de las 38 de Petorca.
 - **Crédito de foto**: la leyenda abajo-derecha de `PlacePhotoHero` solo
   muestra lo que la foto trae (`place_images.alt_text`: autor/fuente/
   licencia). Sin dato no hay leyenda — nunca una atribución por defecto.
@@ -282,15 +344,119 @@ string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
   "solo lo listado" — un bug real ya se dio dos veces en esta sesión por
   olvidar este paso).
 
+## Guía paso a paso (a pie y en auto)
+
+Pedido del usuario (2026-11-01): "no quiero una brújula, quiero una guía de
+vete por aquí, vete por allá… con la cámara abierta, que me muestre la ruta
+hacia dónde tengo que ir". `RouteNavigationMap` (ficha de ruta y Mi
+recorrido) ya no usa Google: "Iniciar guía" pide el camino por calle desde
+donde estás hasta la próxima parada (`/api/ruta`, OSRM de OpenStreetMap, ver
+`lib/navigation/osrm.ts`) y lo sigue con el GPS:
+
+- **Tarjeta de giro**: ícono del giro (`ManeuverIcon`, mismas reglas que
+  `CategoryIcon`, en `category-icon.tsx`) + "En 80 m · Dobla a la derecha por
+  Serrano" + lo que falta. Los textos salen de `guide.action.*` (es/en); la
+  lógica, de `lib/navigation/guidance.ts` (funciones puras, con pruebas).
+- **Modo**: a pie o en auto, sugerido por la distancia (hasta 1,5 km, a pie)
+  y elegible a mano.
+- **Voz** (activada por defecto, con botón para apagarla): dice cada giro al
+  volverse el próximo, al acercarse y en la esquina ("ahora, dobla…"), y la
+  llegada. Usa la voz del teléfono (`lib/speech.ts`).
+- **Cámara** (solo a pie, `GuideCamera`): la flecha no apunta al destino,
+  sino a un punto de la calle unos metros más adelante sobre el camino
+  (`LOOKAHEAD_M`), que al acercarse a una esquina ya está doblando.
+- **Desvío**: lejos del camino se muestra "recalculando" (sin giros viejos) y
+  se pide uno nuevo (como mucho cada 10 s).
+- Al llegar ofrece seguir a la siguiente parada; tocar otra parada en el
+  mapa cambia el destino. Siempre queda el link a Google Maps.
+
+## Idiomas: español, inglés y portugués
+
+`/es`, `/en` y `/pt` (portugués de Brasil, desde 2026-11-01; pedido del
+usuario). Textos fijos en `src/messages/{es,en,pt}.json` (mismas claves) y
+rutas traducidas en `src/i18n/routing.ts` (`/pt/rotas`, `/pt/lenda`…). El
+contenido de la base sigue `src/i18n/content.ts`: en portugués, lo que no
+tenga traducción se muestra en español en vez de desaparecer. Voz y fechas
+en `pt-BR`. Un idioma nuevo = su archivo de mensajes, sus rutas, su entrada
+en `CONTENT_LOCALES`, `SPEECH_LANG` y `OG_LOCALE`, y su valor en el tipo
+`locale` de la base (script manual, como `portugues-1-idioma.sql`).
+
+## Escuchar la página
+
+`ListenButton` (`components/ui/listen-button.tsx`): botón "▶ Escuchar"
+(píldora `bg-accent`, mismo glow que los CTA) que lee en voz alta un
+apartado con la voz del teléfono (`lib/speech.ts`) — pensado para quien va
+manejando o caminando. Va bajo el título de la ficha de lugar (nombre,
+dónde está, descripción), de ruta (nombre, descripción y sus paradas en
+orden) y de pueblo (nombre, resumen y sus atractivos). Nunca suena solo;
+pausa, sigue, detiene y cambia velocidad (1×, 1,25×, 0,8×). Para sumarlo a
+otra página: pasarle `segments` con textos reales de esa página — nunca un
+texto escrito solo para la voz.
+
+## Rutas turísticas de la comuna (oficial y ferroviaria)
+
+Si una ruta del sitio corresponde a una ruta real de la comuna, su ficha
+muestra `OfficialRouteCard` (`components/route/`): el logo de esa ruta, de
+dónde viene (solo con fuente) y su Instagram, en una tarjeta `surface-glass`.
+Los datos viven en `lib/official-routes.ts`, por slug, y los textos en
+`route.official.routes.<clave>` (es/en). Hoy: "Donde el Diablo perdió el
+poncho" (oficial: Municipalidad e INDAP) y la "Ruta Turística Ferroviaria
+Pedegua – Palquico – Las Palmas" (sin fuente de quién la organiza: no se la
+llama "oficial"). Nuestras rutas usan su **nombre propio**, sin traducir.
+Nuestro arte nunca imita sus logos (`docs/PROMPTS-IMAGENES.md`).
+
+## La leyenda del diablo (`/leyenda`)
+
+La página que cuenta el dicho que le da nombre al sitio: el dicho, el poema
+de 1894, tres versiones en tarjetas `surface-glass`, la versión de la ruta,
+"Recórrela" (solo links a lo que existe en la base: Chalaco, la Escalera
+del Diablo, la ruta) y las fuentes al pie. `PageHero` con la escena del
+túnel; "Escuchar" lee la página entera en orden. Todo contado con palabras
+propias desde fuentes citadas (nunca copiar el poema ni párrafos).
+
+Cómo se llega (pedido del usuario: "esa página queda perdida"): la tarjeta
+ancha `LegendCard` (`components/legend/`, escena del túnel) va en el inicio
+después del vuelo 3D y en Rutas debajo de las rutas; en Explorar hay una
+píldora "La leyenda" junto a "Rutas" (`CategoryTabs`); la tarjeta de la ruta
+del poncho (`OfficialRouteCard`) suma "Conoce la leyenda", e Información
+tiene un link. No va en la barra de navegación: con más de 5 secciones la de
+abajo del celular se aprieta.
+
+## Sin señal (`OfflineSaveButton`)
+
+Pedido del usuario: que funcione "sin señal en el valle". En la ficha de
+cada ruta y en Mi recorrido, un botón "⬇ Guardar para usar sin señal (≈ N
+MB)" (vidrio con borde, glow al pasar el mouse) baja al teléfono la página,
+sus paradas y el mapa de la zona; mientras guarda muestra el porcentaje, y
+después "✓ Guardada para usar sin señal el {fecha} · Actualizar". Si algo
+esencial falla (las páginas o el estilo del mapa), avisa en ámbar en vez de
+decir "guardada". Mi recorrido guarda su versión "compartida", que trae las
+paradas sin pedirlas a `/api`. Sin señal, una página no guardada abre
+`public/offline.html` (mismo fondo de noche y logo) con links a lo guardado.
+La guía por calle necesita conexión: sin señal lo dice
+(`guide.noRouteOffline`) y siguen el mapa y tu posición.
+
+## Compartir un recorrido
+
+"Compartir recorrido" (Mi recorrido) arma un link con las paradas en orden
+(`/recorrido/compartido?paradas=a,b,c`, `lib/trip/share-link.ts`) y lo
+manda con el menú de compartir del teléfono (o lo copia). Quien lo abre ve
+la página "Recorrido compartido" — `PageHero`, Escuchar, el mapa con la
+guía paso a paso, las paradas numeradas y "Agregar ruta completa" para
+guardarlo en su Mi recorrido. Sin cuentas ni tablas nuevas: todo va en el
+link. Paradas inexistentes o de otra comuna se omiten; sin ninguna, un
+`EmptyState` con link a Explorar. `noIndex` (es el recorrido de una persona).
+
 ## Ficha del jugador en el mapa en vivo
 
 Pedido del usuario: que su posición real en el mapa de navegación se vea
 como una "ficha tipo Monopoly" (un ícono elegido por él) en vez del punto
 azul genérico de MapLibre. `lib/navigation/avatar-storage.ts` guarda la
 elección (`localStorage`, mismo patrón que `lib/trip/storage.ts`) entre los
-íconos temáticos "de la zona" (`AVATAR_ICONS`: diablo/dulce/tejido/surf/
-casco-minero/palta — no los de categoría genérica, para que la ficha se
-sienta propia de Petorca/La Ligua). `AvatarPicker` (junto al botón
+íconos de la comuna (`AVATAR_ICONS`: diablo, cucharón, poncho, tren, Túnel
+Las Palmas y petroglifo de Chincolco; hasta 2026-11-01 eran los de la
+provincia — dulce, surf, palta… — y una ficha guardada que ya no existe
+vuelve sola al diablo). `AvatarPicker` (junto al botón
 "Iniciar navegación") deja elegirla; `PlayerToken` la dibuja en el mapa;
 `MapView` pasa `showUserLocation={false}` a `GeolocateControl` para que
 `PlayerToken` sea la única marca de posición, no las dos a la vez.
@@ -327,6 +493,26 @@ pantalla, nunca los dos a la vez:
 
 Agregar una sexta sección = un solo ítem nuevo en `NAV_ITEMS`, nunca
 duplicar el link a mano en cada uno de los dos componentes.
+
+**Cambio de idioma** (`LocaleSwitcher`): botones ES · EN · PT (píldora,
+el activo en `bg-accent`), en `TopNav` a la derecha y, en celular, en
+`MobileHeader` (logo + nombre + idioma, arriba, no fijo). Antes era un
+`<select>` solo en el hero del inicio: las opciones no se leían (lista del
+sistema clara con texto blanco) y en las otras páginas no había cómo
+cambiar de idioma (feedback real del usuario).
+
+## Panel para varias personas
+
+Pedido del usuario: "varias personas, con roles" para poder entregar el
+panel. Menú lateral: además de las secciones de contenido, **Personas**
+(solo administradores: invitar con correo y rol, cambiar rol, "Link para
+cambiar clave", quitar), **Registro de cambios** (quién cambió qué y cuándo,
+los últimos 200) y **Mi cuenta** (cambiar la clave propia, cerrar sesión;
+"Cerrar sesión" también al pie del menú en escritorio). Los links de
+invitación aparecen en una caja verde con "Copiar link" y "Mandar por
+WhatsApp" y el aviso de que sirven una vez y vencen en 1 hora. `/admin/aceptar`
+usa el mismo diseño que el login (sin menú). Claves de al menos 10
+caracteres.
 
 ## Explorar: comuna → pueblo → atractivos
 
@@ -366,6 +552,28 @@ Los filtros (buscador, comuna, categoría, característica) quedan plegados
 detrás de un botón "Filtros" (`FiltersDisclosure`, con el conteo de filtros
 activos) para que el mapa o el árbol sea lo primero que se ve; achican los
 atractivos dentro de cada pueblo, no esconden pueblos.
+
+## Categorías de Explorar (pestañas)
+
+Pedido del usuario: Explorar "por categorías, como tenemos lo del Papudo", y
+que un lugar pueda estar en más de una. `CategoryTabs`
+(`components/explore/`) va bajo la cabecera: "Todo", una pestaña por
+categoría con su cantidad real de lugares y un acceso a Rutas. Orden y lista
+fija en `EXPLORE_CATEGORY_ORDER` (`lib/ui/category-gradient.ts`):
+Gastronomía · Alojamiento · Naturaleza y aventura · Patrimonio y cultura ·
+Recreación. Se muestran aunque estén vacías (para que se vea qué ofrece el
+directorio); vacías muestran un `EmptyState` que invita a contar de uno,
+nunca un lugar de relleno. Las postales del inicio, en cambio, solo con
+lugares.
+
+- **Varias categorías**: `PlaceCard.categorySlugs` (principal primero +
+  `place_secondary_categories`); se filtra y se cuenta con esa lista. La
+  principal (`categorySlug`) sigue mandando en ícono, color del pin y escena.
+- Cambiar de pestaña conserva la vista (mapa/listado) y los demás filtros;
+  la categoría ya no está en "Filtros".
+- Categoría nueva = su entrada en `EXPLORE_CATEGORY_ORDER` y en los
+  `Record` de `category-gradient.ts` (degradado, color, ícono) — y su escena
+  en `SCENE_BY_CATEGORY`. Nunca la escena `dulces` (La Ligua) para Petorca.
 
 ## Mapa de /explorar (vista por defecto)
 

@@ -1,7 +1,8 @@
 /**
  * Limitador de tasa simple en memoria, por clave (IP) — protege endpoints
- * que llaman a APIs de Google con costo real por request (`/api/directions`,
- * `/api/place-photo`) de un abuso básico (loop de peticiones desde un
+ * que llaman a servicios externos (`/api/place-photo`, de Google, con costo
+ * real por request; `/api/ruta`, OSRM público con límite de uso) de un abuso
+ * básico (loop de peticiones desde un
  * mismo origen). No es una garantía dura: en Vercel cada instancia de
  * función serverless tiene su propia memoria, así que el límite real es
  * "por instancia", no global — un atacante repartido entre varias

@@ -2,12 +2,19 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { refreshPublicContent } from "./refresh";
 import { createClient } from "@/lib/supabase/server";
+import { portugueseCleared, savedTranslations } from "./translations";
 
 const localeContentSchema = z.object({
   name: z.string().trim().min(1, "Falta el nombre"),
   shortDescription: z.string().trim().max(200).optional().or(z.literal("")),
   description: z.string().trim().optional().or(z.literal("")),
+});
+
+/** Portugués: opcional; sin nombre no se guarda (ver translations.ts). */
+const optionalLocaleContentSchema = localeContentSchema.extend({
+  name: z.string().trim(),
 });
 
 const placeFormSchema = z.object({
@@ -22,6 +29,8 @@ const placeFormSchema = z.object({
   communeId: z.uuid(),
   localityId: z.uuid().optional().or(z.literal("")),
   categoryId: z.uuid(),
+  /** Categorías adicionales (además de la principal, `categoryId`). */
+  secondaryCategoryIds: z.array(z.uuid()).default([]),
   latitude: z.coerce.number().min(-90).max(90),
   longitude: z.coerce.number().min(-180).max(180),
   address: z.string().trim().optional().or(z.literal("")),
@@ -33,6 +42,7 @@ const placeFormSchema = z.object({
   translations: z.object({
     es: localeContentSchema,
     en: localeContentSchema,
+    pt: optionalLocaleContentSchema.optional(),
   }),
 });
 
@@ -40,6 +50,44 @@ export type PlaceFormInput = z.input<typeof placeFormSchema>;
 
 function normalize(value: string | undefined | null): string | null {
   return value && value.trim() !== "" ? value.trim() : null;
+}
+
+/**
+ * Deja las categorías adicionales de un lugar tal como vienen del
+ * formulario (sin la principal, que ya está en `places.category_id`).
+ * Si la tabla todavía no existe en esta base (falta correr
+ * supabase/manual/categorias-petorca.sql) y no se eligió ninguna, no hace
+ * nada; si se eligió alguna, avisa.
+ */
+async function saveSecondaryCategories(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  placeId: string,
+  primaryId: string,
+  categoryIds: string[],
+) {
+  const wanted = [...new Set(categoryIds)].filter((id) => id !== primaryId);
+  const { error: deleteError } = await supabase
+    .from("place_secondary_categories")
+    .delete()
+    .eq("place_id", placeId);
+  if (deleteError) {
+    if (wanted.length === 0) return;
+    throw new Error(
+      `No se pudieron guardar las categorías adicionales (¿falta correr categorias-petorca.sql?): ${deleteError.message}`,
+    );
+  }
+  if (wanted.length === 0) return;
+  const { error } = await supabase.from("place_secondary_categories").insert(
+    wanted.map((categoryId) => ({
+      place_id: placeId,
+      category_id: categoryId,
+    })),
+  );
+  if (error) {
+    throw new Error(
+      `No se pudieron guardar las categorías adicionales: ${error.message}`,
+    );
+  }
 }
 
 /**
@@ -83,14 +131,12 @@ export async function createPlace(
   const { error: translationsError } = await supabase
     .from("place_translations")
     .insert(
-      (["es", "en"] as const).map((locale) => ({
+      savedTranslations(parsed.translations).map(([locale, content]) => ({
         place_id: place.id,
         locale,
-        name: parsed.translations[locale].name,
-        short_description: normalize(
-          parsed.translations[locale].shortDescription,
-        ),
-        description: normalize(parsed.translations[locale].description),
+        name: content.name,
+        short_description: normalize(content.shortDescription),
+        description: normalize(content.description),
       })),
     );
 
@@ -100,6 +146,14 @@ export async function createPlace(
     );
   }
 
+  await saveSecondaryCategories(
+    supabase,
+    place.id,
+    parsed.categoryId,
+    parsed.secondaryCategoryIds,
+  );
+
+  refreshPublicContent();
   revalidatePath("/admin/lugares");
   return { id: place.id };
 }
@@ -136,14 +190,12 @@ export async function updatePlace(
   const { error: translationsError } = await supabase
     .from("place_translations")
     .upsert(
-      (["es", "en"] as const).map((locale) => ({
+      savedTranslations(parsed.translations).map(([locale, content]) => ({
         place_id: id,
         locale,
-        name: parsed.translations[locale].name,
-        short_description: normalize(
-          parsed.translations[locale].shortDescription,
-        ),
-        description: normalize(parsed.translations[locale].description),
+        name: content.name,
+        short_description: normalize(content.shortDescription),
+        description: normalize(content.description),
       })),
       { onConflict: "place_id,locale" },
     );
@@ -154,6 +206,22 @@ export async function updatePlace(
     );
   }
 
+  if (portugueseCleared(parsed.translations)) {
+    await supabase
+      .from("place_translations")
+      .delete()
+      .eq("place_id", id)
+      .eq("locale", "pt");
+  }
+
+  await saveSecondaryCategories(
+    supabase,
+    id,
+    parsed.categoryId,
+    parsed.secondaryCategoryIds,
+  );
+
+  refreshPublicContent();
   revalidatePath("/admin/lugares");
   revalidatePath(`/admin/lugares/${id}`);
 }
@@ -179,6 +247,7 @@ export async function setPlacePublicationStatus(
     throw new Error(`No se pudo cambiar el estado: ${error.message}`);
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/lugares");
 }
 
@@ -199,5 +268,6 @@ export async function deletePlace(id: string): Promise<void> {
     );
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/lugares");
 }

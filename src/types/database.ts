@@ -8,7 +8,7 @@
 // de `.select<Query, Result>()`, en vez de depender de la inferencia
 // automática de PostgREST (que si requiere `Relationships`).
 
-export type Locale = "es" | "en";
+export type Locale = "es" | "en" | "pt";
 export type PublicationStatus = "draft" | "published" | "archived";
 export type VerificationStatus = "pending" | "verified" | "outdated";
 export type EntityType = "place" | "route" | "commune";
@@ -131,6 +131,9 @@ type PlaceImageRow = {
 };
 
 type PlaceTagRow = { place_id: string; tag_id: string };
+
+/** Categorías adicionales de un lugar (0024_place_secondary_categories.sql). */
+type PlaceSecondaryCategoryRow = { place_id: string; category_id: string };
 
 type RouteRow = {
   id: string;
@@ -255,6 +258,26 @@ type PlaceCommentRow = {
   moderated_by: string | null;
 };
 
+/** Equipo del panel (`admin_users`; roles en supabase/manual/admin-roles.sql). */
+export type TeamRole = "admin" | "editor";
+
+type AdminUserRow = {
+  user_id: string;
+  role: TeamRole;
+  added_by: string | null;
+  created_at: string;
+};
+
+/** Registro de cambios del panel (disparador `log_change`). */
+type AuditLogRow = {
+  id: number;
+  at: string;
+  user_id: string | null;
+  table_name: string;
+  action: "insert" | "update" | "delete";
+  row_ref: string | null;
+};
+
 export interface Database {
   public: {
     Views: Record<string, never>;
@@ -280,6 +303,12 @@ export interface Database {
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
     Tables: {
+      admin_users: Table<
+        AdminUserRow,
+        Partial<AdminUserRow> & { user_id: string },
+        Partial<AdminUserRow>
+      >;
+      audit_log: Table<AuditLogRow, never, never>;
       communes: Table<
         CommuneRow,
         Partial<CommuneRow> & { slug: string },
@@ -361,6 +390,11 @@ export interface Database {
         Partial<PlaceImageRow>
       >;
       place_tags: Table<PlaceTagRow, PlaceTagRow, Partial<PlaceTagRow>>;
+      place_secondary_categories: Table<
+        PlaceSecondaryCategoryRow,
+        PlaceSecondaryCategoryRow,
+        Partial<PlaceSecondaryCategoryRow>
+      >;
       routes: Table<
         RouteRow,
         Partial<RouteRow> & { slug: string },

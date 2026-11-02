@@ -7,30 +7,33 @@
     "info": "Info"
   },
   "info": {
-    "about": "A tourism directory for Petorca province: real places, routes and trips, made by people from the area.",
+    "about": "A guide made in Petorca, with real information and its sources: so visitors fall in love with the valley, and locals can show it off with pride.",
     "developmentTitle": "Development",
     "developmentCredit": "Built by Cristóbal Roco, CTO of Matichoc.",
     "developerTagline": "Support your AI projects, and projects built with AI.",
     "developerInstagram": "Instagram: @el.cristo.cl",
     "developerWhatsapp": "WhatsApp",
     "sponsorNote": "Sponsored by Chocolatería Matichoc — artisan chocolate made in La Ligua.",
+    "legendLink": "The legend of the devil",
     "privacyLink": "Privacy"
   },
   "home": {
-    "title": "El diablo murió en Petorca y en La Ligua lo enterraron",
-    "provinceLabel": "Petorca Province: La Ligua · Petorca · Cabildo · Papudo · Zapallar",
-    "subtitle": "An old local saying about Petorca and La Ligua — discover places and plan your trip across the Petorca province.",
+    "title": "El diablo murió en Petorca",
+    "provinceLabel": "Commune of Petorca: Pedegua · Petorca · Chincolco · Hierro Viejo",
+    "subtitle": "The valley where the devil danced the cueca, lost his poncho and stayed for good. Old railway tunnels, petroglyphs over 800 years old, a church from 1640, chicha and country empanadas. Come and discover it… or rediscover it if you live here.",
     "searchPlaceholder": "Search a place or town",
     "featuredRoutes": "Featured routes",
     "intent": {
-      "title": "What are you looking for today?",
-      "nature": "Nature",
-      "gastronomy": "Food",
-      "culture": "Culture",
-      "beach": "Beach"
+      "title": "What are you in the mood for?",
+      "nature": "Nature & adventure",
+      "gastronomy": "Food & drink",
+      "culture": "Heritage & culture",
+      "beach": "Beach",
+      "lodging": "Places to stay",
+      "leisure": "Leisure"
     },
     "municipality": {
-      "title": "Municipalities of the province",
+      "title": "Municipality of Petorca",
       "noLinksYet": "No links added yet.",
       "goTo": "Go to {name}",
       "linkKinds": {
@@ -43,15 +46,16 @@
       }
     },
     "flyover": {
-      "title": "Fly over the province",
-      "subtitle": "Petorca's real terrain in 3D: from the sea to the Andes, commune by commune.",
-      "play": "▶ Tour the province",
+      "title": "Fly over the valley",
+      "subtitle": "From Pedegua to Chincolco, up the valley toward the Andes: the commune's real terrain in 3D, village by village.",
+      "play": "▶ Tour the commune",
       "pause": "❚❚ Pause",
-      "overview": "Whole province",
-      "overviewTitle": "From the sea to the Andes",
-      "overviewText": "Five communes between the coast of Papudo and Zapallar and the hills of Petorca and Cabildo. Tap one to fly there, or any point of light to open that village.",
+      "overview": "Whole commune",
+      "overviewTitle": "The Petorca river valley",
+      "overviewText": "From Pedegua's old railway station to the Chincolco petroglyphs. Tap a village to fly there, or any point of light to open its page.",
       "stats": "{villages, plural, =0 {no villages} one {# village} other {# villages}} · {places, plural, =0 {no attractions} one {# attraction} other {# attractions}}",
-      "explore": "Explore {name}",
+      "attractions": "{places, plural, =0 {No attractions yet} one {# attraction} other {# attractions}}",
+      "explore": "See {name}",
       "hint": "Use two fingers (or Ctrl + scroll) to move the map. Terrain: AWS Terrain Tiles."
     }
   },
@@ -64,7 +68,7 @@
     "noResults": "We couldn't find places matching these filters.",
     "otherPlaces": "Other places",
     "villagesOnMap": "{count, plural, one {# village} other {# villages}} on the map",
-    "subtitle": "Tap a sector on the map to see what it offers: beaches, sweets, history, hills and the devil's haunts. Prefer a list? Switch to List.",
+    "subtitle": "Hills, history, country flavors and corners with a legend. Tap a pin to see what each village hides, or switch to List.",
     "communeSummary": "{villages, plural, =0 {no villages} one {# village} other {# villages}} · {places, plural, =0 {no attractions} one {# attraction} other {# attractions}}",
     "filtersButton": "Filters",
     "placesCount": "{count, plural, =0 {No attractions} one {# attraction} other {# attractions}}",
@@ -85,6 +89,13 @@
       "historia": "History",
       "naturaleza": "Nature",
       "diablo": "The devil"
+    },
+    "categories": {
+      "label": "Categories",
+      "all": "All",
+      "routes": "Routes",
+      "legend": "The legend",
+      "empty": "There are no {category} places in the commune yet. We're adding them: if you know one, tell us from Information."
     }
   },
   "place": {
@@ -114,7 +125,9 @@
     "commentSubmit": "Send comment",
     "commentSending": "Sending…",
     "commentSent": "Thanks! Your comment will show up once we review it.",
-    "commentError": "Couldn't send the comment, try again."
+    "commentError": "Couldn't send the comment, try again.",
+    "likeError": "We couldn't save your like. Please try again in a while.",
+    "tripError": "We couldn't update your trip. Please try again in a while."
   },
   "route": {
     "stops": "Stops",
@@ -122,30 +135,89 @@
     "addToTrip": "Add full route",
     "addedToTrip": "Route added to your trip",
     "viewAll": "View all routes",
+    "listSubtitle": "Follow the devil's trail or the old railway line: stops in order, step-by-step voice guidance and a map that works without signal.",
     "noResults": "No published routes yet.",
     "viewOnMap": "View route on map",
     "checklistProgress": "{visited}/{total} stops visited",
     "markVisited": "Mark as visited",
     "markNotVisited": "Mark as not visited",
     "routeComplete": "Route complete! 🎉",
-    "startNavigation": "Start navigation",
-    "stopNavigation": "Stop navigation",
-    "calculatingRoute": "Calculating route…",
-    "routeUnavailable": "Couldn't calculate the driving route — showing the regular map.",
-    "navigationSummary": "{distance} km · {duration} min by car",
-    "liveLocationHint": "Allow location access when your browser asks, to see your position on the map.",
     "previousStop": "Previous stop",
     "nextStop": "Next stop",
     "stopPosition": "Stop {current}/{total}",
     "yourToken": "Your token:",
     "avatarIcons": {
       "diablo": "The Devil",
-      "dulce": "La Ligua sweets",
-      "tejido": "Knit vest",
-      "surf": "Surfboard",
-      "casco-minero": "Miner's helmet",
-      "palta": "Avocado"
+      "cucharon": "The Devil's ladle",
+      "poncho": "The lost poncho",
+      "tren": "The railway",
+      "tunel": "Las Palmas Tunnel",
+      "petroglifo": "Chincolco petroglyph"
+    },
+    "tripError": "We couldn't add the route to your trip. Please try again in a while.",
+    "official": {
+      "instagram": "Follow it on Instagram",
+      "legend": "Read the legend",
+      "routes": {
+        "poncho": {
+          "badge": "Official tourist route",
+          "body": "This trip is named after the tourist route created in 2018 by the Municipality of Petorca and INDAP with local rural tourism businesses: it runs from Pedegua to Chalaco, with 20 signposts along the way.",
+          "logoAlt": "Logo of the Donde el Diablo perdió el poncho tourist route"
+        },
+        "ferroviaria": {
+          "badge": "Tourist route",
+          "body": "It follows the old Northern Longitudinal railway line up the valley: Palquico and Las Palmas were stations on the line from 1916, on the way to the Las Palmas Tunnel.",
+          "logoAlt": "Logo of the Ruta Turística Ferroviaria Pedegua – Palquico – Las Palmas"
+        }
+      }
     }
+  },
+  "guide": {
+    "start": "Start guidance",
+    "stop": "End guidance",
+    "walk": "On foot",
+    "car": "By car",
+    "modeLabel": "How you're going",
+    "towards": "To {name}",
+    "remaining": "{distance} left · {time}",
+    "calculating": "Working out the street route…",
+    "waitingGps": "Finding your location…",
+    "gpsDenied": "No location permission. Turn it on in your browser so the guide can lead you.",
+    "noRoute": "We couldn't work out a street route from where you are.",
+    "openExternal": "Open in Google Maps",
+    "privacy": "To work out the route, your approximate location is sent to OpenStreetMap's routing service; it isn't stored.",
+    "offRoute": "You left the route: recalculating…",
+    "arrived": "You've reached {name}!",
+    "goNext": "Go on to {name}",
+    "finished": "You finished the trip!",
+    "voiceOn": "Voice on",
+    "voiceOff": "Voice off",
+    "camera": "Camera guide",
+    "pickStop": "Tap another stop on the map to head there.",
+    "inDistance": "In {distance}",
+    "now": "Now",
+    "attribution": "Routes: © OpenStreetMap · OSRM",
+    "cameraClose": "Close",
+    "cameraSafety": "Watch the road, not just the screen.",
+    "cameraOff": "No camera: just follow the arrow.",
+    "enableCompass": "Turn on orientation",
+    "noHeading": "Walk a few steps so the arrow knows which way you're facing.",
+    "arrowLabel": "Arrow: go this way",
+    "action": {
+      "straight": "Continue straight{street, select, none {} other { onto {street}}}",
+      "left": "Turn left{street, select, none {} other { onto {street}}}",
+      "right": "Turn right{street, select, none {} other { onto {street}}}",
+      "slightLeft": "Bear left{street, select, none {} other { onto {street}}}",
+      "slightRight": "Bear right{street, select, none {} other { onto {street}}}",
+      "sharpLeft": "Make a sharp left{street, select, none {} other { onto {street}}}",
+      "sharpRight": "Make a sharp right{street, select, none {} other { onto {street}}}",
+      "keepLeft": "Keep left{street, select, none {} other { onto {street}}}",
+      "keepRight": "Keep right{street, select, none {} other { onto {street}}}",
+      "uturn": "Make a U-turn{street, select, none {} other { onto {street}}}",
+      "roundabout": "At the roundabout, take exit {exit}{street, select, none {} other { onto {street}}}",
+      "arrive": "You arrive at {name}"
+    },
+    "noRouteOffline": "You're offline: street directions need a connection. The saved map and your position on it still work."
   },
   "locality": {
     "placesTitle": "Places in {name}",
@@ -156,7 +228,7 @@
   },
   "trip": {
     "title": "My trip",
-    "subtitle": "Build your itinerary by adding places and routes from the site; it's saved only on this device.",
+    "subtitle": "Plan your getaway your way: add places and routes, put them in order and share them on WhatsApp. Saved on this phone.",
     "empty": "You haven't added any places to your trip yet.",
     "emptyCta": "Explore places",
     "loading": "Building your itinerary…",
@@ -175,7 +247,10 @@
     "optimizeAuto": "Optimize automatically",
     "startAt": "Starts at",
     "returnToStart": "Return to the starting point at the end",
-    "returnLeg": "Return to {place}: {duration} · {distance} km"
+    "returnLeg": "Return to {place}: {duration} · {distance} km",
+    "share": "Share trip",
+    "shareTitle": "My trip around Petorca",
+    "shareHint": "Send the link on WhatsApp: whoever opens it will see these stops in order and can follow them with the guide."
   },
   "common": {
     "loading": "Loading…",
@@ -212,12 +287,96 @@
       },
       "thirdParties": {
         "title": "Services we use",
-        "body": "The site runs on Supabase (database), Vercel (hosting), Google (place photos and street-route calculation) and a map provider. To show you that content, those services receive your browser's requests and, with them, your IP address. To prevent abuse, the server briefly counts requests per IP without storing them."
+        "body": "The site runs on Supabase (database), Vercel (hosting), Google (place photos), OpenStreetMap (street-route calculation) and a map provider. To show you that content, those services receive your browser's requests and, with them, your IP address. To prevent abuse, the server briefly counts requests per IP without storing them."
       },
       "contact": {
         "title": "Contact",
         "body": "For questions, corrections or to ask for data to be removed, write to the site's developer (see Info)."
       }
     }
+  },
+  "listen": {
+    "play": "Listen",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "playLabel": "Listen to {name}",
+    "speedLabel": "Speed {rate}",
+    "noVoice": "Your phone has no English voice.",
+    "stopsIntro": "Stops: {stops}.",
+    "attractionsIntro": "Attractions: {places}."
+  },
+  "sharedTrip": {
+    "title": "Shared trip",
+    "subtitle": "Someone shared this trip around the commune of Petorca with you: {count, plural, one {# stop} other {# stops}}, in order.",
+    "emptySubtitle": "A trip someone shared with you by link.",
+    "metaDescription": "A trip around the commune of Petorca, with its stops in order and step-by-step guidance.",
+    "empty": "This link doesn't include any stops we can show.",
+    "explore": "Explore Petorca",
+    "stopsTitle": "Stops in order",
+    "shareAgain": "Share this trip",
+    "saveHint": "Save it to keep it in My trip and make it your own."
+  },
+  "legend": {
+    "title": "The legend of the Devil",
+    "subtitle": "They say that here, in Petorca, the devil lost his poncho. They also say he died here. But others say he still roams the commune, from place to place… and you could follow him.",
+    "saying": {
+      "title": "The saying",
+      "body": "In the valley people repeat an old saying: \"The Devil died in Petorca and was buried in La Ligua.\" Behind it there is a poem more than 130 years old and several stories still told in the area."
+    },
+    "poem": {
+      "title": "The 1894 poem",
+      "body": "The oldest record is \"La Muerte del Diablo\" (The Death of the Devil), a poem that Elías Lizana, vicar of Hierro Viejo, published in 1894 in the newspaper La Voz de Petorca. It follows the Devil's wanderings through the area: he is born in Mincha, works as a miner in the Choapa, loses his poncho in Chalaco and dies in Petorca."
+    },
+    "versions": {
+      "title": "The versions people tell",
+      "intro": "Some collected in the book Narraciones tradicionales de Petorca y sus alrededores (2015); others from local accounts.",
+      "stranger": {
+        "title": "The lucky stranger",
+        "body": "In the days of gold and silver, a stranger always won at cards and had a reputation as a seducer. The miners, sure he was the Devil, found the jar where he kept his winnings and killed him. In his pocket they found a little picture of the Virgin: he was not the Devil. He was buried in La Ligua. As told by Ana Leyton Morales."
+      },
+      "rider": {
+        "title": "The rider and his poncho",
+        "body": "In a tavern in Petorca a rider in a black cape appeared, buying drinks and dancing the cueca. When he left there was a smell of sulfur and, ever since, at night a rider can be heard calling for his poncho from the hills of Chalaco."
+      },
+      "miner": {
+        "title": "The miner nicknamed \"The Devil\"",
+        "body": "A miner from the Choapa, hard-working but quarrelsome, earned the nickname \"The Devil\". He was chased through the hills of Chalaco and died in the square of Petorca; he was buried in La Ligua."
+      }
+    },
+    "route": {
+      "title": "The tourist route's version",
+      "body": "The \"Donde el Diablo perdió el poncho\" tourist route tells that the Devil danced the cueca with the miners on payday, in a black tailcoat and with gold teeth; that he forgot his poncho after a New Year's party where he paid everyone's bill; and that he fled from the priests up the Devil's Staircase, whose steps run \"backwards\". That is where this site's Devil comes from: tailcoat, gold tooth and a poncho about to be lost."
+    },
+    "images": {
+      "cueca": "The devil dances the cueca at the village party, poncho over his shoulder.",
+      "anoNuevo": "New Year's Eve: a toast under the fireworks, the night he forgot his poncho.",
+      "escalera": "On the Devil's Staircase, the one with steps \"the wrong way round\".",
+      "buscando": "The devil, ladle in hand, searching the commune for his poncho."
+    },
+    "visit": {
+      "title": "Follow it",
+      "chalaco": "Chalaco, where he lost his poncho",
+      "escalera": "The Devil's Staircase, in Hierro Viejo",
+      "route": "The \"Donde el Diablo perdió el poncho\" route"
+    },
+    "sources": {
+      "title": "Sources",
+      "fucoa": "FUCOA — El Mandinga. Historias del diablo en la zona central de Chile (2021)",
+      "informador": "El Informador — the \"Donde el diablo perdió el poncho\" route (2018)"
+    },
+    "home": {
+      "title": "The legend of the Devil",
+      "body": "They say that here, in Petorca, the devil lost his poncho. They also say he died here. But others say he still roams the commune… and you could roam it with him.",
+      "cta": "Discover the legend"
+    }
+  },
+  "offline": {
+    "save": "Save to use offline (≈ {mb} MB)",
+    "saving": "Saving to use offline… {percent}%",
+    "saved": "Saved to use offline on {date}.",
+    "update": "Update",
+    "error": "Couldn't save everything. Try again with a better signal (or wifi).",
+    "hint": "Saves this page, its stops and the area's map on your phone, for the valley where there's no signal."
   }
 }

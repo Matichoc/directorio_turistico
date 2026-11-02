@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { getSiteUrl } from "@/lib/seo";
+import { routing } from "@/i18n/routing";
+import { getSiteUrl, localizedPath } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
   const base = getSiteUrl();
@@ -9,7 +10,13 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       // Panel, APIs (proxies de Google con costo por llamada) y la página
       // personal de cada visitante no tienen nada que indexar.
-      disallow: ["/admin", "/api/", "/es/recorrido", "/en/my-trip"],
+      // "Mi recorrido" es de cada persona: fuera del índice en todos los
+      // idiomas (antes faltaba /pt/meu-roteiro).
+      disallow: [
+        "/admin",
+        "/api/",
+        ...routing.locales.map((locale) => localizedPath("/recorrido", locale)),
+      ],
     },
     sitemap: `${base}/sitemap.xml`,
     host: base,

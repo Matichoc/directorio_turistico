@@ -2,7 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { getPathname, Link } from "@/i18n/navigation";
+import { ShareButton } from "@/components/place/share-button";
+import { OfflineSaveButton } from "@/components/offline/offline-save-button";
+import { formatSharedStops, SHARE_PARAM } from "@/lib/trip/share-link";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RouteNavigationMap } from "@/components/map/route-navigation-map";
 import { PhotoOrIcon } from "@/components/place/photo-or-icon";
@@ -298,6 +301,64 @@ export function TripView({ locale }: { locale: Locale }) {
             {t("optimizeAuto")}
           </button>
         </p>
+      )}
+
+      {markers.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Link con las paradas en este mismo orden (lib/trip/share-link.ts):
+              quien lo abre ve y navega el recorrido sin cuenta. */}
+          <ShareButton
+            title={t("shareTitle")}
+            label={t("share")}
+            className="bg-accent text-accent-foreground rounded-full px-4 py-2 text-sm font-medium shadow-[0_0_16px_1px_var(--accent-soft)]"
+            url={() =>
+              `${window.location.origin}${getPathname({
+                locale,
+                href: {
+                  pathname: "/recorrido/compartido",
+                  query: {
+                    [SHARE_PARAM]: formatSharedStops(
+                      markers.map((marker) => marker.slug),
+                    ),
+                  },
+                },
+              })}`
+            }
+          />
+          <span className="text-foreground/60 text-xs">{t("shareHint")}</span>
+        </div>
+      )}
+
+      {markers.length > 0 && (
+        // Sin señal se abre la versión "compartida" del recorrido: trae las
+        // paradas desde el servidor, sin pedirlas a /api como esta página.
+        <OfflineSaveButton
+          saveKey="recorrido"
+          title={t("title")}
+          pages={[
+            getPathname({
+              locale,
+              href: {
+                pathname: "/recorrido/compartido",
+                query: {
+                  [SHARE_PARAM]: formatSharedStops(
+                    markers.map((marker) => marker.slug),
+                  ),
+                },
+              },
+            }),
+            ...markers.map((marker) =>
+              getPathname({
+                locale,
+                href: {
+                  pathname: "/lugares/[slug]",
+                  params: { slug: marker.slug },
+                },
+              }),
+            ),
+          ]}
+          points={markers}
+        />
       )}
 
       {markers.length > 0 && (

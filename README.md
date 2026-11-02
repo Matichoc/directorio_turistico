@@ -1,6 +1,9 @@
-# El diablo murió en Petorca y en La Ligua lo enterraron
+# El diablo murió en Petorca
 
-Directorio turístico y planificador de rutas para la provincia de Petorca (Chile).
+Directorio turístico y planificador de rutas de la comuna de Petorca (Chile),
+la tierra donde —dice el dicho— murió el diablo. La versión de toda la
+provincia, con el nombre completo del dicho ("…y en La Ligua lo enterraron"),
+queda en la rama `provincia-completa`.
 Next.js 16 (App Router) + TypeScript + Tailwind + Supabase + next-intl (es/en).
 
 Ver `docs/PLAN.md` para el plan completo por fases, `docs/ARCHITECTURE.md` para
@@ -21,6 +24,22 @@ pnpm dev
 ```
 
 Abre [http://localhost:3000](http://localhost:3000) — redirige a `/es`.
+
+## Ambientes
+
+- **Producción**: rama `main`, datos reales (`legacy`).
+- **Desarrollo**: rama `develop` y vistas previas de cada PR, sobre una copia
+  de prueba (`legacy_dev`) con franja amarilla de aviso. Puesta en marcha y
+  reglas: `docs/DESARROLLO.md`.
+
+## Alcance: comuna de Petorca
+
+Esta rama muestra solo la **comuna de Petorca**: la lista
+`SITE_COMMUNE_SLUGS` (`src/lib/site-scope.ts`) filtra lugares, pueblos,
+comunas y rutas al leerlos (una ruta entra solo si todas sus paradas son de
+la comuna). La base no se toca. La versión con las 5 comunas de la provincia
+queda en la rama `provincia-completa`; dejar la lista vacía también vuelve a
+mostrar la provincia.
 
 ## Base de datos
 
@@ -46,21 +65,22 @@ fuente pública en `sources`). Hace `upsert`: **pisa lo editado desde
 
 ## Scripts
 
-| Comando                                 | Descripción                                                                        |
-| --------------------------------------- | ---------------------------------------------------------------------------------- |
-| `pnpm dev`                              | Servidor de desarrollo                                                             |
-| `pnpm build`                            | Build de producción                                                                |
-| `pnpm start`                            | Sirve el build de producción                                                       |
-| `pnpm lint`                             | ESLint                                                                             |
-| `pnpm format` / `format:check`          | Prettier                                                                           |
-| `pnpm typecheck`                        | `tsc --noEmit`                                                                     |
-| `pnpm test` / `test:watch`              | Tests unitarios/integración (Vitest)                                               |
-| `pnpm test:e2e`                         | Tests end-to-end (Playwright)                                                      |
-| `pnpm db:seed`                          | Seed de lugares/rutas reales (pisa ediciones del admin, ver arriba)                |
-| `pnpm export:content-gaps`              | CSV con lugares sin descripción larga o sin foto (lee la base real)                |
-| `pnpm geocode:localities`               | Busca coordenadas de pueblos en Google Places (requiere `GOOGLE_PLACES_API_KEY`)   |
-| `pnpm fetch:google-photos`              | Trae fotos de Google Places a lugares que no tienen                                |
-| `python scripts/build-terrain-tiles.py` | Regenera el relieve del vuelo 3D (`public/terrain`, requiere `pip install pillow`) |
+| Comando                                 | Descripción                                                                         |
+| --------------------------------------- | ----------------------------------------------------------------------------------- |
+| `pnpm dev`                              | Servidor de desarrollo                                                              |
+| `pnpm build`                            | Build de producción                                                                 |
+| `pnpm start`                            | Sirve el build de producción                                                        |
+| `pnpm lint`                             | ESLint                                                                              |
+| `pnpm format` / `format:check`          | Prettier                                                                            |
+| `pnpm typecheck`                        | `tsc --noEmit`                                                                      |
+| `pnpm test` / `test:watch`              | Tests unitarios/integración (Vitest)                                                |
+| `pnpm test:e2e`                         | Tests end-to-end (Playwright)                                                       |
+| `pnpm db:seed`                          | Seed de lugares/rutas reales (pisa ediciones del admin, ver arriba)                 |
+| `pnpm export:content-gaps`              | CSV con lugares sin descripción larga o sin foto (lee la base real)                 |
+| `pnpm geocode:localities`               | Busca coordenadas de pueblos en Google Places (requiere `GOOGLE_PLACES_API_KEY`)    |
+| `pnpm fetch:google-photos`              | Trae fotos de Google Places a lugares que no tienen                                 |
+| `python scripts/build-terrain-tiles.py` | Regenera el relieve del vuelo 3D (`public/terrain`, requiere `pip install pillow`)  |
+| `node scripts/build-brand-png.mjs`      | Integra el arte del diablo: revisa, pasa a WebP y arma favicon e íconos (`--check`) |
 
 ## Producción
 
@@ -70,8 +90,10 @@ fuente pública en `sources`). Hace `upsert`: **pisa lo editado desde
 - **Dominio propio y un solo proyecto de Vercel:** guía paso a paso en `docs/DOMINIO.md` (NIC Chile, DNS, Vercel, Supabase, Search Console, correo y checklist final).
 - **Sitio publicado:** `https://directorio-turistico-bgl3.vercel.app` (hay un segundo proyecto de Vercel por apagar; ver `docs/DOMINIO.md`).
 - **Administración:** `/admin` (usuario en `legacy.admin_users` del proyecto compartido): lugares, rutas, pueblos, comunas/categorías, verificaciones por comuna, comentarios y métricas.
+- **Cómo usar el panel (qué se edita y qué no) y guion de la reunión:** `docs/GUIA-PANEL.md`.
 - **Hoja de ruta hacia la propuesta a turismo:** `docs/PLAN.md`, sección 10.
 - **Diseño:** `docs/DESIGN.md` (tokens, componentes y patrones visuales).
+- **Arte del diablo:** `docs/PROMPTS-IMAGENES.md` (personaje aprobado, estado, cómo integrar imágenes nuevas).
 
 ## Estructura
 

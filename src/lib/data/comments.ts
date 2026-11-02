@@ -1,5 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import type { Locale } from "@/types/database";
 
@@ -10,12 +12,12 @@ export interface PlaceComment {
 }
 
 /** Comentarios ya aprobados de un lugar — para la ficha pública. */
-export async function listApprovedComments(
+async function listApprovedCommentsUncached(
   placeId: string,
 ): Promise<PlaceComment[]> {
   if (!isSupabaseConfigured()) return [];
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("place_comments")
     .select("id, body, created_at")
@@ -31,6 +33,10 @@ export async function listApprovedComments(
     createdAt: comment.created_at,
   }));
 }
+export const listApprovedComments = cachedContent(
+  listApprovedCommentsUncached,
+  "listApprovedComments",
+);
 
 const PENDING_COMMENTS_QUERY =
   `id, body, created_at, places(slug, place_translations(name, locale))` as const;

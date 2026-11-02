@@ -12,6 +12,7 @@ import Map, {
 } from "react-map-gl/maplibre";
 import type { StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { loadMaplibre } from "@/lib/maps/maplibre";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { ProvinceFlyoverData } from "@/lib/ui/province-flyover";
 import {
@@ -352,6 +353,7 @@ export function ProvinceFlyoverMap({
     <div className="relative h-full w-full">
       <Map
         ref={mapRef}
+        mapLib={loadMaplibre()}
         mapStyle={mapStyle}
         initialViewState={overview}
         pixelRatio={pixelRatio}

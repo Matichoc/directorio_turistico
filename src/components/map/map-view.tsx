@@ -11,12 +11,10 @@ import Map, {
   type MapRef,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-
-// `maplibre-gl` está fijado a la serie 5.x en package.json a propósito: la
-// v6 cambió cómo se cargan los workers/tiles y el mapa queda en blanco sin
-// ningún error en consola con `react-map-gl` (bug conocido y reportado en
-// varios proyectos). No subir a v6 sin antes configurar el worker según la
-// guía de migración de MapLibre para el bundler de Next.js/Turbopack.
+// MapLibre 6 trae su worker en un archivo aparte: se carga siempre con
+// `loadMaplibre` (`mapLib`), que le dice dónde quedó; sin eso el mapa base
+// queda en blanco (ver `lib/maps/maplibre.ts`).
+import { loadMaplibre } from "@/lib/maps/maplibre";
 import { Link } from "@/i18n/navigation";
 import { MapPin } from "@/components/map/map-pin";
 import { PlayerToken } from "@/components/map/player-token";
@@ -188,6 +186,7 @@ export function MapView({
         ref={mapRef}
         onLoad={handleLoad}
         onZoom={syncZoom}
+        mapLib={loadMaplibre()}
         mapStyle={getMapStyleUrl()}
         initialViewState={{
           latitude: center.latitude,

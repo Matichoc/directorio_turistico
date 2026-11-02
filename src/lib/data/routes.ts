@@ -1,5 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { isCommuneInScope } from "@/lib/site-scope";
 import type {
@@ -68,7 +70,7 @@ function isRouteInScope(
   );
 }
 
-export async function getRouteBySlug(
+async function getRouteBySlugUncached(
   slug: string,
   locale: Locale,
 ): Promise<Route | null> {
@@ -76,7 +78,7 @@ export async function getRouteBySlug(
     return null;
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("routes")
     .select<typeof ROUTE_QUERY, RouteQueryResult>(ROUTE_QUERY)
@@ -129,6 +131,10 @@ export async function getRouteBySlug(
     stops,
   };
 }
+export const getRouteBySlug = cachedContent(
+  getRouteBySlugUncached,
+  "getRouteBySlug",
+);
 
 const ROUTES_LIST_QUERY = `id, slug, estimated_duration_minutes, cover_image,
    route_translations!inner(name, description, locale),
@@ -341,7 +347,7 @@ export async function getAdminRouteById(
   };
 }
 
-export async function listRoutes(
+async function listRoutesUncached(
   locale: Locale,
   limit?: number,
 ): Promise<RouteCard[]> {
@@ -349,7 +355,7 @@ export async function listRoutes(
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("routes")
     .select<typeof ROUTES_LIST_QUERY, RouteListQueryResult>(ROUTES_LIST_QUERY)
@@ -381,3 +387,4 @@ export async function listRoutes(
     };
   });
 }
+export const listRoutes = cachedContent(listRoutesUncached, "listRoutes");

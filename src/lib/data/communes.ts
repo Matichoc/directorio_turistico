@@ -1,5 +1,6 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { isSiteScoped, SITE_COMMUNE_SLUGS } from "@/lib/site-scope";
 import type { Locale } from "@/types/database";
@@ -15,12 +16,12 @@ interface CommuneQueryResult {
   commune_translations: { name: string; locale: Locale }[];
 }
 
-export async function listCommunes(locale: Locale): Promise<Commune[]> {
+async function listCommunesUncached(locale: Locale): Promise<Commune[]> {
   if (!isSupabaseConfigured()) {
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let builder = supabase
     .from("communes")
     .select<typeof COMMUNES_QUERY, CommuneQueryResult>(COMMUNES_QUERY)
@@ -45,6 +46,7 @@ export async function listCommunes(locale: Locale): Promise<Commune[]> {
     }))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
+export const listCommunes = cachedContent(listCommunesUncached, "listCommunes");
 
 interface ContactLinkQueryResult {
   entity_id: string;
@@ -59,7 +61,7 @@ interface ContactLinkQueryResult {
  * el home. Una comuna sin enlaces cargados todavía devuelve `links: []`
  * (el banner la muestra igual, sin inventar nada) en vez de excluirla.
  */
-export async function listMunicipalities(
+async function listMunicipalitiesUncached(
   locale: Locale,
 ): Promise<Municipality[]> {
   const communes = await listCommunes(locale);
@@ -67,7 +69,7 @@ export async function listMunicipalities(
     return communes.map((commune) => ({ ...commune, links: [] }));
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: links } = await supabase
     .from("contact_links")
     .select<"entity_id, kind, value, label", ContactLinkQueryResult>(
@@ -83,3 +85,7 @@ export async function listMunicipalities(
       .map(({ kind, value, label }) => ({ kind, value, label })),
   }));
 }
+export const listMunicipalities = cachedContent(
+  listMunicipalitiesUncached,
+  "listMunicipalities",
+);

@@ -12,10 +12,22 @@ import { OfflineSaveButton } from "@/components/offline/offline-save-button";
 import type { Metadata } from "next";
 import {
   buildPageMetadata,
+  getSiteUrl,
   localizedPath,
   truncateDescription,
 } from "@/lib/seo";
+import { routeJsonLd } from "@/lib/seo-json-ld";
 import { TrackEvent } from "@/components/analytics/track-event";
+import { JsonLd } from "@/components/seo/json-ld";
+
+/**
+ * Ninguna ficha se arma al compilar: cada una se genera la primera vez que
+ * alguien la visita y queda en caché (se renueva con `revalidate` del layout
+ * o al guardar en el panel). Ver docs/RENDIMIENTO.md.
+ */
+export function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({
   params,
@@ -54,10 +66,26 @@ export default async function RouteDetailPage({
   const hours = route.estimatedDurationMinutes
     ? Math.round((route.estimatedDurationMinutes / 60) * 10) / 10
     : null;
+  // El diablito solo en la ruta del dicho (DESIGN.md: es un condimento).
+  const showMascot = route.slug === "ruta-del-diablo-pedegua-chincolco";
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
       <TrackEvent event={{ name: "route_view", properties: { slug } }} />
+      <JsonLd
+        data={routeJsonLd(route, {
+          siteUrl: getSiteUrl(),
+          path: localizedPath(
+            { pathname: "/rutas/[slug]", params: { slug } },
+            locale,
+          ),
+          stopPath: (stopSlug) =>
+            localizedPath(
+              { pathname: "/lugares/[slug]", params: { slug: stopSlug } },
+              locale,
+            ),
+        })}
+      />
       {route.coverImageUrl && (
         <div className="relative h-48 w-full overflow-hidden rounded-xl sm:h-64">
           <Image
@@ -72,14 +100,16 @@ export default async function RouteDetailPage({
       )}
 
       <header className="relative flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">{route.name}</h1>
+        <h1 className={`text-2xl font-semibold ${showMascot ? "pr-12" : ""}`}>
+          {route.name}
+        </h1>
         {hours && (
           <p className="text-foreground/60 text-sm">
             {t("duration")}: {hours}h
           </p>
         )}
-        {route.slug === "ruta-del-diablo" && (
-          <DevilMascot className="animate-devil-peek text-accent pointer-events-none absolute top-0 right-0 h-10 w-10 opacity-70" />
+        {showMascot && (
+          <DevilMascot className="animate-devil-peek pointer-events-none absolute top-0 right-0 h-10 w-10" />
         )}
         <ListenButton
           name={route.name}

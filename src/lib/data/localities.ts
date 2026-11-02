@@ -1,5 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { listPlacesByLocalityId } from "@/lib/data/places";
 import { isSiteScoped, SITE_COMMUNE_SLUGS } from "@/lib/site-scope";
@@ -51,12 +53,12 @@ function mapLocality(row: LocalityQueryResult, locale: Locale): Locality {
 }
 
 /** Todos los pueblos, para `/pueblos` (agrupados por comuna en la página). */
-export async function listLocalities(locale: Locale): Promise<Locality[]> {
+async function listLocalitiesUncached(locale: Locale): Promise<Locality[]> {
   if (!isSupabaseConfigured()) {
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let builder = supabase
     .from("localities")
     .select<typeof LOCALITIES_QUERY, LocalityQueryResult>(LOCALITIES_QUERY)
@@ -78,8 +80,12 @@ export async function listLocalities(locale: Locale): Promise<Locality[]> {
     .map((row) => mapLocality(row, locale))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
+export const listLocalities = cachedContent(
+  listLocalitiesUncached,
+  "listLocalities",
+);
 
-export async function getLocalityBySlug(
+async function getLocalityBySlugUncached(
   slug: string,
   locale: Locale,
 ): Promise<LocalityWithPlaces | null> {
@@ -87,7 +93,7 @@ export async function getLocalityBySlug(
     return null;
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let builder = supabase
     .from("localities")
     .select<typeof LOCALITIES_QUERY, LocalityQueryResult>(LOCALITIES_QUERY)
@@ -109,6 +115,10 @@ export async function getLocalityBySlug(
 
   return { ...locality, places };
 }
+export const getLocalityBySlug = cachedContent(
+  getLocalityBySlugUncached,
+  "getLocalityBySlug",
+);
 
 export interface AdminLocalityListItem {
   id: string;

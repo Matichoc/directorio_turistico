@@ -3,6 +3,9 @@
  * de `/api/analytics` salen de acá (antes eran dos listas a mano y un
  * evento nuevo, `place_liked`, quedó fuera de la del servidor — el bug
  * real del 2026-09-26, ver docs/PLAN.md).
+ *
+ * Si se corrió `supabase/manual/analitica-solo-eventos-validos.sql`, la base
+ * también tiene esta lista: un evento nuevo se suma allá y se vuelve a correr.
  */
 export const ANALYTICS_EVENT_NAMES = [
   "place_view",

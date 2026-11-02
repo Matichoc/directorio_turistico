@@ -3,19 +3,60 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+/** Origen de un estilo de mapa propio (`NEXT_PUBLIC_MAP_STYLE_URL`), si hay. */
+function mapStyleOrigin(): string {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_MAP_STYLE_URL ?? "").origin;
+  } catch {
+    return "";
+  }
+}
+
 /**
- * Encabezados de seguridad para todo el sitio (auditoría 2026-11-02). Sin
- * CSP completa todavía: MapLibre usa workers `blob:` y estilos en línea, y
- * una política mal armada rompe los mapas (ver docs/AUDITORIA-2026-11-02.md);
- * por ahora solo `frame-ancestors`, que no afecta nada del propio sitio.
- * Cámara y ubicación quedan permitidas solo al propio sitio (la guía paso a
- * paso las usa); el resto de los permisos, apagados.
+ * Política de contenido completa (auditoría H-05), por ahora en modo
+ * **solo informe** (`Content-Security-Policy-Report-Only`): el navegador no
+ * bloquea nada, solo avisa en la consola lo que bloquearía. Así se prueba en
+ * la vista previa sin arriesgar los mapas (MapLibre usa workers `blob:`) y,
+ * sin avisos, se aplica de verdad con `CSP_MODE=enforce` al compilar (variable
+ * de entorno en Vercel, sin tocar código; docs/AUDITORIA-2026-11-02.md).
+ * `unsafe-inline` en scripts: Next mete scripts en línea sin nonce en páginas
+ * cacheadas; `unsafe-eval` solo en desarrollo (recarga en caliente).
+ */
+const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://*.supabase.co https://commons.wikimedia.org https://upload.wikimedia.org https://tiles.openfreemap.org",
+  "font-src 'self' data:",
+  `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://tiles.openfreemap.org ${mapStyleOrigin()}`.trim(),
+  "worker-src 'self' blob:",
+  "child-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+
+/**
+ * Encabezados de seguridad para todo el sitio (auditoría 2026-11-02).
+ * `frame-ancestors` sí se aplica (no afecta nada del propio sitio); el resto
+ * de la política va en modo informe, ver arriba. Cámara y ubicación quedan
+ * permitidas solo al propio sitio (la guía paso a paso las usa); el resto de
+ * los permisos, apagados.
  */
 const SECURITY_HEADERS = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Frame-Options", value: "DENY" },
-  { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+  ...(process.env.CSP_MODE === "enforce"
+    ? [{ key: "Content-Security-Policy", value: CONTENT_SECURITY_POLICY }]
+    : [
+        { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+        {
+          key: "Content-Security-Policy-Report-Only",
+          value: CONTENT_SECURITY_POLICY,
+        },
+      ]),
   {
     key: "Permissions-Policy",
     value:
@@ -40,8 +81,8 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // El panel no debe indexarse (es un layout de cliente, así que no
-        // puede exportar `metadata`; el header cubre todas sus páginas).
+        // El panel no debe indexarse (el header cubre todas sus páginas,
+        // también las respuestas que no son HTML, como el CSV exportado).
         source: "/admin/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },

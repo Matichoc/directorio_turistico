@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { refreshPublicContent } from "./refresh";
 import { createClient } from "@/lib/supabase/server";
 import type { CommentStatus } from "@/types/database";
 
@@ -79,5 +80,6 @@ export async function moderateComment(input: ModerateCommentInput) {
     throw new Error(`No se pudo moderar el comentario: ${error.message}`);
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/verificaciones");
 }

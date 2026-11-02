@@ -54,8 +54,13 @@ que use ese token, que es justo lo que se pidió:
   ficha de ruta) no llevan `PageHero` encima — ya tienen su propio momento
   visual, duplicarlo se ve recargado.
 - **El folclore del diablo es un condimento, no un tema constante.** El
-  `DevilMascot` solo aparece donde tiene sentido narrativo (home, "Ruta del
-  Diablo") — no ponerlo en cualquier página nueva "porque sí".
+  `DevilMascot` (la cabeza del diablo campesino, `icons/icon-192.png`) solo
+  aparece donde tiene sentido narrativo (la ruta del poncho,
+  `ruta-del-diablo-pedegua-chincolco`) — no ponerlo en cualquier página
+  nueva "porque sí".
+- **Foco visible**: todo link, botón o campo muestra un anillo de brasa
+  (`--accent`) al llegar con el teclado (`:focus-visible` en `globals.css`).
+  No apagarlo con `outline-none` sin poner otro indicador igual de visible.
 
 ## Color
 

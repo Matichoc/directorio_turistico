@@ -18,18 +18,31 @@ const OG_LOCALE: Record<Locale, string> = {
 };
 
 /**
+ * Dominio publicado hoy. Se usa cuando no hay otra URL válida en producción:
+ * el 2026-11-02 el sitio publicado decía `http://localhost:3000` en el
+ * canonical, la imagen para compartir (WhatsApp no mostraba vista previa),
+ * el sitemap y el robots.txt. Con dominio propio, basta
+ * `NEXT_PUBLIC_SITE_URL` (docs/DOMINIO.md).
+ */
+const PUBLISHED_SITE_URL = "https://directorio-turistico-bgl3.vercel.app";
+
+const isLocalUrl = (url: string) => /\/\/(localhost|127\.0\.0\.1)\b/.test(url);
+
+/**
  * URL pública del sitio, base de las URLs absolutas de metadata/sitemap.
  * Prioridad: la variable explícita (dominio propio), luego el dominio de
- * producción que expone Vercel, luego el del despliegue (previews) y por
- * último localhost.
+ * producción que expone Vercel, luego el del despliegue (previews). En
+ * desarrollo, localhost; en un build de producción nunca una URL local (si la
+ * variable quedó con el valor de `.env.example`), sino el dominio publicado.
  */
 export function getSiteUrl(): string {
-  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
-  if (explicit) return explicit.replace(/\/$/, "");
+  const production = process.env.NODE_ENV === "production";
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
+  if (explicit && !(production && isLocalUrl(explicit))) return explicit;
   const vercel =
     process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
   if (vercel) return `https://${vercel}`;
-  return "http://localhost:3000";
+  return production ? PUBLISHED_SITE_URL : "http://localhost:3000";
 }
 
 type Href = Parameters<typeof getPathname>[0]["href"];

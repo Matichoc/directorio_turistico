@@ -41,4 +41,19 @@ describe("getSiteUrl", () => {
     vi.stubEnv("VERCEL_URL", "");
     expect(getSiteUrl()).toBe("http://localhost:3000");
   });
+
+  it("never publishes a localhost URL in a production build", () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
+    vi.stubEnv("VERCEL_URL", "");
+    // El valor de .env.example copiado tal cual a Vercel (bug real 2026-11-02).
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
+    expect(getSiteUrl()).toBe("https://directorio-turistico-bgl3.vercel.app");
+
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+    expect(getSiteUrl()).toBe("https://directorio-turistico-bgl3.vercel.app");
+
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://ejemplo.cl");
+    expect(getSiteUrl()).toBe("https://ejemplo.cl");
+  });
 });

@@ -12,21 +12,21 @@ rama `feat/recursos-y-auditoria`. Los anteriores quedaron en
 `docs/arte/respaldo-2026-11-02/`. Los PNG originales se guardan al lado (no se
 suben, ver `.gitignore`); el sitio usa WebP.
 
-| Recurso del ZIP                           | Estado                                                                                                                                                           |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `referencias/diablo-referencia.png`       | Integrado como referencia: `docs/arte/diablo-campesino-referencia.png`.                                                                                          |
-| `brand/icono.png`                         | Integrado (reducido a 1024×1024; original en `icono-original.png`). De él salen **todos** los íconos: favicon, app, barra y la imagen para compartir.            |
-| `brand/logo.png`                          | **No integrado**: es el diablo infantil anterior, no el campesino. Falta un logo nuevo; mientras, el sitio no usa ningún logo (los íconos salen de `icono.png`). |
-| `fondos/atardecer.png`                    | Integrado. El diablo está **al centro**: solo sirve en formatos altos (postales); las cabeceras anchas usan el cerro.                                            |
-| `fondos/cerro.png`                        | Integrado (inicio, Explorar, naturaleza, recreación, privacidad).                                                                                                |
-| `fondos/pueblo.png`                       | Integrado (gastronomía, cultura, Información).                                                                                                                   |
-| `fondos/tunel.png`                        | Integrado (leyenda, rutas).                                                                                                                                      |
-| `rutas/ruta-ferroviaria-…png`             | Integrado. Conserva el puente de reticulado y el túnel aprobados; cambia el diablo al campesino.                                                                 |
-| `rutas/ruta-del-diablo-pedegua-chincolco` | **No integrado**: es la misma portada con el diablo infantil que ya estaba. Falta la versión campesina.                                                          |
-| `leyendas/cueca.png`                      | Integrado en `/leyenda` (versión de la ruta).                                                                                                                    |
-| `leyendas/ano-nuevo.png`                  | Integrado en `/leyenda` (versión de la ruta).                                                                                                                    |
-| `leyendas/escalera.png`                   | Integrado en `/leyenda` (versión de la ruta).                                                                                                                    |
-| `leyendas/diablo-buscando.png`            | Integrado en `/leyenda` ("Recórrela").                                                                                                                           |
+| Recurso del ZIP                           | Estado                                                                                                                                                                                                         |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `referencias/diablo-referencia.png`       | Integrado como referencia: `docs/arte/diablo-campesino-referencia.png`.                                                                                                                                        |
+| `brand/icono.png`                         | Integrado (reducido a 1024×1024; original en `icono-original.png`). De él salen **todos** los íconos: favicon, app, barra y la imagen para compartir.                                                          |
+| `brand/logo.png`                          | **No integrado**: es el diablo infantil anterior, no el campesino. Falta un logo nuevo; mientras, el sitio no usa ningún logo (los íconos salen de `icono.png`).                                               |
+| `fondos/atardecer.png`                    | Integrado. El diablo está **al centro**: solo sirve en formatos altos (postales); las cabeceras anchas usan el cerro.                                                                                          |
+| `fondos/cerro.png`                        | Integrado (inicio, Explorar, naturaleza, recreación, privacidad).                                                                                                                                              |
+| `fondos/pueblo.png`                       | Integrado (gastronomía, cultura, Información).                                                                                                                                                                 |
+| `fondos/tunel.png`                        | Integrado (leyenda, rutas).                                                                                                                                                                                    |
+| `rutas/ruta-ferroviaria-…png`             | Integrado. Conserva el puente de reticulado y el túnel aprobados; cambia el diablo al campesino.                                                                                                               |
+| `rutas/ruta-del-diablo-pedegua-chincolco` | **No integrado**: es la misma portada con el diablo infantil que ya estaba. Falta la versión campesina. Mientras, la ruta usa `leyendas/escalera` de portada (`supabase/manual/portada-poncho-campesino.sql`). |
+| `leyendas/cueca.png`                      | Integrado en `/leyenda` (versión de la ruta).                                                                                                                                                                  |
+| `leyendas/ano-nuevo.png`                  | Integrado en `/leyenda` (versión de la ruta).                                                                                                                                                                  |
+| `leyendas/escalera.png`                   | Integrado en `/leyenda` (versión de la ruta).                                                                                                                                                                  |
+| `leyendas/diablo-buscando.png`            | Integrado en `/leyenda` ("Recórrela").                                                                                                                                                                         |
 
 **Pendiente:** un logo campesino (insignia con transparencia) y la portada
 campesina de "Donde el Diablo perdió el poncho". Las escenas SVG anteriores

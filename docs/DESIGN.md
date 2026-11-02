@@ -236,8 +236,11 @@ roja y dorada**. Reemplazó al diablito de mascota (2026-11-01), que a su vez
 reemplazó al de la provincia (casco minero, surf, dulces). Las escenas
 `atardecer`, `cerro`, `pueblo` y `tunel`, la portada ferroviaria y las escenas
 de `public/leyendas/` son WebP de ese arte; `playa` y `dulces` (solo
-provincia) siguen en SVG. Pendiente: la portada de "Donde el Diablo perdió el
-poncho" y un logo, que aún traen el diablito anterior (no se usa el logo).
+provincia) siguen en SVG. La portada propia de "Donde el Diablo perdió el
+poncho" y el logo entregados aún traen el diablito anterior: no se usan. La
+ruta lleva de portada provisoria la escena de la Escalera del Diablo (una de
+sus paradas, `supabase/manual/portada-poncho-campesino.sql`) hasta que llegue
+una propia con el personaje nuevo.
 
 **Recorte**: cada escena tiene su punto de foco en `SCENE_POSITION` (la cara
 y el torso del diablo), que usan todas las vistas (`PageHero`, hero del

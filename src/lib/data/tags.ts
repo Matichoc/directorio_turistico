@@ -1,5 +1,6 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 export interface Tag {
@@ -8,12 +9,12 @@ export interface Tag {
   name: string;
 }
 
-export async function listTags(): Promise<Tag[]> {
+async function listTagsUncached(): Promise<Tag[]> {
   if (!isSupabaseConfigured()) {
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("tags")
     .select("id, slug, name")
@@ -25,3 +26,4 @@ export async function listTags(): Promise<Tag[]> {
 
   return data;
 }
+export const listTags = cachedContent(listTagsUncached, "listTags");

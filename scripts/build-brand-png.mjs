@@ -8,7 +8,7 @@
 // Cada recurso se procesa solo si su PNG existe y cumple (tamaño, y
 // transparencia cuando corresponde): nunca pisa una imagen del proyecto con
 // algo que falta o es un borrador. Los íconos del sitio (favicon, app,
-// compartir) se arman recién cuando están `logo.png` e `icono.png`. Conectar
+// compartir) se arman desde `icono.png` (ver más abajo). Conectar
 // el arte al sitio (fondos, portadas, logo en la barra) es un paso aparte,
 // después de revisarlo a la vista: ver "Integración" en docs/PROMPTS-IMAGENES.md.
 // Usa `sharp`, que viene con Next.
@@ -42,10 +42,29 @@ const ASSETS = [
     size: [1536, 1024],
     webp: true,
   },
+  // Escenas de la leyenda (entrega del 2026-11-02, diablo campesino).
   {
-    src: "public/brand/diablo-buscando.png",
-    size: [1024, 1024],
+    src: "public/leyendas/diablo-buscando.png",
+    size: [1254, 1254],
     transparent: true,
+    webp: true,
+    optional: true,
+  },
+  {
+    src: "public/leyendas/cueca.png",
+    size: [1536, 1024],
+    webp: true,
+    optional: true,
+  },
+  {
+    src: "public/leyendas/ano-nuevo.png",
+    size: [1536, 1024],
+    webp: true,
+    optional: true,
+  },
+  {
+    src: "public/leyendas/escalera.png",
+    size: [1536, 1024],
     webp: true,
     optional: true,
   },
@@ -112,35 +131,41 @@ for (const a of reviewed.filter((a) => a.webp && a.status === "listo")) {
   out(target, await sharp(a.file).webp({ quality: 82 }).toBuffer());
 }
 
-if (!ready("public/brand/logo.png") || !ready("public/brand/icono.png")) {
-  console.log(
-    "\nÍconos del sitio sin tocar: faltan logo.png e icono.png definitivos.",
-  );
+// Desde 2026-11-02 todos los íconos (favicon, app, barra, compartir) salen
+// de `icono.png`, el diablo campesino: el `logo.png` que llegó en esa entrega
+// seguía siendo el diablo infantil anterior, así que no se usa hasta que haya
+// un logo nuevo (ver docs/PROMPTS-IMAGENES.md).
+if (!ready("public/brand/icono.png")) {
+  console.log("\nÍconos del sitio sin tocar: falta icono.png definitivo.");
   process.exit(0);
 }
 
-const logo = join(ROOT, "public/brand/logo.png");
 const icono = join(ROOT, "public/brand/icono.png");
-// Siempre RGBA: el favicon (.ico) con un PNG sin canal alfa no lo lee Next.
-const png = (image, size) =>
+// Paleta: el ícono es una ilustración con mucho detalle y sin ella el de
+// 512 px pesaba ~500 KB (se baja en cada visita y en la caché sin señal).
+// Solo para los íconos de `public/`: los de `src/app/` (favicon.ico, icon,
+// apple-icon) los procesa Next y exige PNG RGBA, sin paleta (si no, el build
+// y el servidor de desarrollo fallan con "The PNG is not in RGBA format").
+const SMALL_PNG = { palette: true, quality: 90, compressionLevel: 9 };
+
+const png = (image, size, options = {}) =>
   sharp(image)
     .resize(size, size, {
       fit: "contain",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
     .ensureAlpha()
-    .png()
+    .png(options)
     .toBuffer();
 
-/** El logo centrado sobre un cuadrado de noche (`scale` = cuánto ocupa). */
-async function onNight(size, scale) {
-  return sharp({
-    create: { width: size, height: size, channels: 4, background: NIGHT },
-  })
-    .composite([
-      { input: await png(logo, Math.round(size * scale)), gravity: "centre" },
-    ])
-    .png()
+/** El ícono recortado en círculo (barra del sitio, imagen para compartir). */
+async function round(size) {
+  const mask = Buffer.from(
+    `<svg width="${size}" height="${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${size / 2}"/></svg>`,
+  );
+  return sharp(await png(icono, size))
+    .composite([{ input: mask, blend: "dest-in" }])
+    .png(SMALL_PNG)
     .toBuffer();
 }
 
@@ -176,13 +201,13 @@ out(
 );
 out("src/app/icon.png", await png(icono, 192));
 out("src/app/apple-icon.png", await png(icono, 180));
-out("public/icons/icon-192.png", await png(logo, 192));
-out("public/icons/icon-512.png", await png(logo, 512));
-// Android recorta los íconos "maskable" en círculo o gota: el logo dentro de
-// la zona segura (80 % central).
-out("public/icons/icon-maskable-512.png", await onNight(512, 0.78));
+out("public/icons/icon-192.png", await round(192));
+out("public/icons/icon-512.png", await round(512));
+// Android recorta los íconos "maskable" en círculo o gota: el ícono es un
+// cuadrado lleno con la cara al centro, dentro de la zona segura (80 %).
+out("public/icons/icon-maskable-512.png", await png(icono, 512, SMALL_PNG));
 
-// Imagen para compartir (1200×630): el logo y el nombre sobre la noche.
+// Imagen para compartir (1200×630): el diablo y el nombre sobre la noche.
 const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
 <defs><radialGradient id="bg" cx=".3" cy=".45" r=".8"><stop offset="0" stop-color="#3b1830"/><stop offset=".5" stop-color="#1b0e1f"/><stop offset="1" stop-color="${NIGHT}"/></radialGradient>
 <linearGradient id="t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffb072"/><stop offset="1" stop-color="#ff7a45"/></linearGradient></defs>
@@ -194,7 +219,7 @@ const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
 out(
   "public/brand/og.png",
   await sharp(Buffer.from(og))
-    .composite([{ input: await png(logo, 420), left: 90, top: 105 }])
+    .composite([{ input: await round(420), left: 90, top: 105 }])
     .png()
     .toBuffer(),
 );

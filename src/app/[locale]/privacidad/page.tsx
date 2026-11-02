@@ -51,7 +51,7 @@ export default async function PrivacyPage({
 
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-8">
-      <PageHero title={t("title")} subtitle={t("intro")} scene="atardecer" />
+      <PageHero title={t("title")} subtitle={t("intro")} scene="cerro" />
 
       <div className="flex flex-col gap-5">
         {SECTIONS.map((key) => (

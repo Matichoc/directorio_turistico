@@ -60,12 +60,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority,
       alternates: {
-        languages: Object.fromEntries(
-          routing.locales.map((alt) => [
-            alt,
-            `${base}${localizedPath(href, alt)}`,
-          ]),
-        ),
+        languages: {
+          ...Object.fromEntries(
+            routing.locales.map((alt) => [
+              alt,
+              `${base}${localizedPath(href, alt)}`,
+            ]),
+          ),
+          // Igual que las páginas (lib/seo.ts): sin idioma, el español.
+          "x-default": `${base}${localizedPath(href, routing.defaultLocale)}`,
+        },
       },
     })),
   );

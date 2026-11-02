@@ -100,8 +100,8 @@ export default async function HomePage({
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-cover"
           style={{
-            backgroundImage: `url(${SCENE_SRC.atardecer})`,
-            backgroundPosition: SCENE_POSITION.atardecer,
+            backgroundImage: `url(${SCENE_SRC.cerro})`,
+            backgroundPosition: SCENE_POSITION.cerro,
           }}
         />
         <div

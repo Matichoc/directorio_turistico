@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { refreshPublicContent } from "./refresh";
 import { createClient } from "@/lib/supabase/server";
 import { portugueseCleared, savedTranslations } from "./translations";
 
@@ -152,6 +153,7 @@ export async function createPlace(
     parsed.secondaryCategoryIds,
   );
 
+  refreshPublicContent();
   revalidatePath("/admin/lugares");
   return { id: place.id };
 }
@@ -219,6 +221,7 @@ export async function updatePlace(
     parsed.secondaryCategoryIds,
   );
 
+  refreshPublicContent();
   revalidatePath("/admin/lugares");
   revalidatePath(`/admin/lugares/${id}`);
 }
@@ -244,6 +247,7 @@ export async function setPlacePublicationStatus(
     throw new Error(`No se pudo cambiar el estado: ${error.message}`);
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/lugares");
 }
 
@@ -264,5 +268,6 @@ export async function deletePlace(id: string): Promise<void> {
     );
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/lugares");
 }

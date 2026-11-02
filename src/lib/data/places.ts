@@ -1,5 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import {
   isCommuneInScope,
@@ -93,7 +95,7 @@ interface PlaceQueryResult {
   place_images: PlaceImageResult[];
 }
 
-export async function getPlaceBySlug(
+async function getPlaceBySlugUncached(
   slug: string,
   locale: Locale,
 ): Promise<Place | null> {
@@ -101,7 +103,7 @@ export async function getPlaceBySlug(
     return null;
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("places")
     .select<typeof PLACE_QUERY, PlaceQueryResult>(PLACE_QUERY)
@@ -153,6 +155,10 @@ export async function getPlaceBySlug(
       .filter((tagSlug): tagSlug is string => Boolean(tagSlug)),
   };
 }
+export const getPlaceBySlug = cachedContent(
+  getPlaceBySlugUncached,
+  "getPlaceBySlug",
+);
 
 const PLACES_LIST_QUERY =
   `id, slug, latitude, longitude, featured_until, icon, verification_status,
@@ -199,7 +205,7 @@ interface PlaceListQueryResult {
  * funcionando con la categoría principal de cada lugar.
  */
 async function loadSecondaryCategories(
-  supabase: Awaited<ReturnType<typeof createClient>>,
+  supabase: ReturnType<typeof createPublicClient>,
 ): Promise<Map<string, string[]>> {
   const { data, error } = await supabase
     .from("place_secondary_categories")
@@ -269,7 +275,7 @@ function mapPlaceCard(
  * es más simple que armar un `!inner` dinámico en PostgREST. Si el catálogo
  * crece mucho, moverlos a la consulta.
  */
-export async function listPlaces(
+async function listPlacesUncached(
   locale: Locale,
   filters: PlaceFilters = {},
 ): Promise<PlaceCard[]> {
@@ -277,7 +283,7 @@ export async function listPlaces(
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let builder = supabase
     .from("places")
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
@@ -332,9 +338,10 @@ export async function listPlaces(
       return a.name.localeCompare(b.name, locale);
     });
 }
+export const listPlaces = cachedContent(listPlacesUncached, "listPlaces");
 
 /** Lugares publicados que pertenecen a un pueblo (`locality_id`) — ficha de pueblo. */
-export async function listPlacesByLocalityId(
+async function listPlacesByLocalityIdUncached(
   localityId: string,
   locale: Locale,
 ): Promise<PlaceCard[]> {
@@ -342,7 +349,7 @@ export async function listPlacesByLocalityId(
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let builder = supabase
     .from("places")
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
@@ -364,6 +371,10 @@ export async function listPlacesByLocalityId(
     .map((place) => mapPlaceCard(place, locale))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
+export const listPlacesByLocalityId = cachedContent(
+  listPlacesByLocalityIdUncached,
+  "listPlacesByLocalityId",
+);
 
 /**
  * Trae lugares publicados por `id` (para el carrito de recorrido, que
@@ -588,7 +599,7 @@ export async function getAdminPlaceById(
   };
 }
 
-export async function getPlacesByIds(
+async function getPlacesByIdsUncached(
   ids: string[],
   locale: Locale,
 ): Promise<PlaceCard[]> {
@@ -596,7 +607,7 @@ export async function getPlacesByIds(
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   // Un recorrido armado antes de acotar el sitio puede traer lugares de otra
   // comuna: quedan fuera, igual que en el resto del sitio.
   let builder = supabase
@@ -618,13 +629,17 @@ export async function getPlacesByIds(
 
   return data.map((place) => mapPlaceCard(place, locale));
 }
+export const getPlacesByIds = cachedContent(
+  getPlacesByIdsUncached,
+  "getPlacesByIds",
+);
 
 /**
  * Lugares publicados por `slug`, en el mismo orden pedido — para un
  * recorrido compartido por link (`/recorrido/compartido?paradas=a,b,c`). Lo
  * que no existe o queda fuera del sitio (`lib/site-scope.ts`) se omite.
  */
-export async function getPlacesBySlugs(
+async function getPlacesBySlugsUncached(
   slugs: string[],
   locale: Locale,
 ): Promise<PlaceCard[]> {
@@ -632,7 +647,7 @@ export async function getPlacesBySlugs(
     return [];
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let builder = supabase
     .from("places")
     .select<typeof PLACES_LIST_QUERY, PlaceListQueryResult>(PLACES_LIST_QUERY)
@@ -658,6 +673,10 @@ export async function getPlacesBySlugs(
     return place ? [place] : [];
   });
 }
+export const getPlacesBySlugs = cachedContent(
+  getPlacesBySlugsUncached,
+  "getPlacesBySlugs",
+);
 
 export interface AdminPlaceExportRow {
   slug: string;

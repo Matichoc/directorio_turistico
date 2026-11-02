@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { refreshPublicContent } from "./refresh";
 import { createClient } from "@/lib/supabase/server";
 import type { EntityType, VerificationStatus } from "@/types/database";
 
@@ -74,6 +75,7 @@ export async function submitPlaceVerificationForm(formData: FormData) {
     notes: notes === "" ? undefined : notes,
   });
 
+  refreshPublicContent();
   revalidatePath("/admin/verificaciones");
   revalidatePath("/admin/lugares");
 }

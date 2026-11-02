@@ -54,8 +54,13 @@ que use ese token, que es justo lo que se pidió:
   ficha de ruta) no llevan `PageHero` encima — ya tienen su propio momento
   visual, duplicarlo se ve recargado.
 - **El folclore del diablo es un condimento, no un tema constante.** El
-  `DevilMascot` solo aparece donde tiene sentido narrativo (home, "Ruta del
-  Diablo") — no ponerlo en cualquier página nueva "porque sí".
+  `DevilMascot` (la cabeza del diablo campesino, `icons/icon-192.png`) solo
+  aparece donde tiene sentido narrativo (la ruta del poncho,
+  `ruta-del-diablo-pedegua-chincolco`) — no ponerlo en cualquier página
+  nueva "porque sí".
+- **Foco visible**: todo link, botón o campo muestra un anillo de brasa
+  (`--accent`) al llegar con el teclado (`:focus-visible` en `globals.css`).
+  No apagarlo con `outline-none` sin poner otro indicador igual de visible.
 
 ## Color
 
@@ -224,20 +229,24 @@ con poncho, según cómo lo busquen y dónde naveguen". Son SVG en
 `tunel`), compuestos con el diablito a la derecha y el cielo a la izquierda
 para que el título de `PageHero` quede legible.
 
-**El diablo de Petorca** (desde 2026-11-01): el de antes llevaba casco minero
-(Cabildo) y aparecía con tabla de surf y dulces (La Ligua) — era de la
-provincia. El de ahora (arte aprobado, `docs/arte/diablo-referencia-aprobada.png`)
-sale de la leyenda de la ruta de Petorca: frac negro, humita roja, diente de
-oro, poncho rojo sobre un hombro y **cucharón de madera con borla roja y
-dorada**. Las escenas `atardecer`, `cerro`, `pueblo` y `tunel` son WebP de ese
-arte; `playa` y `dulces` (solo provincia) siguen en SVG. Nunca volver a poner
-casco minero, playa ni dulces en el personaje.
+**El diablo de Petorca** (desde 2026-11-02, `docs/arte/diablo-campesino-referencia.png`):
+un hombre de campo de unos 50 años, clásico y pícaro — sombrero con cuernos,
+poncho rojo con flecos dorados, pañuelo rojo y **cucharón de madera con borla
+roja y dorada**. Reemplazó al diablito de mascota (2026-11-01), que a su vez
+reemplazó al de la provincia (casco minero, surf, dulces). Las escenas
+`atardecer`, `cerro`, `pueblo` y `tunel`, la portada ferroviaria y las escenas
+de `public/leyendas/` son WebP de ese arte; `playa` y `dulces` (solo
+provincia) siguen en SVG. Pendiente: la portada de "Donde el Diablo perdió el
+poncho" y un logo, que aún traen el diablito anterior (no se usa el logo).
 
 **Recorte**: cada escena tiene su punto de foco en `SCENE_POSITION` (la cara
 y el torso del diablo), que usan todas las vistas (`PageHero`, hero del
 inicio, postales, burbujas del mapa) — nunca un `background-position` escrito
 a mano. En el hero del inicio, desde `sm:` el título, el texto y el buscador
-ocupan el 62 % izquierdo para no taparle la cara.
+ocupan el 62 % izquierdo para no taparle la cara. En el atardecer nuevo el
+diablo está al centro: las cabeceras anchas (inicio, `PageHero`) usan el
+cerro, el pueblo o el túnel, con el diablo a la derecha; el atardecer queda
+para las postales altas.
 
 ## Radios y espaciado
 

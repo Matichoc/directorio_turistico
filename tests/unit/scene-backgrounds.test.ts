@@ -15,10 +15,10 @@ describe("scene backgrounds", () => {
     expect(getSceneForCategory("recreacion")).toBe("cerro");
   });
 
-  it("falls back to the general sunset without a known category", () => {
-    expect(getSceneForCategory(undefined)).toBe("atardecer");
-    expect(getSceneForCategory("")).toBe("atardecer");
-    expect(getSceneForCategory("otra-cosa")).toBe("atardecer");
+  it("falls back to the valley at night without a known category", () => {
+    expect(getSceneForCategory(undefined)).toBe("cerro");
+    expect(getSceneForCategory("")).toBe("cerro");
+    expect(getSceneForCategory("otra-cosa")).toBe("cerro");
   });
 
   it("picks a route scene from its theme", () => {

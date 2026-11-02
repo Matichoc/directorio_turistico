@@ -13,8 +13,15 @@ import { MapView } from "@/components/map/map-view";
 import { PlacePhotoHero } from "@/components/place/place-photo-hero";
 import { RouteStopNav } from "@/components/route/route-stop-nav";
 import type { Metadata } from "next";
-import { buildPageMetadata, truncateDescription } from "@/lib/seo";
+import {
+  buildPageMetadata,
+  getSiteUrl,
+  localizedPath,
+  truncateDescription,
+} from "@/lib/seo";
+import { placeJsonLd } from "@/lib/seo-json-ld";
 import { TrackEvent } from "@/components/analytics/track-event";
+import { JsonLd } from "@/components/seo/json-ld";
 
 export async function generateMetadata({
   params,
@@ -59,6 +66,15 @@ export default async function PlaceDetailPage({
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
       <TrackEvent event={{ name: "place_view", properties: { slug } }} />
+      <JsonLd
+        data={placeJsonLd(place, {
+          siteUrl: getSiteUrl(),
+          path: localizedPath(
+            { pathname: "/lugares/[slug]", params: { slug } },
+            locale,
+          ),
+        })}
+      />
       {routeSlug && (
         <RouteStopNav routeSlug={routeSlug} placeSlug={slug} locale={locale} />
       )}

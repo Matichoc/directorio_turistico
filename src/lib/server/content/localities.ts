@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { refreshPublicContent } from "./refresh";
 import { createClient } from "@/lib/supabase/server";
 import { portugueseCleared, savedTranslations } from "./translations";
 
@@ -116,6 +117,7 @@ export async function createLocality(
     );
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/pueblos");
   return { id: locality.id };
 }
@@ -169,6 +171,7 @@ export async function updateLocality(
       .eq("locale", "pt");
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/pueblos");
   revalidatePath(`/admin/pueblos/${id}`);
 }
@@ -186,5 +189,6 @@ export async function deleteLocality(id: string): Promise<void> {
     throw new Error(`No se pudo eliminar el pueblo: ${error.message}`);
   }
 
+  refreshPublicContent();
   revalidatePath("/admin/pueblos");
 }

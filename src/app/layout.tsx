@@ -1,57 +1,25 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Geist, Geist_Mono, Cinzel } from "next/font/google";
-import { getLocale } from "next-intl/server";
 import { SITE_NAME, getSiteUrl } from "@/lib/seo";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-/**
- * Fuente "mística" (ver `font-display` en globals.css) — pedido del
- * usuario de que el título del home "llame la atención", algo de "cielo y
- * diablo" en vez de la tipografía normal del sitio. Cinzel (no la variante
- * "Decorative"): tiene ese aire épico/de leyenda antigua sin sacrificar
- * legibilidad en una oración larga como el título del home.
- */
-const cinzel = Cinzel({
-  variable: "--font-cinzel",
-  subsets: ["latin"],
-  weight: ["600", "700"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
     default: SITE_NAME,
-    template: "%s · El diablo en Petorca",
+    template: `%s · ${SITE_NAME}`,
   },
   description:
     "Directorio turístico de la comuna de Petorca, la tierra donde murió el diablo: pueblos, rutas y leyendas.",
   manifest: "/manifest.webmanifest",
 };
 
-export default async function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const locale = await getLocale();
-
-  return (
-    <html
-      lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} dark h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col">{children}</body>
-    </html>
-  );
+/**
+ * Solo pasa el contenido: el `<html>` lo pone cada sección con
+ * `HtmlShell` (`[locale]/layout.tsx` con el idioma de la URL, el panel y el
+ * 404). Si este layout leyera el idioma (`getLocale()`), lo sacaría de los
+ * encabezados y ninguna página se podría cachear (docs/RENDIMIENTO.md).
+ */
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return children;
 }

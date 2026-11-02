@@ -1,5 +1,6 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
+import { cachedContent } from "@/lib/data/cache";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import type { Locale } from "@/types/database";
 import type { Sponsor } from "@/types/domain";
@@ -28,10 +29,10 @@ interface SponsorQueryResult {
  * (`SponsorBanner`) — antes un solo slot fijo (Matichoc, hardcodeado por
  * env vars), ahora datos reales para poder sumar más de uno.
  */
-export async function listActiveSponsors(locale: Locale): Promise<Sponsor[]> {
+async function listActiveSponsorsUncached(locale: Locale): Promise<Sponsor[]> {
   if (!isSupabaseConfigured()) return [];
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("sponsors")
     .select<typeof SPONSORS_QUERY, SponsorQueryResult>(SPONSORS_QUERY)
@@ -54,3 +55,7 @@ export async function listActiveSponsors(locale: Locale): Promise<Sponsor[]> {
     instagramUrl: sponsor.instagram_url,
   }));
 }
+export const listActiveSponsors = cachedContent(
+  listActiveSponsorsUncached,
+  "listActiveSponsors",
+);

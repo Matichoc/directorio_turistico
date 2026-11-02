@@ -45,11 +45,7 @@ export default async function InfoPage({
   return (
     <main className="flex flex-1 flex-col gap-6 py-8">
       <div className="px-4">
-        <PageHero
-          title={t("info")}
-          subtitle={info("about")}
-          scene="atardecer"
-        />
+        <PageHero title={t("info")} subtitle={info("about")} scene="pueblo" />
       </div>
 
       <MunicipalityBanner municipalities={municipalities} />

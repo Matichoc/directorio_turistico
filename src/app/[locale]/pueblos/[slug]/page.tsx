@@ -9,8 +9,24 @@ import { MapView } from "@/components/map/map-view";
 import { getLocalityBySlug } from "@/lib/data/localities";
 import { getSceneForCategory } from "@/lib/ui/scene-backgrounds";
 import type { Metadata } from "next";
-import { buildPageMetadata, truncateDescription } from "@/lib/seo";
+import {
+  buildPageMetadata,
+  getSiteUrl,
+  localizedPath,
+  truncateDescription,
+} from "@/lib/seo";
+import { localityJsonLd } from "@/lib/seo-json-ld";
 import { TrackEvent } from "@/components/analytics/track-event";
+import { JsonLd } from "@/components/seo/json-ld";
+
+/**
+ * Ninguna ficha se arma al compilar: cada una se genera la primera vez que
+ * alguien la visita y queda en caché (se renueva con `revalidate` del layout
+ * o al guardar en el panel). Ver docs/RENDIMIENTO.md.
+ */
+export function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({
   params,
@@ -89,6 +105,15 @@ export default async function LocalityDetailPage({
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
       <TrackEvent event={{ name: "locality_view", properties: { slug } }} />
+      <JsonLd
+        data={localityJsonLd(locality, {
+          siteUrl: getSiteUrl(),
+          path: localizedPath(
+            { pathname: "/pueblos/[slug]", params: { slug } },
+            locale,
+          ),
+        })}
+      />
       <Link
         href="/explorar"
         className="text-foreground/60 hover:text-accent w-fit text-sm underline-offset-2 hover:underline"

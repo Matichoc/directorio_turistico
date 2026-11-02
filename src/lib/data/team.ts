@@ -55,9 +55,15 @@ async function emailsOf(userIds: string[]): Promise<Map<string, string>> {
   return emails;
 }
 
-/** El equipo del panel, del más antiguo al más nuevo. Solo para admins. */
+/**
+ * El equipo del panel, del más antiguo al más nuevo. Solo para admins: usa la
+ * llave de servicio, así que revisa el rol acá también y no solo en la página
+ * que lo llama (defensa en profundidad, auditoría H-22).
+ */
 export async function listTeam(): Promise<TeamMember[]> {
   if (!isSupabaseConfigured()) return [];
+  const me = await getMyTeamRole();
+  if (me?.role !== "admin") return [];
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("admin_users")

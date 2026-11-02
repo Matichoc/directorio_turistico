@@ -28,12 +28,15 @@ export const SCENE_SRC: Record<SceneId, string> = {
  * nunca le cortan la cabeza.
  */
 export const SCENE_POSITION: Record<SceneId, string> = {
-  atardecer: "80% 22%",
+  // Foco en la cara del diablo campesino (entrega 2026-11-02). En el
+  // atardecer está al centro: no sirve para cabeceras anchas con texto a la
+  // izquierda (ahí se usa el cerro), sí para las postales altas.
+  atardecer: "55% 16%",
   playa: "85% 70%",
-  cerro: "78% 26%",
-  pueblo: "78% 34%",
+  cerro: "72% 14%",
+  pueblo: "68% 16%",
   dulces: "85% 70%",
-  tunel: "82% 30%",
+  tunel: "75% 14%",
 };
 
 // Gastronomía y alojamiento van al pueblo en fiesta y recreación al cerro:
@@ -48,9 +51,9 @@ const SCENE_BY_CATEGORY: Record<string, SceneId> = {
   recreacion: "cerro",
 };
 
-/** Escena según la categoría que se está mirando; sin categoría, el atardecer general. */
+/** Escena según la categoría que se está mirando; sin categoría, el cerro (el valle de noche). */
 export function getSceneForCategory(categorySlug?: string | null): SceneId {
-  return (categorySlug && SCENE_BY_CATEGORY[categorySlug]) || "atardecer";
+  return (categorySlug && SCENE_BY_CATEGORY[categorySlug]) || "cerro";
 }
 
 /** Escena de una ruta según su tema (túneles, costa, patrimonio). */

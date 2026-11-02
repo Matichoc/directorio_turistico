@@ -319,7 +319,7 @@
   },
   "legend": {
     "title": "La leyenda del diablo",
-    "subtitle": "Dicen que acá, en Petorca, el diablo perdió su poncho. También dicen que por acá murió. Pero otros dicen que todavía recorre la comuna, por distintos lugares… y tú podrías recorrerlos con él.",
+    "subtitle": "Algunos dicen que el diablo acá perdió su poncho… Otros dicen que andaba a caballo y por acá murió… pero otros dicen que aún lo sienten y te puede acompañar en el recorrido.",
     "saying": {
       "title": "El dicho",
       "body": "En el valle se repite un dicho: «El diablo murió en Petorca y en La Ligua lo enterraron». Detrás hay un poema de hace más de 130 años y varias historias que todavía se cuentan en la zona."
@@ -367,7 +367,7 @@
     },
     "home": {
       "title": "La leyenda del diablo",
-      "body": "Dicen que acá, en Petorca, el diablo perdió su poncho. También dicen que por acá murió. Pero otros dicen que todavía recorre la comuna… y tú podrías recorrerla con él.",
+      "body": "Algunos dicen que el diablo acá perdió su poncho… Otros dicen que andaba a caballo y por acá murió… pero otros dicen que aún lo sienten y te puede acompañar en el recorrido.",
       "cta": "Descubre la leyenda"
     }
   },

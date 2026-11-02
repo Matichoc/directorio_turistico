@@ -462,6 +462,24 @@ const localities: {
     sourceLabel:
       "FUCOA — El Mandinga. Historias del diablo en la zona central de Chile (2021)",
   },
+  // Coordenadas marcadas por el usuario en la zona poblada de cada sector
+  // (supabase/manual/san-ramon-el-frances.sql). Sin resumen: aún sin fuente.
+  {
+    slug: "san-ramon",
+    communeSlug: "petorca",
+    es: "San Ramón",
+    en: "San Ramón",
+    latitude: -32.352593,
+    longitude: -71.082033,
+  },
+  {
+    slug: "el-frances",
+    communeSlug: "petorca",
+    es: "El Francés",
+    en: "El Francés",
+    latitude: -32.328125,
+    longitude: -71.083825,
+  },
   {
     slug: "palquico",
     communeSlug: "petorca",

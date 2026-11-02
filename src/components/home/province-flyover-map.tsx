@@ -477,14 +477,18 @@ export function ProvinceFlyoverMap({
               <p className="text-gradient text-xl font-semibold">
                 {current.name}
               </p>
-              <p className="text-xs text-white/70">
-                {current.villages === null
-                  ? t("attractions", { places: current.attractions })
-                  : t("stats", {
-                      villages: current.villages,
-                      places: current.attractions,
-                    })}
-              </p>
+              {/* Un pueblo sin atractivos cargados no dice "sin atractivos":
+                  solo su nombre, su resumen y su ficha. */}
+              {(current.villages !== null || current.attractions > 0) && (
+                <p className="text-xs text-white/70">
+                  {current.villages === null
+                    ? t("attractions", { places: current.attractions })
+                    : t("stats", {
+                        villages: current.villages,
+                        places: current.attractions,
+                      })}
+                </p>
+              )}
               {current.summary && (
                 <p className="mt-2 line-clamp-2 text-sm text-white/85 sm:line-clamp-3">
                   {current.summary}
@@ -513,7 +517,7 @@ export function ProvinceFlyoverMap({
                 {t("overviewTitle")}
               </p>
               <p className="mt-1 hidden text-sm text-white/80 sm:block">
-                {t("overviewText")}
+                {t("overviewText", { count: villages.length })}
               </p>
             </>
           )}

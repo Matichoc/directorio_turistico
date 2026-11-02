@@ -19,7 +19,7 @@
   },
   "home": {
     "title": "El diablo murió en Petorca",
-    "provinceLabel": "Comuna de Petorca: Pedegua · Petorca · Chincolco · Hierro Viejo",
+    "provinceLabel": "Comuna de Petorca · seus {count} povoados, do vale à cordilheira",
     "subtitle": "O vale onde o diabo dançou cueca, perdeu o poncho e ficou para sempre. Túneis do antigo trem, petróglifos com mais de 800 anos, uma igreja de 1640, chicha e empanadas do campo. Venha descobrir… ou redescobrir, se você é daqui.",
     "searchPlaceholder": "Busque um lugar ou localidade",
     "featuredRoutes": "Rotas em destaque",
@@ -47,12 +47,12 @@
     },
     "flyover": {
       "title": "Sobrevoe o vale",
-      "subtitle": "De Pedegua a Chincolco, vale acima rumo à cordilheira: o relevo real da comuna em 3D, povoado por povoado.",
+      "subtitle": "Vale acima rumo à cordilheira: o relevo real da comuna em 3D, com seus {count} povoados, um por um.",
       "play": "▶ Percorrer a comuna",
       "pause": "❚❚ Pausar",
       "overview": "Toda a comuna",
       "overviewTitle": "O vale do rio Petorca",
-      "overviewText": "Da antiga estação de Pedegua aos petróglifos de Chincolco. Toque em um povoado para voar até ele, ou em qualquer ponto de luz para abrir sua ficha.",
+      "overviewText": "Os {count} povoados do vale do rio Petorca. Toque em um povoado para voar até ele, ou em qualquer ponto de luz para abrir sua ficha.",
       "stats": "{villages, plural, =0 {sem povoados} one {# povoado} other {# povoados}} · {places, plural, =0 {sem atrativos} one {# atrativo} other {# atrativos}}",
       "attractions": "{places, plural, =0 {Ainda sem atrativos} one {# atrativo} other {# atrativos}}",
       "explore": "Ver {name}",

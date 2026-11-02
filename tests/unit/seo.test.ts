@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("@/i18n/navigation", () => ({ getPathname: () => "/" }));
 
 import { getSiteUrl, truncateDescription } from "@/lib/seo";
+import { isSiteIndexable } from "@/lib/site-indexing";
 
 describe("truncateDescription", () => {
   it("returns undefined for empty or missing text", () => {
@@ -55,5 +56,21 @@ describe("getSiteUrl", () => {
 
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://ejemplo.cl");
     expect(getSiteUrl()).toBe("https://ejemplo.cl");
+  });
+});
+
+describe("isSiteIndexable", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("keeps the site out of search engines until launch", () => {
+    vi.stubEnv("SITE_INDEXING", "");
+    expect(isSiteIndexable()).toBe(false);
+    vi.stubEnv("SITE_INDEXING", "true");
+    expect(isSiteIndexable()).toBe(false);
+  });
+
+  it("opens it only with SITE_INDEXING=on", () => {
+    vi.stubEnv("SITE_INDEXING", "on");
+    expect(isSiteIndexable()).toBe(true);
   });
 });

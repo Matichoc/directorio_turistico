@@ -69,7 +69,7 @@ src/
 
 ## SEO y compartir
 
-`lib/seo.ts` es el único lugar que arma la metadata de una página pública (`buildPageMetadata`: título, descripción, canonical, hreflang, Open Graph/Twitter, `noIndex`). Cada página exporta `generateMetadata` y la llama; `app/layout.tsx` fija `metadataBase` y el título por defecto/plantilla. Las fichas de lugar, ruta y pueblo llevan además datos estructurados JSON-LD (`lib/seo-json-ld.ts` + `components/seo/json-ld.tsx`). `app/sitemap.ts` (todo el catálogo, todos los idiomas, siempre dinámico) y `app/robots.ts` salen de la misma fuente. La URL pública base sale de `NEXT_PUBLIC_SITE_URL` (o del dominio de Vercel como respaldo, `getSiteUrl`).
+`lib/seo.ts` es el único lugar que arma la metadata de una página pública (`buildPageMetadata`: título, descripción, canonical, hreflang, Open Graph/Twitter, `noIndex`). Cada página exporta `generateMetadata` y la llama; `app/layout.tsx` fija `metadataBase` y el título por defecto/plantilla. Las fichas de lugar, ruta y pueblo llevan además datos estructurados JSON-LD (`lib/seo-json-ld.ts` + `components/seo/json-ld.tsx`). `app/sitemap.ts` (todo el catálogo, todos los idiomas, siempre dinámico) y `app/robots.ts` salen de la misma fuente. La URL pública base sale de `NEXT_PUBLIC_SITE_URL` (o del dominio de Vercel como respaldo, `getSiteUrl`). Hasta el lanzamiento el sitio está oculto de los buscadores (`lib/site-indexing.ts`): `X-Robots-Tag: noindex` en toda respuesta, `<meta name="robots">` en cada página y el robots.txt sin sitemap; `SITE_INDEXING=on` en Production lo abre.
 
 ## Panel admin
 

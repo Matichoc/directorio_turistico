@@ -67,7 +67,9 @@ export function ProvinceFlyover({ data }: { data: ProvinceFlyoverData }) {
         <h2 className="text-gradient text-2xl font-semibold tracking-tight">
           {t("title")}
         </h2>
-        <p className="text-foreground/60 text-sm">{t("subtitle")}</p>
+        <p className="text-foreground/60 text-sm">
+          {t("subtitle", { count: data.villages.length })}
+        </p>
       </div>
       {/* Sin `surface-glass` acá: su desenfoque de fondo (backdrop-filter)
           sobre un mapa que se anima en cada cuadro le costaba fluidez. */}

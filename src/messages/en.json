@@ -19,7 +19,7 @@
   },
   "home": {
     "title": "El diablo murió en Petorca",
-    "provinceLabel": "Commune of Petorca: Pedegua · Petorca · Chincolco · Hierro Viejo",
+    "provinceLabel": "Commune of Petorca · its {count} villages, from the valley to the Andes",
     "subtitle": "The valley where the devil danced the cueca, lost his poncho and stayed for good. Old railway tunnels, petroglyphs over 800 years old, a church from 1640, chicha and country empanadas. Come and discover it… or rediscover it if you live here.",
     "searchPlaceholder": "Search a place or town",
     "featuredRoutes": "Featured routes",
@@ -47,12 +47,12 @@
     },
     "flyover": {
       "title": "Fly over the valley",
-      "subtitle": "From Pedegua to Chincolco, up the valley toward the Andes: the commune's real terrain in 3D, village by village.",
+      "subtitle": "Up the valley toward the Andes: the commune’s real terrain in 3D, with its {count} villages, one by one.",
       "play": "▶ Tour the commune",
       "pause": "❚❚ Pause",
       "overview": "Whole commune",
       "overviewTitle": "The Petorca river valley",
-      "overviewText": "From Pedegua's old railway station to the Chincolco petroglyphs. Tap a village to fly there, or any point of light to open its page.",
+      "overviewText": "The {count} villages of the Petorca river valley. Tap a village to fly there, or any point of light to open its page.",
       "stats": "{villages, plural, =0 {no villages} one {# village} other {# villages}} · {places, plural, =0 {no attractions} one {# attraction} other {# attractions}}",
       "attractions": "{places, plural, =0 {No attractions yet} one {# attraction} other {# attractions}}",
       "explore": "See {name}",

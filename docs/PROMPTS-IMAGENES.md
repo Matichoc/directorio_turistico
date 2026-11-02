@@ -7,49 +7,48 @@
 
 ## Estado
 
-**Entregado e integrado** (ZIP "8 imágenes individuales", 2026-11-01):
+**Entrega del 2026-11-02 ("13 recursos", diablo campesino)** — integrada en la
+rama `feat/recursos-y-auditoria`. Los anteriores quedaron en
+`docs/arte/respaldo-2026-11-02/`. Los PNG originales se guardan al lado (no se
+suben, ver `.gitignore`); el sitio usa WebP.
 
-| Archivo de origen (PNG, no se sube)                    | Lo que usa el sitio                                     |
-| ------------------------------------------------------ | ------------------------------------------------------- |
-| `public/brand/logo.png` (sí se sube)                   | Íconos de la app, logo de la barra, imagen al compartir |
-| `public/brand/icono.png` (sí se sube)                  | Favicon, ícono de pestaña y de iPhone                   |
-| `public/fondos/atardecer.png`                          | `public/fondos/atardecer.webp` (inicio y general)       |
-| `public/fondos/cerro.png`                              | `public/fondos/cerro.webp` (naturaleza)                 |
-| `public/fondos/pueblo.png`                             | `public/fondos/pueblo.webp` (cultura)                   |
-| `public/fondos/tunel.png`                              | `public/fondos/tunel.webp` (rutas)                      |
-| `public/rutas/ruta-del-diablo-pedegua-chincolco.png`   | `public/rutas/ruta-del-diablo-pedegua-chincolco.webp`   |
-| `public/rutas/ruta-ferroviaria-pedegua-las-palmas.png` | `public/rutas/ruta-ferroviaria-pedegua-las-palmas.webp` |
+| Recurso del ZIP                           | Estado                                                                                                                                                           |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `referencias/diablo-referencia.png`       | Integrado como referencia: `docs/arte/diablo-campesino-referencia.png`.                                                                                          |
+| `brand/icono.png`                         | Integrado (reducido a 1024×1024; original en `icono-original.png`). De él salen **todos** los íconos: favicon, app, barra y la imagen para compartir.            |
+| `brand/logo.png`                          | **No integrado**: es el diablo infantil anterior, no el campesino. Falta un logo nuevo; mientras, el sitio no usa ningún logo (los íconos salen de `icono.png`). |
+| `fondos/atardecer.png`                    | Integrado. El diablo está **al centro**: solo sirve en formatos altos (postales); las cabeceras anchas usan el cerro.                                            |
+| `fondos/cerro.png`                        | Integrado (inicio, Explorar, naturaleza, recreación, privacidad).                                                                                                |
+| `fondos/pueblo.png`                       | Integrado (gastronomía, cultura, Información).                                                                                                                   |
+| `fondos/tunel.png`                        | Integrado (leyenda, rutas).                                                                                                                                      |
+| `rutas/ruta-ferroviaria-…png`             | Integrado. Conserva el puente de reticulado y el túnel aprobados; cambia el diablo al campesino.                                                                 |
+| `rutas/ruta-del-diablo-pedegua-chincolco` | **No integrado**: es la misma portada con el diablo infantil que ya estaba. Falta la versión campesina.                                                          |
+| `leyendas/cueca.png`                      | Integrado en `/leyenda` (versión de la ruta).                                                                                                                    |
+| `leyendas/ano-nuevo.png`                  | Integrado en `/leyenda` (versión de la ruta).                                                                                                                    |
+| `leyendas/escalera.png`                   | Integrado en `/leyenda` (versión de la ruta).                                                                                                                    |
+| `leyendas/diablo-buscando.png`            | Integrado en `/leyenda` ("Recórrela").                                                                                                                           |
 
-Los íconos anteriores quedaron respaldados en `docs/arte/respaldo-2026-11-01/`.
-Las escenas SVG anteriores siguen en `public/fondos/*.svg` (sin uso, salvo
-`playa` y `dulces`, de la versión de la provincia).
+**Pendiente:** un logo campesino (insignia con transparencia) y la portada
+campesina de "Donde el Diablo perdió el poncho". Las escenas SVG anteriores
+siguen en `public/fondos/*.svg` (sin uso, salvo `playa` y `dulces`, de la
+versión de la provincia).
 
-**Pendiente:**
+## El personaje (aprobado desde 2026-11-02)
 
-- Portadas de las rutas en la base: correr `supabase/manual/petorca-portadas.sql`
-  (primero en `legacy_dev`; en `legacy` recién cuando `main` tenga los archivos).
-- Opcionales: `public/brand/diablo-buscando.png` (páginas vacías) y las
-  ilustraciones de una futura página de la leyenda (prompts abajo).
+Referencia: [`docs/arte/diablo-campesino-referencia.png`](arte/diablo-campesino-referencia.png).
+Adjuntarla en **cada** pedido nuevo con _"Usa este personaje exactamente como
+en la imagen adjunta"_. La referencia anterior (diablito de mascota,
+`diablo-referencia-aprobada.png`) queda solo como historia: ya no se usa.
 
-## El personaje (aprobado)
-
-Referencia: [`docs/arte/diablo-referencia-aprobada.png`](arte/diablo-referencia-aprobada.png).
-Adjuntarla en **cada** pedido nuevo a ChatGPT con _"Usa este personaje
-exactamente como en la imagen adjunta"_.
-
-Sale de la versión de la leyenda que cuenta la ruta (fuentes en
-`docs/PROPUESTA-CONTENIDO-PETORCA.md`): un forastero elegante que bailaba con
-los mineros y olvidó su poncho tras una fiesta de Año Nuevo.
-
-- Diablito simpático y pícaro, proporciones de mascota.
-- Piel roja anaranjada, cuernos curvos marfil, pelo negro engominado, perilla,
-  **un diente de oro**, orejas puntiagudas, cola con punta de corazón.
-- Frac negro, humita roja, botones dorados, zapatos de charol.
-- Poncho rojo con franjas crema y negra y flecos dorados, sobre un hombro.
-- **Cucharón de madera con borla roja y dorada** (reemplazó al pañuelo; nunca
-  pañuelo, ramitas ni cintas).
+- Hombre de campo de unos 50 años, clásico, pícaro y legendario.
+- Sombrero de ala ancha con cuernos, pelo negro ondulado, bigote y perilla.
+- Chaqueta y pantalón negros, chaleco con botones dorados, pañuelo rojo al
+  cuello, botas con espuelas.
+- Poncho rojo con franjas crema y negras y flecos dorados.
+- **Cucharón de madera con borla roja y dorada**.
+- Cola roja con punta de flecha.
 - **Nunca**: casco minero, tabla de surf, dulces, playa (eran de otras
-  comunas).
+  comunas), ni el diablito infantil anterior.
 
 ## Reglas para cualquier imagen nueva
 

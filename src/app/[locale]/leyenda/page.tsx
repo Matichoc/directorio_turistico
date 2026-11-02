@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
@@ -31,6 +32,17 @@ export async function generateMetadata({
 }
 
 const VERSIONS = ["stranger", "rider", "miner"] as const;
+
+/**
+ * Escenas de la versión de la ruta (diablo campesino, entrega 2026-11-02, en
+ * `public/leyendas/`): cada una ilustra una frase de `route.body`. Sin texto
+ * sobre la imagen; el pie va en la interfaz.
+ */
+const ROUTE_SCENES = [
+  { key: "cueca", src: "/leyendas/cueca.webp" },
+  { key: "anoNuevo", src: "/leyendas/ano-nuevo.webp" },
+  { key: "escalera", src: "/leyendas/escalera.webp" },
+] as const;
 
 /** Fuentes de todo lo que cuenta la página (ver docs/PROPUESTA-CONTENIDO-PETORCA.md). */
 const SOURCES = [
@@ -129,6 +141,24 @@ export default async function LegendPage({
           {t("route.title")}
         </h2>
         <p className="text-foreground/80 leading-relaxed">{t("route.body")}</p>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {ROUTE_SCENES.map(({ key, src }) => (
+            <figure key={key} className="flex flex-col gap-1.5">
+              <div className="relative aspect-[3/2] overflow-hidden rounded-2xl border border-white/10">
+                <Image
+                  src={src}
+                  alt={t(`images.${key}`)}
+                  fill
+                  sizes="(min-width: 640px) 240px, 100vw"
+                  className="object-cover"
+                />
+              </div>
+              <figcaption className="text-foreground/60 text-xs">
+                {t(`images.${key}`)}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
       </section>
 
       {(chalaco || escalera || route) && (
@@ -136,50 +166,65 @@ export default async function LegendPage({
           <h2 className="font-display text-xl font-semibold">
             {t("visit.title")}
           </h2>
-          <ul className="flex flex-col gap-2">
-            {chalaco && (
-              <li>
-                <Link
-                  href={{
-                    pathname: "/pueblos/[slug]",
-                    params: { slug: chalaco.slug },
-                  }}
-                  className="surface-glass hover:border-accent flex items-center gap-3 rounded-2xl border border-white/10 p-3 transition-colors"
-                >
-                  <CategoryIcon icon="poncho" className="text-accent h-6 w-6" />
-                  {t("visit.chalaco")}
-                </Link>
-              </li>
-            )}
-            {escalera && (
-              <li>
-                <Link
-                  href={{
-                    pathname: "/lugares/[slug]",
-                    params: { slug: escalera.slug },
-                  }}
-                  className="surface-glass hover:border-accent flex items-center gap-3 rounded-2xl border border-white/10 p-3 transition-colors"
-                >
-                  <CategoryIcon icon="diablo" className="text-accent h-6 w-6" />
-                  {t("visit.escalera")}
-                </Link>
-              </li>
-            )}
-            {route && (
-              <li>
-                <Link
-                  href={{
-                    pathname: "/rutas/[slug]",
-                    params: { slug: route.slug },
-                  }}
-                  className="surface-glass hover:border-accent flex items-center gap-3 rounded-2xl border border-white/10 p-3 transition-colors"
-                >
-                  <CategoryIcon icon="tren" className="text-accent h-6 w-6" />
-                  {t("visit.route")}
-                </Link>
-              </li>
-            )}
-          </ul>
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+            <Image
+              src="/leyendas/diablo-buscando.webp"
+              alt={t("images.buscando")}
+              width={180}
+              height={180}
+              className="h-40 w-40 shrink-0 object-contain drop-shadow-[0_8px_24px_rgba(255,122,69,0.25)] sm:h-44 sm:w-44"
+            />
+            <ul className="flex w-full flex-col gap-2">
+              {chalaco && (
+                <li>
+                  <Link
+                    href={{
+                      pathname: "/pueblos/[slug]",
+                      params: { slug: chalaco.slug },
+                    }}
+                    className="surface-glass hover:border-accent flex items-center gap-3 rounded-2xl border border-white/10 p-3 transition-colors"
+                  >
+                    <CategoryIcon
+                      icon="poncho"
+                      className="text-accent h-6 w-6"
+                    />
+                    {t("visit.chalaco")}
+                  </Link>
+                </li>
+              )}
+              {escalera && (
+                <li>
+                  <Link
+                    href={{
+                      pathname: "/lugares/[slug]",
+                      params: { slug: escalera.slug },
+                    }}
+                    className="surface-glass hover:border-accent flex items-center gap-3 rounded-2xl border border-white/10 p-3 transition-colors"
+                  >
+                    <CategoryIcon
+                      icon="diablo"
+                      className="text-accent h-6 w-6"
+                    />
+                    {t("visit.escalera")}
+                  </Link>
+                </li>
+              )}
+              {route && (
+                <li>
+                  <Link
+                    href={{
+                      pathname: "/rutas/[slug]",
+                      params: { slug: route.slug },
+                    }}
+                    className="surface-glass hover:border-accent flex items-center gap-3 rounded-2xl border border-white/10 p-3 transition-colors"
+                  >
+                    <CategoryIcon icon="tren" className="text-accent h-6 w-6" />
+                    {t("visit.route")}
+                  </Link>
+                </li>
+              )}
+            </ul>
+          </div>
         </section>
       )}
 

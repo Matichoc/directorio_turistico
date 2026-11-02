@@ -348,6 +348,12 @@
       "title": "La versión de la ruta",
       "body": "La ruta turística «Donde el Diablo perdió el poncho» cuenta que el diablo bailaba cueca con los mineros los días de pago, de frac negro y con dentadura de oro; que olvidó su poncho después de una fiesta de Año Nuevo en la que pagó la cuenta de todos, y que huía de los curas por la Escalera del Diablo, de peldaños «al revés». De ahí sale el diablo de este sitio: frac, diente de oro y el poncho a punto de perderse."
     },
+    "images": {
+      "cueca": "El diablo baila cueca en la fiesta del pueblo, poncho al hombro.",
+      "anoNuevo": "Año Nuevo: brinda bajo los fuegos artificiales, la noche en que olvidó su poncho.",
+      "escalera": "En la Escalera del Diablo, la de los peldaños «al revés».",
+      "buscando": "El diablo, con su cucharón, buscando su poncho por la comuna."
+    },
     "visit": {
       "title": "Recórrela",
       "chalaco": "Chalaco, donde perdió el poncho",

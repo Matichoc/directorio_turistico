@@ -348,6 +348,12 @@
       "title": "A versão da rota",
       "body": "A rota turística «Donde el Diablo perdió el poncho» conta que o diabo dançava cueca com os mineiros nos dias de pagamento, de fraque preto e dentadura de ouro; que esqueceu o poncho depois de uma festa de Ano-Novo em que pagou a conta de todos, e que fugia dos padres pela Escalera del Diablo, de degraus «ao contrário». Daí vem o diabo deste site: fraque, dente de ouro e o poncho prestes a se perder."
     },
+    "images": {
+      "cueca": "O diabo dança cueca na festa do povoado, com o poncho no ombro.",
+      "anoNuevo": "Ano-Novo: um brinde sob os fogos de artifício, na noite em que esqueceu o poncho.",
+      "escalera": "Na Escalera del Diablo, a dos degraus «ao contrário».",
+      "buscando": "O diabo, com sua concha, procurando o poncho pela comuna."
+    },
     "visit": {
       "title": "Percorra-a",
       "chalaco": "Chalaco, onde ele perdeu o poncho",

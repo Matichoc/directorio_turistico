@@ -348,6 +348,12 @@
       "title": "The tourist route's version",
       "body": "The \"Donde el Diablo perdió el poncho\" tourist route tells that the Devil danced the cueca with the miners on payday, in a black tailcoat and with gold teeth; that he forgot his poncho after a New Year's party where he paid everyone's bill; and that he fled from the priests up the Devil's Staircase, whose steps run \"backwards\". That is where this site's Devil comes from: tailcoat, gold tooth and a poncho about to be lost."
     },
+    "images": {
+      "cueca": "The devil dances the cueca at the village party, poncho over his shoulder.",
+      "anoNuevo": "New Year's Eve: a toast under the fireworks, the night he forgot his poncho.",
+      "escalera": "On the Devil's Staircase, the one with steps \"the wrong way round\".",
+      "buscando": "The devil, ladle in hand, searching the commune for his poncho."
+    },
     "visit": {
       "title": "Follow it",
       "chalaco": "Chalaco, where he lost his poncho",

@@ -88,6 +88,11 @@ const nextConfig: NextConfig = {
         pathname: "/rutas/**",
         search: "",
       },
+      {
+        // Escenas de la leyenda (diablo campesino, página /leyenda).
+        pathname: "/leyendas/**",
+        search: "",
+      },
     ],
   },
 };

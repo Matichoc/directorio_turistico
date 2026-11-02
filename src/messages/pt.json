@@ -378,5 +378,13 @@
     "update": "Atualizar",
     "error": "Não foi possível salvar tudo. Tente de novo com sinal melhor (ou com wi-fi).",
     "hint": "Salve esta página, suas paradas e o mapa da região no seu telefone, para o vale onde não há sinal."
+  },
+  "videos": {
+    "title": "Petorca na TV",
+    "subtitle": "Reportagens que percorreram a comuna, suas rotas e suas lendas (em espanhol). Assista aqui mesmo, com o player de cada canal.",
+    "routeTitle": "A rota em vídeo",
+    "more": "Ver as {count} reportagens",
+    "play": "Ver reportagem",
+    "watchOn": "Ver em {site}"
   }
 }

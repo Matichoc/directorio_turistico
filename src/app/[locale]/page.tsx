@@ -14,6 +14,8 @@ import { listPlaces } from "@/lib/data/places";
 import { buildProvinceFlyover } from "@/lib/ui/province-flyover";
 import { ProvinceFlyover } from "@/components/home/province-flyover";
 import { LegendCard } from "@/components/legend/legend-card";
+import { ReportajesSection } from "@/components/video/reportajes-section";
+import { REPORTAJES } from "@/lib/reportajes";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import {
   SCENE_POSITION,
@@ -60,6 +62,7 @@ export default async function HomePage({
   const { locale: rawLocale } = await params;
   const locale = resolveLocale(rawLocale);
   setRequestLocale(locale);
+  const tVideos = await getTranslations("videos");
 
   const [
     t,
@@ -140,6 +143,22 @@ export default async function HomePage({
       <section className="reveal px-4">
         <LegendCard />
       </section>
+
+      {/* El reportaje destacado (Canal 13); los demás, en la leyenda. */}
+      <div className="px-4">
+        <ReportajesSection
+          title={tVideos("title")}
+          items={REPORTAJES.slice(0, 1)}
+          footer={
+            <Link
+              href={{ pathname: "/leyenda", hash: "reportajes" }}
+              className="text-accent w-fit text-sm font-semibold"
+            >
+              {tVideos("more", { count: REPORTAJES.length })} →
+            </Link>
+          }
+        />
+      </div>
 
       <section className="reveal px-4">
         <h2 className="mb-3 text-lg font-medium">{t("intent.title")}</h2>

@@ -56,7 +56,11 @@
       "stats": "{villages, plural, =0 {sem povoados} one {# povoado} other {# povoados}} · {places, plural, =0 {sem atrativos} one {# atrativo} other {# atrativos}}",
       "attractions": "{places, plural, =0 {Ainda sem atrativos} one {# atrativo} other {# atrativos}}",
       "explore": "Ver {name}",
-      "hint": "Use dois dedos (ou Ctrl + roda do mouse) para mover o mapa. Relevo: Terrain Tiles da AWS."
+      "hint": "Use dois dedos (ou Ctrl + roda do mouse) para mover o mapa. Relevo: Terrain Tiles da AWS.",
+      "start": "▶ Ver o voo 3D",
+      "startNote": "Usa cerca de 4 MB de dados · ideal no Wi-Fi",
+      "posterAlt": "O relevo do vale do rio Petorca em 3D, com seus povoados",
+      "credit": "Relevo: Terrain Tiles da AWS."
     }
   },
   "explore": {

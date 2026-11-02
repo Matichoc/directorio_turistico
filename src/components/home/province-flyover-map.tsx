@@ -134,10 +134,16 @@ function prefersReducedMotion() {
 export function ProvinceFlyoverMap({
   data,
   active,
+  startAt,
 }: {
   data: ProvinceFlyoverData;
   /** La sección está a la vista: fuera de pantalla no se anima nada. */
   active: boolean;
+  /**
+   * Se abrió tocando un pueblo en la imagen fija: vuela directo a esa parada
+   * en vez de hacer el recorrido completo.
+   */
+  startAt?: number;
 }) {
   const t = useTranslations("home.flyover");
   const mapRef = useRef<MapRef>(null);
@@ -232,11 +238,22 @@ export function ProvinceFlyoverMap({
     return () => window.clearTimeout(timer);
   }, [playing, loaded, index, stops.length, goTo]);
 
-  // La primera vez que la sección aparece en pantalla, el recorrido arranca
-  // solo (el efecto "wow"); con movimiento reducido, nunca.
+  // El mapa se abre al tocar "Ver el vuelo 3D" (o un pueblo): ahí el
+  // recorrido arranca solo (el efecto "wow"); con movimiento reducido, nunca.
+  // Si se abrió tocando un pueblo, va directo a ese pueblo.
   useEffect(() => {
-    if (!active || !ready || autoplayedRef.current || reducedMotion) return;
+    if (!active || !ready || autoplayedRef.current) return;
     if (stops.length === 0) return;
+    if (startAt !== undefined) {
+      // Un respiro para que se vea la vista general antes de volar al pueblo.
+      const timer = window.setTimeout(() => {
+        if (autoplayedRef.current) return;
+        autoplayedRef.current = true;
+        goTo(startAt);
+      }, 500);
+      return () => window.clearTimeout(timer);
+    }
+    if (reducedMotion) return;
     // Un respiro para que se vea la vista general antes de despegar. La marca
     // de "ya arrancó" se pone recién al despegar: si la sección sale de
     // pantalla antes, el recorrido arranca la próxima vez que aparezca.
@@ -247,7 +264,7 @@ export function ProvinceFlyoverMap({
       setPlaying(true);
     }, 700);
     return () => window.clearTimeout(timer);
-  }, [active, ready, reducedMotion, stops.length]);
+  }, [active, ready, reducedMotion, stops.length, startAt, goTo]);
 
   // Si el relieve tarda demasiado en terminar de llegar, no se espera más:
   // el recorrido igual arranca (las teselas siguen llegando mientras vuela).

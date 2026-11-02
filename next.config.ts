@@ -29,6 +29,8 @@ const CONTENT_SECURITY_POLICY = [
   "img-src 'self' data: blob: https://*.supabase.co https://commons.wikimedia.org https://upload.wikimedia.org https://tiles.openfreemap.org",
   "font-src 'self' data:",
   `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://tiles.openfreemap.org ${mapStyleOrigin()}`.trim(),
+  // Reportajes de TV (lib/reportajes.ts): el reproductor oficial de cada canal.
+  "frame-src 'self' https://www.youtube-nocookie.com https://rudo.video",
   "worker-src 'self' blob:",
   "child-src 'self' blob:",
   "object-src 'none'",

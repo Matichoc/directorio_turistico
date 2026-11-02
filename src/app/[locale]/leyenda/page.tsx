@@ -11,6 +11,8 @@ import { getLocalityBySlug } from "@/lib/data/localities";
 import { getPlaceBySlug } from "@/lib/data/places";
 import { getRouteBySlug } from "@/lib/data/routes";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
+import { REPORTAJES } from "@/lib/reportajes";
+import { ReportajesSection } from "@/components/video/reportajes-section";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -69,6 +71,7 @@ export default async function LegendPage({
   const locale = resolveLocale(rawLocale);
   setRequestLocale(locale);
   const t = await getTranslations("legend");
+  const tVideos = await getTranslations("videos");
 
   // Solo se enlaza lo que existe en la base (Chalaco se carga con
   // supabase/manual/chalaco.sql): nunca un link a una página vacía.
@@ -160,6 +163,13 @@ export default async function LegendPage({
           ))}
         </div>
       </section>
+
+      <ReportajesSection
+        id="reportajes"
+        title={tVideos("title")}
+        subtitle={tVideos("subtitle")}
+        items={REPORTAJES}
+      />
 
       {(chalaco || escalera || route) && (
         <section className="reveal flex flex-col gap-3">

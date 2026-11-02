@@ -141,9 +141,11 @@ export function buildProvinceFlyover(
 
 /**
  * Vuelo de un sitio acotado a una sola comuna: con una sola parada por comuna
- * no habría recorrido, así que la cámara va de pueblo en pueblo — los que
- * tienen al menos un atractivo, más la cabecera —, de oeste a este (en
- * Petorca: de Pedegua a Chincolco). La vista general encuadra esas paradas.
+ * no habría recorrido, así que la cámara va de pueblo en pueblo, de oeste a
+ * este, por **todos** los pueblos con coordenada — tengan o no atractivos
+ * cargados (pedido del usuario: "hay pueblos que se van a enojar si no los
+ * nombramos"; antes solo iban los que tenían atractivos y la cabecera). La
+ * vista general encuadra esas paradas.
  */
 function buildCommuneFlyover(
   commune: Commune,
@@ -159,10 +161,6 @@ function buildCommuneFlyover(
     places.filter((place) => place.localitySlug === slug).length;
 
   const stops: FlyoverStop[] = located
-    .filter(
-      (locality) =>
-        locality.slug === seat?.slug || attractionsOf(locality.slug) > 0,
-    )
     .map((locality) => ({
       id: locality.slug,
       communeSlug: commune.slug,

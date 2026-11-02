@@ -134,10 +134,14 @@ Desde 2026-11-01 (rama `petorca`) el sitio muestra solo la comuna de
 Petorca, sin perder el look ni el folclore. Lo visual que dependía de "varias
 comunas" se adapta solo cuando hay una:
 
-- **Vuelo 3D**: con una sola comuna, la cámara va de **pueblo en pueblo** (los
-  que tienen atractivos, más la cabecera, de oeste a este: Pedegua → Hierro
-  Viejo → Petorca → Chincolco) y el botón lleva a la ficha del pueblo; la vista
-  general encuadra esas paradas en vez de la provincia.
+- **Vuelo 3D**: con una sola comuna, la cámara va de **pueblo en pueblo** por
+  **todos** los pueblos con coordenada, tengan o no atractivos, de oeste a
+  este (en Petorca, los 15: de Las Palmas a Chalaco), y el botón lleva a la
+  ficha del pueblo; la vista general encuadra esas paradas. Pedido del
+  usuario: "hay pueblos que se van a enojar si no los nombramos". Por lo mismo,
+  ningún texto nombra a unos pueblos y no a otros: se habla de "sus N pueblos"
+  (N sale de la base), y la tarjeta de un pueblo sin atractivos cargados no
+  dice "sin atractivos" (solo su nombre, su resumen y su ficha).
 - **Mapa de `/explorar`**: con una sola comuna no hay sectores (burbujas por
   comuna); arranca directo en los pines.
 - **Postales "¿Qué buscas hoy?"**: solo las categorías con lugares reales

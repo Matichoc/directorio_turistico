@@ -129,16 +129,19 @@ describe("buildProvinceFlyover with a single commune", () => {
     localitySlug,
   });
 
-  it("tours villages with attractions plus the seat, west to east", () => {
+  it("tours every located village, with or without attractions, west to east", () => {
     const { stops } = buildProvinceFlyover(petorcaOnly, localities, [
       placeIn("a", "chincolco"),
       placeIn("b", "pedegua"),
       placeIn("c", "pedegua"),
       placeIn("d", "sin-coord"),
     ]);
+    // Todos los pueblos con coordenada (La Nipa no tiene atractivos); el que
+    // no tiene coordenada no se dibuja.
     expect(stops.map((stop) => stop.id)).toEqual([
       "pedegua",
       "petorca",
+      "la-nipa",
       "chincolco",
     ]);
     expect(stops[0]).toMatchObject({

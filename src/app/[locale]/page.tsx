@@ -120,7 +120,7 @@ export default async function HomePage({
         <SparkleField />
 
         <p className="relative text-xs font-semibold tracking-wide text-amber-300 uppercase">
-          {t("provinceLabel")}
+          {t("provinceLabel", { count: flyover.villages.length })}
         </p>
 
         {/* Desde sm: el texto ocupa la mitad izquierda; la derecha es del

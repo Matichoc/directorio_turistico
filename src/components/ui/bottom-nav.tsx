@@ -5,7 +5,8 @@ import { usePathname, Link } from "@/i18n/navigation";
 import { NAV_ITEMS } from "@/components/ui/nav-items";
 
 /**
- * Nav fijo al fondo, solo en celular (`sm:hidden`) — patrón de app móvil.
+ * Nav al fondo, solo en celular (`sm:hidden`) — patrón de app móvil. Lo
+ * fija la barra de abajo de `[locale]/layout.tsx`, junto con el auspicio.
  * En pantallas más anchas la reemplaza `TopNav` (ver ese archivo): una
  * barra fija al fondo de una ventana de escritorio muy alta pasa
  * desapercibida ("el botón para ver las secciones no está", feedback del
@@ -18,7 +19,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t("home")}
-      className="bg-background/95 supports-[backdrop-filter]:bg-background/80 fixed inset-x-0 bottom-0 z-40 border-t border-black/10 backdrop-blur sm:hidden dark:border-white/10"
+      className="bg-background/95 supports-[backdrop-filter]:bg-background/80 border-t border-black/10 backdrop-blur sm:hidden dark:border-white/10"
     >
       <ul className="mx-auto flex max-w-3xl items-stretch justify-between px-2">
         {NAV_ITEMS.map(({ href, key, Icon }) => {

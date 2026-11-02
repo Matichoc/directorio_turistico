@@ -497,6 +497,22 @@ pantalla, nunca los dos a la vez:
 Agregar una sexta sección = un solo ítem nuevo en `NAV_ITEMS`, nunca
 duplicar el link a mano en cada uno de los dos componentes.
 
+**Auspicio siempre a la vista** (`SponsorBanner`; pedido del usuario: que
+"esté siempre" al moverse por la página, pero "más disimulado"). Antes era
+un bloque de dos filas al final de cada página. Ahora:
+
+- **Celular y tablet** (hasta `lg`): franja delgada (~44 px) fija abajo, en
+  una sola caja fija junto con `BottomNav` (`[locale]/layout.tsx`), para que
+  se apilen solas. Rota entre auspiciadores. El layout deja al pie
+  exactamente el alto de las barras (`pb-[6.5rem]` en celular, `sm:pb-11`):
+  más que eso se ve como una franja negra vacía (feedback real).
+- **Escritorio** (`lg` y más): barrita de ~1,5 cm (`w-14`) fija al costado
+  derecho, de arriba abajo, en el espacio que el contenido de 768 px deja
+  libre, con los logos de **todos** los auspiciadores a la vez (nombre y
+  frase en el `title`). Una columna ancha con un solo auspiciador "está muy
+  grande" (feedback real).
+- Sin `backdrop-filter` (pasa encima del vuelo 3D).
+
 **Cambio de idioma** (`LocaleSwitcher`): botones ES · EN · PT (píldora,
 el activo en `bg-accent`), en `TopNav` a la derecha y, en celular, en
 `MobileHeader` (logo + nombre + idioma, arriba, no fijo). Antes era un

@@ -45,7 +45,17 @@ export default async function LocaleLayout({
   return (
     <HtmlShell lang={locale}>
       <NextIntlClientProvider>
-        <div className="flex min-h-dvh flex-1 flex-col pb-16 sm:pb-0">
+        {/* Espacio al pie para que la barra fija de abajo (auspicio +
+            secciones en celular) no tape el final de la página: ~44 px de
+            auspicio y ~58 px de secciones (medido: 102 px juntas). En escritorio (`lg`) el
+            auspicio va al costado y no hace falta. */}
+        <div
+          className={`flex min-h-dvh flex-1 flex-col ${
+            sponsors.length > 0
+              ? "pb-[6.5rem] sm:pb-11 lg:pb-0"
+              : "pb-16 sm:pb-0"
+          }`}
+        >
           <DevEnvironmentBanner />
           <ServiceWorkerRegister />
           <TopNav />
@@ -58,9 +68,15 @@ export default async function LocaleLayout({
           <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
             {children}
           </div>
-          <SponsorBanner sponsors={sponsors} />
         </div>
-        <BottomNav />
+        {/* Barra fija de abajo: el auspicio siempre a la vista (pedido del
+            usuario: "que cada vez que te muevas por la pantalla igual se
+            vea") y, en celular, las secciones debajo. Una sola caja fija
+            para que se apilen solas, sin calcular alturas a mano. */}
+        <div className="fixed inset-x-0 bottom-0 z-40">
+          <SponsorBanner sponsors={sponsors} />
+          <BottomNav />
+        </div>
       </NextIntlClientProvider>
     </HtmlShell>
   );

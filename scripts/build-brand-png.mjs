@@ -33,7 +33,7 @@ const ASSETS = [
   { src: "public/fondos/pueblo.png", size: [1536, 1024], webp: true },
   { src: "public/fondos/tunel.png", size: [1536, 1024], webp: true },
   {
-    src: "public/rutas/ruta-del-diablo-pedegua-chincolco.png",
+    src: "public/rutas/ruta-del-diablo-pedegua-chincolco-campesino.png",
     size: [1536, 1024],
     webp: true,
   },

@@ -246,11 +246,12 @@ roja y dorada**. Reemplazó al diablito de mascota (2026-11-01), que a su vez
 reemplazó al de la provincia (casco minero, surf, dulces). Las escenas
 `atardecer`, `cerro`, `pueblo` y `tunel`, la portada ferroviaria y las escenas
 de `public/leyendas/` son WebP de ese arte; `playa` y `dulces` (solo
-provincia) siguen en SVG. La portada propia de "Donde el Diablo perdió el
-poncho" y el logo entregados aún traen el diablito anterior: no se usan. La
-ruta lleva de portada provisoria la escena de la Escalera del Diablo (una de
-sus paradas, `supabase/manual/portada-poncho-campesino.sql`) hasta que llegue
-una propia con el personaje nuevo.
+provincia) siguen en SVG. El logo de esa entrega aún traía el diablito
+anterior: no se usa. "Donde el Diablo perdió el poncho" lleva desde
+2026-11-03 su portada propia con el personaje nuevo (sentado
+en una piedra al atardecer, `ruta-del-diablo-pedegua-chincolco-campesino.webp`,
+`supabase/manual/portada-poncho-definitiva.sql`); antes, de prestado, la
+escena de la Escalera del Diablo.
 
 **Recorte**: cada arte del diablo (escenas, portadas de ruta, escenas de la
 leyenda) tiene su encuadre en `ART_POSITION` (`lib/ui/scene-backgrounds.ts`,

@@ -45,6 +45,9 @@ const ART_POSITION: Record<string, string> = {
   "/leyendas/cueca.webp": "45% 4%",
   "/leyendas/ano-nuevo.webp": "24% 0%",
   "/rutas/ruta-ferroviaria-pedegua-las-palmas.webp": "51% 0%",
+  // Portada de "Donde el Diablo perdió el poncho" (2026-11-03), sentado en
+  // una piedra al atardecer.
+  "/rutas/ruta-del-diablo-pedegua-chincolco-campesino.webp": "57% 0%",
   // Versión provincia (SVG), con el diablo abajo a la derecha.
   "/fondos/playa.svg": "85% 70%",
   "/fondos/dulces.svg": "85% 70%",

@@ -28,8 +28,9 @@ suben, ver `.gitignore`); el sitio usa WebP.
 | `leyendas/escalera.png`                   | Integrado en `/leyenda` (versión de la ruta).                                                                                                                                                                  |
 | `leyendas/diablo-buscando.png`            | Integrado en `/leyenda` ("Recórrela").                                                                                                                                                                         |
 
-**Pendiente:** un logo campesino (insignia con transparencia) y la portada
-campesina de "Donde el Diablo perdió el poncho". Las escenas SVG anteriores
+**Pendiente:** un logo campesino (insignia con transparencia). La portada
+campesina de "Donde el Diablo perdió el poncho" llegó el 2026-11-03
+(`ruta-del-diablo-pedegua-chincolco-campesino.webp`). Las escenas SVG anteriores
 siguen en `public/fondos/*.svg` (sin uso, salvo `playa` y `dulces`, de la
 versión de la provincia).
 
@@ -54,14 +55,10 @@ dice cuáles faltan.
    [bloque de estilo]
    ```
 
-2. **Portada de "Donde el Diablo perdió el poncho"** —
-   `public/rutas/ruta-del-diablo-pedegua-chincolco.png`, 1536×1024. Hoy usa la
-   escena de la escalera de la leyenda, de prestado.
-
-   ```text
-   El diablo de la imagen adjunta camina por un camino de tierra del valle de Petorca al atardecer, alejándose de una vieja estación de tren de adobe hacia los cerros, con el poncho rojo ondeando al viento como si se le fuera a volar. Cerros secos, espinos y quebradas; a lo lejos, un pueblo con su iglesia. El diablo en el tercio derecho, de cuerpo entero. Sin texto.
-   [bloque de estilo]
-   ```
+2. ~~**Portada de "Donde el Diablo perdió el poncho"**~~ — **llegó el
+   2026-11-03** (el diablo sentado en una piedra al atardecer):
+   `public/rutas/ruta-del-diablo-pedegua-chincolco-campesino.webp`, conectada
+   con `supabase/manual/portada-poncho-definitiva.sql`.
 
 3. **Escena de gastronomía** — `public/fondos/cocina.png`, 1536×1024. Hoy
    gastronomía y cultura repiten el pueblo.

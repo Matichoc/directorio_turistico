@@ -33,6 +33,86 @@ campesina de "Donde el Diablo perdió el poncho". Las escenas SVG anteriores
 siguen en `public/fondos/*.svg` (sin uso, salvo `playa` y `dulces`, de la
 versión de la provincia).
 
+## Pendientes (2026-11-02)
+
+Todo el arte del diablo lleva en el sitio la marca **"Ilustración con IA"**
+(`AiArtLabel`; lista de archivos en `isAiArt`, `lib/ui/scene-backgrounds.ts`)
+y la página Información lo explica. Al llegar una foto real que lo reemplace,
+se saca de esa lista.
+
+### Para pedirle a ChatGPT (ilustraciones)
+
+Adjuntar siempre `docs/arte/diablo-campesino-referencia.png` y pegar al final
+el bloque de estilo (más abajo). `node scripts/build-brand-png.mjs --check`
+dice cuáles faltan.
+
+1. **Logo** — `public/brand/logo.png`, 1024×1024, **fondo transparente**. El
+   que hay es del diablito anterior y no se usa.
+
+   ```text
+   Emblema para un sitio de turismo: la cabeza y los hombros del diablo de la imagen adjunta, sonriendo pícaro, con su sombrero de cuernos y el poncho rojo de flecos dorados, dentro de un medallón dorado con forma de escudo. Detrás, cruzado, su cucharón de madera con borla roja y dorada. Nada de azul ni blanco, nada de siluetas planas. Fondo transparente, sin texto.
+   [bloque de estilo]
+   ```
+
+2. **Portada de "Donde el Diablo perdió el poncho"** —
+   `public/rutas/ruta-del-diablo-pedegua-chincolco.png`, 1536×1024. Hoy usa la
+   escena de la escalera de la leyenda, de prestado.
+
+   ```text
+   El diablo de la imagen adjunta camina por un camino de tierra del valle de Petorca al atardecer, alejándose de una vieja estación de tren de adobe hacia los cerros, con el poncho rojo ondeando al viento como si se le fuera a volar. Cerros secos, espinos y quebradas; a lo lejos, un pueblo con su iglesia. El diablo en el tercio derecho, de cuerpo entero. Sin texto.
+   [bloque de estilo]
+   ```
+
+3. **Escena de gastronomía** — `public/fondos/cocina.png`, 1536×1024. Hoy
+   gastronomía y cultura repiten el pueblo.
+
+   ```text
+   Una cocinería de campo bajo un parrón, al atardecer: horno de barro con empanadas, ollas de greda humeantes, una mesa larga con mantel y jarros de greda. El diablo de la imagen adjunta revuelve una olla grande con su cucharón, contento, en el tercio derecho. A la izquierda, el cielo y el parrón despejados para un título. Sin texto.
+   [bloque de estilo]
+   ```
+
+4. **Escena de alojamiento** — `public/fondos/descanso.png`, 1536×1024. Hoy
+   alojamiento usa el atardecer.
+
+   ```text
+   La galería de una casa de campo de adobe con tejas, de noche, con el cielo lleno de estrellas sobre los cerros. El diablo de la imagen adjunta descansa en una silla de mimbre con los pies en alto, el sombrero inclinado sobre los ojos y el cucharón apoyado al lado; un farol encendido junto a la puerta. El diablo en el tercio derecho; a la izquierda, cielo despejado para un título. Sin texto.
+   [bloque de estilo]
+   ```
+
+5. **Escena de recreación** — `public/fondos/plaza.png`, 1536×1024. Hoy
+   recreación y naturaleza repiten el cerro.
+
+   ```text
+   La plaza de un pueblo del valle en una tarde de verano: árboles grandes, una pileta, bancas, faroles y banderines de colores. El diablo de la imagen adjunta, sentado en una banca, le muestra a unos niños cómo hace girar su cucharón; ellos se ríen. El diablo en el tercio derecho; a la izquierda, cielo despejado para un título. Sin texto.
+   [bloque de estilo]
+   ```
+
+6. **Portada de "Cocinando con el Diablo"** (opcional) —
+   `public/eventos/cocinando-con-el-diablo.png`, 1536×1024. Es un evento de
+   otros (la ruta y la Municipalidad): mejor una foto suya, con permiso. Si
+   no llega:
+
+   ```text
+   Una feria de comida en la plaza de un pueblo de adobe al atardecer, con la iglesia al fondo, toldos de colores, guirnaldas de luces y ollas humeantes. El diablo de la imagen adjunta, de delantal sobre el poncho, revuelve una olla enorme con su cucharón mientras la gente hace fila contenta. El diablo en el tercio derecho. Sin texto.
+   [bloque de estilo]
+   ```
+
+### Fotos reales (no con IA)
+
+Un lugar real nunca lleva una ilustración que parezca foto (ver "Reglas"). Lo
+que falta acá hay que pedirlo al dueño, a la Municipalidad o sacarlo en
+terreno (con permiso de uso; `public/fotos/README.md`):
+
+- **12 lugares sin foto** (2026-11-02): Turismo Rural La Nina y Hostal El Río
+  (Pedegua); Tinajas Chincolco, Iglesia de Chincolco, Plaza de Armas de
+  Chincolco, Medialuna de Chincolco y El Rincón Criollo (Chincolco); Plaza,
+  Piscina y Panal de Hierro Viejo; Campo de Petroglifos El Arenal (Pedernal);
+  Viña El Sobrante. Mientras, muestran el ícono de su categoría.
+- **Fiestas religiosas y el natalicio de Manuel Montt** (`/eventos`): solo
+  fotos reales; nunca el diablo en una fiesta religiosa.
+- **Pueblos**: la ficha usa una escena del diablo; una foto real de cada
+  pueblo la reemplazaría (todavía no hay dónde subirla en el panel).
+
 ## El personaje (aprobado desde 2026-11-02)
 
 Referencia: [`docs/arte/diablo-campesino-referencia.png`](arte/diablo-campesino-referencia.png).

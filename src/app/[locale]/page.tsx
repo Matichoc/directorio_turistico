@@ -4,6 +4,7 @@ import { RouteCard } from "@/components/route/route-card";
 import { MunicipalityBanner } from "@/components/home/municipality-banner";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { SparkleField } from "@/components/ui/sparkle-field";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
@@ -125,6 +126,7 @@ export default async function HomePage({
           className="pointer-events-none absolute inset-0 bg-[#07060c]/45 sm:hidden"
         />
         <SparkleField />
+        <AiArtLabel className="right-3 bottom-3" />
 
         <p className="relative text-xs font-semibold tracking-wide text-amber-300 uppercase">
           {t("provinceLabel", { count: flyover.villages.length })}
@@ -213,6 +215,9 @@ export default async function HomePage({
                     aria-hidden="true"
                     className={`absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-gradient-to-br opacity-50 blur-2xl transition-opacity duration-300 group-hover:opacity-80 ${getCategoryGradient(intent.slug)}`}
                   />
+                  {/* Arriba a la izquierda: abajo va la categoría y a la
+                      derecha está la cara del diablo. */}
+                  <AiArtLabel className="top-2 left-2" />
                   <span className="relative flex items-center gap-2">
                     <span
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br shadow-lg ring-1 ring-white/30 ${getCategoryGradient(intent.slug)}`}

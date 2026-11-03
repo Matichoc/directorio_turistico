@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { SCENE_POSITION, SCENE_SRC } from "@/lib/ui/scene-backgrounds";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 import { embedUrl, formatDuration, type Reportaje } from "@/lib/reportajes";
 
 /**
@@ -61,6 +62,9 @@ export function VideoReportaje({ reportaje }: { reportaje: Reportaje }) {
               aria-hidden="true"
               className="from-background/95 via-background/55 to-background/25 absolute inset-0 bg-gradient-to-t"
             />
+            {/* La escena es nuestra, no del canal: arriba a la derecha, frente
+                al nombre del canal. */}
+            <AiArtLabel className="top-3 right-3" />
             <span className="bg-background/80 relative w-fit rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide">
               {reportaje.channel}
             </span>

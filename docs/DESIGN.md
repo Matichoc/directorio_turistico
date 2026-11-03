@@ -353,6 +353,15 @@ string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
   guardado (`lib/google/place-photo-ref.ts`). Si ese autor ya no está, no
   sirve otra foto con su nombre: cae al ícono. Antes de este arreglo
   (2026-11-01) no cargaba ninguna; ahora cargan 35 de las 38 de Petorca.
+- **Ilustración con IA** (pedido del usuario: "dejar evidencia de que las
+  imágenes están generadas con IA" hasta que lleguen fotos reales): todo arte
+  del diablo lleva `AiArtLabel` (`components/ui/ai-art-label.tsx`), una
+  píldora chica abajo-derecha — donde las fotos llevan su crédito — o en la
+  esquina libre si esa está ocupada (postales: arriba-izquierda; reportajes:
+  arriba-derecha). Qué archivos son con IA lo dice `isAiArt`
+  (`lib/ui/scene-backgrounds.ts`, fuente única); Información lo explica en
+  "Sobre las imágenes". Una foto real nunca la lleva. Lo que falta pedir
+  está en `docs/PROMPTS-IMAGENES.md` ("Pendientes").
 - **Crédito de foto**: la leyenda abajo-derecha de `PlacePhotoHero` solo
   muestra lo que la foto trae (`place_images.alt_text`: autor/fuente/
   licencia). Sin dato no hay leyenda — nunca una atribución por defecto.

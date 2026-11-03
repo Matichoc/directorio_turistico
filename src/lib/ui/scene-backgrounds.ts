@@ -66,6 +66,28 @@ export function getArtPosition(src?: string | null): string | undefined {
   return ART_POSITION[path];
 }
 
+/**
+ * Ilustraciones hechas con IA (ChatGPT, `docs/PROMPTS-IMAGENES.md`): todo
+ * arte del diablo de `ART_POSITION` más los que no se recortan. Pedido del
+ * usuario: que quede evidencia de que son generadas con IA mientras no haya
+ * fotos reales — toda vista que las muestra pone `AiArtLabel`. Un arte nuevo
+ * con IA = su entrada acá (o en `ART_POSITION`); una foto real nunca.
+ */
+const AI_ART = new Set([
+  ...Object.keys(ART_POSITION),
+  "/leyendas/diablo-buscando.webp",
+]);
+
+/** ¿Es una ilustración hecha con IA? Acepta la URL completa del sitio. */
+export function isAiArt(src?: string | null): boolean {
+  if (!src) return false;
+  try {
+    return AI_ART.has(new URL(src, "http://local").pathname);
+  } catch {
+    return false;
+  }
+}
+
 /** Encuadre de cada escena (`ART_POSITION` de su archivo). */
 export const SCENE_POSITION = Object.fromEntries(
   Object.entries(SCENE_SRC).map(([scene, src]) => [

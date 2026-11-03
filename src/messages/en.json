@@ -19,6 +19,8 @@
     "developerInstagram": "Instagram: @el.cristo.cl",
     "developerWhatsapp": "WhatsApp",
     "sponsorNote": "Sponsored by Chocolatería Matichoc — artisan chocolate made in La Ligua.",
+    "imagesTitle": "About the images",
+    "imagesBody": "The devil illustrations (page headers, route covers and legend scenes) are generated with artificial intelligence from a character of our own, and are marked “AI illustration”. Photos of places are real (with their author, when known). As real photos of the commune come in, they will replace the illustrations.",
     "legendLink": "The legend of the devil",
     "eventsLink": "What's on in Petorca (events)",
     "privacyLink": "Privacy"
@@ -273,7 +275,8 @@
       "tagline": "Artisanal chocolate made in La Ligua",
       "cta": "Visit website",
       "instagram": "Instagram"
-    }
+    },
+    "aiArt": "AI illustration"
   },
   "privacy": {
     "title": "Privacy",

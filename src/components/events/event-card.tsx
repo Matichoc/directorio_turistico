@@ -7,6 +7,8 @@ import {
   isUpcoming,
   monthName,
 } from "@/lib/events/agenda";
+import { getArtPosition, isAiArt } from "@/lib/ui/scene-backgrounds";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 import type { Locale } from "@/types/database";
 import type { SiteEvent } from "@/types/domain";
 
@@ -76,7 +78,9 @@ export async function EventCard({
             // (no todos sus orígenes están declarados en next.config.ts).
             unoptimized={!event.coverImage.startsWith("/")}
             className="object-cover"
+            style={{ objectPosition: getArtPosition(event.coverImage) }}
           />
+          {isAiArt(event.coverImage) && <AiArtLabel />}
         </div>
       )}
       <div className="flex gap-3 p-4">

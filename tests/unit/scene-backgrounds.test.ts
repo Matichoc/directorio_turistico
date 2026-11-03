@@ -3,7 +3,9 @@ import {
   getArtPosition,
   getSceneForCategory,
   getSceneForRoute,
+  isAiArt,
   SCENE_POSITION,
+  SCENE_SRC,
 } from "@/lib/ui/scene-backgrounds";
 
 describe("scene backgrounds", () => {
@@ -52,5 +54,29 @@ describe("art framing", () => {
   it("leaves real photos to the component's own framing", () => {
     expect(getArtPosition("/api/place-photo?ref=abc&w=800")).toBeUndefined();
     expect(getArtPosition(null)).toBeUndefined();
+  });
+});
+
+describe("AI art", () => {
+  it("marks every devil scene, route cover and legend scene as AI", () => {
+    for (const src of Object.values(SCENE_SRC)) {
+      expect(isAiArt(src)).toBe(true);
+    }
+    expect(isAiArt("/leyendas/diablo-buscando.webp")).toBe(true);
+    expect(
+      isAiArt(
+        "https://directorio-turistico-bgl3.vercel.app/rutas/ruta-ferroviaria-pedegua-las-palmas.webp",
+      ),
+    ).toBe(true);
+  });
+
+  it("never marks a real photo", () => {
+    expect(isAiArt("/api/place-photo?ref=abc&w=800")).toBe(false);
+    expect(
+      isAiArt(
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Petorca.jpg",
+      ),
+    ).toBe(false);
+    expect(isAiArt(null)).toBe(false);
   });
 });

@@ -68,6 +68,33 @@ const ASSETS = [
     webp: true,
     optional: true,
   },
+  // Pedidas el 2026-11-02 ("Pendientes" en docs/PROMPTS-IMAGENES.md): hoy
+  // gastronomía y cultura repiten el pueblo, y naturaleza y recreación el
+  // cerro. Al llegar, conectarlas (SCENE_SRC, ART_POSITION).
+  {
+    src: "public/fondos/cocina.png",
+    size: [1536, 1024],
+    webp: true,
+    optional: true,
+  },
+  {
+    src: "public/fondos/descanso.png",
+    size: [1536, 1024],
+    webp: true,
+    optional: true,
+  },
+  {
+    src: "public/fondos/plaza.png",
+    size: [1536, 1024],
+    webp: true,
+    optional: true,
+  },
+  {
+    src: "public/eventos/cocinando-con-el-diablo.png",
+    size: [1536, 1024],
+    webp: true,
+    optional: true,
+  },
 ];
 
 /** ¿Las cuatro esquinas son transparentes? (un "transparente" falso trae fondo pintado) */

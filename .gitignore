@@ -56,5 +56,6 @@ next-env.d.ts
 /public/rutas/*.png
 /public/brand/diablo-buscando.png
 /public/leyendas/*.png
+/public/eventos/*.png
 /public/brand/icono-original.png
 /public/brand/logo-original.png

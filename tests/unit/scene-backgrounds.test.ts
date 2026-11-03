@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   getArtPosition,
+  getPostalArt,
   getSceneForCategory,
   getSceneForRoute,
   isAiArt,
@@ -84,5 +85,23 @@ describe("AI art", () => {
       ),
     ).toBe(false);
     expect(isAiArt(null)).toBe(false);
+  });
+});
+
+describe("postal art", () => {
+  it("uses the square art only on the lodging and leisure postcards", () => {
+    expect(getPostalArt("alojamiento").src).toBe("/fondos/descanso.webp");
+    expect(getPostalArt("recreacion").src).toBe("/fondos/plaza.webp");
+    // Las cabeceras anchas de esas categorías siguen con su escena.
+    expect(getSceneForCategory("alojamiento")).toBe("atardecer");
+    expect(getSceneForCategory("recreacion")).toBe("cerro");
+  });
+
+  it("falls back to the category scene, framed, for the rest", () => {
+    expect(getPostalArt("gastronomia")).toEqual({
+      src: "/fondos/cocina.webp",
+      position: "65% 0%",
+    });
+    expect(isAiArt(getPostalArt("alojamiento").src)).toBe(true);
   });
 });

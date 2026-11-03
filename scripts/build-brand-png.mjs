@@ -68,9 +68,10 @@ const ASSETS = [
     webp: true,
     optional: true,
   },
-  // Pedidas el 2026-11-02 ("Pendientes" en docs/PROMPTS-IMAGENES.md): hoy
-  // gastronomía y cultura repiten el pueblo, y naturaleza y recreación el
-  // cerro. Al llegar, conectarlas (SCENE_SRC, ART_POSITION).
+  // Pedidas el 2026-11-02 ("Pendientes" en docs/PROMPTS-IMAGENES.md). Las
+  // de descanso, plaza y Cocinando con el Diablo llegaron casi cuadradas
+  // (~715×724): van en postales y como afiche del evento, no en cabeceras
+  // anchas (`POSTAL_ART`, lib/ui/scene-backgrounds.ts).
   {
     src: "public/fondos/cocina.png",
     size: [1536, 1024],
@@ -79,19 +80,19 @@ const ASSETS = [
   },
   {
     src: "public/fondos/descanso.png",
-    size: [1536, 1024],
+    size: [714, 724],
     webp: true,
     optional: true,
   },
   {
     src: "public/fondos/plaza.png",
-    size: [1536, 1024],
+    size: [711, 724],
     webp: true,
     optional: true,
   },
   {
     src: "public/eventos/cocinando-con-el-diablo.png",
-    size: [1536, 1024],
+    size: [717, 724],
     webp: true,
     optional: true,
   },

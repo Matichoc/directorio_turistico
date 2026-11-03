@@ -126,7 +126,11 @@ Cada categoría es una postal alta con la escena del diablito que le toca
 lea, un halo del color de la categoría y la cantidad real de lugares (sin
 número si no hay ninguno). Al pasar el mouse la escena se acerca lento y la
 tarjeta se enciende con el glow de siempre. Pedido del usuario: las tarjetas
-planas con un ícono "no me gustan".
+planas con un ícono "no me gustan". Alojamiento y recreación tienen arte
+propio solo para su postal (`getPostalArt`: el descanso en la galería y la
+plaza; 2026-11-03, casi cuadrados, ~715 px): en una cabecera ancha se verían
+borrosos y con la cara tapada por el título, así que ahí siguen con su
+escena. Desde entonces las cinco postales son distintas.
 
 ## Sitio acotado a una comuna (`lib/site-scope.ts`)
 

@@ -44,6 +44,10 @@ const ART_POSITION: Record<string, string> = {
   "/fondos/pueblo.webp": "72% 0%",
   "/fondos/tunel.webp": "77% 0%",
   "/fondos/cocina.webp": "65% 0%",
+  // Casi cuadradas (2026-11-03): solo postales y el afiche del evento.
+  "/fondos/descanso.webp": "32% 10%",
+  "/fondos/plaza.webp": "49% 8%",
+  "/eventos/cocinando-con-el-diablo.webp": "50% 0%",
   "/leyendas/escalera.webp": "66% 0%",
   "/leyendas/cueca.webp": "45% 4%",
   "/leyendas/ano-nuevo.webp": "24% 0%",
@@ -118,6 +122,28 @@ const SCENE_BY_CATEGORY: Record<string, SceneId> = {
 /** Escena según la categoría que se está mirando; sin categoría, el cerro (el valle de noche). */
 export function getSceneForCategory(categorySlug?: string | null): SceneId {
   return (categorySlug && SCENE_BY_CATEGORY[categorySlug]) || "cerro";
+}
+
+/**
+ * Arte propio de una postal del inicio cuando la categoría lo tiene: el
+ * descanso (alojamiento) y la plaza (recreación) llegaron casi cuadrados
+ * (~715×724), justo para postales, pero se verían borrosos y con la cara
+ * tapada por el título en una cabecera ancha, que sigue con su escena.
+ */
+const POSTAL_ART: Record<string, string> = {
+  alojamiento: "/fondos/descanso.webp",
+  recreacion: "/fondos/plaza.webp",
+};
+
+/** Imagen y encuadre de la postal de una categoría (su arte o su escena). */
+export function getPostalArt(categorySlug?: string | null): {
+  src: string;
+  position: string;
+} {
+  const own = categorySlug ? POSTAL_ART[categorySlug] : undefined;
+  if (own) return { src: own, position: getArtPosition(own) ?? "center" };
+  const scene = getSceneForCategory(categorySlug);
+  return { src: SCENE_SRC[scene], position: SCENE_POSITION[scene] };
 }
 
 /** Escena de una ruta según su tema (túneles, costa, patrimonio). */

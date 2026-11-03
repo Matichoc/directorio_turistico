@@ -25,7 +25,7 @@ import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import {
   SCENE_POSITION,
   SCENE_SRC,
-  getSceneForCategory,
+  getPostalArt,
 } from "@/lib/ui/scene-backgrounds";
 import type { Metadata } from "next";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
@@ -215,9 +215,8 @@ export default async function HomePage({
                     aria-hidden="true"
                     className="absolute inset-0 bg-cover transition-transform duration-700 ease-out group-hover:scale-110"
                     style={{
-                      backgroundImage: `url(${SCENE_SRC[getSceneForCategory(intent.slug)]})`,
-                      backgroundPosition:
-                        SCENE_POSITION[getSceneForCategory(intent.slug)],
+                      backgroundImage: `url(${getPostalArt(intent.slug).src})`,
+                      backgroundPosition: getPostalArt(intent.slug).position,
                     }}
                   />
                   <span

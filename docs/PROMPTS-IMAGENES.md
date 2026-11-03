@@ -64,31 +64,27 @@ dice cuáles faltan.
    revolviendo la olla en una cocina de campo bajo el parrón):
    `public/fondos/cocina.webp`, escena `cocina` de gastronomía.
 
-4. **Escena de alojamiento** — `public/fondos/descanso.png`, 1536×1024. Hoy
-   alojamiento usa el atardecer.
+4. ~~**Escena de alojamiento**~~ y 5. ~~**Escena de recreación**~~ —
+   **llegaron el 2026-11-03**, pero casi cuadradas (714×724 y 711×724):
+   `public/fondos/descanso.webp` y `plaza.webp`, solo en las postales del
+   inicio (`getPostalArt`). Para usarlas también en cabeceras anchas, pedirlas
+   de nuevo en **1536×1024 horizontal**, con el diablo en el tercio derecho y
+   cielo libre a la izquierda (mismos prompts de antes):
 
    ```text
-   La galería de una casa de campo de adobe con tejas, de noche, con el cielo lleno de estrellas sobre los cerros. El diablo de la imagen adjunta descansa en una silla de mimbre con los pies en alto, el sombrero inclinado sobre los ojos y el cucharón apoyado al lado; un farol encendido junto a la puerta. El diablo en el tercio derecho; a la izquierda, cielo despejado para un título. Sin texto.
+   La galería de una casa de campo de adobe con tejas, de noche, con el cielo lleno de estrellas sobre los cerros. El diablo de la imagen adjunta descansa en una silla de mimbre con los pies en alto, el sombrero inclinado sobre los ojos y el cucharón apoyado al lado; un farol encendido junto a la puerta. El diablo en el tercio derecho; a la izquierda, cielo despejado para un título. Formato horizontal 1536×1024. Sin texto.
    [bloque de estilo]
    ```
 
-5. **Escena de recreación** — `public/fondos/plaza.png`, 1536×1024. Hoy
-   recreación y naturaleza repiten el cerro.
-
    ```text
-   La plaza de un pueblo del valle en una tarde de verano: árboles grandes, una pileta, bancas, faroles y banderines de colores. El diablo de la imagen adjunta, sentado en una banca, le muestra a unos niños cómo hace girar su cucharón; ellos se ríen. El diablo en el tercio derecho; a la izquierda, cielo despejado para un título. Sin texto.
+   La plaza de un pueblo del valle en una tarde de verano: árboles grandes, una pileta, bancas, faroles y banderines de colores. El diablo de la imagen adjunta, sentado en una banca, le muestra a unos niños cómo hace girar su cucharón; ellos se ríen. El diablo en el tercio derecho; a la izquierda, cielo despejado para un título. Formato horizontal 1536×1024. Sin texto.
    [bloque de estilo]
    ```
 
-6. **Portada de "Cocinando con el Diablo"** (opcional) —
-   `public/eventos/cocinando-con-el-diablo.png`, 1536×1024. Es un evento de
-   otros (la ruta y la Municipalidad): mejor una foto suya, con permiso. Si
-   no llega:
-
-   ```text
-   Una feria de comida en la plaza de un pueblo de adobe al atardecer, con la iglesia al fondo, toldos de colores, guirnaldas de luces y ollas humeantes. El diablo de la imagen adjunta, de delantal sobre el poncho, revuelve una olla enorme con su cucharón mientras la gente hace fila contenta. El diablo en el tercio derecho. Sin texto.
-   [bloque de estilo]
-   ```
+5. ~~**Portada de "Cocinando con el Diablo"**~~ — **llegó el 2026-11-03**
+   (717×724, con el cartel del evento): `public/eventos/cocinando-con-el-diablo.webp`,
+   como afiche en la tarjeta del evento; se conecta con
+   `supabase/manual/evento-portada-cocinando.sql` (o en el panel, "Portada").
 
 ### Fotos reales (no con IA)
 

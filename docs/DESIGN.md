@@ -220,6 +220,7 @@ todo lo demás — nunca editar a mano los archivos generados:
 | `public/icons/icon-192/512.png`      | App instalable (manifiesto) y barra de arriba  |
 | `public/icons/icon-maskable-512.png` | App instalable en Android (recorte en círculo) |
 | `public/brand/og.png`                | Vista previa al compartir un link sin foto     |
+| `public/brand/logo.webp`             | Título del inicio (el logo, sin margen)        |
 
 ## Aparición al hacer scroll
 
@@ -268,7 +269,11 @@ postales, tarjeta de la leyenda, reportajes, burbujas del mapa) y
 ruta, escenas de `/leyenda`); una foto real devuelve `undefined` y conserva su
 encuadre de siempre. Nunca un `background-position`/`object-position` escrito
 a mano; un arte nuevo = su entrada en `ART_POSITION`. En el hero del inicio, desde `sm:` el título, el texto y el buscador
-ocupan el 62 % izquierdo para no taparle la cara. En el atardecer nuevo el
+ocupan el 62 % izquierdo para no taparle la cara. Desde 2026-11-03 el título
+del inicio es el logo (`logo.webp`, con el nombre como texto oculto en el `<h1>`;
+pedido del usuario: el logo "en compartir e inicio"), y la imagen al
+compartir (`og.png`) es el logo sobre la noche con "Rutas, pueblos y leyendas
+de la comuna" (180 KB, con paleta: más pesada, WhatsApp a veces no la muestra). En el atardecer nuevo el
 diablo está al centro: las cabeceras anchas (inicio, `PageHero`) usan el
 cerro, el pueblo o el túnel, con el diablo a la derecha; el atardecer queda
 para las postales altas.

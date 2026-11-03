@@ -53,6 +53,7 @@ dice cuáles faltan.
    murió en Petorca" (revisado letra por letra): `public/brand/logo.png`,
    1024×1024, fondo transparente. El anterior decía "El Diablo de Petorca" y
    se pidió de nuevo (decisión del usuario).
+   Se usa en la imagen al compartir y como título del inicio.
 
 2. ~~**Portada de "Donde el Diablo perdió el poncho"**~~ — **llegó el
    2026-11-03** (el diablo sentado en una piedra al atardecer):

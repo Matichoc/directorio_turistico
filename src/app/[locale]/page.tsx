@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HomeSearchForm } from "@/components/home/home-search-form";
 import { RouteCard } from "@/components/route/route-card";
@@ -134,8 +135,20 @@ export default async function HomePage({
 
         {/* Desde sm: el texto ocupa la mitad izquierda; la derecha es del
             diablo de la escena (sin taparle la cara). */}
-        <h1 className="font-display relative text-3xl leading-tight font-semibold tracking-wide text-balance [text-shadow:0_2px_18px_rgba(7,6,12,0.85)] sm:max-w-[62%] sm:text-4xl">
-          {t("title")}
+        {/* El logo es el título (pedido del usuario, 2026-11-03). El nombre va
+            como texto oculto (lectores, buscadores y pruebas lo leen) y la
+            imagen es decorativa, para que no se lea dos veces. */}
+        <h1 className="relative w-full max-w-sm sm:max-w-[62%]">
+          <span className="sr-only">{t("title")}</span>
+          <Image
+            src="/brand/logo.webp"
+            alt=""
+            width={960}
+            height={700}
+            priority
+            sizes="(min-width: 640px) 440px, 90vw"
+            className="h-auto w-full drop-shadow-[0_8px_28px_rgba(7,6,12,0.9)]"
+          />
         </h1>
         <p className="relative max-w-prose text-white/70 sm:max-w-[62%]">
           {t("subtitle")}

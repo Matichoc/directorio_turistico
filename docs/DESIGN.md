@@ -327,7 +327,7 @@ duplicar uno casi igual con otro nombre.
 `src/components/ui/category-icon.tsx` tiene un solo `Record<string,
 string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
 `landmark`, `waves` (por categoría) y `dulce`, `tejido`, `diablo`, `surf`,
-`casco-minero`, `palta` (temáticos "de la zona").
+`casco-minero`, `palta` (temáticos "de la zona") y `calendario` (eventos).
 
 - **Categoría** → `getCategoryIcon(categorySlug)`.
 - **Lugar puntual** → `getPlaceIcon(categorySlug, place.icon)`; `place.icon`
@@ -441,8 +441,31 @@ ancha `LegendCard` (`components/legend/`, escena del túnel) va en el inicio
 después del vuelo 3D y en Rutas debajo de las rutas; en Explorar hay una
 píldora "La leyenda" junto a "Rutas" (`CategoryTabs`); la tarjeta de la ruta
 del poncho (`OfficialRouteCard`) suma "Conoce la leyenda", e Información
-tiene un link. No va en la barra de navegación: con más de 5 secciones la de
-abajo del celular se aprieta.
+tiene un link. En la navegación va en "Más" (barra de arriba y de abajo).
+
+## Qué pasa en Petorca (eventos, `/eventos`)
+
+Pedido del usuario (2026-11-02): un apartado de eventos — "Cocinando con el
+Diablo", el aniversario de Petorca, el de algún club. Página propia
+(`PageHero` con la escena del pueblo, "Escuchar") en tres partes, ordenadas
+por `buildAgenda` (`lib/events/agenda.ts`, funciones puras con pruebas):
+
+- **Próximos**: con fecha confirmada que todavía no termina.
+- **Fiestas de cada año**: las que se repiten (mes en la base) y no tienen
+  fecha próxima, desde el mes actual. Sin fecha dicen "Fecha por confirmar";
+  si ya se hicieron con fecha, "La última: …". Nunca un día inventado.
+- **Ya pasaron**: eventos de una sola vez cuya fecha pasó (la historia queda).
+
+Un evento cae en una sola parte. `EventCard` (`components/events/`):
+`surface-glass` con un calendario chico (día y mes; borde y glow de brasa si
+es próximo), cuándo, dónde (links al lugar y al pueblo si existen),
+organizador y fuente. La portada solo si hay una foto propia o con permiso.
+
+Cómo se llega: en la navegación, dentro de "Más" (y a la vista en la barra
+de arriba desde `md:`); píldora "Eventos" en Explorar (junto a Rutas y La leyenda), bloque "Qué pasa en Petorca" en el
+inicio (`EventsHighlight`: lo próximo y las fiestas que vienen, nunca lo
+pasado; sin eventos no aparece), en la ficha del pueblo y del lugar donde se
+hace, y un link en Información. Se cargan en el panel (`/admin/eventos`).
 
 ## Petorca en la tele (reportajes)
 
@@ -520,10 +543,16 @@ usuario). Cualquier página nueva hereda este ancho solo, sin tener que
 ponerle un `max-w-*` a mano — si una sección puntual necesita salirse de
 ese ancho (como el hero del home), es la excepción, no la regla.
 
-Navegación entre las 5 secciones (Inicio/Explorar/Rutas/Mi
-recorrido/Información): un solo `NAV_ITEMS` (`components/ui/nav-items.tsx`, links +
-íconos) alimenta dos componentes que se muestran según el ancho de
-pantalla, nunca los dos a la vez:
+Navegación: un solo origen (`components/ui/nav-items.tsx`, links + íconos)
+con dos listas — `NAV_ITEMS` (Inicio, Explorar, Rutas, Mi recorrido: siempre
+a la vista) y `MORE_ITEMS` (Eventos, La leyenda, Información: detrás de
+"Más", `MoreMenu`). Pedido del usuario: la leyenda y los eventos "salen como
+más ocultos" (antes solo había píldoras y tarjetas dentro de las páginas).
+"Más" abre un menú (hacia arriba en celular, hacia abajo en escritorio) y,
+solo si en ese navegador hay una sesión del panel (cookie de Supabase), suma
+"Panel del equipo" → `/admin`; es solo un link, el panel sigue pidiendo la
+clave. Las dos listas alimentan dos componentes que se muestran según el
+ancho de pantalla, nunca los dos a la vez:
 
 - `BottomNav` — fijo al fondo, solo celular (`sm:hidden`): patrón de app
   móvil, coherente con que el sitio se sienta "de celular" primero.
@@ -531,8 +560,12 @@ pantalla, nunca los dos a la vez:
   escritorio): en una ventana de escritorio alta, una barra fija al fondo
   de la ventana pasa desapercibida y no es donde alguien en desktop espera
   navegación ("el botón para ver las secciones no está", feedback real).
+  Desde `md:` los ítems de "Más" con `inWideBar` (Eventos) salen también a
+  la vista. Va en una sola línea (`whitespace-nowrap`, `px-2`): con 6 ítems
+  y los idiomas entra justo en 768 px — medido en es, en y pt.
 
-Agregar una sexta sección = un solo ítem nuevo en `NAV_ITEMS`, nunca
+Agregar una sección = un ítem nuevo en `NAV_ITEMS` (a la vista; en celular
+no caben más de 5 botones, contando "Más") o en `MORE_ITEMS`, nunca
 duplicar el link a mano en cada uno de los dos componentes.
 
 **Auspicio siempre a la vista** (`SponsorBanner`; pedido del usuario: que

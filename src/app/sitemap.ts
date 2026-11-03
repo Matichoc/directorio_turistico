@@ -29,6 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { href: "/explorar", priority: 0.9 },
     { href: "/rutas", priority: 0.8 },
     { href: "/leyenda", priority: 0.7 },
+    { href: "/eventos", priority: 0.7 },
     { href: "/informacion", priority: 0.4 },
     { href: "/privacidad", priority: 0.2 },
     ...routes.map((route) => ({

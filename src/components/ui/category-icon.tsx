@@ -35,6 +35,9 @@ const ICON_PATHS: Record<string, string> = {
     "M3 21V11a9 9 0 0 1 18 0v10 M7.5 21v-9a4.5 4.5 0 0 1 9 0v9 M10.5 21l.7-5M13.5 21l-.7-5",
   petroglifo:
     "M12 12.5a1 1 0 1 1 1-1 2.5 2.5 0 1 1-2.5-2.5 4 4 0 1 1-4 4 5.5 5.5 0 1 1 5.5 5.5",
+  // Eventos de la comuna (página /eventos).
+  calendario:
+    "M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z M3 10h18 M8 3v4M16 3v4 M8 14h.01M12 14h.01M16 14h.01M8 17.5h.01M12 17.5h.01",
 };
 
 /** Claves válidas de `places.icon` — derivadas de `ICON_PATHS`, nunca duplicadas a mano. */

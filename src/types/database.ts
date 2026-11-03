@@ -268,6 +268,36 @@ type AdminUserRow = {
   created_at: string;
 };
 
+/** Eventos de la comuna (migración 0026): fecha confirmada, mes de cada año o ambos. */
+type EventRow = {
+  id: string;
+  slug: string;
+  commune_id: string;
+  locality_id: string | null;
+  place_id: string | null;
+  /** `YYYY-MM-DD`. */
+  starts_on: string | null;
+  ends_on: string | null;
+  /** `HH:MM:SS`. */
+  start_time: string | null;
+  usual_month: number | null;
+  usual_month_end: number | null;
+  organizer: string | null;
+  source_url: string | null;
+  source_label: string | null;
+  cover_image: string | null;
+  published: boolean;
+  created_at: string;
+};
+
+type EventTranslationRow = {
+  event_id: string;
+  locale: Locale;
+  name: string;
+  description: string | null;
+  when_note: string | null;
+};
+
 /** Registro de cambios del panel (disparador `log_change`). */
 type AuditLogRow = {
   id: number;
@@ -491,6 +521,20 @@ export interface Database {
           name: string;
         },
         Partial<SponsorTranslationRow>
+      >;
+      events: Table<
+        EventRow,
+        Partial<EventRow> & { slug: string; commune_id: string },
+        Partial<EventRow>
+      >;
+      event_translations: Table<
+        EventTranslationRow,
+        Partial<EventTranslationRow> & {
+          event_id: string;
+          locale: Locale;
+          name: string;
+        },
+        Partial<EventTranslationRow>
       >;
       place_comments: Table<
         PlaceCommentRow,

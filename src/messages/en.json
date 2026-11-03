@@ -4,7 +4,12 @@
     "explore": "Explore",
     "routes": "Routes",
     "myTrip": "My trip",
-    "info": "Info"
+    "info": "Info",
+    "events": "Events",
+    "legend": "The legend",
+    "more": "More",
+    "admin": "Team panel",
+    "moreLabel": "More sections"
   },
   "info": {
     "about": "A guide made in Petorca, with real information and its sources: so visitors fall in love with the valley, and locals can show it off with pride.",
@@ -15,6 +20,7 @@
     "developerWhatsapp": "WhatsApp",
     "sponsorNote": "Sponsored by Chocolatería Matichoc — artisan chocolate made in La Ligua.",
     "legendLink": "The legend of the devil",
+    "eventsLink": "What's on in Petorca (events)",
     "privacyLink": "Privacy"
   },
   "home": {
@@ -99,6 +105,7 @@
       "all": "All",
       "routes": "Routes",
       "legend": "The legend",
+      "events": "Events",
       "empty": "There are no {category} places in the commune yet. We're adding them: if you know one, tell us from Information."
     }
   },
@@ -390,5 +397,24 @@
     "more": "See all {count} reports",
     "play": "Watch report",
     "watchOn": "Watch on {site}"
+  },
+  "events": {
+    "title": "What's on in Petorca",
+    "subtitle": "Festivals, fairs and celebrations in the commune: what's coming up, what happens every year and what has already taken place.",
+    "upcoming": "Coming up",
+    "noUpcoming": "There are no events with a confirmed date right now. See the yearly festivals below.",
+    "yearly": "Every year",
+    "yearlyIntro": "These happen every year. Until a date is confirmed, the month is shown.",
+    "past": "Already held",
+    "empty": "No events have been added yet. If you organise one in the commune, tell us from the Info page.",
+    "dateToConfirm": "Date to be confirmed",
+    "monthRange": "{from} to {to}",
+    "at": "at {time}",
+    "last": "Last held: {date}",
+    "organizer": "Organised by {name}",
+    "source": "Source",
+    "seeAll": "See all events",
+    "localityTitle": "Festivals and events in {name}",
+    "placeTitle": "Festivals and events here"
   }
 }

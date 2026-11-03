@@ -157,6 +157,20 @@ escritura solo admin. Matichoc conserva su paleta de marca real (tokens
 `--sponsor*`) por ser un caso ya aprobado; el resto usa la paleta estándar
 del sitio (`--accent`) para no inventar un color de marca sin verificar.
 
+## Eventos (2026-11-02)
+
+`events` + `event_translations` (migración `0026_events.sql`; en city_tour,
+`supabase/manual/eventos.sql`): la página "Qué pasa en Petorca" (`/eventos`).
+Cada evento tiene `starts_on` (fecha confirmada, con `ends_on` y
+`start_time` opcionales), `usual_month` (y `usual_month_end`, para una
+temporada como la veranada) o ambos — un `check` impide uno sin ninguno:
+nunca una fecha inventada. `locality_id` y `place_id` (opcionales) lo
+muestran también en esas fichas. `organizer`, `source_url`/`source_label`
+(la fuente, como en pueblos) y `cover_image`. Traducciones: `name`,
+`description` y `when_note` ("Último domingo de septiembre", solo lo que
+diga la fuente). Lectura pública de los `published`, escritura solo del
+equipo; registro de cambios. Cómo se ordena: `lib/events/agenda.ts`.
+
 ## Analítica
 
 Funciones de resumen para el panel de métricas (migración `0023`): `analytics_top(p_name, p_key, p_days, p_limit)` (valores más repetidos de una propiedad de un evento) y `analytics_totals(p_days)` (total por tipo de evento). Son `security invoker`: la RLS de lectura solo-admin de `analytics_events` sigue aplicando. Agregar en la base (no en la app) evita el corte de 1.000 filas de PostgREST. Los nombres de evento válidos viven en `lib/analytics/events.ts` (`ANALYTICS_EVENT_NAMES`), fuente única para el tipo y para la validación de `/api/analytics`.

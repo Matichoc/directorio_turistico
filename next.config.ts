@@ -169,6 +169,11 @@ const nextConfig: NextConfig = {
         pathname: "/vuelo/**",
         search: "",
       },
+      {
+        // Portadas de eventos guardadas en el sitio (events.cover_image).
+        pathname: "/eventos/**",
+        search: "",
+      },
     ],
   },
 };

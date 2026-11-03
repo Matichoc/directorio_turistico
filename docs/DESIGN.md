@@ -327,7 +327,7 @@ duplicar uno casi igual con otro nombre.
 `src/components/ui/category-icon.tsx` tiene un solo `Record<string,
 string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
 `landmark`, `waves` (por categoría) y `dulce`, `tejido`, `diablo`, `surf`,
-`casco-minero`, `palta` (temáticos "de la zona").
+`casco-minero`, `palta` (temáticos "de la zona") y `calendario` (eventos).
 
 - **Categoría** → `getCategoryIcon(categorySlug)`.
 - **Lugar puntual** → `getPlaceIcon(categorySlug, place.icon)`; `place.icon`
@@ -443,6 +443,30 @@ píldora "La leyenda" junto a "Rutas" (`CategoryTabs`); la tarjeta de la ruta
 del poncho (`OfficialRouteCard`) suma "Conoce la leyenda", e Información
 tiene un link. No va en la barra de navegación: con más de 5 secciones la de
 abajo del celular se aprieta.
+
+## Qué pasa en Petorca (eventos, `/eventos`)
+
+Pedido del usuario (2026-11-02): un apartado de eventos — "Cocinando con el
+Diablo", el aniversario de Petorca, el de algún club. Página propia
+(`PageHero` con la escena del pueblo, "Escuchar") en tres partes, ordenadas
+por `buildAgenda` (`lib/events/agenda.ts`, funciones puras con pruebas):
+
+- **Próximos**: con fecha confirmada que todavía no termina.
+- **Fiestas de cada año**: las que se repiten (mes en la base) y no tienen
+  fecha próxima, desde el mes actual. Sin fecha dicen "Fecha por confirmar";
+  si ya se hicieron con fecha, "La última: …". Nunca un día inventado.
+- **Ya pasaron**: eventos de una sola vez cuya fecha pasó (la historia queda).
+
+Un evento cae en una sola parte. `EventCard` (`components/events/`):
+`surface-glass` con un calendario chico (día y mes; borde y glow de brasa si
+es próximo), cuándo, dónde (links al lugar y al pueblo si existen),
+organizador y fuente. La portada solo si hay una foto propia o con permiso.
+
+Cómo se llega (no va en la barra: ya tiene 5 secciones): píldora "Eventos"
+en Explorar (junto a Rutas y La leyenda), bloque "Qué pasa en Petorca" en el
+inicio (`EventsHighlight`: lo próximo y las fiestas que vienen, nunca lo
+pasado; sin eventos no aparece), en la ficha del pueblo y del lugar donde se
+hace, y un link en Información. Se cargan en el panel (`/admin/eventos`).
 
 ## Petorca en la tele (reportajes)
 

@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getPlaceBySlug } from "@/lib/data/places";
+import { listEvents } from "@/lib/data/events";
+import { todayInChile } from "@/lib/events/agenda";
+import { EventsHighlight } from "@/components/events/events-highlight";
 import { listApprovedComments } from "@/lib/data/comments";
 import { resolveLocale } from "@/i18n/utils";
 import { Link } from "@/i18n/navigation";
@@ -61,7 +64,12 @@ export default async function PlaceDetailPage({
     notFound();
   }
 
-  const comments = await listApprovedComments(place.id);
+  const [comments, events, tEvents] = await Promise.all([
+    listApprovedComments(place.id),
+    listEvents(locale),
+    getTranslations("events"),
+  ]);
+  const placeEvents = events.filter((event) => event.place?.slug === slug);
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-8">
@@ -195,6 +203,15 @@ export default async function PlaceDetailPage({
           </ul>
         </div>
       )}
+
+      {/* Fiestas que se hacen en este lugar (página /eventos). */}
+      <EventsHighlight
+        events={placeEvents}
+        locale={locale}
+        today={todayInChile()}
+        title={tEvents("placeTitle")}
+        limit={2}
+      />
 
       <div className="flex flex-wrap gap-2 pt-2">
         <AddToTripButton placeId={place.id} />

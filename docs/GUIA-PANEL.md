@@ -66,6 +66,17 @@ Hay dos sitios y dos bases:
 - Nombre (es/en), **resumen** (es/en) con su **fuente** (enlace y nombre) y
   ubicación. Solo 6 de 15 tienen resumen: es un buen trabajo pendiente.
 
+### Eventos (`/admin/eventos`)
+
+- Lo que se ve en "Qué pasa en Petorca" (`/eventos`), en el inicio y en las
+  fichas del pueblo y del lugar donde se hace.
+- **Cuándo**: la fecha si está confirmada y, si se hace todos los años, el
+  mes. Sin fecha segura, solo el mes (el sitio dice "fecha por
+  confirmar"). Para la próxima vez, se cambia la fecha del mismo evento.
+- Nombre, cuándo en palabras ("Último domingo de septiembre") y descripción
+  (es/en/pt), pueblo y lugar, quién organiza, **fuente** y portada (solo
+  fotos propias o con permiso).
+
 ### Verificaciones (`/admin/verificaciones`)
 
 - **Comentarios** de visitantes: aprobar o rechazar (nada se publica solo).
@@ -96,7 +107,6 @@ desarrolla.
 | Crear categorías nuevas o cambiarles el nombre        | Script de la base                                 |
 | Logo, fondos del diablo, íconos                       | Imágenes del sitio (`docs/PROMPTS-IMAGENES.md`)   |
 | Fuentes citadas de un lugar                           | Base (`sources`)                                  |
-| Calendario de fiestas                                 | No existe todavía                                 |
 
 Los que más conviene sumar al panel después: **fotos**, **portada de
 rutas** y **auspiciadores**.
@@ -168,9 +178,9 @@ oficiales, español e inglés, funciona sin señal, sin app que instalar
 
 **Qué ofrecer**: que el municipio, la oficina de turismo o las rutas
 oficiales tengan sus propias cuentas de editor y mantengan sus datos; Matichoc
-mantiene el sitio. Lo que se puede sumar después: calendario de fiestas (La
-Merced, Quema de Judas, la veranada), subir fotos desde el panel y dominio
-propio.
+mantiene el sitio. Lo que se puede sumar después: subir fotos desde el panel y dominio
+propio. (El calendario de fiestas ya está: `/eventos`, editable en el
+panel.)
 
 **Qué no prometer**: datos que no estén verificados, reseñas o fotos de
 Google, ni lugares que nadie haya confirmado.

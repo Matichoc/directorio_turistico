@@ -56,6 +56,11 @@ export const routing = defineRouting({
       en: "/legend",
       pt: "/lenda",
     },
+    "/eventos": {
+      es: "/eventos",
+      en: "/events",
+      pt: "/eventos",
+    },
     "/privacidad": {
       es: "/privacidad",
       en: "/privacy",

@@ -15,6 +15,7 @@
     "developerWhatsapp": "WhatsApp",
     "sponsorNote": "Auspiciado por Chocolatería Matichoc — chocolate artesanal hecho en La Ligua.",
     "legendLink": "La leyenda del diablo",
+    "eventsLink": "Qué pasa en Petorca (eventos)",
     "privacyLink": "Privacidad"
   },
   "home": {
@@ -99,6 +100,7 @@
       "all": "Todo",
       "routes": "Rutas",
       "legend": "La leyenda",
+      "events": "Eventos",
       "empty": "Todavía no hay lugares de {category} en la comuna. Los estamos sumando: si conoces uno, cuéntanos desde Información."
     }
   },
@@ -390,5 +392,24 @@
     "more": "Ver los {count} reportajes",
     "play": "Ver reportaje",
     "watchOn": "Ver en {site}"
+  },
+  "events": {
+    "title": "Qué pasa en Petorca",
+    "subtitle": "Fiestas, ferias y celebraciones de la comuna: lo que viene, lo que se repite cada año y lo que ya pasó.",
+    "upcoming": "Próximos",
+    "noUpcoming": "Por ahora no hay eventos con fecha confirmada. Mira más abajo las fiestas de cada año.",
+    "yearly": "Fiestas de cada año",
+    "yearlyIntro": "Se hacen todos los años. Mientras no haya fecha confirmada, se indica el mes.",
+    "past": "Ya pasaron",
+    "empty": "Todavía no hay eventos cargados. Si organizas uno en la comuna, cuéntanos desde Información.",
+    "dateToConfirm": "Fecha por confirmar",
+    "monthRange": "De {from} a {to}",
+    "at": "a las {time}",
+    "last": "La última: {date}",
+    "organizer": "Organiza: {name}",
+    "source": "Fuente",
+    "seeAll": "Ver todos los eventos",
+    "localityTitle": "Fiestas y eventos en {name}",
+    "placeTitle": "Fiestas y eventos aquí"
   }
 }

@@ -126,7 +126,11 @@ Cada categoría es una postal alta con la escena del diablito que le toca
 lea, un halo del color de la categoría y la cantidad real de lugares (sin
 número si no hay ninguno). Al pasar el mouse la escena se acerca lento y la
 tarjeta se enciende con el glow de siempre. Pedido del usuario: las tarjetas
-planas con un ícono "no me gustan".
+planas con un ícono "no me gustan". Alojamiento y recreación tienen arte
+propio solo para su postal (`getPostalArt`: el descanso en la galería y la
+plaza; 2026-11-03, casi cuadrados, ~715 px): en una cabecera ancha se verían
+borrosos y con la cara tapada por el título, así que ahí siguen con su
+escena. Desde entonces las cinco postales son distintas.
 
 ## Sitio acotado a una comuna (`lib/site-scope.ts`)
 
@@ -220,6 +224,7 @@ todo lo demás — nunca editar a mano los archivos generados:
 | `public/icons/icon-192/512.png`      | App instalable (manifiesto) y barra de arriba  |
 | `public/icons/icon-maskable-512.png` | App instalable en Android (recorte en círculo) |
 | `public/brand/og.png`                | Vista previa al compartir un link sin foto     |
+| `public/brand/logo.webp`             | Título del inicio (el logo, sin margen)        |
 
 ## Aparición al hacer scroll
 
@@ -244,13 +249,17 @@ un hombre de campo de unos 50 años, clásico y pícaro — sombrero con cuernos
 poncho rojo con flecos dorados, pañuelo rojo y **cucharón de madera con borla
 roja y dorada**. Reemplazó al diablito de mascota (2026-11-01), que a su vez
 reemplazó al de la provincia (casco minero, surf, dulces). Las escenas
-`atardecer`, `cerro`, `pueblo` y `tunel`, la portada ferroviaria y las escenas
+`atardecer`, `cerro`, `pueblo`, `tunel` y `cocina` (gastronomía, desde
+2026-11-03), la portada ferroviaria y las escenas
 de `public/leyendas/` son WebP de ese arte; `playa` y `dulces` (solo
-provincia) siguen en SVG. La portada propia de "Donde el Diablo perdió el
-poncho" y el logo entregados aún traen el diablito anterior: no se usan. La
-ruta lleva de portada provisoria la escena de la Escalera del Diablo (una de
-sus paradas, `supabase/manual/portada-poncho-campesino.sql`) hasta que llegue
-una propia con el personaje nuevo.
+provincia) siguen en SVG. El logo con el nombre del sitio ("El diablo murió
+en Petorca", túnel, puente e iglesia) llegó el 2026-11-03 a
+`public/brand/logo.png`; los íconos siguen saliendo de la cara (`icono.png`),
+que se lee mejor en chico. "Donde el Diablo perdió el poncho" lleva desde
+2026-11-03 su portada propia con el personaje nuevo (sentado
+en una piedra al atardecer, `ruta-del-diablo-pedegua-chincolco-campesino.webp`,
+`supabase/manual/portada-poncho-definitiva.sql`); antes, de prestado, la
+escena de la Escalera del Diablo.
 
 **Recorte**: cada arte del diablo (escenas, portadas de ruta, escenas de la
 leyenda) tiene su encuadre en `ART_POSITION` (`lib/ui/scene-backgrounds.ts`,
@@ -265,7 +274,11 @@ postales, tarjeta de la leyenda, reportajes, burbujas del mapa) y
 ruta, escenas de `/leyenda`); una foto real devuelve `undefined` y conserva su
 encuadre de siempre. Nunca un `background-position`/`object-position` escrito
 a mano; un arte nuevo = su entrada en `ART_POSITION`. En el hero del inicio, desde `sm:` el título, el texto y el buscador
-ocupan el 62 % izquierdo para no taparle la cara. En el atardecer nuevo el
+ocupan el 62 % izquierdo para no taparle la cara. Desde 2026-11-03 el título
+del inicio es el logo (`logo.webp`, con el nombre como texto oculto en el `<h1>`;
+pedido del usuario: el logo "en compartir e inicio"), y la imagen al
+compartir (`og.png`) es el logo sobre la noche con "Rutas, pueblos y leyendas
+de la comuna" (180 KB, con paleta: más pesada, WhatsApp a veces no la muestra). En el atardecer nuevo el
 diablo está al centro: las cabeceras anchas (inicio, `PageHero`) usan el
 cerro, el pueblo o el túnel, con el diablo a la derecha; el atardecer queda
 para las postales altas.
@@ -353,6 +366,15 @@ string>` (`ICON_PATHS`) con los paths SVG de: `mountain`, `utensils`,
   guardado (`lib/google/place-photo-ref.ts`). Si ese autor ya no está, no
   sirve otra foto con su nombre: cae al ícono. Antes de este arreglo
   (2026-11-01) no cargaba ninguna; ahora cargan 35 de las 38 de Petorca.
+- **Ilustración con IA** (pedido del usuario: "dejar evidencia de que las
+  imágenes están generadas con IA" hasta que lleguen fotos reales): todo arte
+  del diablo lleva `AiArtLabel` (`components/ui/ai-art-label.tsx`), una
+  píldora chica abajo-derecha — donde las fotos llevan su crédito — o en la
+  esquina libre si esa está ocupada (postales: arriba-izquierda; reportajes:
+  arriba-derecha). Qué archivos son con IA lo dice `isAiArt`
+  (`lib/ui/scene-backgrounds.ts`, fuente única); Información lo explica en
+  "Sobre las imágenes". Una foto real nunca la lleva. Lo que falta pedir
+  está en `docs/PROMPTS-IMAGENES.md` ("Pendientes").
 - **Crédito de foto**: la leyenda abajo-derecha de `PlacePhotoHero` solo
   muestra lo que la foto trae (`place_images.alt_text`: autor/fuente/
   licencia). Sin dato no hay leyenda — nunca una atribución por defecto.
@@ -481,7 +503,7 @@ terceros que reúnen material ajeno.
   una tarjeta con nuestra escena del diablo, el canal, el título y la duración
   y fecha si se conocen; recién entonces carga el reproductor (sin megas ni
   cookies de terceros si nadie lo mira).
-- Dónde: los tres en `/leyenda` ("Petorca en la tele", `#reportajes`), el que
+- Dónde: todos en `/leyenda` ("Petorca en la tele", `#reportajes`), el que
   trata de una ruta en su ficha ("La ruta en video") y el destacado en el
   inicio, con "Ver los N reportajes" hacia la leyenda.
 - Un reproductor nuevo necesita su dominio en `frame-src` (CSP, `next.config.ts`).

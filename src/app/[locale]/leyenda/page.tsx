@@ -14,6 +14,7 @@ import { buildPageMetadata, truncateDescription } from "@/lib/seo";
 import { REPORTAJES } from "@/lib/reportajes";
 import { getArtPosition } from "@/lib/ui/scene-backgrounds";
 import { ReportajesSection } from "@/components/video/reportajes-section";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -73,6 +74,7 @@ export default async function LegendPage({
   setRequestLocale(locale);
   const t = await getTranslations("legend");
   const tVideos = await getTranslations("videos");
+  const tCommon = await getTranslations("common");
 
   // Solo se enlaza lo que existe en la base (Chalaco se carga con
   // supabase/manual/chalaco.sql): nunca un link a una página vacía.
@@ -157,6 +159,7 @@ export default async function LegendPage({
                   className="object-cover"
                   style={{ objectPosition: getArtPosition(src) }}
                 />
+                <AiArtLabel />
               </div>
               <figcaption className="text-foreground/60 text-xs">
                 {t(`images.${key}`)}
@@ -181,7 +184,7 @@ export default async function LegendPage({
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
             <Image
               src="/leyendas/diablo-buscando.webp"
-              alt={t("images.buscando")}
+              alt={`${t("images.buscando")} (${tCommon("aiArt")})`}
               width={180}
               height={180}
               className="h-40 w-40 shrink-0 object-contain drop-shadow-[0_8px_24px_rgba(255,122,69,0.25)] sm:h-44 sm:w-44"

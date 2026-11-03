@@ -7,6 +7,8 @@ import {
   isUpcoming,
   monthName,
 } from "@/lib/events/agenda";
+import { getArtPosition, isAiArt } from "@/lib/ui/scene-backgrounds";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 import type { Locale } from "@/types/database";
 import type { SiteEvent } from "@/types/domain";
 
@@ -66,17 +68,23 @@ export async function EventCard({
       }`}
     >
       {event.coverImage && !compact && (
-        <div className="relative aspect-[16/7] w-full">
+        // Como afiche, entera y en su propia forma (pedido del usuario: la
+        // portada de Cocinando con el Diablo trae el cartel del evento, que
+        // un recorte angosto cortaba); tope de alto para una foto vertical.
+        <div className="relative mx-auto w-full max-w-md">
           <Image
             src={event.coverImage}
             alt=""
-            fill
-            sizes="(min-width: 768px) 736px, 100vw"
+            width={1200}
+            height={1200}
+            sizes="(min-width: 640px) 448px, 100vw"
             // Una foto subida al Storage del panel no pasa por el optimizador
             // (no todos sus orígenes están declarados en next.config.ts).
             unoptimized={!event.coverImage.startsWith("/")}
-            className="object-cover"
+            className="h-auto max-h-[32rem] w-full object-cover"
+            style={{ objectPosition: getArtPosition(event.coverImage) }}
           />
+          {isAiArt(event.coverImage) && <AiArtLabel />}
         </div>
       )}
       <div className="flex gap-3 p-4">

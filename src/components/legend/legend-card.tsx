@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { SCENE_POSITION, SCENE_SRC } from "@/lib/ui/scene-backgrounds";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 
 /**
  * Tarjeta ancha que lleva a `/leyenda`, con la escena del túnel. Va en el
@@ -28,6 +29,7 @@ export async function LegendCard() {
         aria-hidden="true"
         className="absolute inset-0 bg-gradient-to-r from-[#07060c]/90 via-[#07060c]/60 to-transparent"
       />
+      <AiArtLabel />
       <span className="relative flex max-w-[65%] flex-col gap-1">
         <span className="font-display text-xl font-semibold">{t("title")}</span>
         <span className="text-sm text-white/80">{t("body")}</span>

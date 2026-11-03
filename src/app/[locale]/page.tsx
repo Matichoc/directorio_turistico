@@ -1,9 +1,11 @@
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HomeSearchForm } from "@/components/home/home-search-form";
 import { RouteCard } from "@/components/route/route-card";
 import { MunicipalityBanner } from "@/components/home/municipality-banner";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { SparkleField } from "@/components/ui/sparkle-field";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/i18n/utils";
@@ -23,7 +25,7 @@ import { getCategoryGradient } from "@/lib/ui/category-gradient";
 import {
   SCENE_POSITION,
   SCENE_SRC,
-  getSceneForCategory,
+  getPostalArt,
 } from "@/lib/ui/scene-backgrounds";
 import type { Metadata } from "next";
 import { buildPageMetadata, truncateDescription } from "@/lib/seo";
@@ -125,6 +127,7 @@ export default async function HomePage({
           className="pointer-events-none absolute inset-0 bg-[#07060c]/45 sm:hidden"
         />
         <SparkleField />
+        <AiArtLabel className="right-3 bottom-3" />
 
         <p className="relative text-xs font-semibold tracking-wide text-amber-300 uppercase">
           {t("provinceLabel", { count: flyover.villages.length })}
@@ -132,8 +135,20 @@ export default async function HomePage({
 
         {/* Desde sm: el texto ocupa la mitad izquierda; la derecha es del
             diablo de la escena (sin taparle la cara). */}
-        <h1 className="font-display relative text-3xl leading-tight font-semibold tracking-wide text-balance [text-shadow:0_2px_18px_rgba(7,6,12,0.85)] sm:max-w-[62%] sm:text-4xl">
-          {t("title")}
+        {/* El logo es el título (pedido del usuario, 2026-11-03). El nombre va
+            como texto oculto (lectores, buscadores y pruebas lo leen) y la
+            imagen es decorativa, para que no se lea dos veces. */}
+        <h1 className="relative w-full max-w-sm sm:max-w-[62%]">
+          <span className="sr-only">{t("title")}</span>
+          <Image
+            src="/brand/logo.webp"
+            alt=""
+            width={960}
+            height={700}
+            priority
+            sizes="(min-width: 640px) 440px, 90vw"
+            className="h-auto w-full drop-shadow-[0_8px_28px_rgba(7,6,12,0.9)]"
+          />
         </h1>
         <p className="relative max-w-prose text-white/70 sm:max-w-[62%]">
           {t("subtitle")}
@@ -200,9 +215,8 @@ export default async function HomePage({
                     aria-hidden="true"
                     className="absolute inset-0 bg-cover transition-transform duration-700 ease-out group-hover:scale-110"
                     style={{
-                      backgroundImage: `url(${SCENE_SRC[getSceneForCategory(intent.slug)]})`,
-                      backgroundPosition:
-                        SCENE_POSITION[getSceneForCategory(intent.slug)],
+                      backgroundImage: `url(${getPostalArt(intent.slug).src})`,
+                      backgroundPosition: getPostalArt(intent.slug).position,
                     }}
                   />
                   <span
@@ -213,6 +227,9 @@ export default async function HomePage({
                     aria-hidden="true"
                     className={`absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-gradient-to-br opacity-50 blur-2xl transition-opacity duration-300 group-hover:opacity-80 ${getCategoryGradient(intent.slug)}`}
                   />
+                  {/* Arriba a la izquierda: abajo va la categoría y a la
+                      derecha está la cara del diablo. */}
+                  <AiArtLabel className="top-2 left-2" />
                   <span className="relative flex items-center gap-2">
                     <span
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br shadow-lg ring-1 ring-white/30 ${getCategoryGradient(intent.slug)}`}

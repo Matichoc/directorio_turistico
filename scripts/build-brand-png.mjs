@@ -33,7 +33,7 @@ const ASSETS = [
   { src: "public/fondos/pueblo.png", size: [1536, 1024], webp: true },
   { src: "public/fondos/tunel.png", size: [1536, 1024], webp: true },
   {
-    src: "public/rutas/ruta-del-diablo-pedegua-chincolco.png",
+    src: "public/rutas/ruta-del-diablo-pedegua-chincolco-campesino.png",
     size: [1536, 1024],
     webp: true,
   },
@@ -65,6 +65,34 @@ const ASSETS = [
   {
     src: "public/leyendas/escalera.png",
     size: [1536, 1024],
+    webp: true,
+    optional: true,
+  },
+  // Pedidas el 2026-11-02 ("Pendientes" en docs/PROMPTS-IMAGENES.md). Las
+  // de descanso, plaza y Cocinando con el Diablo llegaron casi cuadradas
+  // (~715×724): van en postales y como afiche del evento, no en cabeceras
+  // anchas (`POSTAL_ART`, lib/ui/scene-backgrounds.ts).
+  {
+    src: "public/fondos/cocina.png",
+    size: [1536, 1024],
+    webp: true,
+    optional: true,
+  },
+  {
+    src: "public/fondos/descanso.png",
+    size: [714, 724],
+    webp: true,
+    optional: true,
+  },
+  {
+    src: "public/fondos/plaza.png",
+    size: [711, 724],
+    webp: true,
+    optional: true,
+  },
+  {
+    src: "public/eventos/cocinando-con-el-diablo.png",
+    size: [717, 724],
     webp: true,
     optional: true,
   },
@@ -131,10 +159,23 @@ for (const a of reviewed.filter((a) => a.webp && a.status === "listo")) {
   out(target, await sharp(a.file).webp({ quality: 82 }).toBuffer());
 }
 
+// Logo para la web (cabecera del inicio): sin el margen transparente y
+// liviano. El PNG de 1024 queda como origen.
+if (ready("public/brand/logo.png")) {
+  out(
+    "public/brand/logo.webp",
+    await sharp(join(ROOT, "public/brand/logo.png"))
+      .trim()
+      .resize({ width: 960, withoutEnlargement: true })
+      .webp({ quality: 85, alphaQuality: 90 })
+      .toBuffer(),
+  );
+}
+
 // Desde 2026-11-02 todos los íconos (favicon, app, barra, compartir) salen
-// de `icono.png`, el diablo campesino: el `logo.png` que llegó en esa entrega
-// seguía siendo el diablo infantil anterior, así que no se usa hasta que haya
-// un logo nuevo (ver docs/PROMPTS-IMAGENES.md).
+// de `icono.png`, la cara del diablo campesino: a tamaño ícono se lee mejor
+// que el logo. El logo con el nombre (`logo.png`, 2026-11-03) se revisa acá
+// pero no entra en los íconos.
 if (!ready("public/brand/icono.png")) {
   console.log("\nÍconos del sitio sin tocar: falta icono.png definitivo.");
   process.exit(0);
@@ -207,22 +248,36 @@ out("public/icons/icon-512.png", await round(512));
 // cuadrado lleno con la cara al centro, dentro de la zona segura (80 %).
 out("public/icons/icon-maskable-512.png", await png(icono, 512, SMALL_PNG));
 
-// Imagen para compartir (1200×630): el diablo y el nombre sobre la noche.
-const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
-<defs><radialGradient id="bg" cx=".3" cy=".45" r=".8"><stop offset="0" stop-color="#3b1830"/><stop offset=".5" stop-color="#1b0e1f"/><stop offset="1" stop-color="${NIGHT}"/></radialGradient>
-<linearGradient id="t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffb072"/><stop offset="1" stop-color="#ff7a45"/></linearGradient></defs>
+// Imagen para compartir (1200×630): el logo con el nombre del sitio sobre la
+// noche (desde 2026-11-03; antes, la cara en un círculo y el nombre en texto).
+const ogBackground = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+<defs><radialGradient id="bg" cx=".5" cy=".42" r=".75"><stop offset="0" stop-color="#3b1830"/><stop offset=".55" stop-color="#1b0e1f"/><stop offset="1" stop-color="${NIGHT}"/></radialGradient></defs>
 <rect width="1200" height="630" fill="url(#bg)"/>
-<text x="560" y="270" font-family="Georgia" font-weight="700" font-size="84" fill="#ecebf6">El diablo</text>
-<text x="560" y="368" font-family="Georgia" font-weight="700" font-size="84" fill="url(#t)">en Petorca</text>
-<text x="562" y="430" font-family="Georgia" font-size="30" fill="#ecebf6" fill-opacity=".75">Rutas, pueblos y leyendas de la comuna</text>
+<text x="600" y="598" text-anchor="middle" font-family="Georgia" font-size="28" fill="#ecebf6" fill-opacity=".75">Rutas, pueblos y leyendas de la comuna</text>
 </svg>`;
-out(
-  "public/brand/og.png",
-  await sharp(Buffer.from(og))
-    .composite([{ input: await round(420), left: 90, top: 105 }])
-    .png()
-    .toBuffer(),
-);
+if (ready("public/brand/logo.png")) {
+  const logoInOg = await sharp(
+    await sharp(join(ROOT, "public/brand/logo.png")).trim().toBuffer(),
+  )
+    .resize(1080, 530, { fit: "inside" })
+    .toBuffer();
+  const { width: logoWidth } = await sharp(logoInOg).metadata();
+  out(
+    "public/brand/og.png",
+    await sharp(Buffer.from(ogBackground))
+      .composite([
+        {
+          input: logoInOg,
+          left: Math.round((1200 - logoWidth) / 2),
+          top: 22,
+        },
+      ])
+      // Con paleta: sin ella pesaba ~700 KB y WhatsApp a veces no muestra
+      // la vista previa de una imagen tan pesada.
+      .png({ palette: true, quality: 90, compressionLevel: 9 })
+      .toBuffer(),
+  );
+}
 console.log(
   "\nListo. Falta conectarlo al sitio y revisarlo: docs/PROMPTS-IMAGENES.md, Integración.",
 );

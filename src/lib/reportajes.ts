@@ -13,7 +13,7 @@ import type { SceneId } from "@/lib/ui/scene-backgrounds";
  * son oficiales"); un video de un tercero que reúne material de otros, no.
  */
 export interface Reportaje {
-  key: "canal13" | "chilevision" | "ntv";
+  key: "canal13" | "tvn24" | "chilevision" | "ntv";
   provider: "youtube" | "rudo";
   videoId: string;
   /** Título original, tal cual lo publicó el canal. */
@@ -46,6 +46,20 @@ export const REPORTAJES: Reportaje[] = [
     publishedAt: "2026-09-14",
     durationMinutes: 20,
     scene: "pueblo",
+    routeSlugs: ["ruta-del-diablo-pedegua-chincolco"],
+  },
+  {
+    // Pedido del usuario (2026-11-03). Título y canal del oEmbed de YouTube;
+    // la página del video pidió verificación, así que sin fecha ni duración.
+    key: "tvn24",
+    provider: "youtube",
+    videoId: "1NJ-DgWr8qo",
+    title:
+      "Una ruta perfecta para este '18': encontramos \"Donde el Diablo perdió el poncho\"",
+    channel: "TVN · 24 Horas",
+    sourceUrl: "https://www.youtube.com/watch?v=1NJ-DgWr8qo",
+    sourceSite: "YouTube",
+    scene: "atardecer",
     routeSlugs: ["ruta-del-diablo-pedegua-chincolco"],
   },
   {

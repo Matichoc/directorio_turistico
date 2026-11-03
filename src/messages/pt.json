@@ -19,6 +19,8 @@
     "developerInstagram": "Instagram: @el.cristo.cl",
     "developerWhatsapp": "WhatsApp",
     "sponsorNote": "Patrocinado pela Chocolatería Matichoc — chocolate artesanal feito em La Ligua.",
+    "imagesTitle": "Sobre as imagens",
+    "imagesBody": "As ilustrações do diabo (cabeçalhos, capas das rotas e cenas da lenda) são geradas com inteligência artificial a partir de um personagem próprio e levam a marca «Ilustração com IA». As fotos dos lugares são reais (com o autor, quando é conhecido). À medida que chegarem fotos reais da comuna, elas vão substituir as ilustrações.",
     "legendLink": "A lenda do diabo",
     "eventsLink": "O que acontece em Petorca (eventos)",
     "privacyLink": "Privacidade"
@@ -273,7 +275,8 @@
       "tagline": "Chocolate artesanal feito em La Ligua",
       "cta": "Visitar o site",
       "instagram": "Instagram"
-    }
+    },
+    "aiArt": "Ilustração com IA"
   },
   "privacy": {
     "title": "Privacidade",

@@ -4,7 +4,12 @@
     "explore": "Explorar",
     "routes": "Rutas",
     "myTrip": "Mi recorrido",
-    "info": "Información"
+    "info": "Información",
+    "events": "Eventos",
+    "legend": "La leyenda",
+    "more": "Más",
+    "admin": "Panel del equipo",
+    "moreLabel": "Más secciones"
   },
   "info": {
     "about": "Una guía hecha en Petorca, con datos reales y sus fuentes: para que quien llega se enamore del valle, y para que quien vive aquí lo muestre con orgullo.",

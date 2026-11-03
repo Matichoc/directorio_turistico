@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { usePathname, Link } from "@/i18n/navigation";
-import { NAV_ITEMS } from "@/components/ui/nav-items";
+import { NAV_ITEMS, isNavActive } from "@/components/ui/nav-items";
+import { MoreMenu } from "@/components/ui/more-menu";
 
 /**
  * Nav al fondo, solo en celular (`sm:hidden`) — patrón de app móvil. Lo
@@ -11,6 +12,8 @@ import { NAV_ITEMS } from "@/components/ui/nav-items";
  * barra fija al fondo de una ventana de escritorio muy alta pasa
  * desapercibida ("el botón para ver las secciones no está", feedback del
  * usuario), y no es el lugar donde alguien en desktop espera navegación.
+ * El quinto botón es "Más" (Eventos, La leyenda, Información): con más de 5
+ * botones la barra se aprieta.
  */
 export function BottomNav() {
   const t = useTranslations("nav");
@@ -23,8 +26,7 @@ export function BottomNav() {
     >
       <ul className="mx-auto flex max-w-3xl items-stretch justify-between px-2">
         {NAV_ITEMS.map(({ href, key, Icon }) => {
-          const active =
-            pathname === href || (href !== "/" && pathname.startsWith(href));
+          const active = isNavActive(pathname, href);
           return (
             <li key={href} className="flex-1">
               <Link
@@ -42,6 +44,9 @@ export function BottomNav() {
             </li>
           );
         })}
+        <li className="flex flex-1">
+          <MoreMenu placement="bottom" />
+        </li>
       </ul>
     </nav>
   );

@@ -159,9 +159,9 @@ for (const a of reviewed.filter((a) => a.webp && a.status === "listo")) {
 }
 
 // Desde 2026-11-02 todos los íconos (favicon, app, barra, compartir) salen
-// de `icono.png`, el diablo campesino: el `logo.png` que llegó en esa entrega
-// seguía siendo el diablo infantil anterior, así que no se usa hasta que haya
-// un logo nuevo (ver docs/PROMPTS-IMAGENES.md).
+// de `icono.png`, la cara del diablo campesino: a tamaño ícono se lee mejor
+// que el logo. El logo con el nombre (`logo.png`, 2026-11-03) se revisa acá
+// pero no entra en los íconos.
 if (!ready("public/brand/icono.png")) {
   console.log("\nÍconos del sitio sin tocar: falta icono.png definitivo.");
   process.exit(0);

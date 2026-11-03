@@ -79,6 +79,7 @@ export function getArtPosition(src?: string | null): string | undefined {
 const AI_ART = new Set([
   ...Object.keys(ART_POSITION),
   "/leyendas/diablo-buscando.webp",
+  "/brand/logo.png",
 ]);
 
 /** ¿Es una ilustración hecha con IA? Acepta la URL completa del sitio. */

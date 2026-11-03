@@ -246,8 +246,10 @@ roja y dorada**. Reemplazó al diablito de mascota (2026-11-01), que a su vez
 reemplazó al de la provincia (casco minero, surf, dulces). Las escenas
 `atardecer`, `cerro`, `pueblo` y `tunel`, la portada ferroviaria y las escenas
 de `public/leyendas/` son WebP de ese arte; `playa` y `dulces` (solo
-provincia) siguen en SVG. El logo de esa entrega aún traía el diablito
-anterior: no se usa. "Donde el Diablo perdió el poncho" lleva desde
+provincia) siguen en SVG. El logo con el nombre del sitio ("El diablo murió
+en Petorca", túnel, puente e iglesia) llegó el 2026-11-03 a
+`public/brand/logo.png`; los íconos siguen saliendo de la cara (`icono.png`),
+que se lee mejor en chico. "Donde el Diablo perdió el poncho" lleva desde
 2026-11-03 su portada propia con el personaje nuevo (sentado
 en una piedra al atardecer, `ruta-del-diablo-pedegua-chincolco-campesino.webp`,
 `supabase/manual/portada-poncho-definitiva.sql`); antes, de prestado, la

@@ -60,13 +60,9 @@ dice cuáles faltan.
    `public/rutas/ruta-del-diablo-pedegua-chincolco-campesino.webp`, conectada
    con `supabase/manual/portada-poncho-definitiva.sql`.
 
-3. **Escena de gastronomía** — `public/fondos/cocina.png`, 1536×1024. Hoy
-   gastronomía y cultura repiten el pueblo.
-
-   ```text
-   Una cocinería de campo bajo un parrón, al atardecer: horno de barro con empanadas, ollas de greda humeantes, una mesa larga con mantel y jarros de greda. El diablo de la imagen adjunta revuelve una olla grande con su cucharón, contento, en el tercio derecho. A la izquierda, el cielo y el parrón despejados para un título. Sin texto.
-   [bloque de estilo]
-   ```
+3. ~~**Escena de gastronomía**~~ — **llegó el 2026-11-03** (el diablo
+   revolviendo la olla en una cocina de campo bajo el parrón):
+   `public/fondos/cocina.webp`, escena `cocina` de gastronomía.
 
 4. **Escena de alojamiento** — `public/fondos/descanso.png`, 1536×1024. Hoy
    alojamiento usa el atardecer.

@@ -13,8 +13,8 @@ describe("scene backgrounds", () => {
     expect(getSceneForCategory("playa")).toBe("playa");
     expect(getSceneForCategory("naturaleza")).toBe("cerro");
     expect(getSceneForCategory("cultura")).toBe("pueblo");
-    // Gastronomía ya no usa la escena de dulces (La Ligua, diablo viejo).
-    expect(getSceneForCategory("gastronomia")).toBe("pueblo");
+    // Gastronomía tiene su cocina (2026-11-03); antes repetía el pueblo.
+    expect(getSceneForCategory("gastronomia")).toBe("cocina");
     expect(getSceneForCategory("alojamiento")).toBe("atardecer");
     expect(getSceneForCategory("recreacion")).toBe("cerro");
   });
@@ -37,7 +37,13 @@ describe("scene backgrounds", () => {
 
 describe("art framing", () => {
   it("keeps the devil's hat in view for every scene", () => {
-    for (const scene of ["atardecer", "cerro", "pueblo", "tunel"] as const) {
+    for (const scene of [
+      "atardecer",
+      "cerro",
+      "pueblo",
+      "tunel",
+      "cocina",
+    ] as const) {
       expect(SCENE_POSITION[scene]).toMatch(/^\d+% 0%$/);
     }
   });

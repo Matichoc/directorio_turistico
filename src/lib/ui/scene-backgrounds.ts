@@ -10,7 +10,7 @@ import type { PlaceTheme } from "@/lib/ui/category-gradient";
  * versión de la provincia y siguen en SVG.
  */
 export type SceneId =
-  "atardecer" | "playa" | "cerro" | "pueblo" | "dulces" | "tunel";
+  "atardecer" | "playa" | "cerro" | "pueblo" | "dulces" | "tunel" | "cocina";
 
 export const SCENE_SRC: Record<SceneId, string> = {
   atardecer: "/fondos/atardecer.webp",
@@ -19,6 +19,8 @@ export const SCENE_SRC: Record<SceneId, string> = {
   pueblo: "/fondos/pueblo.webp",
   dulces: "/fondos/dulces.svg",
   tunel: "/fondos/tunel.webp",
+  // Cocina de campo bajo el parrón (2026-11-03): gastronomía.
+  cocina: "/fondos/cocina.webp",
 };
 
 /**
@@ -41,6 +43,7 @@ const ART_POSITION: Record<string, string> = {
   "/fondos/cerro.webp": "72% 0%",
   "/fondos/pueblo.webp": "72% 0%",
   "/fondos/tunel.webp": "77% 0%",
+  "/fondos/cocina.webp": "65% 0%",
   "/leyendas/escalera.webp": "66% 0%",
   "/leyendas/cueca.webp": "45% 4%",
   "/leyendas/ano-nuevo.webp": "24% 0%",
@@ -100,14 +103,14 @@ export const SCENE_POSITION = Object.fromEntries(
   ]),
 ) as Record<SceneId, string>;
 
-// Gastronomía y alojamiento van al pueblo en fiesta y recreación al cerro:
-// la escena de dulces es de La Ligua (versión provincia) y trae el diablo
-// viejo.
+// Gastronomía va a la cocina de campo (2026-11-03), alojamiento al
+// atardecer y recreación al cerro: la escena de dulces es de La Ligua
+// (versión provincia) y trae el diablo viejo.
 const SCENE_BY_CATEGORY: Record<string, SceneId> = {
   playa: "playa",
   naturaleza: "cerro",
   cultura: "pueblo",
-  gastronomia: "pueblo",
+  gastronomia: "cocina",
   alojamiento: "atardecer",
   recreacion: "cerro",
 };
@@ -129,7 +132,7 @@ export function getSceneForRoute(routeSlug?: string | null): SceneId {
 const SCENE_BY_THEME: Record<PlaceTheme, SceneId> = {
   playa: "playa",
   dulces: "dulces",
-  sabores: "pueblo",
+  sabores: "cocina",
   historia: "pueblo",
   naturaleza: "cerro",
   diablo: "tunel",

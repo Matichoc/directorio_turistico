@@ -245,7 +245,8 @@ un hombre de campo de unos 50 años, clásico y pícaro — sombrero con cuernos
 poncho rojo con flecos dorados, pañuelo rojo y **cucharón de madera con borla
 roja y dorada**. Reemplazó al diablito de mascota (2026-11-01), que a su vez
 reemplazó al de la provincia (casco minero, surf, dulces). Las escenas
-`atardecer`, `cerro`, `pueblo` y `tunel`, la portada ferroviaria y las escenas
+`atardecer`, `cerro`, `pueblo`, `tunel` y `cocina` (gastronomía, desde
+2026-11-03), la portada ferroviaria y las escenas
 de `public/leyendas/` son WebP de ese arte; `playa` y `dulces` (solo
 provincia) siguen en SVG. El logo con el nombre del sitio ("El diablo murió
 en Petorca", túnel, puente e iglesia) llegó el 2026-11-03 a
@@ -498,7 +499,7 @@ terceros que reúnen material ajeno.
   una tarjeta con nuestra escena del diablo, el canal, el título y la duración
   y fecha si se conocen; recién entonces carga el reproductor (sin megas ni
   cookies de terceros si nadie lo mira).
-- Dónde: los tres en `/leyenda` ("Petorca en la tele", `#reportajes`), el que
+- Dónde: todos en `/leyenda` ("Petorca en la tele", `#reportajes`), el que
   trata de una ruta en su ficha ("La ruta en video") y el destacado en el
   inicio, con "Ver los N reportajes" hacia la leyenda.
 - Un reproductor nuevo necesita su dominio en `frame-src` (CSP, `next.config.ts`).

@@ -24,7 +24,7 @@ describe("reportajes", () => {
   it("muestra en la ruta del poncho solo los que tratan de ella", () => {
     expect(
       reportajesForRoute("ruta-del-diablo-pedegua-chincolco").map((r) => r.key),
-    ).toEqual(["canal13"]);
+    ).toEqual(["canal13", "tvn24"]);
     expect(reportajesForRoute("ruta-ferroviaria-pedegua-las-palmas")).toEqual(
       [],
     );

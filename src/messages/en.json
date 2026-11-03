@@ -276,7 +276,8 @@
       "cta": "Visit website",
       "instagram": "Instagram"
     },
-    "aiArt": "AI illustration"
+    "aiArt": "AI illustration",
+    "aiArtShort": "AI"
   },
   "privacy": {
     "title": "Privacy",

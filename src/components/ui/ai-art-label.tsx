@@ -9,15 +9,18 @@ import { useTranslations } from "next-intl";
  */
 export function AiArtLabel({
   className = "right-2 bottom-2",
+  short = false,
 }: {
   className?: string;
+  /** "IA" a secas, para imágenes chicas (miniatura de un evento). */
+  short?: boolean;
 }) {
   const t = useTranslations("common");
   return (
     <span
       className={`pointer-events-none absolute z-10 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium tracking-wide text-white/75 ${className}`}
     >
-      {t("aiArt")}
+      {short ? t("aiArtShort") : t("aiArt")}
     </span>
   );
 }

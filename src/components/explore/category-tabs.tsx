@@ -13,7 +13,8 @@ export interface CategoryTab {
  * Pestañas de categoría de Explorar (pedido del usuario: "ponerla por
  * categorías, como tenemos lo del Papudo"). "Todo", una por categoría con
  * su cantidad real de lugares (un lugar en varias categorías cuenta en
- * cada una) y un acceso a Rutas, que no es categoría. Cambiar de pestaña
+ * cada una) y accesos a Rutas, la leyenda y los eventos, que no son
+ * categorías. Cambiar de pestaña
  * conserva la vista (mapa/listado) y los demás filtros.
  */
 export async function CategoryTabs({
@@ -82,6 +83,12 @@ export async function CategoryTabs({
           <Link href="/leyenda" className={`${pill} ${off}`}>
             <CategoryIcon icon="diablo" className="h-4 w-4" />
             {t("legend")} →
+          </Link>
+        </li>
+        <li>
+          <Link href="/eventos" className={`${pill} ${off}`}>
+            <CategoryIcon icon="calendario" className="h-4 w-4" />
+            {t("events")} →
           </Link>
         </li>
       </ul>

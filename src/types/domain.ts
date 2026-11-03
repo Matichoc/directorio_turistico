@@ -94,6 +94,33 @@ export interface LocalityWithPlaces extends Locality {
   places: PlaceCard[];
 }
 
+/**
+ * Evento de la comuna (página /eventos). Tiene fecha confirmada, mes de cada
+ * año o ambos — nunca ninguno (ver migración 0026_events.sql).
+ */
+export interface SiteEvent {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  /** Cuándo es, en palabras de la fuente ("Último domingo de septiembre"). */
+  whenNote: string | null;
+  /** `YYYY-MM-DD`. */
+  startsOn: string | null;
+  endsOn: string | null;
+  /** `HH:MM`. */
+  startTime: string | null;
+  /** 1–12: el mes en que se hace cada año (fiestas que se repiten). */
+  usualMonth: number | null;
+  usualMonthEnd: number | null;
+  organizer: string | null;
+  sourceUrl: string | null;
+  sourceLabel: string | null;
+  coverImage: string | null;
+  locality: { slug: string; name: string } | null;
+  place: { slug: string; name: string } | null;
+}
+
 export interface Sponsor {
   id: string;
   slug: string;

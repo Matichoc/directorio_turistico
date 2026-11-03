@@ -7,6 +7,9 @@ import { ListenButton } from "@/components/ui/listen-button";
 import { PlaceCard } from "@/components/place/place-card";
 import { MapView } from "@/components/map/map-view";
 import { getLocalityBySlug } from "@/lib/data/localities";
+import { listEvents } from "@/lib/data/events";
+import { todayInChile } from "@/lib/events/agenda";
+import { EventsHighlight } from "@/components/events/events-highlight";
 import { getSceneForCategory } from "@/lib/ui/scene-backgrounds";
 import type { Metadata } from "next";
 import {
@@ -57,10 +60,17 @@ export default async function LocalityDetailPage({
   const t = await getTranslations("locality");
   const tListen = await getTranslations("listen");
 
-  const locality = await getLocalityBySlug(slug, locale);
+  const [locality, events, tEvents] = await Promise.all([
+    getLocalityBySlug(slug, locale),
+    listEvents(locale),
+    getTranslations("events"),
+  ]);
   if (!locality) {
     notFound();
   }
+  const localityEvents = events.filter(
+    (event) => event.locality?.slug === slug,
+  );
 
   // La coordenada del pueblo en sí es opcional (ver migración
   // 0021_locality_translations.sql: no se confirmó la de todos) — el pin
@@ -169,6 +179,14 @@ export default async function LocalityDetailPage({
           markers={markers}
         />
       )}
+
+      {/* Fiestas del pueblo (página /eventos); sin ninguna, no se muestra. */}
+      <EventsHighlight
+        events={localityEvents}
+        locale={locale}
+        today={todayInChile()}
+        title={tEvents("localityTitle", { name: locality.name })}
+      />
 
       <h2 className="text-lg font-medium">
         {t("placesTitle", { name: locality.name })}

@@ -14,6 +14,9 @@ import { listPlaces } from "@/lib/data/places";
 import { buildProvinceFlyover } from "@/lib/ui/province-flyover";
 import { ProvinceFlyover } from "@/components/home/province-flyover";
 import { LegendCard } from "@/components/legend/legend-card";
+import { EventsHighlight } from "@/components/events/events-highlight";
+import { listEvents } from "@/lib/data/events";
+import { todayInChile } from "@/lib/events/agenda";
 import { ReportajesSection } from "@/components/video/reportajes-section";
 import { REPORTAJES } from "@/lib/reportajes";
 import { getCategoryGradient } from "@/lib/ui/category-gradient";
@@ -73,6 +76,8 @@ export default async function HomePage({
     communes,
     localities,
     places,
+    events,
+    tEvents,
   ] = await Promise.all([
     getTranslations("home"),
     getTranslations("route"),
@@ -82,6 +87,8 @@ export default async function HomePage({
     listCommunes(locale),
     listLocalities(locale),
     listPlaces(locale),
+    listEvents(locale),
+    getTranslations("events"),
   ]);
   const flyover = buildProvinceFlyover(communes, localities, places);
   // Solo las categorías con lugares reales: en un sitio acotado a una comuna
@@ -157,6 +164,16 @@ export default async function HomePage({
               {tVideos("more", { count: REPORTAJES.length })} →
             </Link>
           }
+        />
+      </div>
+
+      {/* Qué pasa en Petorca: lo próximo y las fiestas de cada año que vienen. */}
+      <div className="px-4">
+        <EventsHighlight
+          events={events}
+          locale={locale}
+          today={todayInChile()}
+          title={tEvents("title")}
         />
       </div>
 

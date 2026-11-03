@@ -61,6 +61,13 @@ export default async function InfoPage({
         </Link>
 
         <Link
+          href="/eventos"
+          className="text-accent hover:text-foreground w-fit text-sm font-medium underline underline-offset-2"
+        >
+          {info("eventsLink")} →
+        </Link>
+
+        <Link
           href="/privacidad"
           className="text-foreground/60 hover:text-accent w-fit text-sm underline underline-offset-2"
         >

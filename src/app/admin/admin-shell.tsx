@@ -11,6 +11,7 @@ const sections = [
   { href: "/admin/lugares", label: "Lugares" },
   { href: "/admin/rutas", label: "Rutas" },
   { href: "/admin/pueblos", label: "Pueblos" },
+  { href: "/admin/eventos", label: "Eventos" },
   { href: "/admin/verificaciones", label: "Verificaciones" },
   { href: "/admin/metricas", label: "Métricas" },
   { href: "/admin/comunas-categorias", label: "Comunas y categorías" },

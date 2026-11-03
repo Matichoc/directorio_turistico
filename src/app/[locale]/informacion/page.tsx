@@ -53,6 +53,15 @@ export default async function InfoPage({
       <div className="flex flex-col gap-6 px-4">
         <p className="text-foreground/60 text-sm">{info("sponsorNote")}</p>
 
+        {/* Evidencia de que el arte del diablo es con IA (pedido del usuario),
+            mientras lleguen fotos reales. */}
+        <section className="surface-glass flex flex-col gap-1 rounded-2xl p-4">
+          <h2 className="text-sm font-medium">{info("imagesTitle")}</h2>
+          <p className="text-foreground/70 text-sm leading-relaxed">
+            {info("imagesBody")}
+          </p>
+        </section>
+
         <Link
           href="/leyenda"
           className="text-accent hover:text-foreground w-fit text-sm font-medium underline underline-offset-2"

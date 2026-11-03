@@ -28,10 +28,79 @@ suben, ver `.gitignore`); el sitio usa WebP.
 | `leyendas/escalera.png`                   | Integrado en `/leyenda` (versión de la ruta).                                                                                                                                                                  |
 | `leyendas/diablo-buscando.png`            | Integrado en `/leyenda` ("Recórrela").                                                                                                                                                                         |
 
-**Pendiente:** un logo campesino (insignia con transparencia) y la portada
-campesina de "Donde el Diablo perdió el poncho". Las escenas SVG anteriores
+**Logo:** llegó el 2026-11-03 con el nombre del sitio ("El diablo murió en
+Petorca"): `public/brand/logo.png`, 1024×1024 transparente (original en
+`logo-original.png`, no se sube). La portada
+campesina de "Donde el Diablo perdió el poncho" llegó el 2026-11-03
+(`ruta-del-diablo-pedegua-chincolco-campesino.webp`). Las escenas SVG anteriores
 siguen en `public/fondos/*.svg` (sin uso, salvo `playa` y `dulces`, de la
 versión de la provincia).
+
+## Pendientes (2026-11-02)
+
+Todo el arte del diablo lleva en el sitio la marca **"Ilustración con IA"**
+(`AiArtLabel`; lista de archivos en `isAiArt`, `lib/ui/scene-backgrounds.ts`)
+y la página Información lo explica. Al llegar una foto real que lo reemplace,
+se saca de esa lista.
+
+### Para pedirle a ChatGPT (ilustraciones)
+
+Adjuntar siempre `docs/arte/diablo-campesino-referencia.png` y pegar al final
+el bloque de estilo (más abajo). `node scripts/build-brand-png.mjs --check`
+dice cuáles faltan.
+
+1. ~~**Logo**~~ — **llegó el 2026-11-03** con el nombre del sitio, "El diablo
+   murió en Petorca" (revisado letra por letra): `public/brand/logo.png`,
+   1024×1024, fondo transparente. El anterior decía "El Diablo de Petorca" y
+   se pidió de nuevo (decisión del usuario).
+   Se usa en la imagen al compartir y como título del inicio.
+
+2. ~~**Portada de "Donde el Diablo perdió el poncho"**~~ — **llegó el
+   2026-11-03** (el diablo sentado en una piedra al atardecer):
+   `public/rutas/ruta-del-diablo-pedegua-chincolco-campesino.webp`, conectada
+   con `supabase/manual/portada-poncho-definitiva.sql`.
+
+3. ~~**Escena de gastronomía**~~ — **llegó el 2026-11-03** (el diablo
+   revolviendo la olla en una cocina de campo bajo el parrón):
+   `public/fondos/cocina.webp`, escena `cocina` de gastronomía.
+
+4. ~~**Escena de alojamiento**~~ y 5. ~~**Escena de recreación**~~ —
+   **llegaron el 2026-11-03**, pero casi cuadradas (714×724 y 711×724):
+   `public/fondos/descanso.webp` y `plaza.webp`, solo en las postales del
+   inicio (`getPostalArt`). Para usarlas también en cabeceras anchas, pedirlas
+   de nuevo en **1536×1024 horizontal**, con el diablo en el tercio derecho y
+   cielo libre a la izquierda (mismos prompts de antes):
+
+   ```text
+   La galería de una casa de campo de adobe con tejas, de noche, con el cielo lleno de estrellas sobre los cerros. El diablo de la imagen adjunta descansa en una silla de mimbre con los pies en alto, el sombrero inclinado sobre los ojos y el cucharón apoyado al lado; un farol encendido junto a la puerta. El diablo en el tercio derecho; a la izquierda, cielo despejado para un título. Formato horizontal 1536×1024. Sin texto.
+   [bloque de estilo]
+   ```
+
+   ```text
+   La plaza de un pueblo del valle en una tarde de verano: árboles grandes, una pileta, bancas, faroles y banderines de colores. El diablo de la imagen adjunta, sentado en una banca, le muestra a unos niños cómo hace girar su cucharón; ellos se ríen. El diablo en el tercio derecho; a la izquierda, cielo despejado para un título. Formato horizontal 1536×1024. Sin texto.
+   [bloque de estilo]
+   ```
+
+5. ~~**Portada de "Cocinando con el Diablo"**~~ — **llegó el 2026-11-03**
+   (717×724, con el cartel del evento): `public/eventos/cocinando-con-el-diablo.webp`,
+   como afiche en la tarjeta del evento; se conecta con
+   `supabase/manual/evento-portada-cocinando.sql` (o en el panel, "Portada").
+
+### Fotos reales (no con IA)
+
+Un lugar real nunca lleva una ilustración que parezca foto (ver "Reglas"). Lo
+que falta acá hay que pedirlo al dueño, a la Municipalidad o sacarlo en
+terreno (con permiso de uso; `public/fotos/README.md`):
+
+- **12 lugares sin foto** (2026-11-02): Turismo Rural La Nina y Hostal El Río
+  (Pedegua); Tinajas Chincolco, Iglesia de Chincolco, Plaza de Armas de
+  Chincolco, Medialuna de Chincolco y El Rincón Criollo (Chincolco); Plaza,
+  Piscina y Panal de Hierro Viejo; Campo de Petroglifos El Arenal (Pedernal);
+  Viña El Sobrante. Mientras, muestran el ícono de su categoría.
+- **Fiestas religiosas y el natalicio de Manuel Montt** (`/eventos`): solo
+  fotos reales; nunca el diablo en una fiesta religiosa.
+- **Pueblos**: la ficha usa una escena del diablo; una foto real de cada
+  pueblo la reemplazaría (todavía no hay dónde subirla en el panel).
 
 ## El personaje (aprobado desde 2026-11-02)
 

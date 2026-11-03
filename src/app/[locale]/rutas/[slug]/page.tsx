@@ -8,7 +8,8 @@ import { RouteMapWithStops } from "@/components/route/route-map-with-stops";
 import { OfficialRouteCard } from "@/components/route/official-route-card";
 import { ReportajesSection } from "@/components/video/reportajes-section";
 import { reportajesForRoute } from "@/lib/reportajes";
-import { getArtPosition } from "@/lib/ui/scene-backgrounds";
+import { getArtPosition, isAiArt } from "@/lib/ui/scene-backgrounds";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 import { DevilMascot } from "@/components/ui/devil-mascot";
 import { ListenButton } from "@/components/ui/listen-button";
 import { OfflineSaveButton } from "@/components/offline/offline-save-button";
@@ -101,6 +102,7 @@ export default async function RouteDetailPage({
             style={{ objectPosition: getArtPosition(route.coverImageUrl) }}
             priority
           />
+          {isAiArt(route.coverImageUrl) && <AiArtLabel />}
         </div>
       )}
 

@@ -10,7 +10,7 @@ import type { PlaceTheme } from "@/lib/ui/category-gradient";
  * versión de la provincia y siguen en SVG.
  */
 export type SceneId =
-  "atardecer" | "playa" | "cerro" | "pueblo" | "dulces" | "tunel";
+  "atardecer" | "playa" | "cerro" | "pueblo" | "dulces" | "tunel" | "cocina";
 
 export const SCENE_SRC: Record<SceneId, string> = {
   atardecer: "/fondos/atardecer.webp",
@@ -19,6 +19,8 @@ export const SCENE_SRC: Record<SceneId, string> = {
   pueblo: "/fondos/pueblo.webp",
   dulces: "/fondos/dulces.svg",
   tunel: "/fondos/tunel.webp",
+  // Cocina de campo bajo el parrón (2026-11-03): gastronomía.
+  cocina: "/fondos/cocina.webp",
 };
 
 /**
@@ -41,10 +43,18 @@ const ART_POSITION: Record<string, string> = {
   "/fondos/cerro.webp": "72% 0%",
   "/fondos/pueblo.webp": "72% 0%",
   "/fondos/tunel.webp": "77% 0%",
+  "/fondos/cocina.webp": "65% 0%",
+  // Casi cuadradas (2026-11-03): solo postales y el afiche del evento.
+  "/fondos/descanso.webp": "32% 10%",
+  "/fondos/plaza.webp": "49% 8%",
+  "/eventos/cocinando-con-el-diablo.webp": "50% 0%",
   "/leyendas/escalera.webp": "66% 0%",
   "/leyendas/cueca.webp": "45% 4%",
   "/leyendas/ano-nuevo.webp": "24% 0%",
   "/rutas/ruta-ferroviaria-pedegua-las-palmas.webp": "51% 0%",
+  // Portada de "Donde el Diablo perdió el poncho" (2026-11-03), sentado en
+  // una piedra al atardecer.
+  "/rutas/ruta-del-diablo-pedegua-chincolco-campesino.webp": "57% 0%",
   // Versión provincia (SVG), con el diablo abajo a la derecha.
   "/fondos/playa.svg": "85% 70%",
   "/fondos/dulces.svg": "85% 70%",
@@ -66,6 +76,29 @@ export function getArtPosition(src?: string | null): string | undefined {
   return ART_POSITION[path];
 }
 
+/**
+ * Ilustraciones hechas con IA (ChatGPT, `docs/PROMPTS-IMAGENES.md`): todo
+ * arte del diablo de `ART_POSITION` más los que no se recortan. Pedido del
+ * usuario: que quede evidencia de que son generadas con IA mientras no haya
+ * fotos reales — toda vista que las muestra pone `AiArtLabel`. Un arte nuevo
+ * con IA = su entrada acá (o en `ART_POSITION`); una foto real nunca.
+ */
+const AI_ART = new Set([
+  ...Object.keys(ART_POSITION),
+  "/leyendas/diablo-buscando.webp",
+  "/brand/logo.png",
+]);
+
+/** ¿Es una ilustración hecha con IA? Acepta la URL completa del sitio. */
+export function isAiArt(src?: string | null): boolean {
+  if (!src) return false;
+  try {
+    return AI_ART.has(new URL(src, "http://local").pathname);
+  } catch {
+    return false;
+  }
+}
+
 /** Encuadre de cada escena (`ART_POSITION` de su archivo). */
 export const SCENE_POSITION = Object.fromEntries(
   Object.entries(SCENE_SRC).map(([scene, src]) => [
@@ -74,14 +107,14 @@ export const SCENE_POSITION = Object.fromEntries(
   ]),
 ) as Record<SceneId, string>;
 
-// Gastronomía y alojamiento van al pueblo en fiesta y recreación al cerro:
-// la escena de dulces es de La Ligua (versión provincia) y trae el diablo
-// viejo.
+// Gastronomía va a la cocina de campo (2026-11-03), alojamiento al
+// atardecer y recreación al cerro: la escena de dulces es de La Ligua
+// (versión provincia) y trae el diablo viejo.
 const SCENE_BY_CATEGORY: Record<string, SceneId> = {
   playa: "playa",
   naturaleza: "cerro",
   cultura: "pueblo",
-  gastronomia: "pueblo",
+  gastronomia: "cocina",
   alojamiento: "atardecer",
   recreacion: "cerro",
 };
@@ -89,6 +122,28 @@ const SCENE_BY_CATEGORY: Record<string, SceneId> = {
 /** Escena según la categoría que se está mirando; sin categoría, el cerro (el valle de noche). */
 export function getSceneForCategory(categorySlug?: string | null): SceneId {
   return (categorySlug && SCENE_BY_CATEGORY[categorySlug]) || "cerro";
+}
+
+/**
+ * Arte propio de una postal del inicio cuando la categoría lo tiene: el
+ * descanso (alojamiento) y la plaza (recreación) llegaron casi cuadrados
+ * (~715×724), justo para postales, pero se verían borrosos y con la cara
+ * tapada por el título en una cabecera ancha, que sigue con su escena.
+ */
+const POSTAL_ART: Record<string, string> = {
+  alojamiento: "/fondos/descanso.webp",
+  recreacion: "/fondos/plaza.webp",
+};
+
+/** Imagen y encuadre de la postal de una categoría (su arte o su escena). */
+export function getPostalArt(categorySlug?: string | null): {
+  src: string;
+  position: string;
+} {
+  const own = categorySlug ? POSTAL_ART[categorySlug] : undefined;
+  if (own) return { src: own, position: getArtPosition(own) ?? "center" };
+  const scene = getSceneForCategory(categorySlug);
+  return { src: SCENE_SRC[scene], position: SCENE_POSITION[scene] };
 }
 
 /** Escena de una ruta según su tema (túneles, costa, patrimonio). */
@@ -103,7 +158,7 @@ export function getSceneForRoute(routeSlug?: string | null): SceneId {
 const SCENE_BY_THEME: Record<PlaceTheme, SceneId> = {
   playa: "playa",
   dulces: "dulces",
-  sabores: "pueblo",
+  sabores: "cocina",
   historia: "pueblo",
   naturaleza: "cerro",
   diablo: "tunel",

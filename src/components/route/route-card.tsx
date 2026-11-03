@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { RouteCard as RouteCardType } from "@/types/domain";
-import { getArtPosition } from "@/lib/ui/scene-backgrounds";
+import { getArtPosition, isAiArt } from "@/lib/ui/scene-backgrounds";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 
 function RouteIcon({ className = "h-7 w-7" }: { className?: string }) {
   return (
@@ -48,6 +49,9 @@ export function RouteCard({ route }: { route: RouteCardType }) {
           />
         ) : (
           <RouteIcon className="text-accent-foreground h-7 w-7" />
+        )}
+        {route.photoUrl && !photoFailed && isAiArt(route.photoUrl) && (
+          <AiArtLabel />
         )}
       </div>
 

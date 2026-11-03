@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { SparkleField } from "@/components/ui/sparkle-field";
+import { AiArtLabel } from "@/components/ui/ai-art-label";
 import {
   SCENE_POSITION,
   SCENE_SRC,
@@ -50,6 +51,7 @@ export function PageHero({
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#07060c]/90 via-[#07060c]/50 to-transparent"
           />
+          <AiArtLabel />
         </>
       )}
       <div

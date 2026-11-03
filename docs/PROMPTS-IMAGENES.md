@@ -48,12 +48,18 @@ el bloque de estilo (más abajo). `node scripts/build-brand-png.mjs --check`
 dice cuáles faltan.
 
 1. **Logo** — `public/brand/logo.png`, 1024×1024, **fondo transparente**. El
-   que hay es del diablito anterior y no se usa.
+   del 2026-11-03 (`logo_diablo_petorca_transparente.png`: túnel, puente,
+   iglesia y cerros) está aprobado en el arte, pero dice "El Diablo de
+   Petorca" y el sitio se llama **"El diablo murió en Petorca"**: se pide de
+   nuevo solo con el nombre cambiado (decisión del usuario, 2026-11-03).
+   Adjuntar **ese logo** (no la referencia del personaje):
 
    ```text
-   Emblema para un sitio de turismo: la cabeza y los hombros del diablo de la imagen adjunta, sonriendo pícaro, con su sombrero de cuernos y el poncho rojo de flecos dorados, dentro de un medallón dorado con forma de escudo. Detrás, cruzado, su cucharón de madera con borla roja y dorada. Nada de azul ni blanco, nada de siluetas planas. Fondo transparente, sin texto.
-   [bloque de estilo]
+   Usa este logo exactamente igual: el mismo diablo con el cucharón, el mismo sombrero con cuernos, el poncho, el túnel, el puente rojo, la iglesia, los cerros, los colores y el marco café. Cambia solo el texto: debe decir "El diablo murió en Petorca", en dos líneas: arriba, más chico, "El diablo murió en", y abajo, grande, "Petorca", con la misma letra crema y el mismo borde. Revisa que "murió" lleve tilde en la ó y que no falte ni sobre ninguna letra. Formato cuadrado de 1024×1024, fondo transparente, sin nada más escrito.
    ```
+
+   Si el texto sale apretado, pedirlo con la cinta roja de abajo un poco más
+   larga. Al llegar: revisar letra por letra antes de integrarlo.
 
 2. ~~**Portada de "Donde el Diablo perdió el poncho"**~~ — **llegó el
    2026-11-03** (el diablo sentado en una piedra al atardecer):

@@ -67,27 +67,7 @@ export async function EventCard({
         upcoming ? "border-accent/60" : "border-white/10"
       }`}
     >
-      {event.coverImage && !compact && (
-        // Como afiche, entera y en su propia forma (pedido del usuario: la
-        // portada de Cocinando con el Diablo trae el cartel del evento, que
-        // un recorte angosto cortaba); tope de alto para una foto vertical.
-        <div className="relative mx-auto w-full max-w-md">
-          <Image
-            src={event.coverImage}
-            alt=""
-            width={1200}
-            height={1200}
-            sizes="(min-width: 640px) 448px, 100vw"
-            // Una foto subida al Storage del panel no pasa por el optimizador
-            // (no todos sus orígenes están declarados en next.config.ts).
-            unoptimized={!event.coverImage.startsWith("/")}
-            className="h-auto max-h-[32rem] w-full object-cover"
-            style={{ objectPosition: getArtPosition(event.coverImage) }}
-          />
-          {isAiArt(event.coverImage) && <AiArtLabel />}
-        </div>
-      )}
-      <div className="flex gap-3 p-4">
+      <div className="flex gap-3 p-4 pb-2">
         <div
           aria-hidden="true"
           className={`flex h-16 w-14 shrink-0 flex-col items-center justify-center rounded-xl border text-center ${
@@ -107,7 +87,7 @@ export async function EventCard({
             {badge.month}
           </span>
         </div>
-        <div className="flex min-w-0 flex-col gap-1">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
           <h3 className="leading-snug font-semibold">{event.name}</h3>
           {when && <p className="text-accent text-sm">{when}</p>}
           {detail && <p className="text-foreground/50 text-xs">{detail}</p>}
@@ -138,32 +118,61 @@ export async function EventCard({
               )}
             </p>
           )}
-          {event.description && (
-            <p
-              className={`text-foreground/80 text-sm leading-relaxed ${compact ? "line-clamp-2" : ""}`}
-            >
-              {event.description}
-            </p>
-          )}
-          {!compact && event.organizer && (
-            <p className="text-foreground/60 text-xs">
-              {t("organizer", { name: event.organizer })}
-            </p>
-          )}
-          {!compact && event.sourceUrl && (
-            <p className="text-foreground/50 text-xs">
-              {t("source")}:{" "}
-              <a
-                href={event.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent underline underline-offset-2"
-              >
-                {event.sourceLabel ?? event.sourceUrl}
-              </a>
-            </p>
-          )}
         </div>
+        {event.coverImage && (
+          // Recuadro chico al lado del texto (pedido del usuario: la portada
+          // como afiche entero "se ve muy grande"; mejor "más chiquitita, en
+          // recuadros").
+          <div
+            className={`relative shrink-0 self-start overflow-hidden rounded-xl border border-white/10 ${
+              compact ? "h-16 w-16" : "h-20 w-20 sm:h-28 sm:w-28"
+            }`}
+          >
+            <Image
+              src={event.coverImage}
+              alt=""
+              fill
+              sizes="112px"
+              // Una foto subida al Storage del panel no pasa por el optimizador
+              // (no todos sus orígenes están declarados en next.config.ts).
+              unoptimized={!event.coverImage.startsWith("/")}
+              className="object-cover"
+              style={{ objectPosition: getArtPosition(event.coverImage) }}
+            />
+            {isAiArt(event.coverImage) && (
+              <AiArtLabel short className="right-1 bottom-1" />
+            )}
+          </div>
+        )}
+      </div>
+      {/* Descripción, organizador y fuente, a todo el ancho: al lado de la
+          fecha y la miniatura el texto quedaba en una columna angosta. */}
+      <div className="flex flex-col gap-1 px-4 pb-4">
+        {event.description && (
+          <p
+            className={`text-foreground/80 text-sm leading-relaxed ${compact ? "line-clamp-2" : ""}`}
+          >
+            {event.description}
+          </p>
+        )}
+        {!compact && event.organizer && (
+          <p className="text-foreground/60 text-xs">
+            {t("organizer", { name: event.organizer })}
+          </p>
+        )}
+        {!compact && event.sourceUrl && (
+          <p className="text-foreground/50 text-xs">
+            {t("source")}:{" "}
+            <a
+              href={event.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-accent underline underline-offset-2"
+            >
+              {event.sourceLabel ?? event.sourceUrl}
+            </a>
+          </p>
+        )}
       </div>
     </article>
   );

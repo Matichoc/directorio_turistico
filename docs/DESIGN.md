@@ -481,7 +481,10 @@ por `buildAgenda` (`lib/events/agenda.ts`, funciones puras con pruebas):
 Un evento cae en una sola parte. `EventCard` (`components/events/`):
 `surface-glass` con un calendario chico (día y mes; borde y glow de brasa si
 es próximo), cuándo, dónde (links al lugar y al pueblo si existen),
-organizador y fuente. La portada solo si hay una foto propia o con permiso.
+organizador y fuente. La portada (solo propia o con permiso) va como
+miniatura cuadrada a la derecha de la fecha y el título (80 px; 112 desde
+`sm:`; 64 en el inicio), con "IA" si es ilustración; la descripción va abajo a
+todo el ancho. Pedido del usuario: como afiche entero "se ve muy grande".
 
 Cómo se llega: en la navegación, dentro de "Más" (y a la vista en la barra
 de arriba desde `md:`); píldora "Eventos" en Explorar (junto a Rutas y La leyenda), bloque "Qué pasa en Petorca" en el

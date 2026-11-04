@@ -1,29 +1,38 @@
-# Arquitectura — El diablo murió en Petorca y en La Ligua lo enterraron
+# Arquitectura — El diablo murió en Petorca
 
 Aplicación única Next.js 16 (App Router) con TypeScript, sin monorepo.
-(Árbol revisado contra el código el 2026-11-01.)
+(Árbol revisado contra el código el 2026-11-04.)
 
 ## Capas
 
 ```
 src/
 ├── app/
-│   ├── [locale]/          interfaz pública (es/en), localizada con next-intl:
+│   ├── [locale]/          interfaz pública (es/en/pt), localizada con next-intl:
 │   │                      inicio, explorar, lugares, pueblos, rutas,
-│   │                      recorrido, informacion, privacidad
+│   │                      recorrido (+ compartido), eventos, leyenda,
+│   │                      informacion, privacidad
 │   ├── admin/             panel administrativo, protegido por Supabase Auth
 │   │                      (fuera de [locale]: sin i18n, sin bottom nav):
-│   │                      lugares (+ CSV), rutas, pueblos, comunas-categorias,
-│   │                      verificaciones, metricas, login
+│   │                      lugares (+ CSV), rutas, pueblos, eventos,
+│   │                      comunas-categorias, verificaciones, metricas,
+│   │                      personas, registro, cuenta, login, aceptar
 │   ├── api/               route handlers: analytics, place-photo (proxy de
-│   │                      fotos de Google), directions (rutas por calle),
+│   │                      fotos de Google), ruta (guía por calle, OSRM),
 │   │                      trip/places
 │   ├── manifest.ts        manifest PWA
 │   ├── sitemap.ts / robots.ts
 │   └── (public/sw.js)     service worker escrito a mano ("sin señal")
 ├── components/
-│   ├── ui/                genéricos (nav, PageHero, íconos, fichas, auspicio)
+│   ├── ui/                genéricos (nav + menú "Más", PageHero, íconos,
+│   │                      fichas, auspicio, marca "Ilustración con IA")
 │   ├── home/              portada (vuelo 3D, banner de municipios, buscador)
+│   ├── events/            tarjeta de evento y bloque "Qué pasa en Petorca"
+│   ├── legend/            tarjeta hacia /leyenda
+│   ├── video/             reportajes de TV (reproductor oficial de cada canal)
+│   ├── navigation/        guía paso a paso (tarjeta de giro, cámara)
+│   ├── offline/           "Guardar para usar sin señal", registro del SW
+│   ├── seo/               JSON-LD
 │   ├── explore/           /explorar (mapa por sectores, árbol, filtros)
 │   ├── map/               MapLibre/react-map-gl (pines, sectores, ficha del jugador)
 │   ├── place/             tarjetas/ficha de lugar (fotos, me gusta, comentarios)
@@ -39,14 +48,22 @@ src/
 │   ├── itinerary-engine/  módulo TS puro: build(input) → Itinerary
 │   ├── maps/              estilo de mapa, relieve 3D, direcciones
 │   ├── ui/                lógica de UI pura (árbol de explorar, sectores,
-│   │                      escenas, gradientes por categoría)
+│   │                      escenas y encuadres del arte, gradientes por categoría)
+│   ├── events/            agenda de eventos (próximos / cada año / pasados), pura
+│   ├── reportajes.ts      lista de reportajes de TV (fuente única)
+│   ├── official-routes.ts rutas oficiales de la comuna (logo, fuente, Instagram)
+│   ├── site-scope.ts      alcance del sitio (solo la comuna de Petorca)
+│   ├── site-indexing.ts   oculto de buscadores hasta SITE_INDEXING=on
+│   ├── speech.ts          voz del teléfono ("Escuchar" y la guía)
+│   ├── offline/           plan de qué bajar para usar sin señal
+│   ├── google/            referencia de fotos de Google Places
 │   ├── trip/, likes/, route-progress/, navigation/, session/
 │   │                      estado del visitante (recorrido, me gusta,
 │   │                      progreso de ruta, ficha, sesión anónima)
 │   ├── http/              rate limit (en memoria, por instancia)
 │   └── analytics/         nombres de evento + envío
 ├── i18n/                  routing/navigation/request config de next-intl
-├── messages/              es.json / en.json
+├── messages/              es.json / en.json / pt.json
 ├── proxy.ts               middleware (Next 16 lo llama proxy): locale + sesión de /admin
 └── types/                 database.ts (esquema) + domain.ts (modelos de UI)
 ```
@@ -63,7 +80,7 @@ src/
 
 ## i18n
 
-- `next-intl` con `localePrefix: "always"` (`/es`, `/en`) y rutas localizadas por `pathnames` (p. ej. `/rutas` ↔ `/routes`).
+- `next-intl` con `localePrefix: "always"` (`/es`, `/en`, `/pt`) y rutas localizadas por `pathnames` (p. ej. `/rutas` ↔ `/routes` ↔ `/rotas`). El contenido de la base se pide en el idioma de la página; en portugués, lo que no tiene traducción cae al español (`src/i18n/content.ts`).
 - `src/proxy.ts` (en Next 16 el middleware se llama "proxy") combina el middleware de locale con el refresco de sesión de Supabase Auth para `/admin`, que queda excluido del ruteo por locale.
 - El layout raíz (`app/layout.tsx`) **no** pone `<html>`: lo pone `HtmlShell` en `[locale]/layout.tsx` (con el idioma de la URL), en `admin/layout.tsx` y en el 404 raíz. Antes el raíz usaba `getLocale()`, que lee encabezados y dejaba todo el sitio sin caché (`docs/RENDIMIENTO.md`).
 
@@ -85,6 +102,40 @@ ItineraryEngine.build(input: ItineraryBuildInput): Itinerary
 ```
 
 Implementación: con hasta `EXACT_ORDER_STOPS_LIMIT` paradas prueba todos los órdenes y usa el óptimo exacto; con más, vecino más cercano sobre distancia Haversine, con topes de paradas/duración. Es determinista y no depende del reloj del sistema, lo que la hace fácil de testear (`tests/unit/itinerary-engine.test.ts`) y reutilizable desde una futura interfaz conversacional sin cambios.
+
+## Eventos
+
+`/eventos` lee `events` + `event_translations` (`lib/data/events.ts`,
+cacheado como el resto del contenido) y los ordena con `buildAgenda`
+(`lib/events/agenda.ts`, funciones puras con pruebas): próximos (con fecha
+que no terminó), fiestas de cada año (mes en la base, desde el mes actual) y
+los que ya pasaron. "Hoy" es la fecha de Chile (`todayInChile`); como las
+páginas se regeneran cada 5 minutos, un evento cambia de parte solo. El
+mismo listado alimenta el bloque del inicio y las fichas de pueblo y de
+lugar. Se cargan en `/admin/eventos` (`lib/server/content/events.ts`): sin
+fecha ni mes no se guarda (también lo impide un `check` en la base).
+
+## Arte, fotos e imágenes con IA
+
+- **Encuadre y procedencia, en un solo lugar** (`lib/ui/scene-backgrounds.ts`):
+  - `ART_POSITION`: el encuadre de cada ilustración del diablo, para que la
+    cabeza entre entera en cualquier recuadro.
+  - `isAiArt`: qué archivos son hechos con IA; toda vista que los muestra
+    pone `AiArtLabel`.
+  - `getPostalArt`: el arte propio de las postales del inicio.
+- **Integrar arte nuevo**: `scripts/build-brand-png.mjs` revisa tamaños, pasa
+  los PNG a WebP y arma favicon, íconos, logo web y la imagen al compartir.
+  Los PNG originales no se suben al repositorio.
+- **Fotos reales de lugares**: vienen de `place_images` (Wikimedia, Google
+  vía `/api/place-photo`, o subidas a mano); nunca llevan la marca de IA.
+
+## Reportajes de TV
+
+`lib/reportajes.ts` es la lista única (canal, título, fuente, rutas de las
+que trata). Nunca se descargan: `VideoReportaje` muestra una tarjeta con una
+escena del diablo y recién al tocar "Ver reportaje" carga el reproductor
+oficial (YouTube sin cookies o Rudo). Un proveedor nuevo necesita su dominio
+en `frame-src` (`next.config.ts`).
 
 ## PWA
 

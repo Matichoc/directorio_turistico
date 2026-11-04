@@ -1,7 +1,8 @@
 # Guía del panel: cómo usar el directorio día a día
 
 > Escrita el 2026-11-01 para empezar a usar el sitio en serio y poder
-> entregárselo a otras personas. Cifras de ese día: 20 lugares publicados en
+> entregárselo a otras personas; revisada el 2026-11-04. Cómo lo usa un
+> visitante: `docs/GUIA-USO.md`. Cifras de ese día: 20 lugares publicados en
 > la comuna (10 verificados, 10 pendientes), 15 pueblos (6 con resumen), 2
 > rutas y 5 categorías; 12 lugares todavía sin foto.
 
@@ -16,10 +17,8 @@ Hay dos sitios y dos bases:
 
 - **Lo que edites en desarrollo no pasa a producción.** Sirve para practicar
   y probar funciones nuevas.
-- **Hoy el panel nuevo (Personas, Registro de cambios, varias categorías por
-  lugar) solo está en `develop`.** El sitio publicado todavía tiene el panel
-  anterior. Para editar el contenido real con todo lo nuevo hay que **pasar
-  `develop` a `main`** (ver la sección 6).
+- **El sitio publicado ya tiene el panel completo** (desde 2026-11-03):
+  Personas, Registro de cambios, varias categorías por lugar y Eventos.
 
 ## 1. Entrar
 
@@ -141,8 +140,7 @@ rutas** y **auspiciadores**.
 
 | Paso                                                                                           | Quién           |
 | ---------------------------------------------------------------------------------------------- | --------------- |
-| Pasar `develop` a `main` (que el sitio publicado tenga todo)                                   | Desarrollo      |
-| Correr `supabase/manual/petorca-portadas.sql` en `legacy` (después de lo anterior)             | Tú (SQL Editor) |
+| ~~Pasar `develop` a `main`~~ y las portadas de rutas y del evento: hechos (2026-11-03)         | —               |
 | Fotos para los 12 lugares sin foto (propias o del script de Google)                            | Ambos           |
 | Duración de las 2 rutas                                                                        | Tú (panel)      |
 | Verificar los 10 lugares pendientes                                                            | Tú (panel)      |

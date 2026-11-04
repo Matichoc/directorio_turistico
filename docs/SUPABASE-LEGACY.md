@@ -224,12 +224,47 @@ Se pegan tal cual en el SQL Editor; cada uno se aplica solo en `legacy` y
   Correr el paso 1 **antes** de publicar el código con portugués: sin el
   idioma en la base, las páginas en `/pt` fallan.
 
+## Índice de los scripts manuales (`supabase/manual/`)
+
+Todos se pegan tal cual en el SQL Editor de city_tour. Salvo los primeros de
+la lista, se aplican a `legacy` y a `legacy_dev` (si existe), se pueden
+repetir y corren en una sola transacción: si algo falla, no cambian nada.
+Ninguno toca `public` (Papudo). Si un script apunta a un archivo nuevo de
+`public/` (una portada), se corre **después** de que ese archivo esté
+publicado en `main`: antes, la imagen sale rota en producción (pasó el
+2026-11-03 por unos minutos).
+
+| Script                               | Qué hace                                                                     | Cuidado                                                   |
+| ------------------------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `legacy-acceso-api.sql`              | Permisos y funciones para que la API lea `legacy` (paso 2)                   | Solo `legacy`; hecho                                      |
+| `crear-legacy-dev.sql`               | Crea o recrea la copia de desarrollo `legacy_dev`                            | Borra lo probado en desarrollo (`docs/DESARROLLO.md`)     |
+| `admin-roles.sql`                    | Roles del panel (admin/editor) y registro de cambios                         | Antes de usar `/admin/personas`                           |
+| `petorca-rutas.sql`                  | Las 2 rutas de la comuna con sus paradas                                     | Solo `legacy`; hecho                                      |
+| `petorca-nombres-oficiales.sql`      | Nombre propio de las 2 rutas                                                 |                                                           |
+| `categorias-petorca.sql`             | Categorías de Explorar y varias categorías por lugar                         | Seguir con `arreglo-categorias-ambiguas.sql`              |
+| `arreglo-categorias-ambiguas.sql`    | Arregla la ambigüedad que dejó el script anterior en la API (Explorar vacío) | Después de `categorias-petorca.sql`                       |
+| `lugares-petorca-2026-11.sql`        | 10 lugares nuevos y categorías adicionales                                   |                                                           |
+| `lugares-petorca-2026-11-b.sql`      | Panal de Hierro Viejo, Viña El Sobrante, El Rincón Criollo                   | No pisa lo editado                                        |
+| `chalaco.sql`                        | Chalaco como pueblo, con resumen y fuente                                    |                                                           |
+| `san-ramon-el-frances.sql`           | San Ramón y El Francés como pueblos                                          |                                                           |
+| `portugues-1-idioma.sql`             | Suma el idioma `pt` al tipo `locale`                                         | Antes del paso 2 y antes de publicar código con portugués |
+| `portugues-2-contenido.sql`          | Contenido de Petorca en portugués                                            | Después del paso 1                                        |
+| `petorca-portadas.sql`               | Portadas de las 2 rutas (entrega del 2026-11-01)                             | Superado por la portada definitiva                        |
+| `portada-poncho-campesino.sql`       | Portada provisoria de la ruta del poncho (escalera)                          | Superado por la portada definitiva                        |
+| `portada-poncho-definitiva.sql`      | Portada definitiva de la ruta del poncho                                     | Después de publicar el archivo; hecho (2026-11-03)        |
+| `eventos.sql`                        | Tablas `events` y `event_translations` y los 7 eventos con fuente            | Hecho (2026-11-02)                                        |
+| `evento-portada-cocinando.sql`       | Portada de Cocinando con el Diablo                                           | Después de publicar el archivo; hecho (2026-11-03)        |
+| `analitica-solo-eventos-validos.sql` | La base acepta solo eventos de analítica conocidos (auditoría H-07)          | Propuesta: revisar antes de correr                        |
+
 ## Cambios futuros en la base del diablo
 
-Cada cambio de tablas se escribe como un archivo SQL en `supabase/manual/`,
-con `legacy.` en **todo** (tablas, funciones, políticas) y `set search_path =
-legacy` en las funciones, se prueba en una réplica local y se corre a mano en
-el SQL Editor. Las migraciones numeradas de `supabase/migrations/` quedan
+Cada cambio de tablas o de datos se escribe como un archivo SQL en
+`supabase/manual/`, con el esquema explícito en **todo** (tablas, funciones,
+políticas) y `set search_path` al esquema en las funciones. El patrón de hoy
+es un bloque `do $$ … $$` que recorre `legacy` y `legacy_dev` con
+`format('%1$I…')`, con `on conflict … do update` para que se pueda repetir,
+todo dentro de `begin; … commit;`. Lo corre a mano el dueño del proyecto en el
+SQL Editor, y se suma a la tabla de arriba. Las migraciones numeradas de `supabase/migrations/` quedan
 como historial del esquema original: sirven para armar una réplica local, no
 para aplicarse al proyecto compartido.
 

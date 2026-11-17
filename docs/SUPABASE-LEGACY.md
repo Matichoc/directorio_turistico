@@ -234,27 +234,30 @@ Ninguno toca `public` (Papudo). Si un script apunta a un archivo nuevo de
 publicado en `main`: antes, la imagen sale rota en producción (pasó el
 2026-11-03 por unos minutos).
 
-| Script                               | Qué hace                                                                     | Cuidado                                                   |
-| ------------------------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------------- |
-| `legacy-acceso-api.sql`              | Permisos y funciones para que la API lea `legacy` (paso 2)                   | Solo `legacy`; hecho                                      |
-| `crear-legacy-dev.sql`               | Crea o recrea la copia de desarrollo `legacy_dev`                            | Borra lo probado en desarrollo (`docs/DESARROLLO.md`)     |
-| `admin-roles.sql`                    | Roles del panel (admin/editor) y registro de cambios                         | Antes de usar `/admin/personas`                           |
-| `petorca-rutas.sql`                  | Las 2 rutas de la comuna con sus paradas                                     | Solo `legacy`; hecho                                      |
-| `petorca-nombres-oficiales.sql`      | Nombre propio de las 2 rutas                                                 |                                                           |
-| `categorias-petorca.sql`             | Categorías de Explorar y varias categorías por lugar                         | Seguir con `arreglo-categorias-ambiguas.sql`              |
-| `arreglo-categorias-ambiguas.sql`    | Arregla la ambigüedad que dejó el script anterior en la API (Explorar vacío) | Después de `categorias-petorca.sql`                       |
-| `lugares-petorca-2026-11.sql`        | 10 lugares nuevos y categorías adicionales                                   |                                                           |
-| `lugares-petorca-2026-11-b.sql`      | Panal de Hierro Viejo, Viña El Sobrante, El Rincón Criollo                   | No pisa lo editado                                        |
-| `chalaco.sql`                        | Chalaco como pueblo, con resumen y fuente                                    |                                                           |
-| `san-ramon-el-frances.sql`           | San Ramón y El Francés como pueblos                                          |                                                           |
-| `portugues-1-idioma.sql`             | Suma el idioma `pt` al tipo `locale`                                         | Antes del paso 2 y antes de publicar código con portugués |
-| `portugues-2-contenido.sql`          | Contenido de Petorca en portugués                                            | Después del paso 1                                        |
-| `petorca-portadas.sql`               | Portadas de las 2 rutas (entrega del 2026-11-01)                             | Superado por la portada definitiva                        |
-| `portada-poncho-campesino.sql`       | Portada provisoria de la ruta del poncho (escalera)                          | Superado por la portada definitiva                        |
-| `portada-poncho-definitiva.sql`      | Portada definitiva de la ruta del poncho                                     | Después de publicar el archivo; hecho (2026-11-03)        |
-| `eventos.sql`                        | Tablas `events` y `event_translations` y los 7 eventos con fuente            | Hecho (2026-11-02)                                        |
-| `evento-portada-cocinando.sql`       | Portada de Cocinando con el Diablo                                           | Después de publicar el archivo; hecho (2026-11-03)        |
-| `analitica-solo-eventos-validos.sql` | La base acepta solo eventos de analítica conocidos (auditoría H-07)          | Propuesta: revisar antes de correr                        |
+| Script                               | Qué hace                                                                        | Cuidado                                                     |
+| ------------------------------------ | ------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `legacy-acceso-api.sql`              | Permisos y funciones para que la API lea `legacy` (paso 2)                      | Solo `legacy`; hecho                                        |
+| `crear-legacy-dev.sql`               | Crea o recrea la copia de desarrollo `legacy_dev`                               | Borra lo probado en desarrollo (`docs/DESARROLLO.md`)       |
+| `admin-roles.sql`                    | Roles del panel (admin/editor) y registro de cambios                            | Antes de usar `/admin/personas`                             |
+| `petorca-rutas.sql`                  | Las 2 rutas de la comuna con sus paradas                                        | Solo `legacy`; hecho                                        |
+| `petorca-nombres-oficiales.sql`      | Nombre propio de las 2 rutas                                                    |                                                             |
+| `categorias-petorca.sql`             | Categorías de Explorar y varias categorías por lugar                            | Seguir con `arreglo-categorias-ambiguas.sql`                |
+| `arreglo-categorias-ambiguas.sql`    | Arregla la ambigüedad que dejó el script anterior en la API (Explorar vacío)    | Después de `categorias-petorca.sql`                         |
+| `lugares-petorca-2026-11.sql`        | 10 lugares nuevos y categorías adicionales                                      |                                                             |
+| `lugares-petorca-2026-11-b.sql`      | Panal de Hierro Viejo, Viña El Sobrante, El Rincón Criollo                      | No pisa lo editado                                          |
+| `chalaco.sql`                        | Chalaco como pueblo, con resumen y fuente                                       |                                                             |
+| `san-ramon-el-frances.sql`           | San Ramón y El Francés como pueblos                                             |                                                             |
+| `portugues-1-idioma.sql`             | Suma el idioma `pt` al tipo `locale`                                            | Antes del paso 2 y antes de publicar código con portugués   |
+| `portugues-2-contenido.sql`          | Contenido de Petorca en portugués                                               | Después del paso 1                                          |
+| `petorca-portadas.sql`               | Portadas de las 2 rutas (entrega del 2026-11-01)                                | Superado por la portada definitiva                          |
+| `portada-poncho-campesino.sql`       | Portada provisoria de la ruta del poncho (escalera)                             | Superado por la portada definitiva                          |
+| `portada-poncho-definitiva.sql`      | Portada definitiva de la ruta del poncho                                        | Después de publicar el archivo; hecho (2026-11-03)          |
+| `eventos.sql`                        | Tablas `events` y `event_translations` y los 7 eventos con fuente               | Hecho (2026-11-02)                                          |
+| `evento-portada-cocinando.sql`       | Portada de Cocinando con el Diablo                                              | Después de publicar el archivo; hecho (2026-11-03)          |
+| `analitica-solo-eventos-validos.sql` | La base acepta solo eventos de analítica conocidos (auditoría H-07)             | Propuesta: revisar antes de correr                          |
+| `postgis-1-dependencias.sql`         | Solo lectura: lista lo que depende de PostGIS (alerta `spatial_ref_sys`)        | Antes del paso 2; si aparece algo más que `geog`, no seguir |
+| `postgis-2-quitar.sql`               | Quita las columnas `geog` y la extensión PostGIS (y con ella `spatial_ref_sys`) | Sin `cascade`; reversa: `postgis-reversa.sql`               |
+| `postgis-reversa.sql`                | Reinstala PostGIS en el esquema `extensions` y recrea las columnas `geog`       | Solo si hiciera falta volver atrás                          |
 
 ## Cambios futuros en la base del diablo
 
